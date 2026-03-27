@@ -10,8 +10,8 @@ export declare class AuthController {
         message: string;
         data: {
             user: Omit<Omit<{
-                name: string;
                 id: string;
+                name: string;
                 email: string;
                 passwordHash: string;
                 passwordResetTokenHash: string | null;
@@ -35,8 +35,8 @@ export declare class AuthController {
         message: string;
         data: {
             user: Omit<Omit<{
-                name: string;
                 id: string;
+                name: string;
                 email: string;
                 passwordHash: string;
                 passwordResetTokenHash: string | null;
@@ -71,8 +71,8 @@ export declare class AuthController {
     }>;
     me(user: AuthenticatedUser): Promise<{
         data: Omit<Omit<{
-            name: string;
             id: string;
+            name: string;
             email: string;
             passwordHash: string;
             passwordResetTokenHash: string | null;

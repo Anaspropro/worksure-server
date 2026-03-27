@@ -16,8 +16,8 @@ export declare class AuthService {
         message: string;
         data: {
             user: Omit<Omit<{
-                name: string;
                 id: string;
+                name: string;
                 email: string;
                 passwordHash: string;
                 passwordResetTokenHash: string | null;
@@ -41,8 +41,8 @@ export declare class AuthService {
         message: string;
         data: {
             user: Omit<Omit<{
-                name: string;
                 id: string;
+                name: string;
                 email: string;
                 passwordHash: string;
                 passwordResetTokenHash: string | null;
@@ -65,8 +65,8 @@ export declare class AuthService {
     verifyAccessToken(token: string): Promise<AuthenticatedUser>;
     me(user: AuthenticatedUser): Promise<{
         data: Omit<Omit<{
-            name: string;
             id: string;
+            name: string;
             email: string;
             passwordHash: string;
             passwordResetTokenHash: string | null;
