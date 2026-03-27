@@ -81,8 +81,8 @@ export declare class AdminController {
     getAllDisputes(): Promise<{
         data: {
             id: string;
-            contractId: string;
-            jobId: string;
+            contractId: string | null;
+            jobId: string | null;
             clientId: string;
             artisanId: string;
             amount: number;
@@ -118,8 +118,8 @@ export declare class AdminController {
         message: string;
         data: {
             id: string;
-            contractId: string;
-            jobId: string;
+            contractId: string | null;
+            jobId: string | null;
             clientId: string;
             artisanId: string;
             amount: number;
@@ -152,10 +152,10 @@ export declare class AdminController {
         data: {
             id: string;
             title: string;
-            contractId: string;
+            contractId: string | null;
             clientId: string;
-            artisanId: string;
-            amount: number;
+            artisanId: string | null;
+            amount: number | null;
             status: import("src/generated/prisma").$Enums.JobStatus;
             flagged: boolean;
             forceClosedAt: string | undefined;
@@ -174,10 +174,10 @@ export declare class AdminController {
         data: {
             id: string;
             title: string;
-            contractId: string;
+            contractId: string | null;
             clientId: string;
-            artisanId: string;
-            amount: number;
+            artisanId: string | null;
+            amount: number | null;
             status: import("src/generated/prisma").$Enums.JobStatus;
             flagged: boolean;
             forceClosedAt: string | undefined;
@@ -190,7 +190,7 @@ export declare class AdminController {
             userId: string;
             type: import("src/generated/prisma").$Enums.TransactionType;
             amount: number;
-            status: "COMPLETED";
+            status: import("src/generated/prisma").$Enums.TransactionStatus;
             reference: string;
             createdAt: string;
         }[];

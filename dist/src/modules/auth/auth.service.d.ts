@@ -16,6 +16,7 @@ export declare class AuthService {
         message: string;
         data: {
             user: Omit<Omit<{
+                updatedAt: Date;
                 name: string;
                 id: string;
                 email: string;
@@ -28,7 +29,6 @@ export declare class AuthService {
                 artisanVerified: boolean;
                 createdAt: Date;
                 lastLoginAt: Date | null;
-                updatedAt: Date;
             }, "passwordHash">, "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt"> & {
                 createdAt: string;
                 updatedAt: string;
@@ -41,6 +41,7 @@ export declare class AuthService {
         message: string;
         data: {
             user: Omit<Omit<{
+                updatedAt: Date;
                 name: string;
                 id: string;
                 email: string;
@@ -53,7 +54,6 @@ export declare class AuthService {
                 artisanVerified: boolean;
                 createdAt: Date;
                 lastLoginAt: Date | null;
-                updatedAt: Date;
             }, "passwordHash">, "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt"> & {
                 createdAt: string;
                 updatedAt: string;
@@ -65,6 +65,7 @@ export declare class AuthService {
     verifyAccessToken(token: string): Promise<AuthenticatedUser>;
     me(user: AuthenticatedUser): Promise<{
         data: Omit<Omit<{
+            updatedAt: Date;
             name: string;
             id: string;
             email: string;
@@ -77,7 +78,6 @@ export declare class AuthService {
             artisanVerified: boolean;
             createdAt: Date;
             lastLoginAt: Date | null;
-            updatedAt: Date;
         }, "passwordHash">, "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt"> & {
             createdAt: string;
             updatedAt: string;

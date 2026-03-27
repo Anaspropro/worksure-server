@@ -10,6 +10,7 @@ export declare class AuthController {
         message: string;
         data: {
             user: Omit<Omit<{
+                updatedAt: Date;
                 name: string;
                 id: string;
                 email: string;
@@ -22,7 +23,6 @@ export declare class AuthController {
                 artisanVerified: boolean;
                 createdAt: Date;
                 lastLoginAt: Date | null;
-                updatedAt: Date;
             }, "passwordHash">, "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt"> & {
                 createdAt: string;
                 updatedAt: string;
@@ -35,6 +35,7 @@ export declare class AuthController {
         message: string;
         data: {
             user: Omit<Omit<{
+                updatedAt: Date;
                 name: string;
                 id: string;
                 email: string;
@@ -47,7 +48,6 @@ export declare class AuthController {
                 artisanVerified: boolean;
                 createdAt: Date;
                 lastLoginAt: Date | null;
-                updatedAt: Date;
             }, "passwordHash">, "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt"> & {
                 createdAt: string;
                 updatedAt: string;
@@ -71,6 +71,7 @@ export declare class AuthController {
     }>;
     me(user: AuthenticatedUser): Promise<{
         data: Omit<Omit<{
+            updatedAt: Date;
             name: string;
             id: string;
             email: string;
@@ -83,7 +84,6 @@ export declare class AuthController {
             artisanVerified: boolean;
             createdAt: Date;
             lastLoginAt: Date | null;
-            updatedAt: Date;
         }, "passwordHash">, "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt"> & {
             createdAt: string;
             updatedAt: string;
