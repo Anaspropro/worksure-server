@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  CLIENT
+  ARTISAN
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+enum DisputeStatus {
+  OPEN
+  RESOLVED
+}
+
+enum DisputeDecision {
+  REFUND_CLIENT
+  PAY_ARTISAN
+}
+
+enum JobStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  FORCE_CLOSED
+}
+
+enum TransactionType {
+  FUNDING
+  ESCROW_HOLD
+  PLATFORM_FEE
+  REFUND
+  PAYOUT
+  ADJUSTMENT_NOTE
+}
+
+enum TransactionStatus {
+  COMPLETED
+}
+
+enum AuditEntityType {
+  USER
+  DISPUTE
+  JOB
+  REPORT
+}
+
+model User {
+  id               String         @id
+  name             String
+  email            String         @unique
+  passwordHash     String
+  passwordResetTokenHash String?  @unique
+  passwordResetTokenExpiresAt DateTime?
+  passwordResetRequestedAt DateTime?
+  role             UserRole
+  status           UserStatus
+  artisanVerified  Boolean        @default(false)
+  createdAt        DateTime
+  lastLoginAt      DateTime?
+  updatedAt        DateTime       @updatedAt
+  notifications    Notification[]
+  transactions     Transaction[]
+}
+
+model Dispute {
+  id                 String            @id
+  contractId         String
+  jobId              String            @unique
+  clientId           String
+  artisanId          String
+  amount             Int
+  status             DisputeStatus
+  evidenceImages     Json
+  evidenceVideos     Json
+  evidenceMessages   Json
+  resolutionDecision DisputeDecision?
+  resolvedAt         DateTime?
+  resolvedBy         String?
+  resolutionNotes    String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  history            DisputeHistory[]
+}
+
+model DisputeHistory {
+  id        String   @id
+  disputeId String
+  action    String
+  at        DateTime
+  by        String
+  notes     String?
+  dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+
+  @@index([disputeId, at])
+}
+
+model Job {
+  id               String    @id
+  title            String
+  contractId       String
+  clientId         String
+  artisanId        String
+  amount           Int
+  status           JobStatus
+  flagged          Boolean   @default(false)
+  forceClosedAt    DateTime?
+  forceCloseReason String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Transaction {
+  id        String            @id
+  userId    String
+  type      TransactionType
+  amount    Int
+  status    TransactionStatus
+  reference String
+  createdAt DateTime
+  user      User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+}
+
+model Notification {
+  id        String   @id
+  userId    String
+  title     String
+  message   String
+  createdAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+}
+
+model AuditLog {
+  id          String          @id
+  action      String
+  entityType  AuditEntityType
+  entityId    String
+  performedBy String
+  performedAt DateTime
+  metadata    Json?
+
+  @@index([entityType, performedAt])
+}
