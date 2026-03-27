@@ -154,6 +154,11 @@ model Job {
   contractId       String?   @unique
   amount           Int?
   status           JobStatus
+  location         String?
+  requiredSkills   Json?
+  category         String?
+  deadline         DateTime?
+  requirements     String?
   flagged          Boolean   @default(false)
   forceClosedAt    DateTime?
   forceCloseReason String?
@@ -168,6 +173,8 @@ model Job {
   
   @@index([clientId, status])
   @@index([artisanId, status])
+  @@index([category])
+  @@index([status, createdAt])
 }
 
 model Transaction {

@@ -6061,6 +6061,10 @@ export namespace Prisma {
     contractId: string | null
     amount: number | null
     status: $Enums.JobStatus | null
+    location: string | null
+    category: string | null
+    deadline: Date | null
+    requirements: string | null
     flagged: boolean | null
     forceClosedAt: Date | null
     forceCloseReason: string | null
@@ -6078,6 +6082,10 @@ export namespace Prisma {
     contractId: string | null
     amount: number | null
     status: $Enums.JobStatus | null
+    location: string | null
+    category: string | null
+    deadline: Date | null
+    requirements: string | null
     flagged: boolean | null
     forceClosedAt: Date | null
     forceCloseReason: string | null
@@ -6095,6 +6103,11 @@ export namespace Prisma {
     contractId: number
     amount: number
     status: number
+    location: number
+    requiredSkills: number
+    category: number
+    deadline: number
+    requirements: number
     flagged: number
     forceClosedAt: number
     forceCloseReason: number
@@ -6124,6 +6137,10 @@ export namespace Prisma {
     contractId?: true
     amount?: true
     status?: true
+    location?: true
+    category?: true
+    deadline?: true
+    requirements?: true
     flagged?: true
     forceClosedAt?: true
     forceCloseReason?: true
@@ -6141,6 +6158,10 @@ export namespace Prisma {
     contractId?: true
     amount?: true
     status?: true
+    location?: true
+    category?: true
+    deadline?: true
+    requirements?: true
     flagged?: true
     forceClosedAt?: true
     forceCloseReason?: true
@@ -6158,6 +6179,11 @@ export namespace Prisma {
     contractId?: true
     amount?: true
     status?: true
+    location?: true
+    requiredSkills?: true
+    category?: true
+    deadline?: true
+    requirements?: true
     flagged?: true
     forceClosedAt?: true
     forceCloseReason?: true
@@ -6262,6 +6288,11 @@ export namespace Prisma {
     contractId: string | null
     amount: number | null
     status: $Enums.JobStatus
+    location: string | null
+    requiredSkills: JsonValue | null
+    category: string | null
+    deadline: Date | null
+    requirements: string | null
     flagged: boolean
     forceClosedAt: Date | null
     forceCloseReason: string | null
@@ -6298,6 +6329,11 @@ export namespace Prisma {
     contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
@@ -6320,6 +6356,11 @@ export namespace Prisma {
     contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
@@ -6339,6 +6380,11 @@ export namespace Prisma {
     contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
@@ -6358,6 +6404,11 @@ export namespace Prisma {
     contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
@@ -6365,7 +6416,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "budget" | "clientId" | "artisanId" | "contractId" | "amount" | "status" | "flagged" | "forceClosedAt" | "forceCloseReason" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "budget" | "clientId" | "artisanId" | "contractId" | "amount" | "status" | "location" | "requiredSkills" | "category" | "deadline" | "requirements" | "flagged" | "forceClosedAt" | "forceCloseReason" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | Job$artisanArgs<ExtArgs>
@@ -6400,6 +6451,11 @@ export namespace Prisma {
       contractId: string | null
       amount: number | null
       status: $Enums.JobStatus
+      location: string | null
+      requiredSkills: Prisma.JsonValue | null
+      category: string | null
+      deadline: Date | null
+      requirements: string | null
       flagged: boolean
       forceClosedAt: Date | null
       forceCloseReason: string | null
@@ -6841,6 +6897,11 @@ export namespace Prisma {
     readonly contractId: FieldRef<"Job", 'String'>
     readonly amount: FieldRef<"Job", 'Int'>
     readonly status: FieldRef<"Job", 'JobStatus'>
+    readonly location: FieldRef<"Job", 'String'>
+    readonly requiredSkills: FieldRef<"Job", 'Json'>
+    readonly category: FieldRef<"Job", 'String'>
+    readonly deadline: FieldRef<"Job", 'DateTime'>
+    readonly requirements: FieldRef<"Job", 'String'>
     readonly flagged: FieldRef<"Job", 'Boolean'>
     readonly forceClosedAt: FieldRef<"Job", 'DateTime'>
     readonly forceCloseReason: FieldRef<"Job", 'String'>
@@ -16641,6 +16702,11 @@ export namespace Prisma {
     contractId: 'contractId',
     amount: 'amount',
     status: 'status',
+    location: 'location',
+    requiredSkills: 'requiredSkills',
+    category: 'category',
+    deadline: 'deadline',
+    requirements: 'requirements',
     flagged: 'flagged',
     forceClosedAt: 'forceClosedAt',
     forceCloseReason: 'forceCloseReason',
@@ -17369,6 +17435,11 @@ export namespace Prisma {
     contractId?: StringNullableFilter<"Job"> | string | null
     amount?: IntNullableFilter<"Job"> | number | null
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableFilter<"Job">
+    category?: StringNullableFilter<"Job"> | string | null
+    deadline?: DateTimeNullableFilter<"Job"> | Date | string | null
+    requirements?: StringNullableFilter<"Job"> | string | null
     flagged?: BoolFilter<"Job"> | boolean
     forceClosedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     forceCloseReason?: StringNullableFilter<"Job"> | string | null
@@ -17390,6 +17461,11 @@ export namespace Prisma {
     contractId?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
     status?: SortOrder
+    location?: SortOrderInput | SortOrder
+    requiredSkills?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    requirements?: SortOrderInput | SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrderInput | SortOrder
     forceCloseReason?: SortOrderInput | SortOrder
@@ -17414,6 +17490,11 @@ export namespace Prisma {
     artisanId?: StringNullableFilter<"Job"> | string | null
     amount?: IntNullableFilter<"Job"> | number | null
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableFilter<"Job">
+    category?: StringNullableFilter<"Job"> | string | null
+    deadline?: DateTimeNullableFilter<"Job"> | Date | string | null
+    requirements?: StringNullableFilter<"Job"> | string | null
     flagged?: BoolFilter<"Job"> | boolean
     forceClosedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     forceCloseReason?: StringNullableFilter<"Job"> | string | null
@@ -17435,6 +17516,11 @@ export namespace Prisma {
     contractId?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
     status?: SortOrder
+    location?: SortOrderInput | SortOrder
+    requiredSkills?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    requirements?: SortOrderInput | SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrderInput | SortOrder
     forceCloseReason?: SortOrderInput | SortOrder
@@ -17460,6 +17546,11 @@ export namespace Prisma {
     contractId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     amount?: IntNullableWithAggregatesFilter<"Job"> | number | null
     status?: EnumJobStatusWithAggregatesFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableWithAggregatesFilter<"Job">
+    category?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    deadline?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
+    requirements?: StringNullableWithAggregatesFilter<"Job"> | string | null
     flagged?: BoolWithAggregatesFilter<"Job"> | boolean
     forceClosedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     forceCloseReason?: StringNullableWithAggregatesFilter<"Job"> | string | null
@@ -18504,6 +18595,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -18525,6 +18621,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -18542,6 +18643,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18563,6 +18669,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18582,6 +18693,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -18597,6 +18713,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18614,6 +18735,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19858,6 +19984,29 @@ export namespace Prisma {
     notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
@@ -19879,6 +20028,11 @@ export namespace Prisma {
     contractId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    location?: SortOrder
+    requiredSkills?: SortOrder
+    category?: SortOrder
+    deadline?: SortOrder
+    requirements?: SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrder
     forceCloseReason?: SortOrder
@@ -19901,6 +20055,10 @@ export namespace Prisma {
     contractId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    location?: SortOrder
+    category?: SortOrder
+    deadline?: SortOrder
+    requirements?: SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrder
     forceCloseReason?: SortOrder
@@ -19918,6 +20076,10 @@ export namespace Prisma {
     contractId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    location?: SortOrder
+    category?: SortOrder
+    deadline?: SortOrder
+    requirements?: SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrder
     forceCloseReason?: SortOrder
@@ -19955,28 +20117,14 @@ export namespace Prisma {
     _min?: NestedEnumJobStatusFilter<$PrismaModel>
     _max?: NestedEnumJobStatusFilter<$PrismaModel>
   }
-
-  export type EnumTransactionTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
-  }
-
-  export type EnumTransactionStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
-  }
-  export type JsonNullableFilter<$PrismaModel = never> =
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
       >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
     equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
     path?: string[]
     mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
@@ -19991,6 +20139,23 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type EnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type EnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
   }
 
   export type TransactionCountOrderByAggregateInput = {
@@ -20059,32 +20224,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
     _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -21846,6 +21985,29 @@ export namespace Prisma {
     _min?: NestedEnumJobStatusFilter<$PrismaModel>
     _max?: NestedEnumJobStatusFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
@@ -21879,29 +22041,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
     _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -22194,6 +22333,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -22213,6 +22357,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -22240,6 +22389,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -22259,6 +22413,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -22637,6 +22796,11 @@ export namespace Prisma {
     contractId?: StringNullableFilter<"Job"> | string | null
     amount?: IntNullableFilter<"Job"> | number | null
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableFilter<"Job">
+    category?: StringNullableFilter<"Job"> | string | null
+    deadline?: DateTimeNullableFilter<"Job"> | Date | string | null
+    requirements?: StringNullableFilter<"Job"> | string | null
     flagged?: BoolFilter<"Job"> | boolean
     forceClosedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     forceCloseReason?: StringNullableFilter<"Job"> | string | null
@@ -23788,6 +23952,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -23808,6 +23977,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -24015,6 +24189,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24035,6 +24214,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24244,6 +24428,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -24264,6 +24453,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -24470,6 +24664,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24490,6 +24689,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25397,6 +25601,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -25413,6 +25622,11 @@ export namespace Prisma {
     contractId?: string | null
     amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -25696,6 +25910,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25715,6 +25934,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25733,6 +25957,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25748,6 +25977,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25767,6 +26001,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25785,6 +26024,11 @@ export namespace Prisma {
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
