@@ -167,9 +167,11 @@ exports.Prisma.DisputeHistoryScalarFieldEnum = {
 exports.Prisma.JobScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  contractId: 'contractId',
+  description: 'description',
+  budget: 'budget',
   clientId: 'clientId',
   artisanId: 'artisanId',
+  contractId: 'contractId',
   amount: 'amount',
   status: 'status',
   flagged: 'flagged',
@@ -186,6 +188,80 @@ exports.Prisma.TransactionScalarFieldEnum = {
   amount: 'amount',
   status: 'status',
   reference: 'reference',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  failureReason: 'failureReason'
+};
+
+exports.Prisma.ArtisanProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bio: 'bio',
+  skills: 'skills',
+  experience: 'experience',
+  portfolio: 'portfolio',
+  verified: 'verified',
+  rating: 'rating',
+  reviewCount: 'reviewCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProposalScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  artisanId: 'artisanId',
+  clientId: 'clientId',
+  amount: 'amount',
+  message: 'message',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ContractScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  proposalId: 'proposalId',
+  clientId: 'clientId',
+  artisanId: 'artisanId',
+  amount: 'amount',
+  status: 'status',
+  fundedAt: 'fundedAt',
+  activatedAt: 'activatedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
+  clientConfirmedCompletion: 'clientConfirmedCompletion',
+  clientConfirmedAt: 'clientConfirmedAt',
+  artisanConfirmedCompletion: 'artisanConfirmedCompletion',
+  artisanConfirmedAt: 'artisanConfirmedAt',
+  escrowReleased: 'escrowReleased',
+  escrowReleasedAt: 'escrowReleasedAt',
+  platformFeeDeducted: 'platformFeeDeducted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WalletScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  balance: 'balance',
+  frozen: 'frozen',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  clientId: 'clientId',
+  artisanId: 'artisanId',
+  rating: 'rating',
+  comment: 'comment',
   createdAt: 'createdAt'
 };
 
@@ -267,6 +343,7 @@ exports.JobStatus = exports.$Enums.JobStatus = {
 exports.TransactionType = exports.$Enums.TransactionType = {
   FUNDING: 'FUNDING',
   ESCROW_HOLD: 'ESCROW_HOLD',
+  ESCROW_RELEASE: 'ESCROW_RELEASE',
   PLATFORM_FEE: 'PLATFORM_FEE',
   REFUND: 'REFUND',
   PAYOUT: 'PAYOUT',
@@ -274,7 +351,24 @@ exports.TransactionType = exports.$Enums.TransactionType = {
 };
 
 exports.TransactionStatus = exports.$Enums.TransactionStatus = {
-  COMPLETED: 'COMPLETED'
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+exports.ProposalStatus = exports.$Enums.ProposalStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  WITHDRAWN: 'WITHDRAWN'
+};
+
+exports.ContractStatus = exports.$Enums.ContractStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  DISPUTED: 'DISPUTED'
 };
 
 exports.AuditEntityType = exports.$Enums.AuditEntityType = {
@@ -290,6 +384,11 @@ exports.Prisma.ModelName = {
   DisputeHistory: 'DisputeHistory',
   Job: 'Job',
   Transaction: 'Transaction',
+  ArtisanProfile: 'ArtisanProfile',
+  Proposal: 'Proposal',
+  Contract: 'Contract',
+  Wallet: 'Wallet',
+  Review: 'Review',
   Notification: 'Notification',
   AuditLog: 'AuditLog'
 };
