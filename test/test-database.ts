@@ -50,31 +50,17 @@ async function dropDatabase(baseUrl: string, databaseName: string) {
 }
 
 async function applyMigrations(databaseUrl: string) {
-  const pool = new Pool({
-    connectionString: databaseUrl,
-  });
-
-  const client = await pool.connect();
-
+  const { execSync } = require('child_process');
+  
   try {
-    const migrationsDir = join(process.cwd(), 'prisma', 'migrations');
-    const migrationFolders = readdirSync(migrationsDir, {
-      withFileTypes: true,
-    })
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => entry.name)
-      .sort();
-
-    for (const folder of migrationFolders) {
-      const migrationSql = readFileSync(
-        join(migrationsDir, folder, 'migration.sql'),
-        'utf8',
-      );
-      await client.query(migrationSql);
-    }
-  } finally {
-    client.release();
-    await pool.end();
+    // Use Prisma migrate to apply migrations to the test database
+    execSync(`npx prisma migrate deploy --skip-generate`, {
+      env: { ...process.env, DATABASE_URL: databaseUrl },
+      stdio: 'inherit'
+    });
+  } catch (error) {
+    console.error('Failed to apply migrations:', error);
+    throw error;
   }
 }
 

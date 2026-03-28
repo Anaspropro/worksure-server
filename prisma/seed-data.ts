@@ -413,4 +413,52 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
       },
     ],
   });
+
+  // Create notifications
+  await prisma.notification.createMany({
+    data: [
+      {
+        id: 'ntf_001',
+        userId: 'usr_client_001',
+        title: 'Proposal Accepted',
+        message: 'Your proposal for "Kitchen wall tiling" has been accepted',
+        createdAt: new Date('2026-03-16T13:00:00.000Z'),
+      },
+      {
+        id: 'ntf_002',
+        userId: 'usr_artisan_001',
+        title: 'New Proposal Received',
+        message: 'You received a new proposal for "Kitchen wall tiling"',
+        createdAt: new Date('2026-03-16T12:00:00.000Z'),
+      },
+      {
+        id: 'ntf_003',
+        userId: 'usr_client_001',
+        title: 'Contract Completed',
+        message: 'The contract for "Office desk carpentry" has been completed',
+        createdAt: new Date('2026-03-10T17:00:00.000Z'),
+      },
+      {
+        id: 'ntf_004',
+        userId: 'usr_artisan_002',
+        title: 'Payment Released',
+        message: 'Payment for "Office desk carpentry" has been released to your wallet',
+        createdAt: new Date('2026-03-11T09:02:00.000Z'),
+      },
+      {
+        id: 'ntf_005',
+        userId: 'usr_client_001',
+        title: 'Dispute Created',
+        message: 'A dispute has been created for "Kitchen wall tiling"',
+        createdAt: new Date('2026-03-20T15:20:00.000Z'),
+      },
+      {
+        id: 'ntf_006',
+        userId: 'usr_admin_001',
+        title: 'New Dispute Requires Review',
+        message: 'A new dispute has been created and requires your attention',
+        createdAt: new Date('2026-03-20T15:21:00.000Z'),
+      },
+    ],
+  });
 }
