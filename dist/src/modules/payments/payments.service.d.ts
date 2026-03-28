@@ -1,3 +1,86 @@
+import { PrismaService } from '../../database/prisma.service';
 export declare class PaymentsService {
-    getDefinition(): import("../../common/interfaces/domain-definition.interface").DomainDefinition | undefined;
+    private readonly prisma;
+    constructor(prisma: PrismaService);
+    fundContract(userId: string, contractId: string, amount: number, paymentMethod?: string, paymentReference?: string): Promise<{
+        amount: number;
+        id: string;
+        status: string;
+        createdAt: Date;
+        completedAt: Date | null;
+        contractId: string;
+        userId: string;
+        paymentMethod: string | null;
+        paymentReference: string | null;
+        verificationCode: string | null;
+        isVerified: boolean;
+        verifiedAt: Date | null;
+    }>;
+    verifyPayment(paymentId: string, verificationCode: string): Promise<{
+        amount: number;
+        id: string;
+        status: string;
+        createdAt: Date;
+        completedAt: Date | null;
+        contractId: string;
+        userId: string;
+        paymentMethod: string | null;
+        paymentReference: string | null;
+        verificationCode: string | null;
+        isVerified: boolean;
+        verifiedAt: Date | null;
+    }>;
+    activateContract(contractId: string): Promise<{
+        amount: number;
+        updatedAt: Date;
+        clientConfirmedCompletion: boolean;
+        artisanConfirmedCompletion: boolean;
+        escrowReleased: boolean;
+        platformFeeDeducted: boolean;
+        id: string;
+        status: import("../../generated/prisma").$Enums.ContractStatus;
+        createdAt: Date;
+        jobId: string;
+        artisanId: string;
+        clientId: string;
+        proposalId: string;
+        fundedAt: Date | null;
+        activatedAt: Date | null;
+        startedAt: Date | null;
+        completedAt: Date | null;
+        cancelledAt: Date | null;
+        clientConfirmedAt: Date | null;
+        artisanConfirmedAt: Date | null;
+        escrowReleasedAt: Date | null;
+    }>;
+    completeContract(contractId: string, userId: string, isClient: boolean, notes?: string): Promise<{
+        amount: number;
+        updatedAt: Date;
+        clientConfirmedCompletion: boolean;
+        artisanConfirmedCompletion: boolean;
+        escrowReleased: boolean;
+        platformFeeDeducted: boolean;
+        id: string;
+        status: import("../../generated/prisma").$Enums.ContractStatus;
+        createdAt: Date;
+        jobId: string;
+        artisanId: string;
+        clientId: string;
+        proposalId: string;
+        fundedAt: Date | null;
+        activatedAt: Date | null;
+        startedAt: Date | null;
+        completedAt: Date | null;
+        cancelledAt: Date | null;
+        clientConfirmedAt: Date | null;
+        artisanConfirmedAt: Date | null;
+        escrowReleasedAt: Date | null;
+    }>;
+    private finalizeContractCompletion;
+    getDefinition(): {
+        name: string;
+        description: string;
+        responsibilities: string[];
+        rules: string[];
+    };
 }

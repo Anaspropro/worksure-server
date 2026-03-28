@@ -101,6 +101,7 @@ model User {
   receivedReviews  Review[]       @relation("ReceivedReviews")
   notifications    Notification[]
   transactions     Transaction[]
+  payments         Payment[]       @relation("UserPayments")
   disputes         Dispute[]       @relation("UserDisputes")
 }
 
@@ -275,6 +276,7 @@ model Contract {
   client         User            @relation("ClientContracts", fields: [clientId], references: [id])
   artisan        User            @relation("ArtisanContracts", fields: [artisanId], references: [id])
   review         Review?
+  payments       Payment[]
   
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -335,4 +337,27 @@ model AuditLog {
   metadata    Json?
 
   @@index([entityType, performedAt])
+}
+
+model Payment {
+  id                String    @id
+  contractId        String
+  userId            String
+  amount            Int
+  status            String     @default("pending") // pending, completed, failed
+  paymentMethod     String?
+  paymentReference  String?
+  verificationCode  String?
+  isVerified        Boolean    @default(false)
+  createdAt         DateTime   @default(now())
+  verifiedAt        DateTime?
+  completedAt       DateTime?
+  
+  // Relations
+  contract          Contract   @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  user              User       @relation("UserPayments", fields: [userId], references: [id], onDelete: Restrict)
+  
+  @@index([contractId, status])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
 }

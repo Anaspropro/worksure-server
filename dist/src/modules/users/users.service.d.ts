@@ -7,7 +7,6 @@ export declare class UsersService {
         updatedAt: Date;
         name: string;
         id: string;
-        name: string;
         email: string;
         passwordHash: string;
         passwordResetTokenHash: string | null;
@@ -23,7 +22,6 @@ export declare class UsersService {
         updatedAt: Date;
         name: string;
         id: string;
-        name: string;
         email: string;
         passwordHash: string;
         passwordResetTokenHash: string | null;
@@ -39,7 +37,6 @@ export declare class UsersService {
         updatedAt: Date;
         name: string;
         id: string;
-        name: string;
         email: string;
         passwordHash: string;
         passwordResetTokenHash: string | null;
@@ -60,7 +57,6 @@ export declare class UsersService {
         updatedAt: Date;
         name: string;
         id: string;
-        name: string;
         email: string;
         passwordHash: string;
         passwordResetTokenHash: string | null;
@@ -76,7 +72,6 @@ export declare class UsersService {
         updatedAt: Date;
         name: string;
         id: string;
-        name: string;
         email: string;
         passwordHash: string;
         passwordResetTokenHash: string | null;
@@ -97,7 +92,6 @@ export declare class UsersService {
         updatedAt: Date;
         name: string;
         id: string;
-        name: string;
         email: string;
         passwordHash: string;
         passwordResetTokenHash: string | null;
@@ -113,7 +107,6 @@ export declare class UsersService {
         updatedAt: Date;
         name: string;
         id: string;
-        name: string;
         email: string;
         passwordHash: string;
         passwordResetTokenHash: string | null;

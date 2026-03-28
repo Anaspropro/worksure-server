@@ -288,6 +288,21 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   metadata: 'metadata'
 };
 
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  userId: 'userId',
+  amount: 'amount',
+  status: 'status',
+  paymentMethod: 'paymentMethod',
+  paymentReference: 'paymentReference',
+  verificationCode: 'verificationCode',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt',
+  verifiedAt: 'verifiedAt',
+  completedAt: 'completedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -395,7 +410,8 @@ exports.Prisma.ModelName = {
   Wallet: 'Wallet',
   Review: 'Review',
   Notification: 'Notification',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  Payment: 'Payment'
 };
 
 /**
