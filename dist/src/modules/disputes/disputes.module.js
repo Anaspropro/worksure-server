@@ -8,12 +8,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DisputesModule = void 0;
 const common_1 = require("@nestjs/common");
+const prisma_module_1 = require("../../database/prisma.module");
 const disputes_service_1 = require("./disputes.service");
+const disputes_controller_1 = require("./disputes.controller");
+const auth_module_1 = require("../auth/auth.module");
 let DisputesModule = class DisputesModule {
 };
 exports.DisputesModule = DisputesModule;
 exports.DisputesModule = DisputesModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule, (0, common_1.forwardRef)(() => auth_module_1.AuthModule)],
+        controllers: [disputes_controller_1.DisputesController],
         providers: [disputes_service_1.DisputesService],
         exports: [disputes_service_1.DisputesService],
     })
