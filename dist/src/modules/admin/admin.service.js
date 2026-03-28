@@ -210,7 +210,7 @@ let AdminService = class AdminService {
                     createdAt: resolvedAt,
                 },
             });
-            if (parsedDecision === prisma_1.DisputeDecision.REFUND_CLIENT) {
+            if (parsedDecision === prisma_1.DisputeDecision.REFUND_CLIENT && dispute.jobId) {
                 await tx.job.update({
                     where: { id: dispute.jobId },
                     data: {
@@ -386,7 +386,7 @@ let AdminService = class AdminService {
                     earnings: jobs
                         .filter((job) => job.artisanId === user.id &&
                         job.status === prisma_1.JobStatus.COMPLETED)
-                        .reduce((sum, job) => sum + job.amount, 0),
+                        .reduce((sum, job) => sum + (job.amount || 0), 0),
                 }))
                     .sort((left, right) => right.completedJobs === left.completedJobs
                     ? right.earnings - left.earnings

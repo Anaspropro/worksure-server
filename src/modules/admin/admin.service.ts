@@ -310,7 +310,7 @@ export class AdminService {
         },
       });
 
-      if (parsedDecision === DisputeDecision.REFUND_CLIENT) {
+      if (parsedDecision === DisputeDecision.REFUND_CLIENT && dispute.jobId) {
         await tx.job.update({
           where: { id: dispute.jobId },
           data: {
@@ -543,7 +543,7 @@ export class AdminService {
                   job.artisanId === user.id &&
                   job.status === JobStatus.COMPLETED,
               )
-              .reduce((sum, job) => sum + job.amount, 0),
+              .reduce((sum, job) => sum + (job.amount || 0), 0),
           }))
           .sort((left, right) =>
             right.completedJobs === left.completedJobs

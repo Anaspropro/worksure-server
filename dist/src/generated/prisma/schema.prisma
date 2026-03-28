@@ -35,9 +35,25 @@ enum JobStatus {
   FORCE_CLOSED
 }
 
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
 enum TransactionType {
   FUNDING
   ESCROW_HOLD
+  ESCROW_RELEASE
   PLATFORM_FEE
   REFUND
   PAYOUT
@@ -45,7 +61,9 @@ enum TransactionType {
 }
 
 enum TransactionStatus {
+  PENDING
   COMPLETED
+  FAILED
 }
 
 enum AuditEntityType {
@@ -56,27 +74,40 @@ enum AuditEntityType {
 }
 
 model User {
-  id                          String         @id
+  id                          String     @id
   name                        String
-  email                       String         @unique
+  email                       String     @unique
   passwordHash                String
-  passwordResetTokenHash      String?        @unique
+  passwordResetTokenHash      String?    @unique
   passwordResetTokenExpiresAt DateTime?
   passwordResetRequestedAt    DateTime?
   role                        UserRole
   status                      UserStatus
-  artisanVerified             Boolean        @default(false)
+  artisanVerified             Boolean    @default(false)
   createdAt                   DateTime
   lastLoginAt                 DateTime?
-  updatedAt                   DateTime       @updatedAt
-  notifications               Notification[]
-  transactions                Transaction[]
+  updatedAt                   DateTime   @updatedAt
+
+  // Relations
+  artisanProfile    ArtisanProfile?
+  sentProposals     Proposal[]      @relation("SentProposals")
+  receivedProposals Proposal[]      @relation("ReceivedProposals")
+  clientContracts   Contract[]      @relation("ClientContracts")
+  artisanContracts  Contract[]      @relation("ArtisanContracts")
+  clientJobs        Job[]           @relation("ClientJobs")
+  artisanJobs       Job[]           @relation("ArtisanJobs")
+  wallet            Wallet?
+  sentReviews       Review[]        @relation("SentReviews")
+  receivedReviews   Review[]        @relation("ReceivedReviews")
+  notifications     Notification[]
+  transactions      Transaction[]
+  disputes          Dispute[]       @relation("UserDisputes")
 }
 
 model Dispute {
   id                 String           @id
-  contractId         String
-  jobId              String           @unique
+  contractId         String?
+  jobId              String?
   clientId           String
   artisanId          String
   amount             Int
@@ -91,6 +122,14 @@ model Dispute {
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
   history            DisputeHistory[]
+
+  // Relations
+  user User @relation("UserDisputes", fields: [clientId], references: [id])
+
+  @@index([clientId, status])
+  @@index([artisanId, status])
+  @@index([contractId])
+  @@index([jobId])
 }
 
 model DisputeHistory {
@@ -108,29 +147,171 @@ model DisputeHistory {
 model Job {
   id               String    @id
   title            String
-  contractId       String
+  description      String?
+  budget           Int?
   clientId         String
-  artisanId        String
-  amount           Int
+  artisanId        String?
+  contractId       String?   @unique
+  amount           Int?
   status           JobStatus
+  location         String?
+  requiredSkills   Json?
+  category         String?
+  deadline         DateTime?
+  requirements     String?
   flagged          Boolean   @default(false)
   forceClosedAt    DateTime?
   forceCloseReason String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+
+  // Relations
+  client    User       @relation("ClientJobs", fields: [clientId], references: [id])
+  artisan   User?      @relation("ArtisanJobs", fields: [artisanId], references: [id])
+  contract  Contract?
+  proposals Proposal[]
+
+  @@index([clientId, status])
+  @@index([artisanId, status])
+  @@index([category])
+  @@index([status, createdAt])
 }
 
 model Transaction {
-  id        String            @id
-  userId    String
-  type      TransactionType
-  amount    Int
-  status    TransactionStatus
-  reference String
-  createdAt DateTime
-  user      User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  id            String            @id
+  userId        String
+  type          TransactionType
+  amount        Int
+  status        TransactionStatus @default(PENDING)
+  reference     String
+  metadata      Json?
+  createdAt     DateTime          @default(now())
+  completedAt   DateTime?
+  failedAt      DateTime?
+  failureReason String?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@index([userId, createdAt])
+  @@index([type, status])
+  @@index([reference])
+}
+
+model ArtisanProfile {
+  id          String   @id
+  userId      String   @unique
+  bio         String?
+  skills      Json     @default("[]")
+  experience  String?
+  portfolio   Json     @default("[]")
+  verified    Boolean  @default(false)
+  rating      Float?   @default(0)
+  reviewCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([verified, rating])
+}
+
+model Proposal {
+  id        String         @id
+  jobId     String
+  artisanId String
+  clientId  String
+  amount    Int
+  message   String
+  status    ProposalStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  // Relations
+  job      Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  artisan  User      @relation("SentProposals", fields: [artisanId], references: [id])
+  client   User      @relation("ReceivedProposals", fields: [clientId], references: [id])
+  contract Contract?
+
+  @@unique([jobId, artisanId])
+  @@index([jobId, status])
+  @@index([artisanId, status])
+}
+
+model Contract {
+  id         String         @id
+  jobId      String         @unique
+  proposalId String         @unique
+  clientId   String
+  artisanId  String
+  amount     Int
+  status     ContractStatus @default(DRAFT)
+
+  // Lifecycle timestamps
+  fundedAt    DateTime?
+  activatedAt DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+  cancelledAt DateTime?
+
+  // Completion confirmations
+  clientConfirmedCompletion  Boolean   @default(false)
+  clientConfirmedAt          DateTime?
+  artisanConfirmedCompletion Boolean   @default(false)
+  artisanConfirmedAt         DateTime?
+
+  // Payment tracking
+  escrowReleased      Boolean   @default(false)
+  escrowReleasedAt    DateTime?
+  platformFeeDeducted Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  job      Job      @relation(fields: [jobId], references: [id])
+  proposal Proposal @relation(fields: [proposalId], references: [id])
+  client   User     @relation("ClientContracts", fields: [clientId], references: [id])
+  artisan  User     @relation("ArtisanContracts", fields: [artisanId], references: [id])
+  review   Review?
+
+  @@index([clientId, status])
+  @@index([artisanId, status])
+  @@index([status, activatedAt])
+}
+
+model Wallet {
+  id        String   @id
+  userId    String   @unique
+  balance   Int      @default(0)
+  frozen    Int      @default(0)
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Review {
+  id         String   @id
+  contractId String   @unique
+  clientId   String
+  artisanId  String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  // Relations
+  contract Contract @relation(fields: [contractId], references: [id])
+  client   User     @relation("SentReviews", fields: [clientId], references: [id])
+  artisan  User     @relation("ReceivedReviews", fields: [artisanId], references: [id])
+
+  @@index([artisanId, rating])
+  @@index([contractId])
 }
 
 model Notification {

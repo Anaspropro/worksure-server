@@ -74,8 +74,8 @@ export declare class AdminService {
     getAllDisputes(): Promise<{
         data: {
             id: string;
-            contractId: string;
-            jobId: string;
+            contractId: string | null;
+            jobId: string | null;
             clientId: string;
             artisanId: string;
             amount: number;
@@ -108,8 +108,8 @@ export declare class AdminService {
         message: string;
         data: {
             id: string;
-            contractId: string;
-            jobId: string;
+            contractId: string | null;
+            jobId: string | null;
             clientId: string;
             artisanId: string;
             amount: number;
@@ -142,10 +142,10 @@ export declare class AdminService {
         data: {
             id: string;
             title: string;
-            contractId: string;
+            contractId: string | null;
             clientId: string;
-            artisanId: string;
-            amount: number;
+            artisanId: string | null;
+            amount: number | null;
             status: import("../../generated/prisma").$Enums.JobStatus;
             flagged: boolean;
             forceClosedAt: string | undefined;
@@ -161,10 +161,10 @@ export declare class AdminService {
         data: {
             id: string;
             title: string;
-            contractId: string;
+            contractId: string | null;
             clientId: string;
-            artisanId: string;
-            amount: number;
+            artisanId: string | null;
+            amount: number | null;
             status: import("../../generated/prisma").$Enums.JobStatus;
             flagged: boolean;
             forceClosedAt: string | undefined;
@@ -177,7 +177,7 @@ export declare class AdminService {
             userId: string;
             type: import("../../generated/prisma").$Enums.TransactionType;
             amount: number;
-            status: "COMPLETED";
+            status: import("../../generated/prisma").$Enums.TransactionStatus;
             reference: string;
             createdAt: string;
         }[];

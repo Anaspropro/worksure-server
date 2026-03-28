@@ -39,6 +39,31 @@ export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
  */
 export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
 /**
+ * Model ArtisanProfile
+ * 
+ */
+export type ArtisanProfile = $Result.DefaultSelection<Prisma.$ArtisanProfilePayload>
+/**
+ * Model Proposal
+ * 
+ */
+export type Proposal = $Result.DefaultSelection<Prisma.$ProposalPayload>
+/**
+ * Model Contract
+ * 
+ */
+export type Contract = $Result.DefaultSelection<Prisma.$ContractPayload>
+/**
+ * Model Wallet
+ * 
+ */
+export type Wallet = $Result.DefaultSelection<Prisma.$WalletPayload>
+/**
+ * Model Review
+ * 
+ */
+export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
+/**
  * Model Notification
  * 
  */
@@ -96,9 +121,31 @@ export const JobStatus: {
 export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
 
 
+export const ProposalStatus: {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  WITHDRAWN: 'WITHDRAWN'
+};
+
+export type ProposalStatus = (typeof ProposalStatus)[keyof typeof ProposalStatus]
+
+
+export const ContractStatus: {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  DISPUTED: 'DISPUTED'
+};
+
+export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus]
+
+
 export const TransactionType: {
   FUNDING: 'FUNDING',
   ESCROW_HOLD: 'ESCROW_HOLD',
+  ESCROW_RELEASE: 'ESCROW_RELEASE',
   PLATFORM_FEE: 'PLATFORM_FEE',
   REFUND: 'REFUND',
   PAYOUT: 'PAYOUT',
@@ -109,7 +156,9 @@ export type TransactionType = (typeof TransactionType)[keyof typeof TransactionT
 
 
 export const TransactionStatus: {
-  COMPLETED: 'COMPLETED'
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
 };
 
 export type TransactionStatus = (typeof TransactionStatus)[keyof typeof TransactionStatus]
@@ -145,6 +194,14 @@ export const DisputeDecision: typeof $Enums.DisputeDecision
 export type JobStatus = $Enums.JobStatus
 
 export const JobStatus: typeof $Enums.JobStatus
+
+export type ProposalStatus = $Enums.ProposalStatus
+
+export const ProposalStatus: typeof $Enums.ProposalStatus
+
+export type ContractStatus = $Enums.ContractStatus
+
+export const ContractStatus: typeof $Enums.ContractStatus
 
 export type TransactionType = $Enums.TransactionType
 
@@ -328,6 +385,56 @@ export class PrismaClient<
     * ```
     */
   get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.artisanProfile`: Exposes CRUD operations for the **ArtisanProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ArtisanProfiles
+    * const artisanProfiles = await prisma.artisanProfile.findMany()
+    * ```
+    */
+  get artisanProfile(): Prisma.ArtisanProfileDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.proposal`: Exposes CRUD operations for the **Proposal** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Proposals
+    * const proposals = await prisma.proposal.findMany()
+    * ```
+    */
+  get proposal(): Prisma.ProposalDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.contract`: Exposes CRUD operations for the **Contract** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Contracts
+    * const contracts = await prisma.contract.findMany()
+    * ```
+    */
+  get contract(): Prisma.ContractDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.wallet`: Exposes CRUD operations for the **Wallet** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Wallets
+    * const wallets = await prisma.wallet.findMany()
+    * ```
+    */
+  get wallet(): Prisma.WalletDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.review`: Exposes CRUD operations for the **Review** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Reviews
+    * const reviews = await prisma.review.findMany()
+    * ```
+    */
+  get review(): Prisma.ReviewDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
@@ -787,6 +894,11 @@ export namespace Prisma {
     DisputeHistory: 'DisputeHistory',
     Job: 'Job',
     Transaction: 'Transaction',
+    ArtisanProfile: 'ArtisanProfile',
+    Proposal: 'Proposal',
+    Contract: 'Contract',
+    Wallet: 'Wallet',
+    Review: 'Review',
     Notification: 'Notification',
     AuditLog: 'AuditLog'
   };
@@ -804,7 +916,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "notification" | "auditLog"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "wallet" | "review" | "notification" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1178,6 +1290,376 @@ export namespace Prisma {
           }
         }
       }
+      ArtisanProfile: {
+        payload: Prisma.$ArtisanProfilePayload<ExtArgs>
+        fields: Prisma.ArtisanProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ArtisanProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ArtisanProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.ArtisanProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ArtisanProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>
+          }
+          findMany: {
+            args: Prisma.ArtisanProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>[]
+          }
+          create: {
+            args: Prisma.ArtisanProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>
+          }
+          createMany: {
+            args: Prisma.ArtisanProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ArtisanProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.ArtisanProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>
+          }
+          update: {
+            args: Prisma.ArtisanProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.ArtisanProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ArtisanProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ArtisanProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>[]
+          }
+          upsert: {
+            args: Prisma.ArtisanProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArtisanProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.ArtisanProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateArtisanProfile>
+          }
+          groupBy: {
+            args: Prisma.ArtisanProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ArtisanProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ArtisanProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<ArtisanProfileCountAggregateOutputType> | number
+          }
+        }
+      }
+      Proposal: {
+        payload: Prisma.$ProposalPayload<ExtArgs>
+        fields: Prisma.ProposalFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProposalFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProposalFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>
+          }
+          findFirst: {
+            args: Prisma.ProposalFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProposalFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>
+          }
+          findMany: {
+            args: Prisma.ProposalFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>[]
+          }
+          create: {
+            args: Prisma.ProposalCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>
+          }
+          createMany: {
+            args: Prisma.ProposalCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProposalCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>[]
+          }
+          delete: {
+            args: Prisma.ProposalDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>
+          }
+          update: {
+            args: Prisma.ProposalUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProposalDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProposalUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProposalUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProposalUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalPayload>
+          }
+          aggregate: {
+            args: Prisma.ProposalAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProposal>
+          }
+          groupBy: {
+            args: Prisma.ProposalGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProposalGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProposalCountArgs<ExtArgs>
+            result: $Utils.Optional<ProposalCountAggregateOutputType> | number
+          }
+        }
+      }
+      Contract: {
+        payload: Prisma.$ContractPayload<ExtArgs>
+        fields: Prisma.ContractFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ContractFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ContractFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          findFirst: {
+            args: Prisma.ContractFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ContractFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          findMany: {
+            args: Prisma.ContractFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>[]
+          }
+          create: {
+            args: Prisma.ContractCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          createMany: {
+            args: Prisma.ContractCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ContractCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>[]
+          }
+          delete: {
+            args: Prisma.ContractDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          update: {
+            args: Prisma.ContractUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          deleteMany: {
+            args: Prisma.ContractDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ContractUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ContractUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>[]
+          }
+          upsert: {
+            args: Prisma.ContractUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContractPayload>
+          }
+          aggregate: {
+            args: Prisma.ContractAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContract>
+          }
+          groupBy: {
+            args: Prisma.ContractGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContractGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ContractCountArgs<ExtArgs>
+            result: $Utils.Optional<ContractCountAggregateOutputType> | number
+          }
+        }
+      }
+      Wallet: {
+        payload: Prisma.$WalletPayload<ExtArgs>
+        fields: Prisma.WalletFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WalletFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WalletFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
+          }
+          findFirst: {
+            args: Prisma.WalletFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WalletFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
+          }
+          findMany: {
+            args: Prisma.WalletFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>[]
+          }
+          create: {
+            args: Prisma.WalletCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
+          }
+          createMany: {
+            args: Prisma.WalletCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WalletCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>[]
+          }
+          delete: {
+            args: Prisma.WalletDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
+          }
+          update: {
+            args: Prisma.WalletUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
+          }
+          deleteMany: {
+            args: Prisma.WalletDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WalletUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WalletUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>[]
+          }
+          upsert: {
+            args: Prisma.WalletUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
+          }
+          aggregate: {
+            args: Prisma.WalletAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWallet>
+          }
+          groupBy: {
+            args: Prisma.WalletGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WalletGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WalletCountArgs<ExtArgs>
+            result: $Utils.Optional<WalletCountAggregateOutputType> | number
+          }
+        }
+      }
+      Review: {
+        payload: Prisma.$ReviewPayload<ExtArgs>
+        fields: Prisma.ReviewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReviewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReviewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          findFirst: {
+            args: Prisma.ReviewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReviewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          findMany: {
+            args: Prisma.ReviewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          create: {
+            args: Prisma.ReviewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          createMany: {
+            args: Prisma.ReviewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReviewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          delete: {
+            args: Prisma.ReviewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          update: {
+            args: Prisma.ReviewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReviewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReviewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReviewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReviewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          aggregate: {
+            args: Prisma.ReviewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReview>
+          }
+          groupBy: {
+            args: Prisma.ReviewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReviewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReviewCountArgs<ExtArgs>
+            result: $Utils.Optional<ReviewCountAggregateOutputType> | number
+          }
+        }
+      }
       Notification: {
         payload: Prisma.$NotificationPayload<ExtArgs>
         fields: Prisma.NotificationFieldRefs
@@ -1439,6 +1921,11 @@ export namespace Prisma {
     disputeHistory?: DisputeHistoryOmit
     job?: JobOmit
     transaction?: TransactionOmit
+    artisanProfile?: ArtisanProfileOmit
+    proposal?: ProposalOmit
+    contract?: ContractOmit
+    wallet?: WalletOmit
+    review?: ReviewOmit
     notification?: NotificationOmit
     auditLog?: AuditLogOmit
   }
@@ -1521,13 +2008,31 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    sentProposals: number
+    receivedProposals: number
+    clientContracts: number
+    artisanContracts: number
+    clientJobs: number
+    artisanJobs: number
+    sentReviews: number
+    receivedReviews: number
     notifications: number
     transactions: number
+    disputes: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sentProposals?: boolean | UserCountOutputTypeCountSentProposalsArgs
+    receivedProposals?: boolean | UserCountOutputTypeCountReceivedProposalsArgs
+    clientContracts?: boolean | UserCountOutputTypeCountClientContractsArgs
+    artisanContracts?: boolean | UserCountOutputTypeCountArtisanContractsArgs
+    clientJobs?: boolean | UserCountOutputTypeCountClientJobsArgs
+    artisanJobs?: boolean | UserCountOutputTypeCountArtisanJobsArgs
+    sentReviews?: boolean | UserCountOutputTypeCountSentReviewsArgs
+    receivedReviews?: boolean | UserCountOutputTypeCountReceivedReviewsArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
+    disputes?: boolean | UserCountOutputTypeCountDisputesArgs
   }
 
   // Custom InputTypes
@@ -1544,6 +2049,62 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountSentProposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReceivedProposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountClientContractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountArtisanContractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountClientJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountArtisanJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSentReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReceivedReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationWhereInput
   }
@@ -1553,6 +2114,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DisputeWhereInput
   }
 
 
@@ -1584,6 +2152,37 @@ export namespace Prisma {
    */
   export type DisputeCountOutputTypeCountHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DisputeHistoryWhereInput
+  }
+
+
+  /**
+   * Count Type JobCountOutputType
+   */
+
+  export type JobCountOutputType = {
+    proposals: number
+  }
+
+  export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposals?: boolean | JobCountOutputTypeCountProposalsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobCountOutputType without action
+   */
+  export type JobCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobCountOutputType
+     */
+    select?: JobCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobCountOutputType without action
+   */
+  export type JobCountOutputTypeCountProposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalWhereInput
   }
 
 
@@ -1819,8 +2418,19 @@ export namespace Prisma {
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
+    artisanProfile?: boolean | User$artisanProfileArgs<ExtArgs>
+    sentProposals?: boolean | User$sentProposalsArgs<ExtArgs>
+    receivedProposals?: boolean | User$receivedProposalsArgs<ExtArgs>
+    clientContracts?: boolean | User$clientContractsArgs<ExtArgs>
+    artisanContracts?: boolean | User$artisanContractsArgs<ExtArgs>
+    clientJobs?: boolean | User$clientJobsArgs<ExtArgs>
+    artisanJobs?: boolean | User$artisanJobsArgs<ExtArgs>
+    wallet?: boolean | User$walletArgs<ExtArgs>
+    sentReviews?: boolean | User$sentReviewsArgs<ExtArgs>
+    receivedReviews?: boolean | User$receivedReviewsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
+    disputes?: boolean | User$disputesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1874,8 +2484,19 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt" | "role" | "status" | "artisanVerified" | "createdAt" | "lastLoginAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    artisanProfile?: boolean | User$artisanProfileArgs<ExtArgs>
+    sentProposals?: boolean | User$sentProposalsArgs<ExtArgs>
+    receivedProposals?: boolean | User$receivedProposalsArgs<ExtArgs>
+    clientContracts?: boolean | User$clientContractsArgs<ExtArgs>
+    artisanContracts?: boolean | User$artisanContractsArgs<ExtArgs>
+    clientJobs?: boolean | User$clientJobsArgs<ExtArgs>
+    artisanJobs?: boolean | User$artisanJobsArgs<ExtArgs>
+    wallet?: boolean | User$walletArgs<ExtArgs>
+    sentReviews?: boolean | User$sentReviewsArgs<ExtArgs>
+    receivedReviews?: boolean | User$receivedReviewsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
+    disputes?: boolean | User$disputesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1884,8 +2505,19 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      artisanProfile: Prisma.$ArtisanProfilePayload<ExtArgs> | null
+      sentProposals: Prisma.$ProposalPayload<ExtArgs>[]
+      receivedProposals: Prisma.$ProposalPayload<ExtArgs>[]
+      clientContracts: Prisma.$ContractPayload<ExtArgs>[]
+      artisanContracts: Prisma.$ContractPayload<ExtArgs>[]
+      clientJobs: Prisma.$JobPayload<ExtArgs>[]
+      artisanJobs: Prisma.$JobPayload<ExtArgs>[]
+      wallet: Prisma.$WalletPayload<ExtArgs> | null
+      sentReviews: Prisma.$ReviewPayload<ExtArgs>[]
+      receivedReviews: Prisma.$ReviewPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      disputes: Prisma.$DisputePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2295,8 +2927,19 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    artisanProfile<T extends User$artisanProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanProfileArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    sentProposals<T extends User$sentProposalsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receivedProposals<T extends User$receivedProposalsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clientContracts<T extends User$clientContractsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientContractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    artisanContracts<T extends User$artisanContractsArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanContractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clientJobs<T extends User$clientJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    artisanJobs<T extends User$artisanJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    wallet<T extends User$walletArgs<ExtArgs> = {}>(args?: Subset<T, User$walletArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    sentReviews<T extends User$sentReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receivedReviews<T extends User$receivedReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    disputes<T extends User$disputesArgs<ExtArgs> = {}>(args?: Subset<T, User$disputesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2732,6 +3375,236 @@ export namespace Prisma {
   }
 
   /**
+   * User.artisanProfile
+   */
+  export type User$artisanProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    where?: ArtisanProfileWhereInput
+  }
+
+  /**
+   * User.sentProposals
+   */
+  export type User$sentProposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    where?: ProposalWhereInput
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    cursor?: ProposalWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * User.receivedProposals
+   */
+  export type User$receivedProposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    where?: ProposalWhereInput
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    cursor?: ProposalWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * User.clientContracts
+   */
+  export type User$clientContractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    cursor?: ContractWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * User.artisanContracts
+   */
+  export type User$artisanContractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    cursor?: ContractWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * User.clientJobs
+   */
+  export type User$clientJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * User.artisanJobs
+   */
+  export type User$artisanJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * User.wallet
+   */
+  export type User$walletArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    where?: WalletWhereInput
+  }
+
+  /**
+   * User.sentReviews
+   */
+  export type User$sentReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    cursor?: ReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * User.receivedReviews
+   */
+  export type User$receivedReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    cursor?: ReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
    * User.notifications
    */
   export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2777,6 +3650,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * User.disputes
+   */
+  export type User$disputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    cursor?: DisputeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
   }
 
   /**
@@ -3019,8 +3916,8 @@ export namespace Prisma {
 
   export type DisputeGroupByOutputType = {
     id: string
-    contractId: string
-    jobId: string
+    contractId: string | null
+    jobId: string | null
     clientId: string
     artisanId: string
     amount: number
@@ -3073,6 +3970,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     history?: boolean | Dispute$historyArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | DisputeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dispute"]>
 
@@ -3093,6 +3991,7 @@ export namespace Prisma {
     resolutionNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dispute"]>
 
   export type DisputeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3112,6 +4011,7 @@ export namespace Prisma {
     resolutionNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dispute"]>
 
   export type DisputeSelectScalar = {
@@ -3136,20 +4036,26 @@ export namespace Prisma {
   export type DisputeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "jobId" | "clientId" | "artisanId" | "amount" | "status" | "evidenceImages" | "evidenceVideos" | "evidenceMessages" | "resolutionDecision" | "resolvedAt" | "resolvedBy" | "resolutionNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["dispute"]>
   export type DisputeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     history?: boolean | Dispute$historyArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | DisputeCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type DisputeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type DisputeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DisputeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DisputeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $DisputePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Dispute"
     objects: {
       history: Prisma.$DisputeHistoryPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      contractId: string
-      jobId: string
+      contractId: string | null
+      jobId: string | null
       clientId: string
       artisanId: string
       amount: number
@@ -3558,6 +4464,7 @@ export namespace Prisma {
   export interface Prisma__DisputeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     history<T extends Dispute$historyArgs<ExtArgs> = {}>(args?: Subset<T, Dispute$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputeHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3857,6 +4764,10 @@ export namespace Prisma {
      */
     data: DisputeCreateManyInput | DisputeCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3927,6 +4838,10 @@ export namespace Prisma {
      * Limit how many Disputes to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -5127,21 +6042,29 @@ export namespace Prisma {
   }
 
   export type JobAvgAggregateOutputType = {
+    budget: number | null
     amount: number | null
   }
 
   export type JobSumAggregateOutputType = {
+    budget: number | null
     amount: number | null
   }
 
   export type JobMinAggregateOutputType = {
     id: string | null
     title: string | null
-    contractId: string | null
+    description: string | null
+    budget: number | null
     clientId: string | null
     artisanId: string | null
+    contractId: string | null
     amount: number | null
     status: $Enums.JobStatus | null
+    location: string | null
+    category: string | null
+    deadline: Date | null
+    requirements: string | null
     flagged: boolean | null
     forceClosedAt: Date | null
     forceCloseReason: string | null
@@ -5152,11 +6075,17 @@ export namespace Prisma {
   export type JobMaxAggregateOutputType = {
     id: string | null
     title: string | null
-    contractId: string | null
+    description: string | null
+    budget: number | null
     clientId: string | null
     artisanId: string | null
+    contractId: string | null
     amount: number | null
     status: $Enums.JobStatus | null
+    location: string | null
+    category: string | null
+    deadline: Date | null
+    requirements: string | null
     flagged: boolean | null
     forceClosedAt: Date | null
     forceCloseReason: string | null
@@ -5167,11 +6096,18 @@ export namespace Prisma {
   export type JobCountAggregateOutputType = {
     id: number
     title: number
-    contractId: number
+    description: number
+    budget: number
     clientId: number
     artisanId: number
+    contractId: number
     amount: number
     status: number
+    location: number
+    requiredSkills: number
+    category: number
+    deadline: number
+    requirements: number
     flagged: number
     forceClosedAt: number
     forceCloseReason: number
@@ -5182,21 +6118,29 @@ export namespace Prisma {
 
 
   export type JobAvgAggregateInputType = {
+    budget?: true
     amount?: true
   }
 
   export type JobSumAggregateInputType = {
+    budget?: true
     amount?: true
   }
 
   export type JobMinAggregateInputType = {
     id?: true
     title?: true
-    contractId?: true
+    description?: true
+    budget?: true
     clientId?: true
     artisanId?: true
+    contractId?: true
     amount?: true
     status?: true
+    location?: true
+    category?: true
+    deadline?: true
+    requirements?: true
     flagged?: true
     forceClosedAt?: true
     forceCloseReason?: true
@@ -5207,11 +6151,17 @@ export namespace Prisma {
   export type JobMaxAggregateInputType = {
     id?: true
     title?: true
-    contractId?: true
+    description?: true
+    budget?: true
     clientId?: true
     artisanId?: true
+    contractId?: true
     amount?: true
     status?: true
+    location?: true
+    category?: true
+    deadline?: true
+    requirements?: true
     flagged?: true
     forceClosedAt?: true
     forceCloseReason?: true
@@ -5222,11 +6172,18 @@ export namespace Prisma {
   export type JobCountAggregateInputType = {
     id?: true
     title?: true
-    contractId?: true
+    description?: true
+    budget?: true
     clientId?: true
     artisanId?: true
+    contractId?: true
     amount?: true
     status?: true
+    location?: true
+    requiredSkills?: true
+    category?: true
+    deadline?: true
+    requirements?: true
     flagged?: true
     forceClosedAt?: true
     forceCloseReason?: true
@@ -5324,11 +6281,18 @@ export namespace Prisma {
   export type JobGroupByOutputType = {
     id: string
     title: string
-    contractId: string
+    description: string | null
+    budget: number | null
     clientId: string
-    artisanId: string
-    amount: number
+    artisanId: string | null
+    contractId: string | null
+    amount: number | null
     status: $Enums.JobStatus
+    location: string | null
+    requiredSkills: JsonValue | null
+    category: string | null
+    deadline: Date | null
+    requirements: string | null
     flagged: boolean
     forceClosedAt: Date | null
     forceCloseReason: string | null
@@ -5358,56 +6322,93 @@ export namespace Prisma {
   export type JobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
-    contractId?: boolean
+    description?: boolean
+    budget?: boolean
     clientId?: boolean
     artisanId?: boolean
+    contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | Job$artisanArgs<ExtArgs>
+    contract?: boolean | Job$contractArgs<ExtArgs>
+    proposals?: boolean | Job$proposalsArgs<ExtArgs>
+    _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
-    contractId?: boolean
+    description?: boolean
+    budget?: boolean
     clientId?: boolean
     artisanId?: boolean
+    contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | Job$artisanArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
-    contractId?: boolean
+    description?: boolean
+    budget?: boolean
     clientId?: boolean
     artisanId?: boolean
+    contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | Job$artisanArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectScalar = {
     id?: boolean
     title?: boolean
-    contractId?: boolean
+    description?: boolean
+    budget?: boolean
     clientId?: boolean
     artisanId?: boolean
+    contractId?: boolean
     amount?: boolean
     status?: boolean
+    location?: boolean
+    requiredSkills?: boolean
+    category?: boolean
+    deadline?: boolean
+    requirements?: boolean
     flagged?: boolean
     forceClosedAt?: boolean
     forceCloseReason?: boolean
@@ -5415,19 +6416,46 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "contractId" | "clientId" | "artisanId" | "amount" | "status" | "flagged" | "forceClosedAt" | "forceCloseReason" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "budget" | "clientId" | "artisanId" | "contractId" | "amount" | "status" | "location" | "requiredSkills" | "category" | "deadline" | "requirements" | "flagged" | "forceClosedAt" | "forceCloseReason" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | Job$artisanArgs<ExtArgs>
+    contract?: boolean | Job$contractArgs<ExtArgs>
+    proposals?: boolean | Job$proposalsArgs<ExtArgs>
+    _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | Job$artisanArgs<ExtArgs>
+  }
+  export type JobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | Job$artisanArgs<ExtArgs>
+  }
 
   export type $JobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Job"
-    objects: {}
+    objects: {
+      client: Prisma.$UserPayload<ExtArgs>
+      artisan: Prisma.$UserPayload<ExtArgs> | null
+      contract: Prisma.$ContractPayload<ExtArgs> | null
+      proposals: Prisma.$ProposalPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       title: string
-      contractId: string
+      description: string | null
+      budget: number | null
       clientId: string
-      artisanId: string
-      amount: number
+      artisanId: string | null
+      contractId: string | null
+      amount: number | null
       status: $Enums.JobStatus
+      location: string | null
+      requiredSkills: Prisma.JsonValue | null
+      category: string | null
+      deadline: Date | null
+      requirements: string | null
       flagged: boolean
       forceClosedAt: Date | null
       forceCloseReason: string | null
@@ -5827,6 +6855,10 @@ export namespace Prisma {
    */
   export interface Prisma__JobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    artisan<T extends Job$artisanArgs<ExtArgs> = {}>(args?: Subset<T, Job$artisanArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    contract<T extends Job$contractArgs<ExtArgs> = {}>(args?: Subset<T, Job$contractArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    proposals<T extends Job$proposalsArgs<ExtArgs> = {}>(args?: Subset<T, Job$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5858,11 +6890,18 @@ export namespace Prisma {
   interface JobFieldRefs {
     readonly id: FieldRef<"Job", 'String'>
     readonly title: FieldRef<"Job", 'String'>
-    readonly contractId: FieldRef<"Job", 'String'>
+    readonly description: FieldRef<"Job", 'String'>
+    readonly budget: FieldRef<"Job", 'Int'>
     readonly clientId: FieldRef<"Job", 'String'>
     readonly artisanId: FieldRef<"Job", 'String'>
+    readonly contractId: FieldRef<"Job", 'String'>
     readonly amount: FieldRef<"Job", 'Int'>
     readonly status: FieldRef<"Job", 'JobStatus'>
+    readonly location: FieldRef<"Job", 'String'>
+    readonly requiredSkills: FieldRef<"Job", 'Json'>
+    readonly category: FieldRef<"Job", 'String'>
+    readonly deadline: FieldRef<"Job", 'DateTime'>
+    readonly requirements: FieldRef<"Job", 'String'>
     readonly flagged: FieldRef<"Job", 'Boolean'>
     readonly forceClosedAt: FieldRef<"Job", 'DateTime'>
     readonly forceCloseReason: FieldRef<"Job", 'String'>
@@ -5885,6 +6924,10 @@ export namespace Prisma {
      */
     omit?: JobOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    /**
      * Filter, which Job to fetch.
      */
     where: JobWhereUniqueInput
@@ -5903,6 +6946,10 @@ export namespace Prisma {
      */
     omit?: JobOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    /**
      * Filter, which Job to fetch.
      */
     where: JobWhereUniqueInput
@@ -5920,6 +6967,10 @@ export namespace Prisma {
      * Omit specific fields from the Job
      */
     omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
     /**
      * Filter, which Job to fetch.
      */
@@ -5969,6 +7020,10 @@ export namespace Prisma {
      */
     omit?: JobOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    /**
      * Filter, which Job to fetch.
      */
     where?: JobWhereInput
@@ -6016,6 +7071,10 @@ export namespace Prisma {
      * Omit specific fields from the Job
      */
     omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
     /**
      * Filter, which Jobs to fetch.
      */
@@ -6065,6 +7124,10 @@ export namespace Prisma {
      */
     omit?: JobOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    /**
      * The data needed to create a Job.
      */
     data: XOR<JobCreateInput, JobUncheckedCreateInput>
@@ -6098,6 +7161,10 @@ export namespace Prisma {
      */
     data: JobCreateManyInput | JobCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6112,6 +7179,10 @@ export namespace Prisma {
      * Omit specific fields from the Job
      */
     omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
     /**
      * The data needed to update a Job.
      */
@@ -6164,6 +7235,10 @@ export namespace Prisma {
      * Limit how many Jobs to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6178,6 +7253,10 @@ export namespace Prisma {
      * Omit specific fields from the Job
      */
     omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
     /**
      * The filter to search for the Job to update in case it exists.
      */
@@ -6205,6 +7284,10 @@ export namespace Prisma {
      */
     omit?: JobOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    /**
      * Filter which Job to delete.
      */
     where: JobWhereUniqueInput
@@ -6225,6 +7308,68 @@ export namespace Prisma {
   }
 
   /**
+   * Job.artisan
+   */
+  export type Job$artisanArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Job.contract
+   */
+  export type Job$contractArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+  }
+
+  /**
+   * Job.proposals
+   */
+  export type Job$proposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    where?: ProposalWhereInput
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    cursor?: ProposalWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
    * Job without action
    */
   export type JobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6236,6 +7381,10 @@ export namespace Prisma {
      * Omit specific fields from the Job
      */
     omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
   }
 
 
@@ -6267,6 +7416,9 @@ export namespace Prisma {
     status: $Enums.TransactionStatus | null
     reference: string | null
     createdAt: Date | null
+    completedAt: Date | null
+    failedAt: Date | null
+    failureReason: string | null
   }
 
   export type TransactionMaxAggregateOutputType = {
@@ -6277,6 +7429,9 @@ export namespace Prisma {
     status: $Enums.TransactionStatus | null
     reference: string | null
     createdAt: Date | null
+    completedAt: Date | null
+    failedAt: Date | null
+    failureReason: string | null
   }
 
   export type TransactionCountAggregateOutputType = {
@@ -6286,7 +7441,11 @@ export namespace Prisma {
     amount: number
     status: number
     reference: number
+    metadata: number
     createdAt: number
+    completedAt: number
+    failedAt: number
+    failureReason: number
     _all: number
   }
 
@@ -6307,6 +7466,9 @@ export namespace Prisma {
     status?: true
     reference?: true
     createdAt?: true
+    completedAt?: true
+    failedAt?: true
+    failureReason?: true
   }
 
   export type TransactionMaxAggregateInputType = {
@@ -6317,6 +7479,9 @@ export namespace Prisma {
     status?: true
     reference?: true
     createdAt?: true
+    completedAt?: true
+    failedAt?: true
+    failureReason?: true
   }
 
   export type TransactionCountAggregateInputType = {
@@ -6326,7 +7491,11 @@ export namespace Prisma {
     amount?: true
     status?: true
     reference?: true
+    metadata?: true
     createdAt?: true
+    completedAt?: true
+    failedAt?: true
+    failureReason?: true
     _all?: true
   }
 
@@ -6423,7 +7592,11 @@ export namespace Prisma {
     amount: number
     status: $Enums.TransactionStatus
     reference: string
+    metadata: JsonValue | null
     createdAt: Date
+    completedAt: Date | null
+    failedAt: Date | null
+    failureReason: string | null
     _count: TransactionCountAggregateOutputType | null
     _avg: TransactionAvgAggregateOutputType | null
     _sum: TransactionSumAggregateOutputType | null
@@ -6452,7 +7625,11 @@ export namespace Prisma {
     amount?: boolean
     status?: boolean
     reference?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
@@ -6463,7 +7640,11 @@ export namespace Prisma {
     amount?: boolean
     status?: boolean
     reference?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
@@ -6474,7 +7655,11 @@ export namespace Prisma {
     amount?: boolean
     status?: boolean
     reference?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
@@ -6485,10 +7670,14 @@ export namespace Prisma {
     amount?: boolean
     status?: boolean
     reference?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    completedAt?: boolean
+    failedAt?: boolean
+    failureReason?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "amount" | "status" | "reference" | "createdAt", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "amount" | "status" | "reference" | "metadata" | "createdAt" | "completedAt" | "failedAt" | "failureReason", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -6511,7 +7700,11 @@ export namespace Prisma {
       amount: number
       status: $Enums.TransactionStatus
       reference: string
+      metadata: Prisma.JsonValue | null
       createdAt: Date
+      completedAt: Date | null
+      failedAt: Date | null
+      failureReason: string | null
     }, ExtArgs["result"]["transaction"]>
     composites: {}
   }
@@ -6942,7 +8135,11 @@ export namespace Prisma {
     readonly amount: FieldRef<"Transaction", 'Int'>
     readonly status: FieldRef<"Transaction", 'TransactionStatus'>
     readonly reference: FieldRef<"Transaction", 'String'>
+    readonly metadata: FieldRef<"Transaction", 'Json'>
     readonly createdAt: FieldRef<"Transaction", 'DateTime'>
+    readonly completedAt: FieldRef<"Transaction", 'DateTime'>
+    readonly failedAt: FieldRef<"Transaction", 'DateTime'>
+    readonly failureReason: FieldRef<"Transaction", 'String'>
   }
     
 
@@ -7359,6 +8556,5987 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ArtisanProfile
+   */
+
+  export type AggregateArtisanProfile = {
+    _count: ArtisanProfileCountAggregateOutputType | null
+    _avg: ArtisanProfileAvgAggregateOutputType | null
+    _sum: ArtisanProfileSumAggregateOutputType | null
+    _min: ArtisanProfileMinAggregateOutputType | null
+    _max: ArtisanProfileMaxAggregateOutputType | null
+  }
+
+  export type ArtisanProfileAvgAggregateOutputType = {
+    rating: number | null
+    reviewCount: number | null
+  }
+
+  export type ArtisanProfileSumAggregateOutputType = {
+    rating: number | null
+    reviewCount: number | null
+  }
+
+  export type ArtisanProfileMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    bio: string | null
+    experience: string | null
+    verified: boolean | null
+    rating: number | null
+    reviewCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ArtisanProfileMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    bio: string | null
+    experience: string | null
+    verified: boolean | null
+    rating: number | null
+    reviewCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ArtisanProfileCountAggregateOutputType = {
+    id: number
+    userId: number
+    bio: number
+    skills: number
+    experience: number
+    portfolio: number
+    verified: number
+    rating: number
+    reviewCount: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ArtisanProfileAvgAggregateInputType = {
+    rating?: true
+    reviewCount?: true
+  }
+
+  export type ArtisanProfileSumAggregateInputType = {
+    rating?: true
+    reviewCount?: true
+  }
+
+  export type ArtisanProfileMinAggregateInputType = {
+    id?: true
+    userId?: true
+    bio?: true
+    experience?: true
+    verified?: true
+    rating?: true
+    reviewCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ArtisanProfileMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    bio?: true
+    experience?: true
+    verified?: true
+    rating?: true
+    reviewCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ArtisanProfileCountAggregateInputType = {
+    id?: true
+    userId?: true
+    bio?: true
+    skills?: true
+    experience?: true
+    portfolio?: true
+    verified?: true
+    rating?: true
+    reviewCount?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ArtisanProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArtisanProfile to aggregate.
+     */
+    where?: ArtisanProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArtisanProfiles to fetch.
+     */
+    orderBy?: ArtisanProfileOrderByWithRelationInput | ArtisanProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ArtisanProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArtisanProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArtisanProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ArtisanProfiles
+    **/
+    _count?: true | ArtisanProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ArtisanProfileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ArtisanProfileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ArtisanProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ArtisanProfileMaxAggregateInputType
+  }
+
+  export type GetArtisanProfileAggregateType<T extends ArtisanProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateArtisanProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateArtisanProfile[P]>
+      : GetScalarType<T[P], AggregateArtisanProfile[P]>
+  }
+
+
+
+
+  export type ArtisanProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArtisanProfileWhereInput
+    orderBy?: ArtisanProfileOrderByWithAggregationInput | ArtisanProfileOrderByWithAggregationInput[]
+    by: ArtisanProfileScalarFieldEnum[] | ArtisanProfileScalarFieldEnum
+    having?: ArtisanProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ArtisanProfileCountAggregateInputType | true
+    _avg?: ArtisanProfileAvgAggregateInputType
+    _sum?: ArtisanProfileSumAggregateInputType
+    _min?: ArtisanProfileMinAggregateInputType
+    _max?: ArtisanProfileMaxAggregateInputType
+  }
+
+  export type ArtisanProfileGroupByOutputType = {
+    id: string
+    userId: string
+    bio: string | null
+    skills: JsonValue
+    experience: string | null
+    portfolio: JsonValue
+    verified: boolean
+    rating: number | null
+    reviewCount: number
+    createdAt: Date
+    updatedAt: Date
+    _count: ArtisanProfileCountAggregateOutputType | null
+    _avg: ArtisanProfileAvgAggregateOutputType | null
+    _sum: ArtisanProfileSumAggregateOutputType | null
+    _min: ArtisanProfileMinAggregateOutputType | null
+    _max: ArtisanProfileMaxAggregateOutputType | null
+  }
+
+  type GetArtisanProfileGroupByPayload<T extends ArtisanProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ArtisanProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ArtisanProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ArtisanProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], ArtisanProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ArtisanProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    bio?: boolean
+    skills?: boolean
+    experience?: boolean
+    portfolio?: boolean
+    verified?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["artisanProfile"]>
+
+  export type ArtisanProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    bio?: boolean
+    skills?: boolean
+    experience?: boolean
+    portfolio?: boolean
+    verified?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["artisanProfile"]>
+
+  export type ArtisanProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    bio?: boolean
+    skills?: boolean
+    experience?: boolean
+    portfolio?: boolean
+    verified?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["artisanProfile"]>
+
+  export type ArtisanProfileSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    bio?: boolean
+    skills?: boolean
+    experience?: boolean
+    portfolio?: boolean
+    verified?: boolean
+    rating?: boolean
+    reviewCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ArtisanProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bio" | "skills" | "experience" | "portfolio" | "verified" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["artisanProfile"]>
+  export type ArtisanProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ArtisanProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ArtisanProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ArtisanProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ArtisanProfile"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      bio: string | null
+      skills: Prisma.JsonValue
+      experience: string | null
+      portfolio: Prisma.JsonValue
+      verified: boolean
+      rating: number | null
+      reviewCount: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["artisanProfile"]>
+    composites: {}
+  }
+
+  type ArtisanProfileGetPayload<S extends boolean | null | undefined | ArtisanProfileDefaultArgs> = $Result.GetResult<Prisma.$ArtisanProfilePayload, S>
+
+  type ArtisanProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ArtisanProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ArtisanProfileCountAggregateInputType | true
+    }
+
+  export interface ArtisanProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ArtisanProfile'], meta: { name: 'ArtisanProfile' } }
+    /**
+     * Find zero or one ArtisanProfile that matches the filter.
+     * @param {ArtisanProfileFindUniqueArgs} args - Arguments to find a ArtisanProfile
+     * @example
+     * // Get one ArtisanProfile
+     * const artisanProfile = await prisma.artisanProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ArtisanProfileFindUniqueArgs>(args: SelectSubset<T, ArtisanProfileFindUniqueArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ArtisanProfile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ArtisanProfileFindUniqueOrThrowArgs} args - Arguments to find a ArtisanProfile
+     * @example
+     * // Get one ArtisanProfile
+     * const artisanProfile = await prisma.artisanProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ArtisanProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, ArtisanProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArtisanProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArtisanProfileFindFirstArgs} args - Arguments to find a ArtisanProfile
+     * @example
+     * // Get one ArtisanProfile
+     * const artisanProfile = await prisma.artisanProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ArtisanProfileFindFirstArgs>(args?: SelectSubset<T, ArtisanProfileFindFirstArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArtisanProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArtisanProfileFindFirstOrThrowArgs} args - Arguments to find a ArtisanProfile
+     * @example
+     * // Get one ArtisanProfile
+     * const artisanProfile = await prisma.artisanProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ArtisanProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, ArtisanProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ArtisanProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArtisanProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ArtisanProfiles
+     * const artisanProfiles = await prisma.artisanProfile.findMany()
+     * 
+     * // Get first 10 ArtisanProfiles
+     * const artisanProfiles = await prisma.artisanProfile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const artisanProfileWithIdOnly = await prisma.artisanProfile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ArtisanProfileFindManyArgs>(args?: SelectSubset<T, ArtisanProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ArtisanProfile.
+     * @param {ArtisanProfileCreateArgs} args - Arguments to create a ArtisanProfile.
+     * @example
+     * // Create one ArtisanProfile
+     * const ArtisanProfile = await prisma.artisanProfile.create({
+     *   data: {
+     *     // ... data to create a ArtisanProfile
+     *   }
+     * })
+     * 
+     */
+    create<T extends ArtisanProfileCreateArgs>(args: SelectSubset<T, ArtisanProfileCreateArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ArtisanProfiles.
+     * @param {ArtisanProfileCreateManyArgs} args - Arguments to create many ArtisanProfiles.
+     * @example
+     * // Create many ArtisanProfiles
+     * const artisanProfile = await prisma.artisanProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ArtisanProfileCreateManyArgs>(args?: SelectSubset<T, ArtisanProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ArtisanProfiles and returns the data saved in the database.
+     * @param {ArtisanProfileCreateManyAndReturnArgs} args - Arguments to create many ArtisanProfiles.
+     * @example
+     * // Create many ArtisanProfiles
+     * const artisanProfile = await prisma.artisanProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ArtisanProfiles and only return the `id`
+     * const artisanProfileWithIdOnly = await prisma.artisanProfile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ArtisanProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, ArtisanProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ArtisanProfile.
+     * @param {ArtisanProfileDeleteArgs} args - Arguments to delete one ArtisanProfile.
+     * @example
+     * // Delete one ArtisanProfile
+     * const ArtisanProfile = await prisma.artisanProfile.delete({
+     *   where: {
+     *     // ... filter to delete one ArtisanProfile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ArtisanProfileDeleteArgs>(args: SelectSubset<T, ArtisanProfileDeleteArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ArtisanProfile.
+     * @param {ArtisanProfileUpdateArgs} args - Arguments to update one ArtisanProfile.
+     * @example
+     * // Update one ArtisanProfile
+     * const artisanProfile = await prisma.artisanProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ArtisanProfileUpdateArgs>(args: SelectSubset<T, ArtisanProfileUpdateArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ArtisanProfiles.
+     * @param {ArtisanProfileDeleteManyArgs} args - Arguments to filter ArtisanProfiles to delete.
+     * @example
+     * // Delete a few ArtisanProfiles
+     * const { count } = await prisma.artisanProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ArtisanProfileDeleteManyArgs>(args?: SelectSubset<T, ArtisanProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArtisanProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArtisanProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ArtisanProfiles
+     * const artisanProfile = await prisma.artisanProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ArtisanProfileUpdateManyArgs>(args: SelectSubset<T, ArtisanProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArtisanProfiles and returns the data updated in the database.
+     * @param {ArtisanProfileUpdateManyAndReturnArgs} args - Arguments to update many ArtisanProfiles.
+     * @example
+     * // Update many ArtisanProfiles
+     * const artisanProfile = await prisma.artisanProfile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ArtisanProfiles and only return the `id`
+     * const artisanProfileWithIdOnly = await prisma.artisanProfile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ArtisanProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, ArtisanProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ArtisanProfile.
+     * @param {ArtisanProfileUpsertArgs} args - Arguments to update or create a ArtisanProfile.
+     * @example
+     * // Update or create a ArtisanProfile
+     * const artisanProfile = await prisma.artisanProfile.upsert({
+     *   create: {
+     *     // ... data to create a ArtisanProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ArtisanProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ArtisanProfileUpsertArgs>(args: SelectSubset<T, ArtisanProfileUpsertArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ArtisanProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArtisanProfileCountArgs} args - Arguments to filter ArtisanProfiles to count.
+     * @example
+     * // Count the number of ArtisanProfiles
+     * const count = await prisma.artisanProfile.count({
+     *   where: {
+     *     // ... the filter for the ArtisanProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends ArtisanProfileCountArgs>(
+      args?: Subset<T, ArtisanProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ArtisanProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ArtisanProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArtisanProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ArtisanProfileAggregateArgs>(args: Subset<T, ArtisanProfileAggregateArgs>): Prisma.PrismaPromise<GetArtisanProfileAggregateType<T>>
+
+    /**
+     * Group by ArtisanProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArtisanProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ArtisanProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ArtisanProfileGroupByArgs['orderBy'] }
+        : { orderBy?: ArtisanProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ArtisanProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetArtisanProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ArtisanProfile model
+   */
+  readonly fields: ArtisanProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ArtisanProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ArtisanProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ArtisanProfile model
+   */
+  interface ArtisanProfileFieldRefs {
+    readonly id: FieldRef<"ArtisanProfile", 'String'>
+    readonly userId: FieldRef<"ArtisanProfile", 'String'>
+    readonly bio: FieldRef<"ArtisanProfile", 'String'>
+    readonly skills: FieldRef<"ArtisanProfile", 'Json'>
+    readonly experience: FieldRef<"ArtisanProfile", 'String'>
+    readonly portfolio: FieldRef<"ArtisanProfile", 'Json'>
+    readonly verified: FieldRef<"ArtisanProfile", 'Boolean'>
+    readonly rating: FieldRef<"ArtisanProfile", 'Float'>
+    readonly reviewCount: FieldRef<"ArtisanProfile", 'Int'>
+    readonly createdAt: FieldRef<"ArtisanProfile", 'DateTime'>
+    readonly updatedAt: FieldRef<"ArtisanProfile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ArtisanProfile findUnique
+   */
+  export type ArtisanProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArtisanProfile to fetch.
+     */
+    where: ArtisanProfileWhereUniqueInput
+  }
+
+  /**
+   * ArtisanProfile findUniqueOrThrow
+   */
+  export type ArtisanProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArtisanProfile to fetch.
+     */
+    where: ArtisanProfileWhereUniqueInput
+  }
+
+  /**
+   * ArtisanProfile findFirst
+   */
+  export type ArtisanProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArtisanProfile to fetch.
+     */
+    where?: ArtisanProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArtisanProfiles to fetch.
+     */
+    orderBy?: ArtisanProfileOrderByWithRelationInput | ArtisanProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArtisanProfiles.
+     */
+    cursor?: ArtisanProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArtisanProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArtisanProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArtisanProfiles.
+     */
+    distinct?: ArtisanProfileScalarFieldEnum | ArtisanProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ArtisanProfile findFirstOrThrow
+   */
+  export type ArtisanProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArtisanProfile to fetch.
+     */
+    where?: ArtisanProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArtisanProfiles to fetch.
+     */
+    orderBy?: ArtisanProfileOrderByWithRelationInput | ArtisanProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArtisanProfiles.
+     */
+    cursor?: ArtisanProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArtisanProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArtisanProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArtisanProfiles.
+     */
+    distinct?: ArtisanProfileScalarFieldEnum | ArtisanProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ArtisanProfile findMany
+   */
+  export type ArtisanProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArtisanProfiles to fetch.
+     */
+    where?: ArtisanProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArtisanProfiles to fetch.
+     */
+    orderBy?: ArtisanProfileOrderByWithRelationInput | ArtisanProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ArtisanProfiles.
+     */
+    cursor?: ArtisanProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArtisanProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArtisanProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArtisanProfiles.
+     */
+    distinct?: ArtisanProfileScalarFieldEnum | ArtisanProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ArtisanProfile create
+   */
+  export type ArtisanProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ArtisanProfile.
+     */
+    data: XOR<ArtisanProfileCreateInput, ArtisanProfileUncheckedCreateInput>
+  }
+
+  /**
+   * ArtisanProfile createMany
+   */
+  export type ArtisanProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ArtisanProfiles.
+     */
+    data: ArtisanProfileCreateManyInput | ArtisanProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ArtisanProfile createManyAndReturn
+   */
+  export type ArtisanProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * The data used to create many ArtisanProfiles.
+     */
+    data: ArtisanProfileCreateManyInput | ArtisanProfileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ArtisanProfile update
+   */
+  export type ArtisanProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ArtisanProfile.
+     */
+    data: XOR<ArtisanProfileUpdateInput, ArtisanProfileUncheckedUpdateInput>
+    /**
+     * Choose, which ArtisanProfile to update.
+     */
+    where: ArtisanProfileWhereUniqueInput
+  }
+
+  /**
+   * ArtisanProfile updateMany
+   */
+  export type ArtisanProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ArtisanProfiles.
+     */
+    data: XOR<ArtisanProfileUpdateManyMutationInput, ArtisanProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which ArtisanProfiles to update
+     */
+    where?: ArtisanProfileWhereInput
+    /**
+     * Limit how many ArtisanProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArtisanProfile updateManyAndReturn
+   */
+  export type ArtisanProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * The data used to update ArtisanProfiles.
+     */
+    data: XOR<ArtisanProfileUpdateManyMutationInput, ArtisanProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which ArtisanProfiles to update
+     */
+    where?: ArtisanProfileWhereInput
+    /**
+     * Limit how many ArtisanProfiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ArtisanProfile upsert
+   */
+  export type ArtisanProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ArtisanProfile to update in case it exists.
+     */
+    where: ArtisanProfileWhereUniqueInput
+    /**
+     * In case the ArtisanProfile found by the `where` argument doesn't exist, create a new ArtisanProfile with this data.
+     */
+    create: XOR<ArtisanProfileCreateInput, ArtisanProfileUncheckedCreateInput>
+    /**
+     * In case the ArtisanProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ArtisanProfileUpdateInput, ArtisanProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * ArtisanProfile delete
+   */
+  export type ArtisanProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+    /**
+     * Filter which ArtisanProfile to delete.
+     */
+    where: ArtisanProfileWhereUniqueInput
+  }
+
+  /**
+   * ArtisanProfile deleteMany
+   */
+  export type ArtisanProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArtisanProfiles to delete
+     */
+    where?: ArtisanProfileWhereInput
+    /**
+     * Limit how many ArtisanProfiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArtisanProfile without action
+   */
+  export type ArtisanProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArtisanProfile
+     */
+    select?: ArtisanProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArtisanProfile
+     */
+    omit?: ArtisanProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArtisanProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Proposal
+   */
+
+  export type AggregateProposal = {
+    _count: ProposalCountAggregateOutputType | null
+    _avg: ProposalAvgAggregateOutputType | null
+    _sum: ProposalSumAggregateOutputType | null
+    _min: ProposalMinAggregateOutputType | null
+    _max: ProposalMaxAggregateOutputType | null
+  }
+
+  export type ProposalAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type ProposalSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type ProposalMinAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    artisanId: string | null
+    clientId: string | null
+    amount: number | null
+    message: string | null
+    status: $Enums.ProposalStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProposalMaxAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    artisanId: string | null
+    clientId: string | null
+    amount: number | null
+    message: string | null
+    status: $Enums.ProposalStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProposalCountAggregateOutputType = {
+    id: number
+    jobId: number
+    artisanId: number
+    clientId: number
+    amount: number
+    message: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProposalAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type ProposalSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type ProposalMinAggregateInputType = {
+    id?: true
+    jobId?: true
+    artisanId?: true
+    clientId?: true
+    amount?: true
+    message?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProposalMaxAggregateInputType = {
+    id?: true
+    jobId?: true
+    artisanId?: true
+    clientId?: true
+    amount?: true
+    message?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProposalCountAggregateInputType = {
+    id?: true
+    jobId?: true
+    artisanId?: true
+    clientId?: true
+    amount?: true
+    message?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProposalAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Proposal to aggregate.
+     */
+    where?: ProposalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Proposals to fetch.
+     */
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProposalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Proposals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Proposals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Proposals
+    **/
+    _count?: true | ProposalCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProposalAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProposalSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProposalMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProposalMaxAggregateInputType
+  }
+
+  export type GetProposalAggregateType<T extends ProposalAggregateArgs> = {
+        [P in keyof T & keyof AggregateProposal]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProposal[P]>
+      : GetScalarType<T[P], AggregateProposal[P]>
+  }
+
+
+
+
+  export type ProposalGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalWhereInput
+    orderBy?: ProposalOrderByWithAggregationInput | ProposalOrderByWithAggregationInput[]
+    by: ProposalScalarFieldEnum[] | ProposalScalarFieldEnum
+    having?: ProposalScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProposalCountAggregateInputType | true
+    _avg?: ProposalAvgAggregateInputType
+    _sum?: ProposalSumAggregateInputType
+    _min?: ProposalMinAggregateInputType
+    _max?: ProposalMaxAggregateInputType
+  }
+
+  export type ProposalGroupByOutputType = {
+    id: string
+    jobId: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    status: $Enums.ProposalStatus
+    createdAt: Date
+    updatedAt: Date
+    _count: ProposalCountAggregateOutputType | null
+    _avg: ProposalAvgAggregateOutputType | null
+    _sum: ProposalSumAggregateOutputType | null
+    _min: ProposalMinAggregateOutputType | null
+    _max: ProposalMaxAggregateOutputType | null
+  }
+
+  type GetProposalGroupByPayload<T extends ProposalGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProposalGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProposalGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProposalGroupByOutputType[P]>
+            : GetScalarType<T[P], ProposalGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProposalSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    artisanId?: boolean
+    clientId?: boolean
+    amount?: boolean
+    message?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Proposal$contractArgs<ExtArgs>
+  }, ExtArgs["result"]["proposal"]>
+
+  export type ProposalSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    artisanId?: boolean
+    clientId?: boolean
+    amount?: boolean
+    message?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposal"]>
+
+  export type ProposalSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    artisanId?: boolean
+    clientId?: boolean
+    amount?: boolean
+    message?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposal"]>
+
+  export type ProposalSelectScalar = {
+    id?: boolean
+    jobId?: boolean
+    artisanId?: boolean
+    clientId?: boolean
+    amount?: boolean
+    message?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ProposalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "artisanId" | "clientId" | "amount" | "message" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["proposal"]>
+  export type ProposalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Proposal$contractArgs<ExtArgs>
+  }
+  export type ProposalIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ProposalIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ProposalPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Proposal"
+    objects: {
+      job: Prisma.$JobPayload<ExtArgs>
+      artisan: Prisma.$UserPayload<ExtArgs>
+      client: Prisma.$UserPayload<ExtArgs>
+      contract: Prisma.$ContractPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      jobId: string
+      artisanId: string
+      clientId: string
+      amount: number
+      message: string
+      status: $Enums.ProposalStatus
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["proposal"]>
+    composites: {}
+  }
+
+  type ProposalGetPayload<S extends boolean | null | undefined | ProposalDefaultArgs> = $Result.GetResult<Prisma.$ProposalPayload, S>
+
+  type ProposalCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProposalFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProposalCountAggregateInputType | true
+    }
+
+  export interface ProposalDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Proposal'], meta: { name: 'Proposal' } }
+    /**
+     * Find zero or one Proposal that matches the filter.
+     * @param {ProposalFindUniqueArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProposalFindUniqueArgs>(args: SelectSubset<T, ProposalFindUniqueArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Proposal that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProposalFindUniqueOrThrowArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProposalFindUniqueOrThrowArgs>(args: SelectSubset<T, ProposalFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Proposal that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalFindFirstArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProposalFindFirstArgs>(args?: SelectSubset<T, ProposalFindFirstArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Proposal that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalFindFirstOrThrowArgs} args - Arguments to find a Proposal
+     * @example
+     * // Get one Proposal
+     * const proposal = await prisma.proposal.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProposalFindFirstOrThrowArgs>(args?: SelectSubset<T, ProposalFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Proposals that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Proposals
+     * const proposals = await prisma.proposal.findMany()
+     * 
+     * // Get first 10 Proposals
+     * const proposals = await prisma.proposal.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const proposalWithIdOnly = await prisma.proposal.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProposalFindManyArgs>(args?: SelectSubset<T, ProposalFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Proposal.
+     * @param {ProposalCreateArgs} args - Arguments to create a Proposal.
+     * @example
+     * // Create one Proposal
+     * const Proposal = await prisma.proposal.create({
+     *   data: {
+     *     // ... data to create a Proposal
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProposalCreateArgs>(args: SelectSubset<T, ProposalCreateArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Proposals.
+     * @param {ProposalCreateManyArgs} args - Arguments to create many Proposals.
+     * @example
+     * // Create many Proposals
+     * const proposal = await prisma.proposal.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProposalCreateManyArgs>(args?: SelectSubset<T, ProposalCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Proposals and returns the data saved in the database.
+     * @param {ProposalCreateManyAndReturnArgs} args - Arguments to create many Proposals.
+     * @example
+     * // Create many Proposals
+     * const proposal = await prisma.proposal.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Proposals and only return the `id`
+     * const proposalWithIdOnly = await prisma.proposal.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProposalCreateManyAndReturnArgs>(args?: SelectSubset<T, ProposalCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Proposal.
+     * @param {ProposalDeleteArgs} args - Arguments to delete one Proposal.
+     * @example
+     * // Delete one Proposal
+     * const Proposal = await prisma.proposal.delete({
+     *   where: {
+     *     // ... filter to delete one Proposal
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProposalDeleteArgs>(args: SelectSubset<T, ProposalDeleteArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Proposal.
+     * @param {ProposalUpdateArgs} args - Arguments to update one Proposal.
+     * @example
+     * // Update one Proposal
+     * const proposal = await prisma.proposal.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProposalUpdateArgs>(args: SelectSubset<T, ProposalUpdateArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Proposals.
+     * @param {ProposalDeleteManyArgs} args - Arguments to filter Proposals to delete.
+     * @example
+     * // Delete a few Proposals
+     * const { count } = await prisma.proposal.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProposalDeleteManyArgs>(args?: SelectSubset<T, ProposalDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Proposals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Proposals
+     * const proposal = await prisma.proposal.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProposalUpdateManyArgs>(args: SelectSubset<T, ProposalUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Proposals and returns the data updated in the database.
+     * @param {ProposalUpdateManyAndReturnArgs} args - Arguments to update many Proposals.
+     * @example
+     * // Update many Proposals
+     * const proposal = await prisma.proposal.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Proposals and only return the `id`
+     * const proposalWithIdOnly = await prisma.proposal.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProposalUpdateManyAndReturnArgs>(args: SelectSubset<T, ProposalUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Proposal.
+     * @param {ProposalUpsertArgs} args - Arguments to update or create a Proposal.
+     * @example
+     * // Update or create a Proposal
+     * const proposal = await prisma.proposal.upsert({
+     *   create: {
+     *     // ... data to create a Proposal
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Proposal we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProposalUpsertArgs>(args: SelectSubset<T, ProposalUpsertArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Proposals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalCountArgs} args - Arguments to filter Proposals to count.
+     * @example
+     * // Count the number of Proposals
+     * const count = await prisma.proposal.count({
+     *   where: {
+     *     // ... the filter for the Proposals we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProposalCountArgs>(
+      args?: Subset<T, ProposalCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProposalCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Proposal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProposalAggregateArgs>(args: Subset<T, ProposalAggregateArgs>): Prisma.PrismaPromise<GetProposalAggregateType<T>>
+
+    /**
+     * Group by Proposal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProposalGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProposalGroupByArgs['orderBy'] }
+        : { orderBy?: ProposalGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProposalGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProposalGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Proposal model
+   */
+  readonly fields: ProposalFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Proposal.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProposalClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    contract<T extends Proposal$contractArgs<ExtArgs> = {}>(args?: Subset<T, Proposal$contractArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Proposal model
+   */
+  interface ProposalFieldRefs {
+    readonly id: FieldRef<"Proposal", 'String'>
+    readonly jobId: FieldRef<"Proposal", 'String'>
+    readonly artisanId: FieldRef<"Proposal", 'String'>
+    readonly clientId: FieldRef<"Proposal", 'String'>
+    readonly amount: FieldRef<"Proposal", 'Int'>
+    readonly message: FieldRef<"Proposal", 'String'>
+    readonly status: FieldRef<"Proposal", 'ProposalStatus'>
+    readonly createdAt: FieldRef<"Proposal", 'DateTime'>
+    readonly updatedAt: FieldRef<"Proposal", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Proposal findUnique
+   */
+  export type ProposalFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal findUniqueOrThrow
+   */
+  export type ProposalFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal findFirst
+   */
+  export type ProposalFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where?: ProposalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Proposals to fetch.
+     */
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Proposals.
+     */
+    cursor?: ProposalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Proposals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Proposals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Proposals.
+     */
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal findFirstOrThrow
+   */
+  export type ProposalFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * Filter, which Proposal to fetch.
+     */
+    where?: ProposalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Proposals to fetch.
+     */
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Proposals.
+     */
+    cursor?: ProposalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Proposals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Proposals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Proposals.
+     */
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal findMany
+   */
+  export type ProposalFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * Filter, which Proposals to fetch.
+     */
+    where?: ProposalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Proposals to fetch.
+     */
+    orderBy?: ProposalOrderByWithRelationInput | ProposalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Proposals.
+     */
+    cursor?: ProposalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Proposals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Proposals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Proposals.
+     */
+    distinct?: ProposalScalarFieldEnum | ProposalScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal create
+   */
+  export type ProposalCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Proposal.
+     */
+    data: XOR<ProposalCreateInput, ProposalUncheckedCreateInput>
+  }
+
+  /**
+   * Proposal createMany
+   */
+  export type ProposalCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Proposals.
+     */
+    data: ProposalCreateManyInput | ProposalCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Proposal createManyAndReturn
+   */
+  export type ProposalCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * The data used to create many Proposals.
+     */
+    data: ProposalCreateManyInput | ProposalCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Proposal update
+   */
+  export type ProposalUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Proposal.
+     */
+    data: XOR<ProposalUpdateInput, ProposalUncheckedUpdateInput>
+    /**
+     * Choose, which Proposal to update.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal updateMany
+   */
+  export type ProposalUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Proposals.
+     */
+    data: XOR<ProposalUpdateManyMutationInput, ProposalUncheckedUpdateManyInput>
+    /**
+     * Filter which Proposals to update
+     */
+    where?: ProposalWhereInput
+    /**
+     * Limit how many Proposals to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Proposal updateManyAndReturn
+   */
+  export type ProposalUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * The data used to update Proposals.
+     */
+    data: XOR<ProposalUpdateManyMutationInput, ProposalUncheckedUpdateManyInput>
+    /**
+     * Filter which Proposals to update
+     */
+    where?: ProposalWhereInput
+    /**
+     * Limit how many Proposals to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Proposal upsert
+   */
+  export type ProposalUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Proposal to update in case it exists.
+     */
+    where: ProposalWhereUniqueInput
+    /**
+     * In case the Proposal found by the `where` argument doesn't exist, create a new Proposal with this data.
+     */
+    create: XOR<ProposalCreateInput, ProposalUncheckedCreateInput>
+    /**
+     * In case the Proposal was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProposalUpdateInput, ProposalUncheckedUpdateInput>
+  }
+
+  /**
+   * Proposal delete
+   */
+  export type ProposalDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+    /**
+     * Filter which Proposal to delete.
+     */
+    where: ProposalWhereUniqueInput
+  }
+
+  /**
+   * Proposal deleteMany
+   */
+  export type ProposalDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Proposals to delete
+     */
+    where?: ProposalWhereInput
+    /**
+     * Limit how many Proposals to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Proposal.contract
+   */
+  export type Proposal$contractArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+  }
+
+  /**
+   * Proposal without action
+   */
+  export type ProposalDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Proposal
+     */
+    select?: ProposalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Proposal
+     */
+    omit?: ProposalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Contract
+   */
+
+  export type AggregateContract = {
+    _count: ContractCountAggregateOutputType | null
+    _avg: ContractAvgAggregateOutputType | null
+    _sum: ContractSumAggregateOutputType | null
+    _min: ContractMinAggregateOutputType | null
+    _max: ContractMaxAggregateOutputType | null
+  }
+
+  export type ContractAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type ContractSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type ContractMinAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    proposalId: string | null
+    clientId: string | null
+    artisanId: string | null
+    amount: number | null
+    status: $Enums.ContractStatus | null
+    fundedAt: Date | null
+    activatedAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    clientConfirmedCompletion: boolean | null
+    clientConfirmedAt: Date | null
+    artisanConfirmedCompletion: boolean | null
+    artisanConfirmedAt: Date | null
+    escrowReleased: boolean | null
+    escrowReleasedAt: Date | null
+    platformFeeDeducted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ContractMaxAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    proposalId: string | null
+    clientId: string | null
+    artisanId: string | null
+    amount: number | null
+    status: $Enums.ContractStatus | null
+    fundedAt: Date | null
+    activatedAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    clientConfirmedCompletion: boolean | null
+    clientConfirmedAt: Date | null
+    artisanConfirmedCompletion: boolean | null
+    artisanConfirmedAt: Date | null
+    escrowReleased: boolean | null
+    escrowReleasedAt: Date | null
+    platformFeeDeducted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ContractCountAggregateOutputType = {
+    id: number
+    jobId: number
+    proposalId: number
+    clientId: number
+    artisanId: number
+    amount: number
+    status: number
+    fundedAt: number
+    activatedAt: number
+    startedAt: number
+    completedAt: number
+    cancelledAt: number
+    clientConfirmedCompletion: number
+    clientConfirmedAt: number
+    artisanConfirmedCompletion: number
+    artisanConfirmedAt: number
+    escrowReleased: number
+    escrowReleasedAt: number
+    platformFeeDeducted: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ContractAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type ContractSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type ContractMinAggregateInputType = {
+    id?: true
+    jobId?: true
+    proposalId?: true
+    clientId?: true
+    artisanId?: true
+    amount?: true
+    status?: true
+    fundedAt?: true
+    activatedAt?: true
+    startedAt?: true
+    completedAt?: true
+    cancelledAt?: true
+    clientConfirmedCompletion?: true
+    clientConfirmedAt?: true
+    artisanConfirmedCompletion?: true
+    artisanConfirmedAt?: true
+    escrowReleased?: true
+    escrowReleasedAt?: true
+    platformFeeDeducted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ContractMaxAggregateInputType = {
+    id?: true
+    jobId?: true
+    proposalId?: true
+    clientId?: true
+    artisanId?: true
+    amount?: true
+    status?: true
+    fundedAt?: true
+    activatedAt?: true
+    startedAt?: true
+    completedAt?: true
+    cancelledAt?: true
+    clientConfirmedCompletion?: true
+    clientConfirmedAt?: true
+    artisanConfirmedCompletion?: true
+    artisanConfirmedAt?: true
+    escrowReleased?: true
+    escrowReleasedAt?: true
+    platformFeeDeducted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ContractCountAggregateInputType = {
+    id?: true
+    jobId?: true
+    proposalId?: true
+    clientId?: true
+    artisanId?: true
+    amount?: true
+    status?: true
+    fundedAt?: true
+    activatedAt?: true
+    startedAt?: true
+    completedAt?: true
+    cancelledAt?: true
+    clientConfirmedCompletion?: true
+    clientConfirmedAt?: true
+    artisanConfirmedCompletion?: true
+    artisanConfirmedAt?: true
+    escrowReleased?: true
+    escrowReleasedAt?: true
+    platformFeeDeducted?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ContractAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contract to aggregate.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Contracts
+    **/
+    _count?: true | ContractCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ContractAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ContractSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContractMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContractMaxAggregateInputType
+  }
+
+  export type GetContractAggregateType<T extends ContractAggregateArgs> = {
+        [P in keyof T & keyof AggregateContract]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContract[P]>
+      : GetScalarType<T[P], AggregateContract[P]>
+  }
+
+
+
+
+  export type ContractGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithAggregationInput | ContractOrderByWithAggregationInput[]
+    by: ContractScalarFieldEnum[] | ContractScalarFieldEnum
+    having?: ContractScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContractCountAggregateInputType | true
+    _avg?: ContractAvgAggregateInputType
+    _sum?: ContractSumAggregateInputType
+    _min?: ContractMinAggregateInputType
+    _max?: ContractMaxAggregateInputType
+  }
+
+  export type ContractGroupByOutputType = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status: $Enums.ContractStatus
+    fundedAt: Date | null
+    activatedAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    clientConfirmedCompletion: boolean
+    clientConfirmedAt: Date | null
+    artisanConfirmedCompletion: boolean
+    artisanConfirmedAt: Date | null
+    escrowReleased: boolean
+    escrowReleasedAt: Date | null
+    platformFeeDeducted: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ContractCountAggregateOutputType | null
+    _avg: ContractAvgAggregateOutputType | null
+    _sum: ContractSumAggregateOutputType | null
+    _min: ContractMinAggregateOutputType | null
+    _max: ContractMaxAggregateOutputType | null
+  }
+
+  type GetContractGroupByPayload<T extends ContractGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContractGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContractGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContractGroupByOutputType[P]>
+            : GetScalarType<T[P], ContractGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContractSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    proposalId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    amount?: boolean
+    status?: boolean
+    fundedAt?: boolean
+    activatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: boolean
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: boolean
+    escrowReleased?: boolean
+    escrowReleasedAt?: boolean
+    platformFeeDeducted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    review?: boolean | Contract$reviewArgs<ExtArgs>
+  }, ExtArgs["result"]["contract"]>
+
+  export type ContractSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    proposalId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    amount?: boolean
+    status?: boolean
+    fundedAt?: boolean
+    activatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: boolean
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: boolean
+    escrowReleased?: boolean
+    escrowReleasedAt?: boolean
+    platformFeeDeducted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contract"]>
+
+  export type ContractSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    proposalId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    amount?: boolean
+    status?: boolean
+    fundedAt?: boolean
+    activatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: boolean
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: boolean
+    escrowReleased?: boolean
+    escrowReleasedAt?: boolean
+    platformFeeDeducted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contract"]>
+
+  export type ContractSelectScalar = {
+    id?: boolean
+    jobId?: boolean
+    proposalId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    amount?: boolean
+    status?: boolean
+    fundedAt?: boolean
+    activatedAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: boolean
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: boolean
+    escrowReleased?: boolean
+    escrowReleasedAt?: boolean
+    platformFeeDeducted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "proposalId" | "clientId" | "artisanId" | "amount" | "status" | "fundedAt" | "activatedAt" | "startedAt" | "completedAt" | "cancelledAt" | "clientConfirmedCompletion" | "clientConfirmedAt" | "artisanConfirmedCompletion" | "artisanConfirmedAt" | "escrowReleased" | "escrowReleasedAt" | "platformFeeDeducted" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
+  export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    review?: boolean | Contract$reviewArgs<ExtArgs>
+  }
+  export type ContractIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ContractIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ContractPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Contract"
+    objects: {
+      job: Prisma.$JobPayload<ExtArgs>
+      proposal: Prisma.$ProposalPayload<ExtArgs>
+      client: Prisma.$UserPayload<ExtArgs>
+      artisan: Prisma.$UserPayload<ExtArgs>
+      review: Prisma.$ReviewPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      jobId: string
+      proposalId: string
+      clientId: string
+      artisanId: string
+      amount: number
+      status: $Enums.ContractStatus
+      fundedAt: Date | null
+      activatedAt: Date | null
+      startedAt: Date | null
+      completedAt: Date | null
+      cancelledAt: Date | null
+      clientConfirmedCompletion: boolean
+      clientConfirmedAt: Date | null
+      artisanConfirmedCompletion: boolean
+      artisanConfirmedAt: Date | null
+      escrowReleased: boolean
+      escrowReleasedAt: Date | null
+      platformFeeDeducted: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["contract"]>
+    composites: {}
+  }
+
+  type ContractGetPayload<S extends boolean | null | undefined | ContractDefaultArgs> = $Result.GetResult<Prisma.$ContractPayload, S>
+
+  type ContractCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ContractFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ContractCountAggregateInputType | true
+    }
+
+  export interface ContractDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Contract'], meta: { name: 'Contract' } }
+    /**
+     * Find zero or one Contract that matches the filter.
+     * @param {ContractFindUniqueArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContractFindUniqueArgs>(args: SelectSubset<T, ContractFindUniqueArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Contract that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ContractFindUniqueOrThrowArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContractFindUniqueOrThrowArgs>(args: SelectSubset<T, ContractFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contract that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractFindFirstArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContractFindFirstArgs>(args?: SelectSubset<T, ContractFindFirstArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contract that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractFindFirstOrThrowArgs} args - Arguments to find a Contract
+     * @example
+     * // Get one Contract
+     * const contract = await prisma.contract.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContractFindFirstOrThrowArgs>(args?: SelectSubset<T, ContractFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Contracts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Contracts
+     * const contracts = await prisma.contract.findMany()
+     * 
+     * // Get first 10 Contracts
+     * const contracts = await prisma.contract.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contractWithIdOnly = await prisma.contract.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContractFindManyArgs>(args?: SelectSubset<T, ContractFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Contract.
+     * @param {ContractCreateArgs} args - Arguments to create a Contract.
+     * @example
+     * // Create one Contract
+     * const Contract = await prisma.contract.create({
+     *   data: {
+     *     // ... data to create a Contract
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContractCreateArgs>(args: SelectSubset<T, ContractCreateArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Contracts.
+     * @param {ContractCreateManyArgs} args - Arguments to create many Contracts.
+     * @example
+     * // Create many Contracts
+     * const contract = await prisma.contract.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContractCreateManyArgs>(args?: SelectSubset<T, ContractCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Contracts and returns the data saved in the database.
+     * @param {ContractCreateManyAndReturnArgs} args - Arguments to create many Contracts.
+     * @example
+     * // Create many Contracts
+     * const contract = await prisma.contract.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Contracts and only return the `id`
+     * const contractWithIdOnly = await prisma.contract.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContractCreateManyAndReturnArgs>(args?: SelectSubset<T, ContractCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Contract.
+     * @param {ContractDeleteArgs} args - Arguments to delete one Contract.
+     * @example
+     * // Delete one Contract
+     * const Contract = await prisma.contract.delete({
+     *   where: {
+     *     // ... filter to delete one Contract
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContractDeleteArgs>(args: SelectSubset<T, ContractDeleteArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Contract.
+     * @param {ContractUpdateArgs} args - Arguments to update one Contract.
+     * @example
+     * // Update one Contract
+     * const contract = await prisma.contract.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContractUpdateArgs>(args: SelectSubset<T, ContractUpdateArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Contracts.
+     * @param {ContractDeleteManyArgs} args - Arguments to filter Contracts to delete.
+     * @example
+     * // Delete a few Contracts
+     * const { count } = await prisma.contract.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContractDeleteManyArgs>(args?: SelectSubset<T, ContractDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Contracts
+     * const contract = await prisma.contract.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContractUpdateManyArgs>(args: SelectSubset<T, ContractUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contracts and returns the data updated in the database.
+     * @param {ContractUpdateManyAndReturnArgs} args - Arguments to update many Contracts.
+     * @example
+     * // Update many Contracts
+     * const contract = await prisma.contract.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Contracts and only return the `id`
+     * const contractWithIdOnly = await prisma.contract.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ContractUpdateManyAndReturnArgs>(args: SelectSubset<T, ContractUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Contract.
+     * @param {ContractUpsertArgs} args - Arguments to update or create a Contract.
+     * @example
+     * // Update or create a Contract
+     * const contract = await prisma.contract.upsert({
+     *   create: {
+     *     // ... data to create a Contract
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Contract we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContractUpsertArgs>(args: SelectSubset<T, ContractUpsertArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Contracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractCountArgs} args - Arguments to filter Contracts to count.
+     * @example
+     * // Count the number of Contracts
+     * const count = await prisma.contract.count({
+     *   where: {
+     *     // ... the filter for the Contracts we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContractCountArgs>(
+      args?: Subset<T, ContractCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContractCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Contract.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContractAggregateArgs>(args: Subset<T, ContractAggregateArgs>): Prisma.PrismaPromise<GetContractAggregateType<T>>
+
+    /**
+     * Group by Contract.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContractGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContractGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContractGroupByArgs['orderBy'] }
+        : { orderBy?: ContractGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContractGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContractGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Contract model
+   */
+  readonly fields: ContractFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Contract.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContractClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    proposal<T extends ProposalDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProposalDefaultArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    review<T extends Contract$reviewArgs<ExtArgs> = {}>(args?: Subset<T, Contract$reviewArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Contract model
+   */
+  interface ContractFieldRefs {
+    readonly id: FieldRef<"Contract", 'String'>
+    readonly jobId: FieldRef<"Contract", 'String'>
+    readonly proposalId: FieldRef<"Contract", 'String'>
+    readonly clientId: FieldRef<"Contract", 'String'>
+    readonly artisanId: FieldRef<"Contract", 'String'>
+    readonly amount: FieldRef<"Contract", 'Int'>
+    readonly status: FieldRef<"Contract", 'ContractStatus'>
+    readonly fundedAt: FieldRef<"Contract", 'DateTime'>
+    readonly activatedAt: FieldRef<"Contract", 'DateTime'>
+    readonly startedAt: FieldRef<"Contract", 'DateTime'>
+    readonly completedAt: FieldRef<"Contract", 'DateTime'>
+    readonly cancelledAt: FieldRef<"Contract", 'DateTime'>
+    readonly clientConfirmedCompletion: FieldRef<"Contract", 'Boolean'>
+    readonly clientConfirmedAt: FieldRef<"Contract", 'DateTime'>
+    readonly artisanConfirmedCompletion: FieldRef<"Contract", 'Boolean'>
+    readonly artisanConfirmedAt: FieldRef<"Contract", 'DateTime'>
+    readonly escrowReleased: FieldRef<"Contract", 'Boolean'>
+    readonly escrowReleasedAt: FieldRef<"Contract", 'DateTime'>
+    readonly platformFeeDeducted: FieldRef<"Contract", 'Boolean'>
+    readonly createdAt: FieldRef<"Contract", 'DateTime'>
+    readonly updatedAt: FieldRef<"Contract", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Contract findUnique
+   */
+  export type ContractFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract findUniqueOrThrow
+   */
+  export type ContractFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract findFirst
+   */
+  export type ContractFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contracts.
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contracts.
+     */
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Contract findFirstOrThrow
+   */
+  export type ContractFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contract to fetch.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contracts.
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contracts.
+     */
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Contract findMany
+   */
+  export type ContractFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter, which Contracts to fetch.
+     */
+    where?: ContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contracts to fetch.
+     */
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Contracts.
+     */
+    cursor?: ContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contracts.
+     */
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Contract create
+   */
+  export type ContractCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Contract.
+     */
+    data: XOR<ContractCreateInput, ContractUncheckedCreateInput>
+  }
+
+  /**
+   * Contract createMany
+   */
+  export type ContractCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Contracts.
+     */
+    data: ContractCreateManyInput | ContractCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Contract createManyAndReturn
+   */
+  export type ContractCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * The data used to create many Contracts.
+     */
+    data: ContractCreateManyInput | ContractCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Contract update
+   */
+  export type ContractUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Contract.
+     */
+    data: XOR<ContractUpdateInput, ContractUncheckedUpdateInput>
+    /**
+     * Choose, which Contract to update.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract updateMany
+   */
+  export type ContractUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Contracts.
+     */
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyInput>
+    /**
+     * Filter which Contracts to update
+     */
+    where?: ContractWhereInput
+    /**
+     * Limit how many Contracts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contract updateManyAndReturn
+   */
+  export type ContractUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * The data used to update Contracts.
+     */
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyInput>
+    /**
+     * Filter which Contracts to update
+     */
+    where?: ContractWhereInput
+    /**
+     * Limit how many Contracts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Contract upsert
+   */
+  export type ContractUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Contract to update in case it exists.
+     */
+    where: ContractWhereUniqueInput
+    /**
+     * In case the Contract found by the `where` argument doesn't exist, create a new Contract with this data.
+     */
+    create: XOR<ContractCreateInput, ContractUncheckedCreateInput>
+    /**
+     * In case the Contract was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContractUpdateInput, ContractUncheckedUpdateInput>
+  }
+
+  /**
+   * Contract delete
+   */
+  export type ContractDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    /**
+     * Filter which Contract to delete.
+     */
+    where: ContractWhereUniqueInput
+  }
+
+  /**
+   * Contract deleteMany
+   */
+  export type ContractDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contracts to delete
+     */
+    where?: ContractWhereInput
+    /**
+     * Limit how many Contracts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contract.review
+   */
+  export type Contract$reviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    where?: ReviewWhereInput
+  }
+
+  /**
+   * Contract without action
+   */
+  export type ContractDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Wallet
+   */
+
+  export type AggregateWallet = {
+    _count: WalletCountAggregateOutputType | null
+    _avg: WalletAvgAggregateOutputType | null
+    _sum: WalletSumAggregateOutputType | null
+    _min: WalletMinAggregateOutputType | null
+    _max: WalletMaxAggregateOutputType | null
+  }
+
+  export type WalletAvgAggregateOutputType = {
+    balance: number | null
+    frozen: number | null
+    version: number | null
+  }
+
+  export type WalletSumAggregateOutputType = {
+    balance: number | null
+    frozen: number | null
+    version: number | null
+  }
+
+  export type WalletMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    balance: number | null
+    frozen: number | null
+    version: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WalletMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    balance: number | null
+    frozen: number | null
+    version: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WalletCountAggregateOutputType = {
+    id: number
+    userId: number
+    balance: number
+    frozen: number
+    version: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WalletAvgAggregateInputType = {
+    balance?: true
+    frozen?: true
+    version?: true
+  }
+
+  export type WalletSumAggregateInputType = {
+    balance?: true
+    frozen?: true
+    version?: true
+  }
+
+  export type WalletMinAggregateInputType = {
+    id?: true
+    userId?: true
+    balance?: true
+    frozen?: true
+    version?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WalletMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    balance?: true
+    frozen?: true
+    version?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WalletCountAggregateInputType = {
+    id?: true
+    userId?: true
+    balance?: true
+    frozen?: true
+    version?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WalletAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Wallet to aggregate.
+     */
+    where?: WalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wallets to fetch.
+     */
+    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Wallets
+    **/
+    _count?: true | WalletCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WalletAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WalletSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WalletMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WalletMaxAggregateInputType
+  }
+
+  export type GetWalletAggregateType<T extends WalletAggregateArgs> = {
+        [P in keyof T & keyof AggregateWallet]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWallet[P]>
+      : GetScalarType<T[P], AggregateWallet[P]>
+  }
+
+
+
+
+  export type WalletGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WalletWhereInput
+    orderBy?: WalletOrderByWithAggregationInput | WalletOrderByWithAggregationInput[]
+    by: WalletScalarFieldEnum[] | WalletScalarFieldEnum
+    having?: WalletScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WalletCountAggregateInputType | true
+    _avg?: WalletAvgAggregateInputType
+    _sum?: WalletSumAggregateInputType
+    _min?: WalletMinAggregateInputType
+    _max?: WalletMaxAggregateInputType
+  }
+
+  export type WalletGroupByOutputType = {
+    id: string
+    userId: string
+    balance: number
+    frozen: number
+    version: number
+    createdAt: Date
+    updatedAt: Date
+    _count: WalletCountAggregateOutputType | null
+    _avg: WalletAvgAggregateOutputType | null
+    _sum: WalletSumAggregateOutputType | null
+    _min: WalletMinAggregateOutputType | null
+    _max: WalletMaxAggregateOutputType | null
+  }
+
+  type GetWalletGroupByPayload<T extends WalletGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WalletGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WalletGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WalletGroupByOutputType[P]>
+            : GetScalarType<T[P], WalletGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WalletSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    balance?: boolean
+    frozen?: boolean
+    version?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["wallet"]>
+
+  export type WalletSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    balance?: boolean
+    frozen?: boolean
+    version?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["wallet"]>
+
+  export type WalletSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    balance?: boolean
+    frozen?: boolean
+    version?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["wallet"]>
+
+  export type WalletSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    balance?: boolean
+    frozen?: boolean
+    version?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WalletOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "balance" | "frozen" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["wallet"]>
+  export type WalletInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WalletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WalletIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $WalletPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Wallet"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      balance: number
+      frozen: number
+      version: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["wallet"]>
+    composites: {}
+  }
+
+  type WalletGetPayload<S extends boolean | null | undefined | WalletDefaultArgs> = $Result.GetResult<Prisma.$WalletPayload, S>
+
+  type WalletCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WalletFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WalletCountAggregateInputType | true
+    }
+
+  export interface WalletDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Wallet'], meta: { name: 'Wallet' } }
+    /**
+     * Find zero or one Wallet that matches the filter.
+     * @param {WalletFindUniqueArgs} args - Arguments to find a Wallet
+     * @example
+     * // Get one Wallet
+     * const wallet = await prisma.wallet.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WalletFindUniqueArgs>(args: SelectSubset<T, WalletFindUniqueArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Wallet that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WalletFindUniqueOrThrowArgs} args - Arguments to find a Wallet
+     * @example
+     * // Get one Wallet
+     * const wallet = await prisma.wallet.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WalletFindUniqueOrThrowArgs>(args: SelectSubset<T, WalletFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Wallet that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletFindFirstArgs} args - Arguments to find a Wallet
+     * @example
+     * // Get one Wallet
+     * const wallet = await prisma.wallet.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WalletFindFirstArgs>(args?: SelectSubset<T, WalletFindFirstArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Wallet that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletFindFirstOrThrowArgs} args - Arguments to find a Wallet
+     * @example
+     * // Get one Wallet
+     * const wallet = await prisma.wallet.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WalletFindFirstOrThrowArgs>(args?: SelectSubset<T, WalletFindFirstOrThrowArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Wallets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Wallets
+     * const wallets = await prisma.wallet.findMany()
+     * 
+     * // Get first 10 Wallets
+     * const wallets = await prisma.wallet.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const walletWithIdOnly = await prisma.wallet.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WalletFindManyArgs>(args?: SelectSubset<T, WalletFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Wallet.
+     * @param {WalletCreateArgs} args - Arguments to create a Wallet.
+     * @example
+     * // Create one Wallet
+     * const Wallet = await prisma.wallet.create({
+     *   data: {
+     *     // ... data to create a Wallet
+     *   }
+     * })
+     * 
+     */
+    create<T extends WalletCreateArgs>(args: SelectSubset<T, WalletCreateArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Wallets.
+     * @param {WalletCreateManyArgs} args - Arguments to create many Wallets.
+     * @example
+     * // Create many Wallets
+     * const wallet = await prisma.wallet.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WalletCreateManyArgs>(args?: SelectSubset<T, WalletCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Wallets and returns the data saved in the database.
+     * @param {WalletCreateManyAndReturnArgs} args - Arguments to create many Wallets.
+     * @example
+     * // Create many Wallets
+     * const wallet = await prisma.wallet.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Wallets and only return the `id`
+     * const walletWithIdOnly = await prisma.wallet.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WalletCreateManyAndReturnArgs>(args?: SelectSubset<T, WalletCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Wallet.
+     * @param {WalletDeleteArgs} args - Arguments to delete one Wallet.
+     * @example
+     * // Delete one Wallet
+     * const Wallet = await prisma.wallet.delete({
+     *   where: {
+     *     // ... filter to delete one Wallet
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WalletDeleteArgs>(args: SelectSubset<T, WalletDeleteArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Wallet.
+     * @param {WalletUpdateArgs} args - Arguments to update one Wallet.
+     * @example
+     * // Update one Wallet
+     * const wallet = await prisma.wallet.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WalletUpdateArgs>(args: SelectSubset<T, WalletUpdateArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Wallets.
+     * @param {WalletDeleteManyArgs} args - Arguments to filter Wallets to delete.
+     * @example
+     * // Delete a few Wallets
+     * const { count } = await prisma.wallet.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WalletDeleteManyArgs>(args?: SelectSubset<T, WalletDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Wallets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Wallets
+     * const wallet = await prisma.wallet.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WalletUpdateManyArgs>(args: SelectSubset<T, WalletUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Wallets and returns the data updated in the database.
+     * @param {WalletUpdateManyAndReturnArgs} args - Arguments to update many Wallets.
+     * @example
+     * // Update many Wallets
+     * const wallet = await prisma.wallet.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Wallets and only return the `id`
+     * const walletWithIdOnly = await prisma.wallet.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WalletUpdateManyAndReturnArgs>(args: SelectSubset<T, WalletUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Wallet.
+     * @param {WalletUpsertArgs} args - Arguments to update or create a Wallet.
+     * @example
+     * // Update or create a Wallet
+     * const wallet = await prisma.wallet.upsert({
+     *   create: {
+     *     // ... data to create a Wallet
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Wallet we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WalletUpsertArgs>(args: SelectSubset<T, WalletUpsertArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Wallets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletCountArgs} args - Arguments to filter Wallets to count.
+     * @example
+     * // Count the number of Wallets
+     * const count = await prisma.wallet.count({
+     *   where: {
+     *     // ... the filter for the Wallets we want to count
+     *   }
+     * })
+    **/
+    count<T extends WalletCountArgs>(
+      args?: Subset<T, WalletCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WalletCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Wallet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WalletAggregateArgs>(args: Subset<T, WalletAggregateArgs>): Prisma.PrismaPromise<GetWalletAggregateType<T>>
+
+    /**
+     * Group by Wallet.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WalletGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WalletGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WalletGroupByArgs['orderBy'] }
+        : { orderBy?: WalletGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WalletGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWalletGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Wallet model
+   */
+  readonly fields: WalletFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Wallet.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WalletClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Wallet model
+   */
+  interface WalletFieldRefs {
+    readonly id: FieldRef<"Wallet", 'String'>
+    readonly userId: FieldRef<"Wallet", 'String'>
+    readonly balance: FieldRef<"Wallet", 'Int'>
+    readonly frozen: FieldRef<"Wallet", 'Int'>
+    readonly version: FieldRef<"Wallet", 'Int'>
+    readonly createdAt: FieldRef<"Wallet", 'DateTime'>
+    readonly updatedAt: FieldRef<"Wallet", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Wallet findUnique
+   */
+  export type WalletFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * Filter, which Wallet to fetch.
+     */
+    where: WalletWhereUniqueInput
+  }
+
+  /**
+   * Wallet findUniqueOrThrow
+   */
+  export type WalletFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * Filter, which Wallet to fetch.
+     */
+    where: WalletWhereUniqueInput
+  }
+
+  /**
+   * Wallet findFirst
+   */
+  export type WalletFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * Filter, which Wallet to fetch.
+     */
+    where?: WalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wallets to fetch.
+     */
+    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Wallets.
+     */
+    cursor?: WalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Wallets.
+     */
+    distinct?: WalletScalarFieldEnum | WalletScalarFieldEnum[]
+  }
+
+  /**
+   * Wallet findFirstOrThrow
+   */
+  export type WalletFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * Filter, which Wallet to fetch.
+     */
+    where?: WalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wallets to fetch.
+     */
+    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Wallets.
+     */
+    cursor?: WalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Wallets.
+     */
+    distinct?: WalletScalarFieldEnum | WalletScalarFieldEnum[]
+  }
+
+  /**
+   * Wallet findMany
+   */
+  export type WalletFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * Filter, which Wallets to fetch.
+     */
+    where?: WalletWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wallets to fetch.
+     */
+    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Wallets.
+     */
+    cursor?: WalletWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wallets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wallets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Wallets.
+     */
+    distinct?: WalletScalarFieldEnum | WalletScalarFieldEnum[]
+  }
+
+  /**
+   * Wallet create
+   */
+  export type WalletCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Wallet.
+     */
+    data: XOR<WalletCreateInput, WalletUncheckedCreateInput>
+  }
+
+  /**
+   * Wallet createMany
+   */
+  export type WalletCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Wallets.
+     */
+    data: WalletCreateManyInput | WalletCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Wallet createManyAndReturn
+   */
+  export type WalletCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * The data used to create many Wallets.
+     */
+    data: WalletCreateManyInput | WalletCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Wallet update
+   */
+  export type WalletUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Wallet.
+     */
+    data: XOR<WalletUpdateInput, WalletUncheckedUpdateInput>
+    /**
+     * Choose, which Wallet to update.
+     */
+    where: WalletWhereUniqueInput
+  }
+
+  /**
+   * Wallet updateMany
+   */
+  export type WalletUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Wallets.
+     */
+    data: XOR<WalletUpdateManyMutationInput, WalletUncheckedUpdateManyInput>
+    /**
+     * Filter which Wallets to update
+     */
+    where?: WalletWhereInput
+    /**
+     * Limit how many Wallets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Wallet updateManyAndReturn
+   */
+  export type WalletUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * The data used to update Wallets.
+     */
+    data: XOR<WalletUpdateManyMutationInput, WalletUncheckedUpdateManyInput>
+    /**
+     * Filter which Wallets to update
+     */
+    where?: WalletWhereInput
+    /**
+     * Limit how many Wallets to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Wallet upsert
+   */
+  export type WalletUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Wallet to update in case it exists.
+     */
+    where: WalletWhereUniqueInput
+    /**
+     * In case the Wallet found by the `where` argument doesn't exist, create a new Wallet with this data.
+     */
+    create: XOR<WalletCreateInput, WalletUncheckedCreateInput>
+    /**
+     * In case the Wallet was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WalletUpdateInput, WalletUncheckedUpdateInput>
+  }
+
+  /**
+   * Wallet delete
+   */
+  export type WalletDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+    /**
+     * Filter which Wallet to delete.
+     */
+    where: WalletWhereUniqueInput
+  }
+
+  /**
+   * Wallet deleteMany
+   */
+  export type WalletDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Wallets to delete
+     */
+    where?: WalletWhereInput
+    /**
+     * Limit how many Wallets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Wallet without action
+   */
+  export type WalletDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wallet
+     */
+    select?: WalletSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wallet
+     */
+    omit?: WalletOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WalletInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Review
+   */
+
+  export type AggregateReview = {
+    _count: ReviewCountAggregateOutputType | null
+    _avg: ReviewAvgAggregateOutputType | null
+    _sum: ReviewSumAggregateOutputType | null
+    _min: ReviewMinAggregateOutputType | null
+    _max: ReviewMaxAggregateOutputType | null
+  }
+
+  export type ReviewAvgAggregateOutputType = {
+    rating: number | null
+  }
+
+  export type ReviewSumAggregateOutputType = {
+    rating: number | null
+  }
+
+  export type ReviewMinAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    clientId: string | null
+    artisanId: string | null
+    rating: number | null
+    comment: string | null
+    createdAt: Date | null
+  }
+
+  export type ReviewMaxAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    clientId: string | null
+    artisanId: string | null
+    rating: number | null
+    comment: string | null
+    createdAt: Date | null
+  }
+
+  export type ReviewCountAggregateOutputType = {
+    id: number
+    contractId: number
+    clientId: number
+    artisanId: number
+    rating: number
+    comment: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ReviewAvgAggregateInputType = {
+    rating?: true
+  }
+
+  export type ReviewSumAggregateInputType = {
+    rating?: true
+  }
+
+  export type ReviewMinAggregateInputType = {
+    id?: true
+    contractId?: true
+    clientId?: true
+    artisanId?: true
+    rating?: true
+    comment?: true
+    createdAt?: true
+  }
+
+  export type ReviewMaxAggregateInputType = {
+    id?: true
+    contractId?: true
+    clientId?: true
+    artisanId?: true
+    rating?: true
+    comment?: true
+    createdAt?: true
+  }
+
+  export type ReviewCountAggregateInputType = {
+    id?: true
+    contractId?: true
+    clientId?: true
+    artisanId?: true
+    rating?: true
+    comment?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ReviewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Review to aggregate.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Reviews
+    **/
+    _count?: true | ReviewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReviewAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReviewSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReviewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReviewMaxAggregateInputType
+  }
+
+  export type GetReviewAggregateType<T extends ReviewAggregateArgs> = {
+        [P in keyof T & keyof AggregateReview]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReview[P]>
+      : GetScalarType<T[P], AggregateReview[P]>
+  }
+
+
+
+
+  export type ReviewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithAggregationInput | ReviewOrderByWithAggregationInput[]
+    by: ReviewScalarFieldEnum[] | ReviewScalarFieldEnum
+    having?: ReviewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReviewCountAggregateInputType | true
+    _avg?: ReviewAvgAggregateInputType
+    _sum?: ReviewSumAggregateInputType
+    _min?: ReviewMinAggregateInputType
+    _max?: ReviewMaxAggregateInputType
+  }
+
+  export type ReviewGroupByOutputType = {
+    id: string
+    contractId: string
+    clientId: string
+    artisanId: string
+    rating: number
+    comment: string | null
+    createdAt: Date
+    _count: ReviewCountAggregateOutputType | null
+    _avg: ReviewAvgAggregateOutputType | null
+    _sum: ReviewSumAggregateOutputType | null
+    _min: ReviewMinAggregateOutputType | null
+    _max: ReviewMaxAggregateOutputType | null
+  }
+
+  type GetReviewGroupByPayload<T extends ReviewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReviewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReviewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReviewGroupByOutputType[P]>
+            : GetScalarType<T[P], ReviewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReviewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    rating?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    rating?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    rating?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectScalar = {
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    rating?: boolean
+    comment?: boolean
+    createdAt?: boolean
+  }
+
+  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "clientId" | "artisanId" | "rating" | "comment" | "createdAt", ExtArgs["result"]["review"]>
+  export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ReviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Review"
+    objects: {
+      contract: Prisma.$ContractPayload<ExtArgs>
+      client: Prisma.$UserPayload<ExtArgs>
+      artisan: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contractId: string
+      clientId: string
+      artisanId: string
+      rating: number
+      comment: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["review"]>
+    composites: {}
+  }
+
+  type ReviewGetPayload<S extends boolean | null | undefined | ReviewDefaultArgs> = $Result.GetResult<Prisma.$ReviewPayload, S>
+
+  type ReviewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReviewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReviewCountAggregateInputType | true
+    }
+
+  export interface ReviewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Review'], meta: { name: 'Review' } }
+    /**
+     * Find zero or one Review that matches the filter.
+     * @param {ReviewFindUniqueArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReviewFindUniqueArgs>(args: SelectSubset<T, ReviewFindUniqueArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Review that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReviewFindUniqueOrThrowArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReviewFindUniqueOrThrowArgs>(args: SelectSubset<T, ReviewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Review that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindFirstArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReviewFindFirstArgs>(args?: SelectSubset<T, ReviewFindFirstArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Review that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindFirstOrThrowArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReviewFindFirstOrThrowArgs>(args?: SelectSubset<T, ReviewFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Reviews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Reviews
+     * const reviews = await prisma.review.findMany()
+     * 
+     * // Get first 10 Reviews
+     * const reviews = await prisma.review.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reviewWithIdOnly = await prisma.review.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReviewFindManyArgs>(args?: SelectSubset<T, ReviewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Review.
+     * @param {ReviewCreateArgs} args - Arguments to create a Review.
+     * @example
+     * // Create one Review
+     * const Review = await prisma.review.create({
+     *   data: {
+     *     // ... data to create a Review
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReviewCreateArgs>(args: SelectSubset<T, ReviewCreateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Reviews.
+     * @param {ReviewCreateManyArgs} args - Arguments to create many Reviews.
+     * @example
+     * // Create many Reviews
+     * const review = await prisma.review.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReviewCreateManyArgs>(args?: SelectSubset<T, ReviewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Reviews and returns the data saved in the database.
+     * @param {ReviewCreateManyAndReturnArgs} args - Arguments to create many Reviews.
+     * @example
+     * // Create many Reviews
+     * const review = await prisma.review.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Reviews and only return the `id`
+     * const reviewWithIdOnly = await prisma.review.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReviewCreateManyAndReturnArgs>(args?: SelectSubset<T, ReviewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Review.
+     * @param {ReviewDeleteArgs} args - Arguments to delete one Review.
+     * @example
+     * // Delete one Review
+     * const Review = await prisma.review.delete({
+     *   where: {
+     *     // ... filter to delete one Review
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReviewDeleteArgs>(args: SelectSubset<T, ReviewDeleteArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Review.
+     * @param {ReviewUpdateArgs} args - Arguments to update one Review.
+     * @example
+     * // Update one Review
+     * const review = await prisma.review.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReviewUpdateArgs>(args: SelectSubset<T, ReviewUpdateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Reviews.
+     * @param {ReviewDeleteManyArgs} args - Arguments to filter Reviews to delete.
+     * @example
+     * // Delete a few Reviews
+     * const { count } = await prisma.review.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReviewDeleteManyArgs>(args?: SelectSubset<T, ReviewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Reviews
+     * const review = await prisma.review.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReviewUpdateManyArgs>(args: SelectSubset<T, ReviewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reviews and returns the data updated in the database.
+     * @param {ReviewUpdateManyAndReturnArgs} args - Arguments to update many Reviews.
+     * @example
+     * // Update many Reviews
+     * const review = await prisma.review.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Reviews and only return the `id`
+     * const reviewWithIdOnly = await prisma.review.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReviewUpdateManyAndReturnArgs>(args: SelectSubset<T, ReviewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Review.
+     * @param {ReviewUpsertArgs} args - Arguments to update or create a Review.
+     * @example
+     * // Update or create a Review
+     * const review = await prisma.review.upsert({
+     *   create: {
+     *     // ... data to create a Review
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Review we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReviewUpsertArgs>(args: SelectSubset<T, ReviewUpsertArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Reviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewCountArgs} args - Arguments to filter Reviews to count.
+     * @example
+     * // Count the number of Reviews
+     * const count = await prisma.review.count({
+     *   where: {
+     *     // ... the filter for the Reviews we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReviewCountArgs>(
+      args?: Subset<T, ReviewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReviewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Review.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReviewAggregateArgs>(args: Subset<T, ReviewAggregateArgs>): Prisma.PrismaPromise<GetReviewAggregateType<T>>
+
+    /**
+     * Group by Review.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReviewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReviewGroupByArgs['orderBy'] }
+        : { orderBy?: ReviewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReviewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReviewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Review model
+   */
+  readonly fields: ReviewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Review.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contract<T extends ContractDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContractDefaultArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Review model
+   */
+  interface ReviewFieldRefs {
+    readonly id: FieldRef<"Review", 'String'>
+    readonly contractId: FieldRef<"Review", 'String'>
+    readonly clientId: FieldRef<"Review", 'String'>
+    readonly artisanId: FieldRef<"Review", 'String'>
+    readonly rating: FieldRef<"Review", 'Int'>
+    readonly comment: FieldRef<"Review", 'String'>
+    readonly createdAt: FieldRef<"Review", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Review findUnique
+   */
+  export type ReviewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review findUniqueOrThrow
+   */
+  export type ReviewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review findFirst
+   */
+  export type ReviewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review findFirstOrThrow
+   */
+  export type ReviewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review findMany
+   */
+  export type ReviewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Reviews to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review create
+   */
+  export type ReviewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Review.
+     */
+    data: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
+  }
+
+  /**
+   * Review createMany
+   */
+  export type ReviewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Reviews.
+     */
+    data: ReviewCreateManyInput | ReviewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Review createManyAndReturn
+   */
+  export type ReviewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * The data used to create many Reviews.
+     */
+    data: ReviewCreateManyInput | ReviewCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Review update
+   */
+  export type ReviewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Review.
+     */
+    data: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
+    /**
+     * Choose, which Review to update.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review updateMany
+   */
+  export type ReviewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Reviews.
+     */
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Reviews to update
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Review updateManyAndReturn
+   */
+  export type ReviewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * The data used to update Reviews.
+     */
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Reviews to update
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Review upsert
+   */
+  export type ReviewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Review to update in case it exists.
+     */
+    where: ReviewWhereUniqueInput
+    /**
+     * In case the Review found by the `where` argument doesn't exist, create a new Review with this data.
+     */
+    create: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
+    /**
+     * In case the Review was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
+  }
+
+  /**
+   * Review delete
+   */
+  export type ReviewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter which Review to delete.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review deleteMany
+   */
+  export type ReviewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reviews to delete
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Review without action
+   */
+  export type ReviewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
   }
 
 
@@ -9517,11 +16695,18 @@ export namespace Prisma {
   export const JobScalarFieldEnum: {
     id: 'id',
     title: 'title',
-    contractId: 'contractId',
+    description: 'description',
+    budget: 'budget',
     clientId: 'clientId',
     artisanId: 'artisanId',
+    contractId: 'contractId',
     amount: 'amount',
     status: 'status',
+    location: 'location',
+    requiredSkills: 'requiredSkills',
+    category: 'category',
+    deadline: 'deadline',
+    requirements: 'requirements',
     flagged: 'flagged',
     forceClosedAt: 'forceClosedAt',
     forceCloseReason: 'forceCloseReason',
@@ -9539,10 +16724,99 @@ export namespace Prisma {
     amount: 'amount',
     status: 'status',
     reference: 'reference',
-    createdAt: 'createdAt'
+    metadata: 'metadata',
+    createdAt: 'createdAt',
+    completedAt: 'completedAt',
+    failedAt: 'failedAt',
+    failureReason: 'failureReason'
   };
 
   export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
+  export const ArtisanProfileScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    bio: 'bio',
+    skills: 'skills',
+    experience: 'experience',
+    portfolio: 'portfolio',
+    verified: 'verified',
+    rating: 'rating',
+    reviewCount: 'reviewCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ArtisanProfileScalarFieldEnum = (typeof ArtisanProfileScalarFieldEnum)[keyof typeof ArtisanProfileScalarFieldEnum]
+
+
+  export const ProposalScalarFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    artisanId: 'artisanId',
+    clientId: 'clientId',
+    amount: 'amount',
+    message: 'message',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProposalScalarFieldEnum = (typeof ProposalScalarFieldEnum)[keyof typeof ProposalScalarFieldEnum]
+
+
+  export const ContractScalarFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    proposalId: 'proposalId',
+    clientId: 'clientId',
+    artisanId: 'artisanId',
+    amount: 'amount',
+    status: 'status',
+    fundedAt: 'fundedAt',
+    activatedAt: 'activatedAt',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    cancelledAt: 'cancelledAt',
+    clientConfirmedCompletion: 'clientConfirmedCompletion',
+    clientConfirmedAt: 'clientConfirmedAt',
+    artisanConfirmedCompletion: 'artisanConfirmedCompletion',
+    artisanConfirmedAt: 'artisanConfirmedAt',
+    escrowReleased: 'escrowReleased',
+    escrowReleasedAt: 'escrowReleasedAt',
+    platformFeeDeducted: 'platformFeeDeducted',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ContractScalarFieldEnum = (typeof ContractScalarFieldEnum)[keyof typeof ContractScalarFieldEnum]
+
+
+  export const WalletScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    balance: 'balance',
+    frozen: 'frozen',
+    version: 'version',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WalletScalarFieldEnum = (typeof WalletScalarFieldEnum)[keyof typeof WalletScalarFieldEnum]
+
+
+  export const ReviewScalarFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    clientId: 'clientId',
+    artisanId: 'artisanId',
+    rating: 'rating',
+    comment: 'comment',
+    createdAt: 'createdAt'
+  };
+
+  export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
   export const NotificationScalarFieldEnum: {
@@ -9784,20 +17058,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'AuditEntityType'
-   */
-  export type EnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType'>
-    
-
-
-  /**
-   * Reference to a field of type 'AuditEntityType[]'
-   */
-  export type ListEnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -9808,6 +17068,48 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProposalStatus'
+   */
+  export type EnumProposalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProposalStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProposalStatus[]'
+   */
+  export type ListEnumProposalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProposalStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ContractStatus'
+   */
+  export type EnumContractStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ContractStatus[]'
+   */
+  export type ListEnumContractStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AuditEntityType'
+   */
+  export type EnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AuditEntityType[]'
+   */
+  export type ListEnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType[]'>
     
   /**
    * Deep Input Types
@@ -9831,8 +17133,19 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    artisanProfile?: XOR<ArtisanProfileNullableScalarRelationFilter, ArtisanProfileWhereInput> | null
+    sentProposals?: ProposalListRelationFilter
+    receivedProposals?: ProposalListRelationFilter
+    clientContracts?: ContractListRelationFilter
+    artisanContracts?: ContractListRelationFilter
+    clientJobs?: JobListRelationFilter
+    artisanJobs?: JobListRelationFilter
+    wallet?: XOR<WalletNullableScalarRelationFilter, WalletWhereInput> | null
+    sentReviews?: ReviewListRelationFilter
+    receivedReviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
     transactions?: TransactionListRelationFilter
+    disputes?: DisputeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -9849,8 +17162,19 @@ export namespace Prisma {
     createdAt?: SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
+    artisanProfile?: ArtisanProfileOrderByWithRelationInput
+    sentProposals?: ProposalOrderByRelationAggregateInput
+    receivedProposals?: ProposalOrderByRelationAggregateInput
+    clientContracts?: ContractOrderByRelationAggregateInput
+    artisanContracts?: ContractOrderByRelationAggregateInput
+    clientJobs?: JobOrderByRelationAggregateInput
+    artisanJobs?: JobOrderByRelationAggregateInput
+    wallet?: WalletOrderByWithRelationInput
+    sentReviews?: ReviewOrderByRelationAggregateInput
+    receivedReviews?: ReviewOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    disputes?: DisputeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -9870,8 +17194,19 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    artisanProfile?: XOR<ArtisanProfileNullableScalarRelationFilter, ArtisanProfileWhereInput> | null
+    sentProposals?: ProposalListRelationFilter
+    receivedProposals?: ProposalListRelationFilter
+    clientContracts?: ContractListRelationFilter
+    artisanContracts?: ContractListRelationFilter
+    clientJobs?: JobListRelationFilter
+    artisanJobs?: JobListRelationFilter
+    wallet?: XOR<WalletNullableScalarRelationFilter, WalletWhereInput> | null
+    sentReviews?: ReviewListRelationFilter
+    receivedReviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
     transactions?: TransactionListRelationFilter
+    disputes?: DisputeListRelationFilter
   }, "id" | "email" | "passwordResetTokenHash">
 
   export type UserOrderByWithAggregationInput = {
@@ -9917,8 +17252,8 @@ export namespace Prisma {
     OR?: DisputeWhereInput[]
     NOT?: DisputeWhereInput | DisputeWhereInput[]
     id?: StringFilter<"Dispute"> | string
-    contractId?: StringFilter<"Dispute"> | string
-    jobId?: StringFilter<"Dispute"> | string
+    contractId?: StringNullableFilter<"Dispute"> | string | null
+    jobId?: StringNullableFilter<"Dispute"> | string | null
     clientId?: StringFilter<"Dispute"> | string
     artisanId?: StringFilter<"Dispute"> | string
     amount?: IntFilter<"Dispute"> | number
@@ -9933,12 +17268,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Dispute"> | Date | string
     updatedAt?: DateTimeFilter<"Dispute"> | Date | string
     history?: DisputeHistoryListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type DisputeOrderByWithRelationInput = {
     id?: SortOrder
-    contractId?: SortOrder
-    jobId?: SortOrder
+    contractId?: SortOrderInput | SortOrder
+    jobId?: SortOrderInput | SortOrder
     clientId?: SortOrder
     artisanId?: SortOrder
     amount?: SortOrder
@@ -9953,15 +17289,16 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     history?: DisputeHistoryOrderByRelationAggregateInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type DisputeWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    jobId?: string
     AND?: DisputeWhereInput | DisputeWhereInput[]
     OR?: DisputeWhereInput[]
     NOT?: DisputeWhereInput | DisputeWhereInput[]
-    contractId?: StringFilter<"Dispute"> | string
+    contractId?: StringNullableFilter<"Dispute"> | string | null
+    jobId?: StringNullableFilter<"Dispute"> | string | null
     clientId?: StringFilter<"Dispute"> | string
     artisanId?: StringFilter<"Dispute"> | string
     amount?: IntFilter<"Dispute"> | number
@@ -9976,12 +17313,13 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Dispute"> | Date | string
     updatedAt?: DateTimeFilter<"Dispute"> | Date | string
     history?: DisputeHistoryListRelationFilter
-  }, "id" | "jobId">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
 
   export type DisputeOrderByWithAggregationInput = {
     id?: SortOrder
-    contractId?: SortOrder
-    jobId?: SortOrder
+    contractId?: SortOrderInput | SortOrder
+    jobId?: SortOrderInput | SortOrder
     clientId?: SortOrder
     artisanId?: SortOrder
     amount?: SortOrder
@@ -10007,8 +17345,8 @@ export namespace Prisma {
     OR?: DisputeScalarWhereWithAggregatesInput[]
     NOT?: DisputeScalarWhereWithAggregatesInput | DisputeScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Dispute"> | string
-    contractId?: StringWithAggregatesFilter<"Dispute"> | string
-    jobId?: StringWithAggregatesFilter<"Dispute"> | string
+    contractId?: StringNullableWithAggregatesFilter<"Dispute"> | string | null
+    jobId?: StringNullableWithAggregatesFilter<"Dispute"> | string | null
     clientId?: StringWithAggregatesFilter<"Dispute"> | string
     artisanId?: StringWithAggregatesFilter<"Dispute"> | string
     amount?: IntWithAggregatesFilter<"Dispute"> | number
@@ -10090,59 +17428,99 @@ export namespace Prisma {
     NOT?: JobWhereInput | JobWhereInput[]
     id?: StringFilter<"Job"> | string
     title?: StringFilter<"Job"> | string
-    contractId?: StringFilter<"Job"> | string
+    description?: StringNullableFilter<"Job"> | string | null
+    budget?: IntNullableFilter<"Job"> | number | null
     clientId?: StringFilter<"Job"> | string
-    artisanId?: StringFilter<"Job"> | string
-    amount?: IntFilter<"Job"> | number
+    artisanId?: StringNullableFilter<"Job"> | string | null
+    contractId?: StringNullableFilter<"Job"> | string | null
+    amount?: IntNullableFilter<"Job"> | number | null
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableFilter<"Job">
+    category?: StringNullableFilter<"Job"> | string | null
+    deadline?: DateTimeNullableFilter<"Job"> | Date | string | null
+    requirements?: StringNullableFilter<"Job"> | string | null
     flagged?: BoolFilter<"Job"> | boolean
     forceClosedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     forceCloseReason?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    proposals?: ProposalListRelationFilter
   }
 
   export type JobOrderByWithRelationInput = {
     id?: SortOrder
     title?: SortOrder
-    contractId?: SortOrder
+    description?: SortOrderInput | SortOrder
+    budget?: SortOrderInput | SortOrder
     clientId?: SortOrder
-    artisanId?: SortOrder
-    amount?: SortOrder
+    artisanId?: SortOrderInput | SortOrder
+    contractId?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
     status?: SortOrder
+    location?: SortOrderInput | SortOrder
+    requiredSkills?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    requirements?: SortOrderInput | SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrderInput | SortOrder
     forceCloseReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    client?: UserOrderByWithRelationInput
+    artisan?: UserOrderByWithRelationInput
+    contract?: ContractOrderByWithRelationInput
+    proposals?: ProposalOrderByRelationAggregateInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    contractId?: string
     AND?: JobWhereInput | JobWhereInput[]
     OR?: JobWhereInput[]
     NOT?: JobWhereInput | JobWhereInput[]
     title?: StringFilter<"Job"> | string
-    contractId?: StringFilter<"Job"> | string
+    description?: StringNullableFilter<"Job"> | string | null
+    budget?: IntNullableFilter<"Job"> | number | null
     clientId?: StringFilter<"Job"> | string
-    artisanId?: StringFilter<"Job"> | string
-    amount?: IntFilter<"Job"> | number
+    artisanId?: StringNullableFilter<"Job"> | string | null
+    amount?: IntNullableFilter<"Job"> | number | null
     status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableFilter<"Job">
+    category?: StringNullableFilter<"Job"> | string | null
+    deadline?: DateTimeNullableFilter<"Job"> | Date | string | null
+    requirements?: StringNullableFilter<"Job"> | string | null
     flagged?: BoolFilter<"Job"> | boolean
     forceClosedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     forceCloseReason?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
-  }, "id">
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    proposals?: ProposalListRelationFilter
+  }, "id" | "contractId">
 
   export type JobOrderByWithAggregationInput = {
     id?: SortOrder
     title?: SortOrder
-    contractId?: SortOrder
+    description?: SortOrderInput | SortOrder
+    budget?: SortOrderInput | SortOrder
     clientId?: SortOrder
-    artisanId?: SortOrder
-    amount?: SortOrder
+    artisanId?: SortOrderInput | SortOrder
+    contractId?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
     status?: SortOrder
+    location?: SortOrderInput | SortOrder
+    requiredSkills?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    requirements?: SortOrderInput | SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrderInput | SortOrder
     forceCloseReason?: SortOrderInput | SortOrder
@@ -10161,11 +17539,18 @@ export namespace Prisma {
     NOT?: JobScalarWhereWithAggregatesInput | JobScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Job"> | string
     title?: StringWithAggregatesFilter<"Job"> | string
-    contractId?: StringWithAggregatesFilter<"Job"> | string
+    description?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    budget?: IntNullableWithAggregatesFilter<"Job"> | number | null
     clientId?: StringWithAggregatesFilter<"Job"> | string
-    artisanId?: StringWithAggregatesFilter<"Job"> | string
-    amount?: IntWithAggregatesFilter<"Job"> | number
+    artisanId?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    contractId?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    amount?: IntNullableWithAggregatesFilter<"Job"> | number | null
     status?: EnumJobStatusWithAggregatesFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableWithAggregatesFilter<"Job">
+    category?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    deadline?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
+    requirements?: StringNullableWithAggregatesFilter<"Job"> | string | null
     flagged?: BoolWithAggregatesFilter<"Job"> | boolean
     forceClosedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     forceCloseReason?: StringNullableWithAggregatesFilter<"Job"> | string | null
@@ -10183,7 +17568,11 @@ export namespace Prisma {
     amount?: IntFilter<"Transaction"> | number
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     reference?: StringFilter<"Transaction"> | string
+    metadata?: JsonNullableFilter<"Transaction">
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    completedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+    failedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+    failureReason?: StringNullableFilter<"Transaction"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -10194,7 +17583,11 @@ export namespace Prisma {
     amount?: SortOrder
     status?: SortOrder
     reference?: SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    failedAt?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -10208,7 +17601,11 @@ export namespace Prisma {
     amount?: IntFilter<"Transaction"> | number
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     reference?: StringFilter<"Transaction"> | string
+    metadata?: JsonNullableFilter<"Transaction">
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    completedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+    failedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+    failureReason?: StringNullableFilter<"Transaction"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -10219,7 +17616,11 @@ export namespace Prisma {
     amount?: SortOrder
     status?: SortOrder
     reference?: SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    failedAt?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
     _count?: TransactionCountOrderByAggregateInput
     _avg?: TransactionAvgOrderByAggregateInput
     _max?: TransactionMaxOrderByAggregateInput
@@ -10237,7 +17638,474 @@ export namespace Prisma {
     amount?: IntWithAggregatesFilter<"Transaction"> | number
     status?: EnumTransactionStatusWithAggregatesFilter<"Transaction"> | $Enums.TransactionStatus
     reference?: StringWithAggregatesFilter<"Transaction"> | string
+    metadata?: JsonNullableWithAggregatesFilter<"Transaction">
     createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"Transaction"> | Date | string | null
+    failedAt?: DateTimeNullableWithAggregatesFilter<"Transaction"> | Date | string | null
+    failureReason?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+  }
+
+  export type ArtisanProfileWhereInput = {
+    AND?: ArtisanProfileWhereInput | ArtisanProfileWhereInput[]
+    OR?: ArtisanProfileWhereInput[]
+    NOT?: ArtisanProfileWhereInput | ArtisanProfileWhereInput[]
+    id?: StringFilter<"ArtisanProfile"> | string
+    userId?: StringFilter<"ArtisanProfile"> | string
+    bio?: StringNullableFilter<"ArtisanProfile"> | string | null
+    skills?: JsonFilter<"ArtisanProfile">
+    experience?: StringNullableFilter<"ArtisanProfile"> | string | null
+    portfolio?: JsonFilter<"ArtisanProfile">
+    verified?: BoolFilter<"ArtisanProfile"> | boolean
+    rating?: FloatNullableFilter<"ArtisanProfile"> | number | null
+    reviewCount?: IntFilter<"ArtisanProfile"> | number
+    createdAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ArtisanProfileOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bio?: SortOrderInput | SortOrder
+    skills?: SortOrder
+    experience?: SortOrderInput | SortOrder
+    portfolio?: SortOrder
+    verified?: SortOrder
+    rating?: SortOrderInput | SortOrder
+    reviewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ArtisanProfileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: ArtisanProfileWhereInput | ArtisanProfileWhereInput[]
+    OR?: ArtisanProfileWhereInput[]
+    NOT?: ArtisanProfileWhereInput | ArtisanProfileWhereInput[]
+    bio?: StringNullableFilter<"ArtisanProfile"> | string | null
+    skills?: JsonFilter<"ArtisanProfile">
+    experience?: StringNullableFilter<"ArtisanProfile"> | string | null
+    portfolio?: JsonFilter<"ArtisanProfile">
+    verified?: BoolFilter<"ArtisanProfile"> | boolean
+    rating?: FloatNullableFilter<"ArtisanProfile"> | number | null
+    reviewCount?: IntFilter<"ArtisanProfile"> | number
+    createdAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type ArtisanProfileOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bio?: SortOrderInput | SortOrder
+    skills?: SortOrder
+    experience?: SortOrderInput | SortOrder
+    portfolio?: SortOrder
+    verified?: SortOrder
+    rating?: SortOrderInput | SortOrder
+    reviewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ArtisanProfileCountOrderByAggregateInput
+    _avg?: ArtisanProfileAvgOrderByAggregateInput
+    _max?: ArtisanProfileMaxOrderByAggregateInput
+    _min?: ArtisanProfileMinOrderByAggregateInput
+    _sum?: ArtisanProfileSumOrderByAggregateInput
+  }
+
+  export type ArtisanProfileScalarWhereWithAggregatesInput = {
+    AND?: ArtisanProfileScalarWhereWithAggregatesInput | ArtisanProfileScalarWhereWithAggregatesInput[]
+    OR?: ArtisanProfileScalarWhereWithAggregatesInput[]
+    NOT?: ArtisanProfileScalarWhereWithAggregatesInput | ArtisanProfileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ArtisanProfile"> | string
+    userId?: StringWithAggregatesFilter<"ArtisanProfile"> | string
+    bio?: StringNullableWithAggregatesFilter<"ArtisanProfile"> | string | null
+    skills?: JsonWithAggregatesFilter<"ArtisanProfile">
+    experience?: StringNullableWithAggregatesFilter<"ArtisanProfile"> | string | null
+    portfolio?: JsonWithAggregatesFilter<"ArtisanProfile">
+    verified?: BoolWithAggregatesFilter<"ArtisanProfile"> | boolean
+    rating?: FloatNullableWithAggregatesFilter<"ArtisanProfile"> | number | null
+    reviewCount?: IntWithAggregatesFilter<"ArtisanProfile"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"ArtisanProfile"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ArtisanProfile"> | Date | string
+  }
+
+  export type ProposalWhereInput = {
+    AND?: ProposalWhereInput | ProposalWhereInput[]
+    OR?: ProposalWhereInput[]
+    NOT?: ProposalWhereInput | ProposalWhereInput[]
+    id?: StringFilter<"Proposal"> | string
+    jobId?: StringFilter<"Proposal"> | string
+    artisanId?: StringFilter<"Proposal"> | string
+    clientId?: StringFilter<"Proposal"> | string
+    amount?: IntFilter<"Proposal"> | number
+    message?: StringFilter<"Proposal"> | string
+    status?: EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
+    createdAt?: DateTimeFilter<"Proposal"> | Date | string
+    updatedAt?: DateTimeFilter<"Proposal"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+  }
+
+  export type ProposalOrderByWithRelationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    artisanId?: SortOrder
+    clientId?: SortOrder
+    amount?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    job?: JobOrderByWithRelationInput
+    artisan?: UserOrderByWithRelationInput
+    client?: UserOrderByWithRelationInput
+    contract?: ContractOrderByWithRelationInput
+  }
+
+  export type ProposalWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    jobId_artisanId?: ProposalJobIdArtisanIdCompoundUniqueInput
+    AND?: ProposalWhereInput | ProposalWhereInput[]
+    OR?: ProposalWhereInput[]
+    NOT?: ProposalWhereInput | ProposalWhereInput[]
+    jobId?: StringFilter<"Proposal"> | string
+    artisanId?: StringFilter<"Proposal"> | string
+    clientId?: StringFilter<"Proposal"> | string
+    amount?: IntFilter<"Proposal"> | number
+    message?: StringFilter<"Proposal"> | string
+    status?: EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
+    createdAt?: DateTimeFilter<"Proposal"> | Date | string
+    updatedAt?: DateTimeFilter<"Proposal"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+  }, "id" | "jobId_artisanId">
+
+  export type ProposalOrderByWithAggregationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    artisanId?: SortOrder
+    clientId?: SortOrder
+    amount?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProposalCountOrderByAggregateInput
+    _avg?: ProposalAvgOrderByAggregateInput
+    _max?: ProposalMaxOrderByAggregateInput
+    _min?: ProposalMinOrderByAggregateInput
+    _sum?: ProposalSumOrderByAggregateInput
+  }
+
+  export type ProposalScalarWhereWithAggregatesInput = {
+    AND?: ProposalScalarWhereWithAggregatesInput | ProposalScalarWhereWithAggregatesInput[]
+    OR?: ProposalScalarWhereWithAggregatesInput[]
+    NOT?: ProposalScalarWhereWithAggregatesInput | ProposalScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Proposal"> | string
+    jobId?: StringWithAggregatesFilter<"Proposal"> | string
+    artisanId?: StringWithAggregatesFilter<"Proposal"> | string
+    clientId?: StringWithAggregatesFilter<"Proposal"> | string
+    amount?: IntWithAggregatesFilter<"Proposal"> | number
+    message?: StringWithAggregatesFilter<"Proposal"> | string
+    status?: EnumProposalStatusWithAggregatesFilter<"Proposal"> | $Enums.ProposalStatus
+    createdAt?: DateTimeWithAggregatesFilter<"Proposal"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Proposal"> | Date | string
+  }
+
+  export type ContractWhereInput = {
+    AND?: ContractWhereInput | ContractWhereInput[]
+    OR?: ContractWhereInput[]
+    NOT?: ContractWhereInput | ContractWhereInput[]
+    id?: StringFilter<"Contract"> | string
+    jobId?: StringFilter<"Contract"> | string
+    proposalId?: StringFilter<"Contract"> | string
+    clientId?: StringFilter<"Contract"> | string
+    artisanId?: StringFilter<"Contract"> | string
+    amount?: IntFilter<"Contract"> | number
+    status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    fundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    activatedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    startedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    clientConfirmedCompletion?: BoolFilter<"Contract"> | boolean
+    clientConfirmedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    artisanConfirmedCompletion?: BoolFilter<"Contract"> | boolean
+    artisanConfirmedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    escrowReleased?: BoolFilter<"Contract"> | boolean
+    escrowReleasedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    platformFeeDeducted?: BoolFilter<"Contract"> | boolean
+    createdAt?: DateTimeFilter<"Contract"> | Date | string
+    updatedAt?: DateTimeFilter<"Contract"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
+  }
+
+  export type ContractOrderByWithRelationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    proposalId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    fundedAt?: SortOrderInput | SortOrder
+    activatedAt?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    clientConfirmedCompletion?: SortOrder
+    clientConfirmedAt?: SortOrderInput | SortOrder
+    artisanConfirmedCompletion?: SortOrder
+    artisanConfirmedAt?: SortOrderInput | SortOrder
+    escrowReleased?: SortOrder
+    escrowReleasedAt?: SortOrderInput | SortOrder
+    platformFeeDeducted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    job?: JobOrderByWithRelationInput
+    proposal?: ProposalOrderByWithRelationInput
+    client?: UserOrderByWithRelationInput
+    artisan?: UserOrderByWithRelationInput
+    review?: ReviewOrderByWithRelationInput
+  }
+
+  export type ContractWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    jobId?: string
+    proposalId?: string
+    AND?: ContractWhereInput | ContractWhereInput[]
+    OR?: ContractWhereInput[]
+    NOT?: ContractWhereInput | ContractWhereInput[]
+    clientId?: StringFilter<"Contract"> | string
+    artisanId?: StringFilter<"Contract"> | string
+    amount?: IntFilter<"Contract"> | number
+    status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    fundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    activatedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    startedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    clientConfirmedCompletion?: BoolFilter<"Contract"> | boolean
+    clientConfirmedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    artisanConfirmedCompletion?: BoolFilter<"Contract"> | boolean
+    artisanConfirmedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    escrowReleased?: BoolFilter<"Contract"> | boolean
+    escrowReleasedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    platformFeeDeducted?: BoolFilter<"Contract"> | boolean
+    createdAt?: DateTimeFilter<"Contract"> | Date | string
+    updatedAt?: DateTimeFilter<"Contract"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
+  }, "id" | "jobId" | "proposalId">
+
+  export type ContractOrderByWithAggregationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    proposalId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    fundedAt?: SortOrderInput | SortOrder
+    activatedAt?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    clientConfirmedCompletion?: SortOrder
+    clientConfirmedAt?: SortOrderInput | SortOrder
+    artisanConfirmedCompletion?: SortOrder
+    artisanConfirmedAt?: SortOrderInput | SortOrder
+    escrowReleased?: SortOrder
+    escrowReleasedAt?: SortOrderInput | SortOrder
+    platformFeeDeducted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ContractCountOrderByAggregateInput
+    _avg?: ContractAvgOrderByAggregateInput
+    _max?: ContractMaxOrderByAggregateInput
+    _min?: ContractMinOrderByAggregateInput
+    _sum?: ContractSumOrderByAggregateInput
+  }
+
+  export type ContractScalarWhereWithAggregatesInput = {
+    AND?: ContractScalarWhereWithAggregatesInput | ContractScalarWhereWithAggregatesInput[]
+    OR?: ContractScalarWhereWithAggregatesInput[]
+    NOT?: ContractScalarWhereWithAggregatesInput | ContractScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Contract"> | string
+    jobId?: StringWithAggregatesFilter<"Contract"> | string
+    proposalId?: StringWithAggregatesFilter<"Contract"> | string
+    clientId?: StringWithAggregatesFilter<"Contract"> | string
+    artisanId?: StringWithAggregatesFilter<"Contract"> | string
+    amount?: IntWithAggregatesFilter<"Contract"> | number
+    status?: EnumContractStatusWithAggregatesFilter<"Contract"> | $Enums.ContractStatus
+    fundedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    activatedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    startedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    cancelledAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    clientConfirmedCompletion?: BoolWithAggregatesFilter<"Contract"> | boolean
+    clientConfirmedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    artisanConfirmedCompletion?: BoolWithAggregatesFilter<"Contract"> | boolean
+    artisanConfirmedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    escrowReleased?: BoolWithAggregatesFilter<"Contract"> | boolean
+    escrowReleasedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    platformFeeDeducted?: BoolWithAggregatesFilter<"Contract"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
+  }
+
+  export type WalletWhereInput = {
+    AND?: WalletWhereInput | WalletWhereInput[]
+    OR?: WalletWhereInput[]
+    NOT?: WalletWhereInput | WalletWhereInput[]
+    id?: StringFilter<"Wallet"> | string
+    userId?: StringFilter<"Wallet"> | string
+    balance?: IntFilter<"Wallet"> | number
+    frozen?: IntFilter<"Wallet"> | number
+    version?: IntFilter<"Wallet"> | number
+    createdAt?: DateTimeFilter<"Wallet"> | Date | string
+    updatedAt?: DateTimeFilter<"Wallet"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type WalletOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type WalletWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: WalletWhereInput | WalletWhereInput[]
+    OR?: WalletWhereInput[]
+    NOT?: WalletWhereInput | WalletWhereInput[]
+    balance?: IntFilter<"Wallet"> | number
+    frozen?: IntFilter<"Wallet"> | number
+    version?: IntFilter<"Wallet"> | number
+    createdAt?: DateTimeFilter<"Wallet"> | Date | string
+    updatedAt?: DateTimeFilter<"Wallet"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type WalletOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WalletCountOrderByAggregateInput
+    _avg?: WalletAvgOrderByAggregateInput
+    _max?: WalletMaxOrderByAggregateInput
+    _min?: WalletMinOrderByAggregateInput
+    _sum?: WalletSumOrderByAggregateInput
+  }
+
+  export type WalletScalarWhereWithAggregatesInput = {
+    AND?: WalletScalarWhereWithAggregatesInput | WalletScalarWhereWithAggregatesInput[]
+    OR?: WalletScalarWhereWithAggregatesInput[]
+    NOT?: WalletScalarWhereWithAggregatesInput | WalletScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Wallet"> | string
+    userId?: StringWithAggregatesFilter<"Wallet"> | string
+    balance?: IntWithAggregatesFilter<"Wallet"> | number
+    frozen?: IntWithAggregatesFilter<"Wallet"> | number
+    version?: IntWithAggregatesFilter<"Wallet"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Wallet"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Wallet"> | Date | string
+  }
+
+  export type ReviewWhereInput = {
+    AND?: ReviewWhereInput | ReviewWhereInput[]
+    OR?: ReviewWhereInput[]
+    NOT?: ReviewWhereInput | ReviewWhereInput[]
+    id?: StringFilter<"Review"> | string
+    contractId?: StringFilter<"Review"> | string
+    clientId?: StringFilter<"Review"> | string
+    artisanId?: StringFilter<"Review"> | string
+    rating?: IntFilter<"Review"> | number
+    comment?: StringNullableFilter<"Review"> | string | null
+    createdAt?: DateTimeFilter<"Review"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ReviewOrderByWithRelationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    contract?: ContractOrderByWithRelationInput
+    client?: UserOrderByWithRelationInput
+    artisan?: UserOrderByWithRelationInput
+  }
+
+  export type ReviewWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contractId?: string
+    AND?: ReviewWhereInput | ReviewWhereInput[]
+    OR?: ReviewWhereInput[]
+    NOT?: ReviewWhereInput | ReviewWhereInput[]
+    clientId?: StringFilter<"Review"> | string
+    artisanId?: StringFilter<"Review"> | string
+    rating?: IntFilter<"Review"> | number
+    comment?: StringNullableFilter<"Review"> | string | null
+    createdAt?: DateTimeFilter<"Review"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "contractId">
+
+  export type ReviewOrderByWithAggregationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ReviewCountOrderByAggregateInput
+    _avg?: ReviewAvgOrderByAggregateInput
+    _max?: ReviewMaxOrderByAggregateInput
+    _min?: ReviewMinOrderByAggregateInput
+    _sum?: ReviewSumOrderByAggregateInput
+  }
+
+  export type ReviewScalarWhereWithAggregatesInput = {
+    AND?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
+    OR?: ReviewScalarWhereWithAggregatesInput[]
+    NOT?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Review"> | string
+    contractId?: StringWithAggregatesFilter<"Review"> | string
+    clientId?: StringWithAggregatesFilter<"Review"> | string
+    artisanId?: StringWithAggregatesFilter<"Review"> | string
+    rating?: IntWithAggregatesFilter<"Review"> | number
+    comment?: StringNullableWithAggregatesFilter<"Review"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
   }
 
   export type NotificationWhereInput = {
@@ -10371,8 +18239,19 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -10389,8 +18268,19 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -10407,8 +18297,19 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -10425,8 +18326,19 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -10479,9 +18391,8 @@ export namespace Prisma {
 
   export type DisputeCreateInput = {
     id: string
-    contractId: string
-    jobId: string
-    clientId: string
+    contractId?: string | null
+    jobId?: string | null
     artisanId: string
     amount: number
     status: $Enums.DisputeStatus
@@ -10495,12 +18406,13 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     history?: DisputeHistoryCreateNestedManyWithoutDisputeInput
+    user: UserCreateNestedOneWithoutDisputesInput
   }
 
   export type DisputeUncheckedCreateInput = {
     id: string
-    contractId: string
-    jobId: string
+    contractId?: string | null
+    jobId?: string | null
     clientId: string
     artisanId: string
     amount: number
@@ -10519,9 +18431,8 @@ export namespace Prisma {
 
   export type DisputeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    jobId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
@@ -10535,12 +18446,13 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     history?: DisputeHistoryUpdateManyWithoutDisputeNestedInput
+    user?: UserUpdateOneRequiredWithoutDisputesNestedInput
   }
 
   export type DisputeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    jobId?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
@@ -10559,8 +18471,8 @@ export namespace Prisma {
 
   export type DisputeCreateManyInput = {
     id: string
-    contractId: string
-    jobId: string
+    contractId?: string | null
+    jobId?: string | null
     clientId: string
     artisanId: string
     amount: number
@@ -10578,9 +18490,8 @@ export namespace Prisma {
 
   export type DisputeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    jobId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
@@ -10597,8 +18508,8 @@ export namespace Prisma {
 
   export type DisputeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    jobId?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
@@ -10679,71 +18590,114 @@ export namespace Prisma {
   export type JobCreateInput = {
     id: string
     title: string
-    contractId: string
-    clientId: string
-    artisanId: string
-    amount: number
+    description?: string | null
+    budget?: number | null
+    contractId?: string | null
+    amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutClientJobsInput
+    artisan?: UserCreateNestedOneWithoutArtisanJobsInput
+    contract?: ContractCreateNestedOneWithoutJobInput
+    proposals?: ProposalCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateInput = {
     id: string
     title: string
-    contractId: string
+    description?: string | null
+    budget?: number | null
     clientId: string
-    artisanId: string
-    amount: number
+    artisanId?: string | null
+    contractId?: string | null
+    amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    amount?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutClientJobsNestedInput
+    artisan?: UserUpdateOneWithoutArtisanJobsNestedInput
+    contract?: ContractUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
     clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    amount?: IntFieldUpdateOperationsInput | number
+    artisanId?: NullableStringFieldUpdateOperationsInput | string | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobCreateManyInput = {
     id: string
     title: string
-    contractId: string
+    description?: string | null
+    budget?: number | null
     clientId: string
-    artisanId: string
-    amount: number
+    artisanId?: string | null
+    contractId?: string | null
+    amount?: number | null
     status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
     flagged?: boolean
     forceClosedAt?: Date | string | null
     forceCloseReason?: string | null
@@ -10754,11 +18708,16 @@ export namespace Prisma {
   export type JobUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    amount?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10769,11 +18728,18 @@ export namespace Prisma {
   export type JobUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
     clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    amount?: IntFieldUpdateOperationsInput | number
+    artisanId?: NullableStringFieldUpdateOperationsInput | string | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
     status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
     flagged?: BoolFieldUpdateOperationsInput | boolean
     forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10785,9 +18751,13 @@ export namespace Prisma {
     id: string
     type: $Enums.TransactionType
     amount: number
-    status: $Enums.TransactionStatus
+    status?: $Enums.TransactionStatus
     reference: string
-    createdAt: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
     user: UserCreateNestedOneWithoutTransactionsInput
   }
 
@@ -10796,9 +18766,13 @@ export namespace Prisma {
     userId: string
     type: $Enums.TransactionType
     amount: number
-    status: $Enums.TransactionStatus
+    status?: $Enums.TransactionStatus
     reference: string
-    createdAt: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
   }
 
   export type TransactionUpdateInput = {
@@ -10807,7 +18781,11 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     reference?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
   }
 
@@ -10818,7 +18796,11 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     reference?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TransactionCreateManyInput = {
@@ -10826,9 +18808,13 @@ export namespace Prisma {
     userId: string
     type: $Enums.TransactionType
     amount: number
-    status: $Enums.TransactionStatus
+    status?: $Enums.TransactionStatus
     reference: string
-    createdAt: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
   }
 
   export type TransactionUpdateManyMutationInput = {
@@ -10837,7 +18823,11 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     reference?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TransactionUncheckedUpdateManyInput = {
@@ -10847,6 +18837,496 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     reference?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ArtisanProfileCreateInput = {
+    id: string
+    bio?: string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: boolean
+    rating?: number | null
+    reviewCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutArtisanProfileInput
+  }
+
+  export type ArtisanProfileUncheckedCreateInput = {
+    id: string
+    userId: string
+    bio?: string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: boolean
+    rating?: number | null
+    reviewCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArtisanProfileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutArtisanProfileNestedInput
+  }
+
+  export type ArtisanProfileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArtisanProfileCreateManyInput = {
+    id: string
+    userId: string
+    bio?: string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: boolean
+    rating?: number | null
+    reviewCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArtisanProfileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArtisanProfileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalCreateInput = {
+    id: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutProposalsInput
+    artisan: UserCreateNestedOneWithoutSentProposalsInput
+    client: UserCreateNestedOneWithoutReceivedProposalsInput
+    contract?: ContractCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalUncheckedCreateInput = {
+    id: string
+    jobId: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutProposalsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
+    client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+    contract?: ContractUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalCreateManyInput = {
+    id: string
+    jobId: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProposalUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractCreateInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractCreateManyInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContractUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletCreateInput = {
+    id: string
+    balance?: number
+    frozen?: number
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutWalletInput
+  }
+
+  export type WalletUncheckedCreateInput = {
+    id: string
+    userId: string
+    balance?: number
+    frozen?: number
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WalletUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutWalletNestedInput
+  }
+
+  export type WalletUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletCreateManyInput = {
+    id: string
+    userId: string
+    balance?: number
+    frozen?: number
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WalletUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewCreateInput = {
+    id: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+    contract: ContractCreateNestedOneWithoutReviewInput
+    client: UserCreateNestedOneWithoutSentReviewsInput
+    artisan: UserCreateNestedOneWithoutReceivedReviewsInput
+  }
+
+  export type ReviewUncheckedCreateInput = {
+    id: string
+    contractId: string
+    clientId: string
+    artisanId: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReviewUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
+    client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
+  }
+
+  export type ReviewUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewCreateManyInput = {
+    id: string
+    contractId: string
+    clientId: string
+    artisanId: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReviewUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11046,6 +19526,40 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type ArtisanProfileNullableScalarRelationFilter = {
+    is?: ArtisanProfileWhereInput | null
+    isNot?: ArtisanProfileWhereInput | null
+  }
+
+  export type ProposalListRelationFilter = {
+    every?: ProposalWhereInput
+    some?: ProposalWhereInput
+    none?: ProposalWhereInput
+  }
+
+  export type ContractListRelationFilter = {
+    every?: ContractWhereInput
+    some?: ContractWhereInput
+    none?: ContractWhereInput
+  }
+
+  export type JobListRelationFilter = {
+    every?: JobWhereInput
+    some?: JobWhereInput
+    none?: JobWhereInput
+  }
+
+  export type WalletNullableScalarRelationFilter = {
+    is?: WalletWhereInput | null
+    isNot?: WalletWhereInput | null
+  }
+
+  export type ReviewListRelationFilter = {
+    every?: ReviewWhereInput
+    some?: ReviewWhereInput
+    none?: ReviewWhereInput
+  }
+
   export type NotificationListRelationFilter = {
     every?: NotificationWhereInput
     some?: NotificationWhereInput
@@ -11058,9 +19572,31 @@ export namespace Prisma {
     none?: TransactionWhereInput
   }
 
+  export type DisputeListRelationFilter = {
+    every?: DisputeWhereInput
+    some?: DisputeWhereInput
+    none?: DisputeWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type ProposalOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ContractOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReviewOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type NotificationOrderByRelationAggregateInput = {
@@ -11068,6 +19604,10 @@ export namespace Prisma {
   }
 
   export type TransactionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DisputeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11265,6 +19805,11 @@ export namespace Prisma {
     none?: DisputeHistoryWhereInput
   }
 
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
   export type DisputeHistoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -11422,21 +19967,72 @@ export namespace Prisma {
     notes?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type EnumJobStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.JobStatus | EnumJobStatusFieldRefInput<$PrismaModel>
     in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type ContractNullableScalarRelationFilter = {
+    is?: ContractWhereInput | null
+    isNot?: ContractWhereInput | null
+  }
 
   export type JobCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
-    contractId?: SortOrder
+    description?: SortOrder
+    budget?: SortOrder
     clientId?: SortOrder
     artisanId?: SortOrder
+    contractId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    location?: SortOrder
+    requiredSkills?: SortOrder
+    category?: SortOrder
+    deadline?: SortOrder
+    requirements?: SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrder
     forceCloseReason?: SortOrder
@@ -11445,17 +20041,24 @@ export namespace Prisma {
   }
 
   export type JobAvgOrderByAggregateInput = {
+    budget?: SortOrder
     amount?: SortOrder
   }
 
   export type JobMaxOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
-    contractId?: SortOrder
+    description?: SortOrder
+    budget?: SortOrder
     clientId?: SortOrder
     artisanId?: SortOrder
+    contractId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    location?: SortOrder
+    category?: SortOrder
+    deadline?: SortOrder
+    requirements?: SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrder
     forceCloseReason?: SortOrder
@@ -11466,11 +20069,17 @@ export namespace Prisma {
   export type JobMinOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
-    contractId?: SortOrder
+    description?: SortOrder
+    budget?: SortOrder
     clientId?: SortOrder
     artisanId?: SortOrder
+    contractId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    location?: SortOrder
+    category?: SortOrder
+    deadline?: SortOrder
+    requirements?: SortOrder
     flagged?: SortOrder
     forceClosedAt?: SortOrder
     forceCloseReason?: SortOrder
@@ -11479,7 +20088,24 @@ export namespace Prisma {
   }
 
   export type JobSumOrderByAggregateInput = {
+    budget?: SortOrder
     amount?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -11490,6 +20116,32 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJobStatusFilter<$PrismaModel>
     _max?: NestedEnumJobStatusFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -11506,11 +20158,6 @@ export namespace Prisma {
     not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
   export type TransactionCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -11518,7 +20165,11 @@ export namespace Prisma {
     amount?: SortOrder
     status?: SortOrder
     reference?: SortOrder
+    metadata?: SortOrder
     createdAt?: SortOrder
+    completedAt?: SortOrder
+    failedAt?: SortOrder
+    failureReason?: SortOrder
   }
 
   export type TransactionAvgOrderByAggregateInput = {
@@ -11533,6 +20184,9 @@ export namespace Prisma {
     status?: SortOrder
     reference?: SortOrder
     createdAt?: SortOrder
+    completedAt?: SortOrder
+    failedAt?: SortOrder
+    failureReason?: SortOrder
   }
 
   export type TransactionMinOrderByAggregateInput = {
@@ -11543,6 +20197,9 @@ export namespace Prisma {
     status?: SortOrder
     reference?: SortOrder
     createdAt?: SortOrder
+    completedAt?: SortOrder
+    failedAt?: SortOrder
+    failureReason?: SortOrder
   }
 
   export type TransactionSumOrderByAggregateInput = {
@@ -11567,6 +20224,344 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
     _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type ArtisanProfileCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bio?: SortOrder
+    skills?: SortOrder
+    experience?: SortOrder
+    portfolio?: SortOrder
+    verified?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArtisanProfileAvgOrderByAggregateInput = {
+    rating?: SortOrder
+    reviewCount?: SortOrder
+  }
+
+  export type ArtisanProfileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bio?: SortOrder
+    experience?: SortOrder
+    verified?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArtisanProfileMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bio?: SortOrder
+    experience?: SortOrder
+    verified?: SortOrder
+    rating?: SortOrder
+    reviewCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArtisanProfileSumOrderByAggregateInput = {
+    rating?: SortOrder
+    reviewCount?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type EnumProposalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProposalStatus | EnumProposalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProposalStatusFilter<$PrismaModel> | $Enums.ProposalStatus
+  }
+
+  export type JobScalarRelationFilter = {
+    is?: JobWhereInput
+    isNot?: JobWhereInput
+  }
+
+  export type ProposalJobIdArtisanIdCompoundUniqueInput = {
+    jobId: string
+    artisanId: string
+  }
+
+  export type ProposalCountOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    artisanId?: SortOrder
+    clientId?: SortOrder
+    amount?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProposalAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type ProposalMaxOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    artisanId?: SortOrder
+    clientId?: SortOrder
+    amount?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProposalMinOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    artisanId?: SortOrder
+    clientId?: SortOrder
+    amount?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProposalSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumProposalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProposalStatus | EnumProposalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProposalStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProposalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProposalStatusFilter<$PrismaModel>
+    _max?: NestedEnumProposalStatusFilter<$PrismaModel>
+  }
+
+  export type EnumContractStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusFilter<$PrismaModel> | $Enums.ContractStatus
+  }
+
+  export type ProposalScalarRelationFilter = {
+    is?: ProposalWhereInput
+    isNot?: ProposalWhereInput
+  }
+
+  export type ReviewNullableScalarRelationFilter = {
+    is?: ReviewWhereInput | null
+    isNot?: ReviewWhereInput | null
+  }
+
+  export type ContractCountOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    proposalId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    fundedAt?: SortOrder
+    activatedAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    clientConfirmedCompletion?: SortOrder
+    clientConfirmedAt?: SortOrder
+    artisanConfirmedCompletion?: SortOrder
+    artisanConfirmedAt?: SortOrder
+    escrowReleased?: SortOrder
+    escrowReleasedAt?: SortOrder
+    platformFeeDeducted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ContractAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type ContractMaxOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    proposalId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    fundedAt?: SortOrder
+    activatedAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    clientConfirmedCompletion?: SortOrder
+    clientConfirmedAt?: SortOrder
+    artisanConfirmedCompletion?: SortOrder
+    artisanConfirmedAt?: SortOrder
+    escrowReleased?: SortOrder
+    escrowReleasedAt?: SortOrder
+    platformFeeDeducted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ContractMinOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    proposalId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    amount?: SortOrder
+    status?: SortOrder
+    fundedAt?: SortOrder
+    activatedAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    clientConfirmedCompletion?: SortOrder
+    clientConfirmedAt?: SortOrder
+    artisanConfirmedCompletion?: SortOrder
+    artisanConfirmedAt?: SortOrder
+    escrowReleased?: SortOrder
+    escrowReleasedAt?: SortOrder
+    platformFeeDeducted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ContractSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumContractStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContractStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumContractStatusFilter<$PrismaModel>
+    _max?: NestedEnumContractStatusFilter<$PrismaModel>
+  }
+
+  export type WalletCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WalletAvgOrderByAggregateInput = {
+    balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
+  }
+
+  export type WalletMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WalletMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WalletSumOrderByAggregateInput = {
+    balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
+  }
+
+  export type ContractScalarRelationFilter = {
+    is?: ContractWhereInput
+    isNot?: ContractWhereInput
+  }
+
+  export type ReviewCountOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReviewAvgOrderByAggregateInput = {
+    rating?: SortOrder
+  }
+
+  export type ReviewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReviewMinOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReviewSumOrderByAggregateInput = {
+    rating?: SortOrder
   }
 
   export type NotificationCountOrderByAggregateInput = {
@@ -11598,29 +20593,6 @@ export namespace Prisma {
     in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumAuditEntityTypeFilter<$PrismaModel> | $Enums.AuditEntityType
-  }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type AuditLogCountOrderByAggregateInput = {
@@ -11660,31 +20632,73 @@ export namespace Prisma {
     _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
     _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
   }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
+  export type ArtisanProfileCreateNestedOneWithoutUserInput = {
+    create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
+    connect?: ArtisanProfileWhereUniqueInput
+  }
+
+  export type ProposalCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<ProposalCreateWithoutArtisanInput, ProposalUncheckedCreateWithoutArtisanInput> | ProposalCreateWithoutArtisanInput[] | ProposalUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutArtisanInput | ProposalCreateOrConnectWithoutArtisanInput[]
+    createMany?: ProposalCreateManyArtisanInputEnvelope
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+  }
+
+  export type ProposalCreateNestedManyWithoutClientInput = {
+    create?: XOR<ProposalCreateWithoutClientInput, ProposalUncheckedCreateWithoutClientInput> | ProposalCreateWithoutClientInput[] | ProposalUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutClientInput | ProposalCreateOrConnectWithoutClientInput[]
+    createMany?: ProposalCreateManyClientInputEnvelope
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+  }
+
+  export type ContractCreateNestedManyWithoutClientInput = {
+    create?: XOR<ContractCreateWithoutClientInput, ContractUncheckedCreateWithoutClientInput> | ContractCreateWithoutClientInput[] | ContractUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutClientInput | ContractCreateOrConnectWithoutClientInput[]
+    createMany?: ContractCreateManyClientInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type ContractCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<ContractCreateWithoutArtisanInput, ContractUncheckedCreateWithoutArtisanInput> | ContractCreateWithoutArtisanInput[] | ContractUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutArtisanInput | ContractCreateOrConnectWithoutArtisanInput[]
+    createMany?: ContractCreateManyArtisanInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type JobCreateNestedManyWithoutClientInput = {
+    create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
+    createMany?: JobCreateManyClientInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<JobCreateWithoutArtisanInput, JobUncheckedCreateWithoutArtisanInput> | JobCreateWithoutArtisanInput[] | JobUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutArtisanInput | JobCreateOrConnectWithoutArtisanInput[]
+    createMany?: JobCreateManyArtisanInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type WalletCreateNestedOneWithoutUserInput = {
+    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
+    connect?: WalletWhereUniqueInput
+  }
+
+  export type ReviewCreateNestedManyWithoutClientInput = {
+    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
+    createMany?: ReviewCreateManyClientInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type ReviewCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
+    createMany?: ReviewCreateManyArtisanInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
   export type NotificationCreateNestedManyWithoutUserInput = {
@@ -11701,6 +20715,81 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type DisputeCreateNestedManyWithoutUserInput = {
+    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
+    createMany?: DisputeCreateManyUserInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type ArtisanProfileUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
+    connect?: ArtisanProfileWhereUniqueInput
+  }
+
+  export type ProposalUncheckedCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<ProposalCreateWithoutArtisanInput, ProposalUncheckedCreateWithoutArtisanInput> | ProposalCreateWithoutArtisanInput[] | ProposalUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutArtisanInput | ProposalCreateOrConnectWithoutArtisanInput[]
+    createMany?: ProposalCreateManyArtisanInputEnvelope
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+  }
+
+  export type ProposalUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<ProposalCreateWithoutClientInput, ProposalUncheckedCreateWithoutClientInput> | ProposalCreateWithoutClientInput[] | ProposalUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutClientInput | ProposalCreateOrConnectWithoutClientInput[]
+    createMany?: ProposalCreateManyClientInputEnvelope
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<ContractCreateWithoutClientInput, ContractUncheckedCreateWithoutClientInput> | ContractCreateWithoutClientInput[] | ContractUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutClientInput | ContractCreateOrConnectWithoutClientInput[]
+    createMany?: ContractCreateManyClientInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<ContractCreateWithoutArtisanInput, ContractUncheckedCreateWithoutArtisanInput> | ContractCreateWithoutArtisanInput[] | ContractUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutArtisanInput | ContractCreateOrConnectWithoutArtisanInput[]
+    createMany?: ContractCreateManyArtisanInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type JobUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
+    createMany?: JobCreateManyClientInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobUncheckedCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<JobCreateWithoutArtisanInput, JobUncheckedCreateWithoutArtisanInput> | JobCreateWithoutArtisanInput[] | JobUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutArtisanInput | JobCreateOrConnectWithoutArtisanInput[]
+    createMany?: JobCreateManyArtisanInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type WalletUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
+    connect?: WalletWhereUniqueInput
+  }
+
+  export type ReviewUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
+    createMany?: ReviewCreateManyClientInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type ReviewUncheckedCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
+    createMany?: ReviewCreateManyArtisanInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
   export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -11713,6 +20802,13 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
     createMany?: TransactionCreateManyUserInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type DisputeUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
+    createMany?: DisputeCreateManyUserInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -11743,6 +20839,138 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type ArtisanProfileUpdateOneWithoutUserNestedInput = {
+    create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
+    upsert?: ArtisanProfileUpsertWithoutUserInput
+    disconnect?: ArtisanProfileWhereInput | boolean
+    delete?: ArtisanProfileWhereInput | boolean
+    connect?: ArtisanProfileWhereUniqueInput
+    update?: XOR<XOR<ArtisanProfileUpdateToOneWithWhereWithoutUserInput, ArtisanProfileUpdateWithoutUserInput>, ArtisanProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ProposalUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<ProposalCreateWithoutArtisanInput, ProposalUncheckedCreateWithoutArtisanInput> | ProposalCreateWithoutArtisanInput[] | ProposalUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutArtisanInput | ProposalCreateOrConnectWithoutArtisanInput[]
+    upsert?: ProposalUpsertWithWhereUniqueWithoutArtisanInput | ProposalUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: ProposalCreateManyArtisanInputEnvelope
+    set?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    disconnect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    delete?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    update?: ProposalUpdateWithWhereUniqueWithoutArtisanInput | ProposalUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: ProposalUpdateManyWithWhereWithoutArtisanInput | ProposalUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
+  }
+
+  export type ProposalUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ProposalCreateWithoutClientInput, ProposalUncheckedCreateWithoutClientInput> | ProposalCreateWithoutClientInput[] | ProposalUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutClientInput | ProposalCreateOrConnectWithoutClientInput[]
+    upsert?: ProposalUpsertWithWhereUniqueWithoutClientInput | ProposalUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ProposalCreateManyClientInputEnvelope
+    set?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    disconnect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    delete?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    update?: ProposalUpdateWithWhereUniqueWithoutClientInput | ProposalUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ProposalUpdateManyWithWhereWithoutClientInput | ProposalUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
+  }
+
+  export type ContractUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ContractCreateWithoutClientInput, ContractUncheckedCreateWithoutClientInput> | ContractCreateWithoutClientInput[] | ContractUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutClientInput | ContractCreateOrConnectWithoutClientInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutClientInput | ContractUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ContractCreateManyClientInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutClientInput | ContractUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutClientInput | ContractUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type ContractUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<ContractCreateWithoutArtisanInput, ContractUncheckedCreateWithoutArtisanInput> | ContractCreateWithoutArtisanInput[] | ContractUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutArtisanInput | ContractCreateOrConnectWithoutArtisanInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutArtisanInput | ContractUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: ContractCreateManyArtisanInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutArtisanInput | ContractUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutArtisanInput | ContractUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type JobUpdateManyWithoutClientNestedInput = {
+    create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutClientInput | JobUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: JobCreateManyClientInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutClientInput | JobUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutClientInput | JobUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type JobUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<JobCreateWithoutArtisanInput, JobUncheckedCreateWithoutArtisanInput> | JobCreateWithoutArtisanInput[] | JobUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutArtisanInput | JobCreateOrConnectWithoutArtisanInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutArtisanInput | JobUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: JobCreateManyArtisanInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutArtisanInput | JobUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutArtisanInput | JobUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type WalletUpdateOneWithoutUserNestedInput = {
+    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
+    upsert?: WalletUpsertWithoutUserInput
+    disconnect?: WalletWhereInput | boolean
+    delete?: WalletWhereInput | boolean
+    connect?: WalletWhereUniqueInput
+    update?: XOR<XOR<WalletUpdateToOneWithWhereWithoutUserInput, WalletUpdateWithoutUserInput>, WalletUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ReviewUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutClientInput | ReviewUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ReviewCreateManyClientInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutClientInput | ReviewUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutClientInput | ReviewUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type ReviewUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutArtisanInput | ReviewUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: ReviewCreateManyArtisanInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutArtisanInput | ReviewUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutArtisanInput | ReviewUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
   export type NotificationUpdateManyWithoutUserNestedInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -11769,6 +20997,152 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutUserInput | TransactionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutUserInput | TransactionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type DisputeUpdateManyWithoutUserNestedInput = {
+    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutUserInput | DisputeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: DisputeCreateManyUserInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutUserInput | DisputeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutUserInput | DisputeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
+    upsert?: ArtisanProfileUpsertWithoutUserInput
+    disconnect?: ArtisanProfileWhereInput | boolean
+    delete?: ArtisanProfileWhereInput | boolean
+    connect?: ArtisanProfileWhereUniqueInput
+    update?: XOR<XOR<ArtisanProfileUpdateToOneWithWhereWithoutUserInput, ArtisanProfileUpdateWithoutUserInput>, ArtisanProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ProposalUncheckedUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<ProposalCreateWithoutArtisanInput, ProposalUncheckedCreateWithoutArtisanInput> | ProposalCreateWithoutArtisanInput[] | ProposalUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutArtisanInput | ProposalCreateOrConnectWithoutArtisanInput[]
+    upsert?: ProposalUpsertWithWhereUniqueWithoutArtisanInput | ProposalUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: ProposalCreateManyArtisanInputEnvelope
+    set?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    disconnect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    delete?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    update?: ProposalUpdateWithWhereUniqueWithoutArtisanInput | ProposalUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: ProposalUpdateManyWithWhereWithoutArtisanInput | ProposalUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
+  }
+
+  export type ProposalUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ProposalCreateWithoutClientInput, ProposalUncheckedCreateWithoutClientInput> | ProposalCreateWithoutClientInput[] | ProposalUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutClientInput | ProposalCreateOrConnectWithoutClientInput[]
+    upsert?: ProposalUpsertWithWhereUniqueWithoutClientInput | ProposalUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ProposalCreateManyClientInputEnvelope
+    set?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    disconnect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    delete?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    update?: ProposalUpdateWithWhereUniqueWithoutClientInput | ProposalUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ProposalUpdateManyWithWhereWithoutClientInput | ProposalUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
+  }
+
+  export type ContractUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ContractCreateWithoutClientInput, ContractUncheckedCreateWithoutClientInput> | ContractCreateWithoutClientInput[] | ContractUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutClientInput | ContractCreateOrConnectWithoutClientInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutClientInput | ContractUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ContractCreateManyClientInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutClientInput | ContractUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutClientInput | ContractUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type ContractUncheckedUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<ContractCreateWithoutArtisanInput, ContractUncheckedCreateWithoutArtisanInput> | ContractCreateWithoutArtisanInput[] | ContractUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutArtisanInput | ContractCreateOrConnectWithoutArtisanInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutArtisanInput | ContractUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: ContractCreateManyArtisanInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutArtisanInput | ContractUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutArtisanInput | ContractUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type JobUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutClientInput | JobUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: JobCreateManyClientInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutClientInput | JobUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutClientInput | JobUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type JobUncheckedUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<JobCreateWithoutArtisanInput, JobUncheckedCreateWithoutArtisanInput> | JobCreateWithoutArtisanInput[] | JobUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutArtisanInput | JobCreateOrConnectWithoutArtisanInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutArtisanInput | JobUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: JobCreateManyArtisanInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutArtisanInput | JobUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutArtisanInput | JobUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type WalletUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
+    upsert?: WalletUpsertWithoutUserInput
+    disconnect?: WalletWhereInput | boolean
+    delete?: WalletWhereInput | boolean
+    connect?: WalletWhereUniqueInput
+    update?: XOR<XOR<WalletUpdateToOneWithWhereWithoutUserInput, WalletUpdateWithoutUserInput>, WalletUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutClientInput | ReviewUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ReviewCreateManyClientInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutClientInput | ReviewUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutClientInput | ReviewUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutArtisanInput | ReviewUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: ReviewCreateManyArtisanInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutArtisanInput | ReviewUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutArtisanInput | ReviewUpdateManyWithWhereWithoutArtisanInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
   export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
@@ -11799,11 +21173,31 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type DisputeUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutUserInput | DisputeUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: DisputeCreateManyUserInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutUserInput | DisputeUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutUserInput | DisputeUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
   export type DisputeHistoryCreateNestedManyWithoutDisputeInput = {
     create?: XOR<DisputeHistoryCreateWithoutDisputeInput, DisputeHistoryUncheckedCreateWithoutDisputeInput> | DisputeHistoryCreateWithoutDisputeInput[] | DisputeHistoryUncheckedCreateWithoutDisputeInput[]
     connectOrCreate?: DisputeHistoryCreateOrConnectWithoutDisputeInput | DisputeHistoryCreateOrConnectWithoutDisputeInput[]
     createMany?: DisputeHistoryCreateManyDisputeInputEnvelope
     connect?: DisputeHistoryWhereUniqueInput | DisputeHistoryWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutDisputesInput = {
+    create?: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDisputesInput
+    connect?: UserWhereUniqueInput
   }
 
   export type DisputeHistoryUncheckedCreateNestedManyWithoutDisputeInput = {
@@ -11843,6 +21237,14 @@ export namespace Prisma {
     deleteMany?: DisputeHistoryScalarWhereInput | DisputeHistoryScalarWhereInput[]
   }
 
+  export type UserUpdateOneRequiredWithoutDisputesNestedInput = {
+    create?: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDisputesInput
+    upsert?: UserUpsertWithoutDisputesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDisputesInput, UserUpdateWithoutDisputesInput>, UserUncheckedUpdateWithoutDisputesInput>
+  }
+
   export type DisputeHistoryUncheckedUpdateManyWithoutDisputeNestedInput = {
     create?: XOR<DisputeHistoryCreateWithoutDisputeInput, DisputeHistoryUncheckedCreateWithoutDisputeInput> | DisputeHistoryCreateWithoutDisputeInput[] | DisputeHistoryUncheckedCreateWithoutDisputeInput[]
     connectOrCreate?: DisputeHistoryCreateOrConnectWithoutDisputeInput | DisputeHistoryCreateOrConnectWithoutDisputeInput[]
@@ -11871,8 +21273,120 @@ export namespace Prisma {
     update?: XOR<XOR<DisputeUpdateToOneWithWhereWithoutHistoryInput, DisputeUpdateWithoutHistoryInput>, DisputeUncheckedUpdateWithoutHistoryInput>
   }
 
+  export type UserCreateNestedOneWithoutClientJobsInput = {
+    create?: XOR<UserCreateWithoutClientJobsInput, UserUncheckedCreateWithoutClientJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientJobsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutArtisanJobsInput = {
+    create?: XOR<UserCreateWithoutArtisanJobsInput, UserUncheckedCreateWithoutArtisanJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanJobsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ContractCreateNestedOneWithoutJobInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type ProposalCreateNestedManyWithoutJobInput = {
+    create?: XOR<ProposalCreateWithoutJobInput, ProposalUncheckedCreateWithoutJobInput> | ProposalCreateWithoutJobInput[] | ProposalUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutJobInput | ProposalCreateOrConnectWithoutJobInput[]
+    createMany?: ProposalCreateManyJobInputEnvelope
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedOneWithoutJobInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type ProposalUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<ProposalCreateWithoutJobInput, ProposalUncheckedCreateWithoutJobInput> | ProposalCreateWithoutJobInput[] | ProposalUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutJobInput | ProposalCreateOrConnectWithoutJobInput[]
+    createMany?: ProposalCreateManyJobInputEnvelope
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type EnumJobStatusFieldUpdateOperationsInput = {
     set?: $Enums.JobStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutClientJobsNestedInput = {
+    create?: XOR<UserCreateWithoutClientJobsInput, UserUncheckedCreateWithoutClientJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientJobsInput
+    upsert?: UserUpsertWithoutClientJobsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClientJobsInput, UserUpdateWithoutClientJobsInput>, UserUncheckedUpdateWithoutClientJobsInput>
+  }
+
+  export type UserUpdateOneWithoutArtisanJobsNestedInput = {
+    create?: XOR<UserCreateWithoutArtisanJobsInput, UserUncheckedCreateWithoutArtisanJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanJobsInput
+    upsert?: UserUpsertWithoutArtisanJobsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutArtisanJobsInput, UserUpdateWithoutArtisanJobsInput>, UserUncheckedUpdateWithoutArtisanJobsInput>
+  }
+
+  export type ContractUpdateOneWithoutJobNestedInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    upsert?: ContractUpsertWithoutJobInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutJobInput, ContractUpdateWithoutJobInput>, ContractUncheckedUpdateWithoutJobInput>
+  }
+
+  export type ProposalUpdateManyWithoutJobNestedInput = {
+    create?: XOR<ProposalCreateWithoutJobInput, ProposalUncheckedCreateWithoutJobInput> | ProposalCreateWithoutJobInput[] | ProposalUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutJobInput | ProposalCreateOrConnectWithoutJobInput[]
+    upsert?: ProposalUpsertWithWhereUniqueWithoutJobInput | ProposalUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: ProposalCreateManyJobInputEnvelope
+    set?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    disconnect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    delete?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    update?: ProposalUpdateWithWhereUniqueWithoutJobInput | ProposalUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: ProposalUpdateManyWithWhereWithoutJobInput | ProposalUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
+  }
+
+  export type ContractUncheckedUpdateOneWithoutJobNestedInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    upsert?: ContractUpsertWithoutJobInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutJobInput, ContractUpdateWithoutJobInput>, ContractUncheckedUpdateWithoutJobInput>
+  }
+
+  export type ProposalUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<ProposalCreateWithoutJobInput, ProposalUncheckedCreateWithoutJobInput> | ProposalCreateWithoutJobInput[] | ProposalUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: ProposalCreateOrConnectWithoutJobInput | ProposalCreateOrConnectWithoutJobInput[]
+    upsert?: ProposalUpsertWithWhereUniqueWithoutJobInput | ProposalUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: ProposalCreateManyJobInputEnvelope
+    set?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    disconnect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    delete?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
+    update?: ProposalUpdateWithWhereUniqueWithoutJobInput | ProposalUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: ProposalUpdateManyWithWhereWithoutJobInput | ProposalUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutTransactionsInput = {
@@ -11895,6 +21409,254 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutTransactionsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransactionsInput, UserUpdateWithoutTransactionsInput>, UserUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type UserCreateNestedOneWithoutArtisanProfileInput = {
+    create?: XOR<UserCreateWithoutArtisanProfileInput, UserUncheckedCreateWithoutArtisanProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanProfileInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutArtisanProfileNestedInput = {
+    create?: XOR<UserCreateWithoutArtisanProfileInput, UserUncheckedCreateWithoutArtisanProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanProfileInput
+    upsert?: UserUpsertWithoutArtisanProfileInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutArtisanProfileInput, UserUpdateWithoutArtisanProfileInput>, UserUncheckedUpdateWithoutArtisanProfileInput>
+  }
+
+  export type JobCreateNestedOneWithoutProposalsInput = {
+    create?: XOR<JobCreateWithoutProposalsInput, JobUncheckedCreateWithoutProposalsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutProposalsInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSentProposalsInput = {
+    create?: XOR<UserCreateWithoutSentProposalsInput, UserUncheckedCreateWithoutSentProposalsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentProposalsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReceivedProposalsInput = {
+    create?: XOR<UserCreateWithoutReceivedProposalsInput, UserUncheckedCreateWithoutReceivedProposalsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedProposalsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ContractCreateNestedOneWithoutProposalInput = {
+    create?: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutProposalInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type ContractUncheckedCreateNestedOneWithoutProposalInput = {
+    create?: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutProposalInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type EnumProposalStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ProposalStatus
+  }
+
+  export type JobUpdateOneRequiredWithoutProposalsNestedInput = {
+    create?: XOR<JobCreateWithoutProposalsInput, JobUncheckedCreateWithoutProposalsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutProposalsInput
+    upsert?: JobUpsertWithoutProposalsInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutProposalsInput, JobUpdateWithoutProposalsInput>, JobUncheckedUpdateWithoutProposalsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutSentProposalsNestedInput = {
+    create?: XOR<UserCreateWithoutSentProposalsInput, UserUncheckedCreateWithoutSentProposalsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentProposalsInput
+    upsert?: UserUpsertWithoutSentProposalsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSentProposalsInput, UserUpdateWithoutSentProposalsInput>, UserUncheckedUpdateWithoutSentProposalsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReceivedProposalsNestedInput = {
+    create?: XOR<UserCreateWithoutReceivedProposalsInput, UserUncheckedCreateWithoutReceivedProposalsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedProposalsInput
+    upsert?: UserUpsertWithoutReceivedProposalsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceivedProposalsInput, UserUpdateWithoutReceivedProposalsInput>, UserUncheckedUpdateWithoutReceivedProposalsInput>
+  }
+
+  export type ContractUpdateOneWithoutProposalNestedInput = {
+    create?: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutProposalInput
+    upsert?: ContractUpsertWithoutProposalInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutProposalInput, ContractUpdateWithoutProposalInput>, ContractUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type ContractUncheckedUpdateOneWithoutProposalNestedInput = {
+    create?: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutProposalInput
+    upsert?: ContractUpsertWithoutProposalInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutProposalInput, ContractUpdateWithoutProposalInput>, ContractUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type JobCreateNestedOneWithoutContractInput = {
+    create?: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
+    connectOrCreate?: JobCreateOrConnectWithoutContractInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type ProposalCreateNestedOneWithoutContractInput = {
+    create?: XOR<ProposalCreateWithoutContractInput, ProposalUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutContractInput
+    connect?: ProposalWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutClientContractsInput = {
+    create?: XOR<UserCreateWithoutClientContractsInput, UserUncheckedCreateWithoutClientContractsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientContractsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutArtisanContractsInput = {
+    create?: XOR<UserCreateWithoutArtisanContractsInput, UserUncheckedCreateWithoutArtisanContractsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanContractsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ReviewCreateNestedOneWithoutContractInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
+    connect?: ReviewWhereUniqueInput
+  }
+
+  export type ReviewUncheckedCreateNestedOneWithoutContractInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
+    connect?: ReviewWhereUniqueInput
+  }
+
+  export type EnumContractStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ContractStatus
+  }
+
+  export type JobUpdateOneRequiredWithoutContractNestedInput = {
+    create?: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
+    connectOrCreate?: JobCreateOrConnectWithoutContractInput
+    upsert?: JobUpsertWithoutContractInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutContractInput, JobUpdateWithoutContractInput>, JobUncheckedUpdateWithoutContractInput>
+  }
+
+  export type ProposalUpdateOneRequiredWithoutContractNestedInput = {
+    create?: XOR<ProposalCreateWithoutContractInput, ProposalUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutContractInput
+    upsert?: ProposalUpsertWithoutContractInput
+    connect?: ProposalWhereUniqueInput
+    update?: XOR<XOR<ProposalUpdateToOneWithWhereWithoutContractInput, ProposalUpdateWithoutContractInput>, ProposalUncheckedUpdateWithoutContractInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutClientContractsNestedInput = {
+    create?: XOR<UserCreateWithoutClientContractsInput, UserUncheckedCreateWithoutClientContractsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientContractsInput
+    upsert?: UserUpsertWithoutClientContractsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClientContractsInput, UserUpdateWithoutClientContractsInput>, UserUncheckedUpdateWithoutClientContractsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutArtisanContractsNestedInput = {
+    create?: XOR<UserCreateWithoutArtisanContractsInput, UserUncheckedCreateWithoutArtisanContractsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanContractsInput
+    upsert?: UserUpsertWithoutArtisanContractsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutArtisanContractsInput, UserUpdateWithoutArtisanContractsInput>, UserUncheckedUpdateWithoutArtisanContractsInput>
+  }
+
+  export type ReviewUpdateOneWithoutContractNestedInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
+    upsert?: ReviewUpsertWithoutContractInput
+    disconnect?: ReviewWhereInput | boolean
+    delete?: ReviewWhereInput | boolean
+    connect?: ReviewWhereUniqueInput
+    update?: XOR<XOR<ReviewUpdateToOneWithWhereWithoutContractInput, ReviewUpdateWithoutContractInput>, ReviewUncheckedUpdateWithoutContractInput>
+  }
+
+  export type ReviewUncheckedUpdateOneWithoutContractNestedInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
+    upsert?: ReviewUpsertWithoutContractInput
+    disconnect?: ReviewWhereInput | boolean
+    delete?: ReviewWhereInput | boolean
+    connect?: ReviewWhereUniqueInput
+    update?: XOR<XOR<ReviewUpdateToOneWithWhereWithoutContractInput, ReviewUpdateWithoutContractInput>, ReviewUncheckedUpdateWithoutContractInput>
+  }
+
+  export type UserCreateNestedOneWithoutWalletInput = {
+    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutWalletNestedInput = {
+    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
+    upsert?: UserUpsertWithoutWalletInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWalletInput, UserUpdateWithoutWalletInput>, UserUncheckedUpdateWithoutWalletInput>
+  }
+
+  export type ContractCreateNestedOneWithoutReviewInput = {
+    create?: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutReviewInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSentReviewsInput = {
+    create?: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentReviewsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReceivedReviewsInput = {
+    create?: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedReviewsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ContractUpdateOneRequiredWithoutReviewNestedInput = {
+    create?: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutReviewInput
+    upsert?: ContractUpsertWithoutReviewInput
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutReviewInput, ContractUpdateWithoutReviewInput>, ContractUncheckedUpdateWithoutReviewInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutSentReviewsNestedInput = {
+    create?: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentReviewsInput
+    upsert?: UserUpsertWithoutSentReviewsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSentReviewsInput, UserUpdateWithoutSentReviewsInput>, UserUncheckedUpdateWithoutSentReviewsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReceivedReviewsNestedInput = {
+    create?: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedReviewsInput
+    upsert?: UserUpsertWithoutReceivedReviewsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceivedReviewsInput, UserUpdateWithoutReceivedReviewsInput>, UserUncheckedUpdateWithoutReceivedReviewsInput>
   }
 
   export type UserCreateNestedOneWithoutNotificationsInput = {
@@ -12187,6 +21949,33 @@ export namespace Prisma {
     not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.JobStatus | EnumJobStatusFieldRefInput<$PrismaModel>
     in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
@@ -12195,6 +21984,29 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJobStatusFilter<$PrismaModel>
     _max?: NestedEnumJobStatusFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -12231,6 +22043,56 @@ export namespace Prisma {
     _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumProposalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProposalStatus | EnumProposalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProposalStatusFilter<$PrismaModel> | $Enums.ProposalStatus
+  }
+
+  export type NestedEnumProposalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProposalStatus | EnumProposalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProposalStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProposalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProposalStatusFilter<$PrismaModel>
+    _max?: NestedEnumProposalStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumContractStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusFilter<$PrismaModel> | $Enums.ContractStatus
+  }
+
+  export type NestedEnumContractStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusWithAggregatesFilter<$PrismaModel> | $Enums.ContractStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumContractStatusFilter<$PrismaModel>
+    _max?: NestedEnumContractStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumAuditEntityTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
     in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
@@ -12247,28 +22109,411 @@ export namespace Prisma {
     _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
     _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  export type ArtisanProfileCreateWithoutUserInput = {
+    id: string
+    bio?: string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: boolean
+    rating?: number | null
+    reviewCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArtisanProfileUncheckedCreateWithoutUserInput = {
+    id: string
+    bio?: string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: boolean
+    rating?: number | null
+    reviewCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArtisanProfileCreateOrConnectWithoutUserInput = {
+    where: ArtisanProfileWhereUniqueInput
+    create: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
+  }
+
+  export type ProposalCreateWithoutArtisanInput = {
+    id: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutProposalsInput
+    client: UserCreateNestedOneWithoutReceivedProposalsInput
+    contract?: ContractCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalUncheckedCreateWithoutArtisanInput = {
+    id: string
+    jobId: string
+    clientId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalCreateOrConnectWithoutArtisanInput = {
+    where: ProposalWhereUniqueInput
+    create: XOR<ProposalCreateWithoutArtisanInput, ProposalUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type ProposalCreateManyArtisanInputEnvelope = {
+    data: ProposalCreateManyArtisanInput | ProposalCreateManyArtisanInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProposalCreateWithoutClientInput = {
+    id: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutProposalsInput
+    artisan: UserCreateNestedOneWithoutSentProposalsInput
+    contract?: ContractCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalUncheckedCreateWithoutClientInput = {
+    id: string
+    jobId: string
+    artisanId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalCreateOrConnectWithoutClientInput = {
+    where: ProposalWhereUniqueInput
+    create: XOR<ProposalCreateWithoutClientInput, ProposalUncheckedCreateWithoutClientInput>
+  }
+
+  export type ProposalCreateManyClientInputEnvelope = {
+    data: ProposalCreateManyClientInput | ProposalCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContractCreateWithoutClientInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutClientInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutClientInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutClientInput, ContractUncheckedCreateWithoutClientInput>
+  }
+
+  export type ContractCreateManyClientInputEnvelope = {
+    data: ContractCreateManyClientInput | ContractCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContractCreateWithoutArtisanInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutArtisanInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutArtisanInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutArtisanInput, ContractUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type ContractCreateManyArtisanInputEnvelope = {
+    data: ContractCreateManyArtisanInput | ContractCreateManyArtisanInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobCreateWithoutClientInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    artisan?: UserCreateNestedOneWithoutArtisanJobsInput
+    contract?: ContractCreateNestedOneWithoutJobInput
+    proposals?: ProposalCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutClientInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    artisanId?: string | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutClientInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput>
+  }
+
+  export type JobCreateManyClientInputEnvelope = {
+    data: JobCreateManyClientInput | JobCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobCreateWithoutArtisanInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutClientJobsInput
+    contract?: ContractCreateNestedOneWithoutJobInput
+    proposals?: ProposalCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutArtisanInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    clientId: string
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutArtisanInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutArtisanInput, JobUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type JobCreateManyArtisanInputEnvelope = {
+    data: JobCreateManyArtisanInput | JobCreateManyArtisanInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WalletCreateWithoutUserInput = {
+    id: string
+    balance?: number
+    frozen?: number
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WalletUncheckedCreateWithoutUserInput = {
+    id: string
+    balance?: number
+    frozen?: number
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WalletCreateOrConnectWithoutUserInput = {
+    where: WalletWhereUniqueInput
+    create: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
+  }
+
+  export type ReviewCreateWithoutClientInput = {
+    id: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+    contract: ContractCreateNestedOneWithoutReviewInput
+    artisan: UserCreateNestedOneWithoutReceivedReviewsInput
+  }
+
+  export type ReviewUncheckedCreateWithoutClientInput = {
+    id: string
+    contractId: string
+    artisanId: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReviewCreateOrConnectWithoutClientInput = {
+    where: ReviewWhereUniqueInput
+    create: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput>
+  }
+
+  export type ReviewCreateManyClientInputEnvelope = {
+    data: ReviewCreateManyClientInput | ReviewCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReviewCreateWithoutArtisanInput = {
+    id: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+    contract: ContractCreateNestedOneWithoutReviewInput
+    client: UserCreateNestedOneWithoutSentReviewsInput
+  }
+
+  export type ReviewUncheckedCreateWithoutArtisanInput = {
+    id: string
+    contractId: string
+    clientId: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReviewCreateOrConnectWithoutArtisanInput = {
+    where: ReviewWhereUniqueInput
+    create: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type ReviewCreateManyArtisanInputEnvelope = {
+    data: ReviewCreateManyArtisanInput | ReviewCreateManyArtisanInput[]
+    skipDuplicates?: boolean
   }
 
   export type NotificationCreateWithoutUserInput = {
@@ -12299,18 +22544,26 @@ export namespace Prisma {
     id: string
     type: $Enums.TransactionType
     amount: number
-    status: $Enums.TransactionStatus
+    status?: $Enums.TransactionStatus
     reference: string
-    createdAt: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
   }
 
   export type TransactionUncheckedCreateWithoutUserInput = {
     id: string
     type: $Enums.TransactionType
     amount: number
-    status: $Enums.TransactionStatus
+    status?: $Enums.TransactionStatus
     reference: string
-    createdAt: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
   }
 
   export type TransactionCreateOrConnectWithoutUserInput = {
@@ -12321,6 +22574,328 @@ export namespace Prisma {
   export type TransactionCreateManyUserInputEnvelope = {
     data: TransactionCreateManyUserInput | TransactionCreateManyUserInput[]
     skipDuplicates?: boolean
+  }
+
+  export type DisputeCreateWithoutUserInput = {
+    id: string
+    contractId?: string | null
+    jobId?: string | null
+    artisanId: string
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    history?: DisputeHistoryCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeUncheckedCreateWithoutUserInput = {
+    id: string
+    contractId?: string | null
+    jobId?: string | null
+    artisanId: string
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    history?: DisputeHistoryUncheckedCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeCreateOrConnectWithoutUserInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput>
+  }
+
+  export type DisputeCreateManyUserInputEnvelope = {
+    data: DisputeCreateManyUserInput | DisputeCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ArtisanProfileUpsertWithoutUserInput = {
+    update: XOR<ArtisanProfileUpdateWithoutUserInput, ArtisanProfileUncheckedUpdateWithoutUserInput>
+    create: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
+    where?: ArtisanProfileWhereInput
+  }
+
+  export type ArtisanProfileUpdateToOneWithWhereWithoutUserInput = {
+    where?: ArtisanProfileWhereInput
+    data: XOR<ArtisanProfileUpdateWithoutUserInput, ArtisanProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ArtisanProfileUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArtisanProfileUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: JsonNullValueInput | InputJsonValue
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolio?: JsonNullValueInput | InputJsonValue
+    verified?: BoolFieldUpdateOperationsInput | boolean
+    rating?: NullableFloatFieldUpdateOperationsInput | number | null
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalUpsertWithWhereUniqueWithoutArtisanInput = {
+    where: ProposalWhereUniqueInput
+    update: XOR<ProposalUpdateWithoutArtisanInput, ProposalUncheckedUpdateWithoutArtisanInput>
+    create: XOR<ProposalCreateWithoutArtisanInput, ProposalUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type ProposalUpdateWithWhereUniqueWithoutArtisanInput = {
+    where: ProposalWhereUniqueInput
+    data: XOR<ProposalUpdateWithoutArtisanInput, ProposalUncheckedUpdateWithoutArtisanInput>
+  }
+
+  export type ProposalUpdateManyWithWhereWithoutArtisanInput = {
+    where: ProposalScalarWhereInput
+    data: XOR<ProposalUpdateManyMutationInput, ProposalUncheckedUpdateManyWithoutArtisanInput>
+  }
+
+  export type ProposalScalarWhereInput = {
+    AND?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
+    OR?: ProposalScalarWhereInput[]
+    NOT?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
+    id?: StringFilter<"Proposal"> | string
+    jobId?: StringFilter<"Proposal"> | string
+    artisanId?: StringFilter<"Proposal"> | string
+    clientId?: StringFilter<"Proposal"> | string
+    amount?: IntFilter<"Proposal"> | number
+    message?: StringFilter<"Proposal"> | string
+    status?: EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
+    createdAt?: DateTimeFilter<"Proposal"> | Date | string
+    updatedAt?: DateTimeFilter<"Proposal"> | Date | string
+  }
+
+  export type ProposalUpsertWithWhereUniqueWithoutClientInput = {
+    where: ProposalWhereUniqueInput
+    update: XOR<ProposalUpdateWithoutClientInput, ProposalUncheckedUpdateWithoutClientInput>
+    create: XOR<ProposalCreateWithoutClientInput, ProposalUncheckedCreateWithoutClientInput>
+  }
+
+  export type ProposalUpdateWithWhereUniqueWithoutClientInput = {
+    where: ProposalWhereUniqueInput
+    data: XOR<ProposalUpdateWithoutClientInput, ProposalUncheckedUpdateWithoutClientInput>
+  }
+
+  export type ProposalUpdateManyWithWhereWithoutClientInput = {
+    where: ProposalScalarWhereInput
+    data: XOR<ProposalUpdateManyMutationInput, ProposalUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type ContractUpsertWithWhereUniqueWithoutClientInput = {
+    where: ContractWhereUniqueInput
+    update: XOR<ContractUpdateWithoutClientInput, ContractUncheckedUpdateWithoutClientInput>
+    create: XOR<ContractCreateWithoutClientInput, ContractUncheckedCreateWithoutClientInput>
+  }
+
+  export type ContractUpdateWithWhereUniqueWithoutClientInput = {
+    where: ContractWhereUniqueInput
+    data: XOR<ContractUpdateWithoutClientInput, ContractUncheckedUpdateWithoutClientInput>
+  }
+
+  export type ContractUpdateManyWithWhereWithoutClientInput = {
+    where: ContractScalarWhereInput
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type ContractScalarWhereInput = {
+    AND?: ContractScalarWhereInput | ContractScalarWhereInput[]
+    OR?: ContractScalarWhereInput[]
+    NOT?: ContractScalarWhereInput | ContractScalarWhereInput[]
+    id?: StringFilter<"Contract"> | string
+    jobId?: StringFilter<"Contract"> | string
+    proposalId?: StringFilter<"Contract"> | string
+    clientId?: StringFilter<"Contract"> | string
+    artisanId?: StringFilter<"Contract"> | string
+    amount?: IntFilter<"Contract"> | number
+    status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    fundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    activatedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    startedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    clientConfirmedCompletion?: BoolFilter<"Contract"> | boolean
+    clientConfirmedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    artisanConfirmedCompletion?: BoolFilter<"Contract"> | boolean
+    artisanConfirmedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    escrowReleased?: BoolFilter<"Contract"> | boolean
+    escrowReleasedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    platformFeeDeducted?: BoolFilter<"Contract"> | boolean
+    createdAt?: DateTimeFilter<"Contract"> | Date | string
+    updatedAt?: DateTimeFilter<"Contract"> | Date | string
+  }
+
+  export type ContractUpsertWithWhereUniqueWithoutArtisanInput = {
+    where: ContractWhereUniqueInput
+    update: XOR<ContractUpdateWithoutArtisanInput, ContractUncheckedUpdateWithoutArtisanInput>
+    create: XOR<ContractCreateWithoutArtisanInput, ContractUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type ContractUpdateWithWhereUniqueWithoutArtisanInput = {
+    where: ContractWhereUniqueInput
+    data: XOR<ContractUpdateWithoutArtisanInput, ContractUncheckedUpdateWithoutArtisanInput>
+  }
+
+  export type ContractUpdateManyWithWhereWithoutArtisanInput = {
+    where: ContractScalarWhereInput
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutArtisanInput>
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutClientInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutClientInput, JobUncheckedUpdateWithoutClientInput>
+    create: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutClientInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutClientInput, JobUncheckedUpdateWithoutClientInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutClientInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type JobScalarWhereInput = {
+    AND?: JobScalarWhereInput | JobScalarWhereInput[]
+    OR?: JobScalarWhereInput[]
+    NOT?: JobScalarWhereInput | JobScalarWhereInput[]
+    id?: StringFilter<"Job"> | string
+    title?: StringFilter<"Job"> | string
+    description?: StringNullableFilter<"Job"> | string | null
+    budget?: IntNullableFilter<"Job"> | number | null
+    clientId?: StringFilter<"Job"> | string
+    artisanId?: StringNullableFilter<"Job"> | string | null
+    contractId?: StringNullableFilter<"Job"> | string | null
+    amount?: IntNullableFilter<"Job"> | number | null
+    status?: EnumJobStatusFilter<"Job"> | $Enums.JobStatus
+    location?: StringNullableFilter<"Job"> | string | null
+    requiredSkills?: JsonNullableFilter<"Job">
+    category?: StringNullableFilter<"Job"> | string | null
+    deadline?: DateTimeNullableFilter<"Job"> | Date | string | null
+    requirements?: StringNullableFilter<"Job"> | string | null
+    flagged?: BoolFilter<"Job"> | boolean
+    forceClosedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    forceCloseReason?: StringNullableFilter<"Job"> | string | null
+    createdAt?: DateTimeFilter<"Job"> | Date | string
+    updatedAt?: DateTimeFilter<"Job"> | Date | string
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutArtisanInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutArtisanInput, JobUncheckedUpdateWithoutArtisanInput>
+    create: XOR<JobCreateWithoutArtisanInput, JobUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutArtisanInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutArtisanInput, JobUncheckedUpdateWithoutArtisanInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutArtisanInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutArtisanInput>
+  }
+
+  export type WalletUpsertWithoutUserInput = {
+    update: XOR<WalletUpdateWithoutUserInput, WalletUncheckedUpdateWithoutUserInput>
+    create: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
+    where?: WalletWhereInput
+  }
+
+  export type WalletUpdateToOneWithWhereWithoutUserInput = {
+    where?: WalletWhereInput
+    data: XOR<WalletUpdateWithoutUserInput, WalletUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WalletUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WalletUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUpsertWithWhereUniqueWithoutClientInput = {
+    where: ReviewWhereUniqueInput
+    update: XOR<ReviewUpdateWithoutClientInput, ReviewUncheckedUpdateWithoutClientInput>
+    create: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput>
+  }
+
+  export type ReviewUpdateWithWhereUniqueWithoutClientInput = {
+    where: ReviewWhereUniqueInput
+    data: XOR<ReviewUpdateWithoutClientInput, ReviewUncheckedUpdateWithoutClientInput>
+  }
+
+  export type ReviewUpdateManyWithWhereWithoutClientInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type ReviewScalarWhereInput = {
+    AND?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+    OR?: ReviewScalarWhereInput[]
+    NOT?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+    id?: StringFilter<"Review"> | string
+    contractId?: StringFilter<"Review"> | string
+    clientId?: StringFilter<"Review"> | string
+    artisanId?: StringFilter<"Review"> | string
+    rating?: IntFilter<"Review"> | number
+    comment?: StringNullableFilter<"Review"> | string | null
+    createdAt?: DateTimeFilter<"Review"> | Date | string
+  }
+
+  export type ReviewUpsertWithWhereUniqueWithoutArtisanInput = {
+    where: ReviewWhereUniqueInput
+    update: XOR<ReviewUpdateWithoutArtisanInput, ReviewUncheckedUpdateWithoutArtisanInput>
+    create: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type ReviewUpdateWithWhereUniqueWithoutArtisanInput = {
+    where: ReviewWhereUniqueInput
+    data: XOR<ReviewUpdateWithoutArtisanInput, ReviewUncheckedUpdateWithoutArtisanInput>
+  }
+
+  export type ReviewUpdateManyWithWhereWithoutArtisanInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutArtisanInput>
   }
 
   export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
@@ -12376,7 +22951,49 @@ export namespace Prisma {
     amount?: IntFilter<"Transaction"> | number
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     reference?: StringFilter<"Transaction"> | string
+    metadata?: JsonNullableFilter<"Transaction">
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    completedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+    failedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+    failureReason?: StringNullableFilter<"Transaction"> | string | null
+  }
+
+  export type DisputeUpsertWithWhereUniqueWithoutUserInput = {
+    where: DisputeWhereUniqueInput
+    update: XOR<DisputeUpdateWithoutUserInput, DisputeUncheckedUpdateWithoutUserInput>
+    create: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput>
+  }
+
+  export type DisputeUpdateWithWhereUniqueWithoutUserInput = {
+    where: DisputeWhereUniqueInput
+    data: XOR<DisputeUpdateWithoutUserInput, DisputeUncheckedUpdateWithoutUserInput>
+  }
+
+  export type DisputeUpdateManyWithWhereWithoutUserInput = {
+    where: DisputeScalarWhereInput
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type DisputeScalarWhereInput = {
+    AND?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+    OR?: DisputeScalarWhereInput[]
+    NOT?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+    id?: StringFilter<"Dispute"> | string
+    contractId?: StringNullableFilter<"Dispute"> | string | null
+    jobId?: StringNullableFilter<"Dispute"> | string | null
+    clientId?: StringFilter<"Dispute"> | string
+    artisanId?: StringFilter<"Dispute"> | string
+    amount?: IntFilter<"Dispute"> | number
+    status?: EnumDisputeStatusFilter<"Dispute"> | $Enums.DisputeStatus
+    evidenceImages?: JsonFilter<"Dispute">
+    evidenceVideos?: JsonFilter<"Dispute">
+    evidenceMessages?: JsonFilter<"Dispute">
+    resolutionDecision?: EnumDisputeDecisionNullableFilter<"Dispute"> | $Enums.DisputeDecision | null
+    resolvedAt?: DateTimeNullableFilter<"Dispute"> | Date | string | null
+    resolvedBy?: StringNullableFilter<"Dispute"> | string | null
+    resolutionNotes?: StringNullableFilter<"Dispute"> | string | null
+    createdAt?: DateTimeFilter<"Dispute"> | Date | string
+    updatedAt?: DateTimeFilter<"Dispute"> | Date | string
   }
 
   export type DisputeHistoryCreateWithoutDisputeInput = {
@@ -12403,6 +23020,67 @@ export namespace Prisma {
   export type DisputeHistoryCreateManyDisputeInputEnvelope = {
     data: DisputeHistoryCreateManyDisputeInput | DisputeHistoryCreateManyDisputeInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutDisputesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutDisputesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutDisputesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
   }
 
   export type DisputeHistoryUpsertWithWhereUniqueWithoutDisputeInput = {
@@ -12433,11 +23111,77 @@ export namespace Prisma {
     notes?: StringNullableFilter<"DisputeHistory"> | string | null
   }
 
+  export type UserUpsertWithoutDisputesInput = {
+    update: XOR<UserUpdateWithoutDisputesInput, UserUncheckedUpdateWithoutDisputesInput>
+    create: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDisputesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDisputesInput, UserUncheckedUpdateWithoutDisputesInput>
+  }
+
+  export type UserUpdateWithoutDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type DisputeCreateWithoutHistoryInput = {
     id: string
-    contractId: string
-    jobId: string
-    clientId: string
+    contractId?: string | null
+    jobId?: string | null
     artisanId: string
     amount: number
     status: $Enums.DisputeStatus
@@ -12450,12 +23194,13 @@ export namespace Prisma {
     resolutionNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutDisputesInput
   }
 
   export type DisputeUncheckedCreateWithoutHistoryInput = {
     id: string
-    contractId: string
-    jobId: string
+    contractId?: string | null
+    jobId?: string | null
     clientId: string
     artisanId: string
     amount: number
@@ -12489,8 +23234,27 @@ export namespace Prisma {
 
   export type DisputeUpdateWithoutHistoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    jobId?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDisputesNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutHistoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: StringFieldUpdateOperationsInput | string
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
@@ -12506,23 +23270,422 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type DisputeUncheckedUpdateWithoutHistoryInput = {
+  export type UserCreateWithoutClientJobsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutClientJobsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutClientJobsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutClientJobsInput, UserUncheckedCreateWithoutClientJobsInput>
+  }
+
+  export type UserCreateWithoutArtisanJobsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutArtisanJobsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutArtisanJobsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutArtisanJobsInput, UserUncheckedCreateWithoutArtisanJobsInput>
+  }
+
+  export type ContractCreateWithoutJobInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutJobInput = {
+    id: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutJobInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+  }
+
+  export type ProposalCreateWithoutJobInput = {
+    id: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    artisan: UserCreateNestedOneWithoutSentProposalsInput
+    client: UserCreateNestedOneWithoutReceivedProposalsInput
+    contract?: ContractCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalUncheckedCreateWithoutJobInput = {
+    id: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalCreateOrConnectWithoutJobInput = {
+    where: ProposalWhereUniqueInput
+    create: XOR<ProposalCreateWithoutJobInput, ProposalUncheckedCreateWithoutJobInput>
+  }
+
+  export type ProposalCreateManyJobInputEnvelope = {
+    data: ProposalCreateManyJobInput | ProposalCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutClientJobsInput = {
+    update: XOR<UserUpdateWithoutClientJobsInput, UserUncheckedUpdateWithoutClientJobsInput>
+    create: XOR<UserCreateWithoutClientJobsInput, UserUncheckedCreateWithoutClientJobsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutClientJobsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutClientJobsInput, UserUncheckedUpdateWithoutClientJobsInput>
+  }
+
+  export type UserUpdateWithoutClientJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    jobId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutClientJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutArtisanJobsInput = {
+    update: XOR<UserUpdateWithoutArtisanJobsInput, UserUncheckedUpdateWithoutArtisanJobsInput>
+    create: XOR<UserCreateWithoutArtisanJobsInput, UserUncheckedCreateWithoutArtisanJobsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutArtisanJobsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutArtisanJobsInput, UserUncheckedUpdateWithoutArtisanJobsInput>
+  }
+
+  export type UserUpdateWithoutArtisanJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutArtisanJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ContractUpsertWithoutJobInput = {
+    update: XOR<ContractUpdateWithoutJobInput, ContractUncheckedUpdateWithoutJobInput>
+    create: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutJobInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutJobInput, ContractUncheckedUpdateWithoutJobInput>
+  }
+
+  export type ContractUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
-    evidenceImages?: JsonNullValueInput | InputJsonValue
-    evidenceVideos?: JsonNullValueInput | InputJsonValue
-    evidenceMessages?: JsonNullValueInput | InputJsonValue
-    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
-    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+  }
+
+  export type ProposalUpsertWithWhereUniqueWithoutJobInput = {
+    where: ProposalWhereUniqueInput
+    update: XOR<ProposalUpdateWithoutJobInput, ProposalUncheckedUpdateWithoutJobInput>
+    create: XOR<ProposalCreateWithoutJobInput, ProposalUncheckedCreateWithoutJobInput>
+  }
+
+  export type ProposalUpdateWithWhereUniqueWithoutJobInput = {
+    where: ProposalWhereUniqueInput
+    data: XOR<ProposalUpdateWithoutJobInput, ProposalUncheckedUpdateWithoutJobInput>
+  }
+
+  export type ProposalUpdateManyWithWhereWithoutJobInput = {
+    where: ProposalScalarWhereInput
+    data: XOR<ProposalUpdateManyMutationInput, ProposalUncheckedUpdateManyWithoutJobInput>
   }
 
   export type UserCreateWithoutTransactionsInput = {
@@ -12539,7 +23702,18 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -12556,7 +23730,18 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -12589,7 +23774,18 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -12606,7 +23802,1598 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutArtisanProfileInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutArtisanProfileInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutArtisanProfileInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutArtisanProfileInput, UserUncheckedCreateWithoutArtisanProfileInput>
+  }
+
+  export type UserUpsertWithoutArtisanProfileInput = {
+    update: XOR<UserUpdateWithoutArtisanProfileInput, UserUncheckedUpdateWithoutArtisanProfileInput>
+    create: XOR<UserCreateWithoutArtisanProfileInput, UserUncheckedCreateWithoutArtisanProfileInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutArtisanProfileInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutArtisanProfileInput, UserUncheckedUpdateWithoutArtisanProfileInput>
+  }
+
+  export type UserUpdateWithoutArtisanProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutArtisanProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type JobCreateWithoutProposalsInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutClientJobsInput
+    artisan?: UserCreateNestedOneWithoutArtisanJobsInput
+    contract?: ContractCreateNestedOneWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutProposalsInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    clientId: string
+    artisanId?: string | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutProposalsInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutProposalsInput, JobUncheckedCreateWithoutProposalsInput>
+  }
+
+  export type UserCreateWithoutSentProposalsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSentProposalsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSentProposalsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSentProposalsInput, UserUncheckedCreateWithoutSentProposalsInput>
+  }
+
+  export type UserCreateWithoutReceivedProposalsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutReceivedProposalsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReceivedProposalsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReceivedProposalsInput, UserUncheckedCreateWithoutReceivedProposalsInput>
+  }
+
+  export type ContractCreateWithoutProposalInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutProposalInput = {
+    id: string
+    jobId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutProposalInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
+  }
+
+  export type JobUpsertWithoutProposalsInput = {
+    update: XOR<JobUpdateWithoutProposalsInput, JobUncheckedUpdateWithoutProposalsInput>
+    create: XOR<JobCreateWithoutProposalsInput, JobUncheckedCreateWithoutProposalsInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutProposalsInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutProposalsInput, JobUncheckedUpdateWithoutProposalsInput>
+  }
+
+  export type JobUpdateWithoutProposalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutClientJobsNestedInput
+    artisan?: UserUpdateOneWithoutArtisanJobsNestedInput
+    contract?: ContractUpdateOneWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutProposalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: NullableStringFieldUpdateOperationsInput | string | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+  }
+
+  export type UserUpsertWithoutSentProposalsInput = {
+    update: XOR<UserUpdateWithoutSentProposalsInput, UserUncheckedUpdateWithoutSentProposalsInput>
+    create: XOR<UserCreateWithoutSentProposalsInput, UserUncheckedCreateWithoutSentProposalsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSentProposalsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSentProposalsInput, UserUncheckedUpdateWithoutSentProposalsInput>
+  }
+
+  export type UserUpdateWithoutSentProposalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSentProposalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutReceivedProposalsInput = {
+    update: XOR<UserUpdateWithoutReceivedProposalsInput, UserUncheckedUpdateWithoutReceivedProposalsInput>
+    create: XOR<UserCreateWithoutReceivedProposalsInput, UserUncheckedCreateWithoutReceivedProposalsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReceivedProposalsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReceivedProposalsInput, UserUncheckedUpdateWithoutReceivedProposalsInput>
+  }
+
+  export type UserUpdateWithoutReceivedProposalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReceivedProposalsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ContractUpsertWithoutProposalInput = {
+    update: XOR<ContractUpdateWithoutProposalInput, ContractUncheckedUpdateWithoutProposalInput>
+    create: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutProposalInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutProposalInput, ContractUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type ContractUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+  }
+
+  export type JobCreateWithoutContractInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutClientJobsInput
+    artisan?: UserCreateNestedOneWithoutArtisanJobsInput
+    proposals?: ProposalCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutContractInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    clientId: string
+    artisanId?: string | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutContractInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
+  }
+
+  export type ProposalCreateWithoutContractInput = {
+    id: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutProposalsInput
+    artisan: UserCreateNestedOneWithoutSentProposalsInput
+    client: UserCreateNestedOneWithoutReceivedProposalsInput
+  }
+
+  export type ProposalUncheckedCreateWithoutContractInput = {
+    id: string
+    jobId: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProposalCreateOrConnectWithoutContractInput = {
+    where: ProposalWhereUniqueInput
+    create: XOR<ProposalCreateWithoutContractInput, ProposalUncheckedCreateWithoutContractInput>
+  }
+
+  export type UserCreateWithoutClientContractsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutClientContractsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutClientContractsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutClientContractsInput, UserUncheckedCreateWithoutClientContractsInput>
+  }
+
+  export type UserCreateWithoutArtisanContractsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutArtisanContractsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutArtisanContractsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutArtisanContractsInput, UserUncheckedCreateWithoutArtisanContractsInput>
+  }
+
+  export type ReviewCreateWithoutContractInput = {
+    id: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+    client: UserCreateNestedOneWithoutSentReviewsInput
+    artisan: UserCreateNestedOneWithoutReceivedReviewsInput
+  }
+
+  export type ReviewUncheckedCreateWithoutContractInput = {
+    id: string
+    clientId: string
+    artisanId: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReviewCreateOrConnectWithoutContractInput = {
+    where: ReviewWhereUniqueInput
+    create: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
+  }
+
+  export type JobUpsertWithoutContractInput = {
+    update: XOR<JobUpdateWithoutContractInput, JobUncheckedUpdateWithoutContractInput>
+    create: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutContractInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutContractInput, JobUncheckedUpdateWithoutContractInput>
+  }
+
+  export type JobUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutClientJobsNestedInput
+    artisan?: UserUpdateOneWithoutArtisanJobsNestedInput
+    proposals?: ProposalUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: NullableStringFieldUpdateOperationsInput | string | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type ProposalUpsertWithoutContractInput = {
+    update: XOR<ProposalUpdateWithoutContractInput, ProposalUncheckedUpdateWithoutContractInput>
+    create: XOR<ProposalCreateWithoutContractInput, ProposalUncheckedCreateWithoutContractInput>
+    where?: ProposalWhereInput
+  }
+
+  export type ProposalUpdateToOneWithWhereWithoutContractInput = {
+    where?: ProposalWhereInput
+    data: XOR<ProposalUpdateWithoutContractInput, ProposalUncheckedUpdateWithoutContractInput>
+  }
+
+  export type ProposalUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutProposalsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
+    client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+  }
+
+  export type ProposalUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutClientContractsInput = {
+    update: XOR<UserUpdateWithoutClientContractsInput, UserUncheckedUpdateWithoutClientContractsInput>
+    create: XOR<UserCreateWithoutClientContractsInput, UserUncheckedCreateWithoutClientContractsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutClientContractsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutClientContractsInput, UserUncheckedUpdateWithoutClientContractsInput>
+  }
+
+  export type UserUpdateWithoutClientContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutClientContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutArtisanContractsInput = {
+    update: XOR<UserUpdateWithoutArtisanContractsInput, UserUncheckedUpdateWithoutArtisanContractsInput>
+    create: XOR<UserCreateWithoutArtisanContractsInput, UserUncheckedCreateWithoutArtisanContractsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutArtisanContractsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutArtisanContractsInput, UserUncheckedUpdateWithoutArtisanContractsInput>
+  }
+
+  export type UserUpdateWithoutArtisanContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutArtisanContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ReviewUpsertWithoutContractInput = {
+    update: XOR<ReviewUpdateWithoutContractInput, ReviewUncheckedUpdateWithoutContractInput>
+    create: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
+    where?: ReviewWhereInput
+  }
+
+  export type ReviewUpdateToOneWithWhereWithoutContractInput = {
+    where?: ReviewWhereInput
+    data: XOR<ReviewUpdateWithoutContractInput, ReviewUncheckedUpdateWithoutContractInput>
+  }
+
+  export type ReviewUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateWithoutWalletInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutWalletInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutWalletInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
+  }
+
+  export type UserUpsertWithoutWalletInput = {
+    update: XOR<UserUpdateWithoutWalletInput, UserUncheckedUpdateWithoutWalletInput>
+    create: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutWalletInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutWalletInput, UserUncheckedUpdateWithoutWalletInput>
+  }
+
+  export type UserUpdateWithoutWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutWalletInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ContractCreateWithoutReviewInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+  }
+
+  export type ContractUncheckedCreateWithoutReviewInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContractCreateOrConnectWithoutReviewInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
+  }
+
+  export type UserCreateWithoutSentReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSentReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSentReviewsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
+  }
+
+  export type UserCreateWithoutReceivedReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutReceivedReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReceivedReviewsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+  }
+
+  export type ContractUpsertWithoutReviewInput = {
+    update: XOR<ContractUpdateWithoutReviewInput, ContractUncheckedUpdateWithoutReviewInput>
+    create: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutReviewInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutReviewInput, ContractUncheckedUpdateWithoutReviewInput>
+  }
+
+  export type ContractUpdateWithoutReviewInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutReviewInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutSentReviewsInput = {
+    update: XOR<UserUpdateWithoutSentReviewsInput, UserUncheckedUpdateWithoutSentReviewsInput>
+    create: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSentReviewsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSentReviewsInput, UserUncheckedUpdateWithoutSentReviewsInput>
+  }
+
+  export type UserUpdateWithoutSentReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSentReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutReceivedReviewsInput = {
+    update: XOR<UserUpdateWithoutReceivedReviewsInput, UserUncheckedUpdateWithoutReceivedReviewsInput>
+    create: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReceivedReviewsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReceivedReviewsInput, UserUncheckedUpdateWithoutReceivedReviewsInput>
+  }
+
+  export type UserUpdateWithoutReceivedReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReceivedReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -12623,7 +25410,18 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -12640,7 +25438,18 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -12673,7 +25482,18 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -12690,7 +25510,146 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ProposalCreateManyArtisanInput = {
+    id: string
+    jobId: string
+    clientId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProposalCreateManyClientInput = {
+    id: string
+    jobId: string
+    artisanId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContractCreateManyClientInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContractCreateManyArtisanInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobCreateManyClientInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    artisanId?: string | null
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobCreateManyArtisanInput = {
+    id: string
+    title: string
+    description?: string | null
+    budget?: number | null
+    clientId: string
+    contractId?: string | null
+    amount?: number | null
+    status: $Enums.JobStatus
+    location?: string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: string | null
+    deadline?: Date | string | null
+    requirements?: string | null
+    flagged?: boolean
+    forceClosedAt?: Date | string | null
+    forceCloseReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewCreateManyClientInput = {
+    id: string
+    contractId: string
+    artisanId: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ReviewCreateManyArtisanInput = {
+    id: string
+    contractId: string
+    clientId: string
+    rating: number
+    comment?: string | null
+    createdAt?: Date | string
   }
 
   export type NotificationCreateManyUserInput = {
@@ -12704,9 +25663,431 @@ export namespace Prisma {
     id: string
     type: $Enums.TransactionType
     amount: number
-    status: $Enums.TransactionStatus
+    status?: $Enums.TransactionStatus
     reference: string
-    createdAt: Date | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    failedAt?: Date | string | null
+    failureReason?: string | null
+  }
+
+  export type DisputeCreateManyUserInput = {
+    id: string
+    contractId?: string | null
+    jobId?: string | null
+    artisanId: string
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProposalUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutProposalsNestedInput
+    client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+    contract?: ContractUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateManyWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutProposalsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
+    contract?: ContractUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateManyWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisan?: UserUpdateOneWithoutArtisanJobsNestedInput
+    contract?: ContractUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanId?: NullableStringFieldUpdateOperationsInput | string | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanId?: NullableStringFieldUpdateOperationsInput | string | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutClientJobsNestedInput
+    contract?: ContractUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableIntFieldUpdateOperationsInput | number | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    requiredSkills?: NullableJsonNullValueInput | InputJsonValue
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    flagged?: BoolFieldUpdateOperationsInput | boolean
+    forceClosedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    forceCloseReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
+    artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
+    client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUpdateWithoutUserInput = {
@@ -12736,7 +26117,11 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     reference?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TransactionUncheckedUpdateWithoutUserInput = {
@@ -12745,7 +26130,11 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     reference?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TransactionUncheckedUpdateManyWithoutUserInput = {
@@ -12754,7 +26143,67 @@ export namespace Prisma {
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     reference?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DisputeUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    history?: DisputeHistoryUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    history?: DisputeHistoryUncheckedUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DisputeHistoryCreateManyDisputeInput = {
@@ -12787,6 +26236,52 @@ export namespace Prisma {
     at?: DateTimeFieldUpdateOperationsInput | Date | string
     by?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ProposalCreateManyJobInput = {
+    id: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    status?: $Enums.ProposalStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProposalUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
+    client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+    contract?: ContractUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
