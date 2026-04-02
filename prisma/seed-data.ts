@@ -3,6 +3,7 @@ import { PrismaClient, TransactionStatus } from '../src/generated/prisma';
 
 export async function resetAdminFixtures(prisma: PrismaClient) {
   await prisma.review.deleteMany();
+  await prisma.payment.deleteMany();
   await prisma.wallet.deleteMany();
   await prisma.contract.deleteMany();
   await prisma.proposal.deleteMany();
@@ -84,7 +85,8 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
       {
         id: 'job_001',
         title: 'Kitchen wall tiling',
-        description: 'Need experienced tiler for kitchen backsplash and wall installation',
+        description:
+          'Need experienced tiler for kitchen backsplash and wall installation',
         budget: 85000,
         clientId: 'usr_client_001',
         amount: 85000,
@@ -123,12 +125,19 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         id: 'apr_001',
         userId: 'usr_artisan_001',
         bio: 'Experienced tiler with 8+ years in residential and commercial projects. Specialized in kitchen and bathroom installations.',
-        skills: JSON.stringify(['ceramic tiling', 'porcelain installation', 'grouting', 'waterproofing', 'backsplash installation']),
-        experience: '8+ years of professional tiling experience. Completed over 150 residential projects and 20 commercial installations.',
+        skills: JSON.stringify([
+          'ceramic tiling',
+          'porcelain installation',
+          'grouting',
+          'waterproofing',
+          'backsplash installation',
+        ]),
+        experience:
+          '8+ years of professional tiling experience. Completed over 150 residential projects and 20 commercial installations.',
         portfolio: JSON.stringify([
           'https://example.com/portfolio/kitchen-001.jpg',
           'https://example.com/portfolio/bathroom-001.jpg',
-          'https://example.com/portfolio/backsplash-001.jpg'
+          'https://example.com/portfolio/backsplash-001.jpg',
         ]),
         verified: false,
         rating: 4.5,
@@ -139,12 +148,19 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         id: 'apr_002',
         userId: 'usr_artisan_002',
         bio: 'Master carpenter specializing in custom furniture and office installations. 15+ years of experience.',
-        skills: JSON.stringify(['custom furniture', 'office installation', 'shelving', 'cabinet making', 'wood finishing']),
-        experience: '15+ years as a master carpenter. Have worked with over 200 clients on custom projects.',
+        skills: JSON.stringify([
+          'custom furniture',
+          'office installation',
+          'shelving',
+          'cabinet making',
+          'wood finishing',
+        ]),
+        experience:
+          '15+ years as a master carpenter. Have worked with over 200 clients on custom projects.',
         portfolio: JSON.stringify([
           'https://example.com/portfolio/desk-001.jpg',
           'https://example.com/portfolio/shelving-001.jpg',
-          'https://example.com/portfolio/cabinet-001.jpg'
+          'https://example.com/portfolio/cabinet-001.jpg',
         ]),
         verified: true,
         rating: 4.8,
@@ -163,7 +179,8 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         artisanId: 'usr_artisan_001',
         clientId: 'usr_client_001',
         amount: 85000,
-        message: 'I can complete your kitchen tiling project within 3 days. I have extensive experience with backsplash installations and will provide high-quality materials.',
+        message:
+          'I can complete your kitchen tiling project within 3 days. I have extensive experience with backsplash installations and will provide high-quality materials.',
         status: 'ACCEPTED',
         createdAt: new Date('2026-03-16T12:00:00.000Z'),
         updatedAt: new Date('2026-03-16T13:00:00.000Z'),
@@ -174,7 +191,8 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         artisanId: 'usr_artisan_002',
         clientId: 'usr_client_001',
         amount: 120000,
-        message: 'Custom office desk and shelving unit - I can design and build exactly what you need. Premium wood materials included.',
+        message:
+          'Custom office desk and shelving unit - I can design and build exactly what you need. Premium wood materials included.',
         status: 'ACCEPTED',
         createdAt: new Date('2026-03-01T07:00:00.000Z'),
         updatedAt: new Date('2026-03-01T08:30:00.000Z'),
@@ -185,7 +203,8 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         artisanId: 'usr_artisan_001',
         clientId: 'usr_client_001',
         amount: 250000,
-        message: 'Complete bathroom renovation including plumbing, tiling, and fixtures. Estimated timeline: 2 weeks.',
+        message:
+          'Complete bathroom renovation including plumbing, tiling, and fixtures. Estimated timeline: 2 weeks.',
         status: 'PENDING',
         createdAt: new Date('2026-03-25T11:00:00.000Z'),
       },
@@ -285,7 +304,8 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         clientId: 'usr_client_001',
         artisanId: 'usr_artisan_002',
         rating: 5,
-        comment: 'Excellent work! The custom office desk and shelving exceeded my expectations. Professional and timely.',
+        comment:
+          'Excellent work! The custom office desk and shelving exceeded my expectations. Professional and timely.',
         createdAt: new Date('2026-03-11T10:00:00.000Z'),
       },
     ],
@@ -302,8 +322,12 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         amount: 85000,
         status: 'OPEN',
         evidenceImages: ['https://example.com/evidence/job-001-damage.jpg'],
-        evidenceVideos: ['https://example.com/evidence/job-001-walkthrough.mp4'],
-        evidenceMessages: ['Client reported incomplete tiling work on March 20.'],
+        evidenceVideos: [
+          'https://example.com/evidence/job-001-walkthrough.mp4',
+        ],
+        evidenceMessages: [
+          'Client reported incomplete tiling work on March 20.',
+        ],
         createdAt: new Date('2026-03-20T15:20:00.000Z'),
       },
       {
@@ -316,7 +340,9 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         status: 'RESOLVED',
         evidenceImages: ['https://example.com/evidence/job-002-before.jpg'],
         evidenceVideos: [],
-        evidenceMessages: ['Admin previously reviewed progress photos and approved payout.'],
+        evidenceMessages: [
+          'Admin previously reviewed progress photos and approved payout.',
+        ],
         resolutionDecision: 'PAY_ARTISAN',
         resolvedAt: new Date('2026-03-03T12:00:00.000Z'),
         resolvedBy: 'usr_admin_001',
@@ -363,7 +389,10 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         amount: 205000,
         status: 'COMPLETED',
         reference: 'fund_wallet_001',
-        metadata: JSON.stringify({ paymentMethod: 'bank_transfer', gateway: 'stripe' }),
+        metadata: JSON.stringify({
+          paymentMethod: 'bank_transfer',
+          gateway: 'stripe',
+        }),
         createdAt: new Date('2026-03-15T10:00:00.000Z'),
         completedAt: new Date('2026-03-15T10:05:00.000Z'),
       },
@@ -414,6 +443,40 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
     ],
   });
 
+  // Create payments
+  await prisma.payment.createMany({
+    data: [
+      {
+        id: 'pmt_001',
+        contractId: 'ctr_001',
+        userId: 'usr_client_001',
+        amount: 85000,
+        status: 'completed',
+        paymentMethod: 'wallet',
+        paymentReference: 'wallet_funding_001',
+        verificationCode: 'VERIFY1',
+        isVerified: true,
+        createdAt: new Date('2026-03-16T14:30:00.000Z'),
+        verifiedAt: new Date('2026-03-16T14:31:00.000Z'),
+        completedAt: new Date('2026-03-16T14:31:00.000Z'),
+      },
+      {
+        id: 'pmt_002',
+        contractId: 'ctr_002',
+        userId: 'usr_client_001',
+        amount: 120000,
+        status: 'completed',
+        paymentMethod: 'wallet',
+        paymentReference: 'wallet_funding_002',
+        verificationCode: 'VERIFY2',
+        isVerified: true,
+        createdAt: new Date('2026-03-01T09:00:00.000Z'),
+        verifiedAt: new Date('2026-03-01T09:01:00.000Z'),
+        completedAt: new Date('2026-03-01T09:01:00.000Z'),
+      },
+    ],
+  });
+
   // Create notifications
   await prisma.notification.createMany({
     data: [
@@ -442,7 +505,8 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         id: 'ntf_004',
         userId: 'usr_artisan_002',
         title: 'Payment Released',
-        message: 'Payment for "Office desk carpentry" has been released to your wallet',
+        message:
+          'Payment for "Office desk carpentry" has been released to your wallet',
         createdAt: new Date('2026-03-11T09:02:00.000Z'),
       },
       {

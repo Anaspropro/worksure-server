@@ -6,6 +6,8 @@ import { UsersModule } from '../users/users.module';
 import { AppConfigModule } from '../../config/app-config.module';
 import { AppConfigService } from '../../config/app-config.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AccountLockoutService } from '../../common/services/account-lockout.service';
+import { SessionService } from '../../common/services/session.service';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard],
-  exports: [AuthService],
+  providers: [AuthService, JwtAuthGuard, AccountLockoutService, SessionService],
+  exports: [AuthService, JwtAuthGuard, SessionService],
 })
 export class AuthModule {}

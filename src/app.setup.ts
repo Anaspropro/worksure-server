@@ -1,15 +1,80 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import helmet from 'helmet';
+import { SanitizationService } from './common/services/sanitization.service';
+import { SanitizationPipe } from './common/pipes/sanitization.pipe';
 
 export function configureApp(app: INestApplication) {
+  // Apply security headers with Helmet
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://fonts.googleapis.com',
+          ],
+          fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+          imgSrc: ["'self'", 'data:', 'https:'],
+          scriptSrc: ["'self'"],
+          connectSrc: ["'self'"],
+          frameSrc: ["'none'"],
+          objectSrc: ["'none'"],
+          mediaSrc: ["'self'"],
+          manifestSrc: ["'self'"],
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
+    }),
+  );
+
+  // Enable CORS with secure configuration
+  app.enableCors({
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:3000',
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'User-Agent',
+    ],
+    exposedHeaders: [
+      'X-Total-Count',
+      'X-Rate-Limit-Remaining',
+      'X-Rate-Limit-Reset',
+    ],
+    maxAge: 86400, // 24 hours
+  });
+
+  // Global validation pipe with sanitization
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
       forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
+
+  // Register sanitization service for dependency injection
+  const sanitizationService = app.get(SanitizationService, { strict: false });
+  if (sanitizationService) {
+    app.useGlobalPipes(new SanitizationPipe(sanitizationService));
+  }
 
   app.useGlobalFilters(new HttpExceptionFilter());
 

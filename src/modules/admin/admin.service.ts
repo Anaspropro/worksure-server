@@ -769,7 +769,11 @@ export class AdminService {
   }
 
   private jsonStringArray(value: Prisma.JsonValue) {
-    return Array.isArray(value) ? value.map((item) => String(item)) : [];
+    return Array.isArray(value)
+      ? value
+          .map((item) => this.normalizeJsonPrimitive(item))
+          .filter((item): item is string => typeof item === 'string')
+      : [];
   }
 
   private jsonRecord(value: Prisma.JsonValue | null) {

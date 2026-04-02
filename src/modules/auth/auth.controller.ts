@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -25,8 +26,12 @@ export class AuthController {
   @ApiCreatedResponse({ description: 'User registered successfully.' })
   @Public()
   @Post('register')
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  register(@Body() dto: RegisterDto, @Req() request: Request) {
+    return this.authService.register(
+      dto,
+      this.getIpAddress(request),
+      request.get('user-agent'),
+    );
   }
 
   @ApiOperation({ summary: 'Authenticate a user and return a JWT' })
@@ -34,8 +39,12 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
   @Public()
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  login(@Body() dto: LoginDto, @Req() request: Request) {
+    return this.authService.login(
+      dto,
+      this.getIpAddress(request),
+      request.get('user-agent'),
+    );
   }
 
   @ApiOperation({ summary: 'Request a password reset token' })
@@ -62,5 +71,28 @@ export class AuthController {
   @Get('me')
   me(@CurrentUser() user: AuthenticatedUser) {
     return this.authService.me(user);
+  }
+
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Log out the current session' })
+  @ApiOkResponse({ description: 'Logout successful.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid bearer token.' })
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  logout(@CurrentUser() user: AuthenticatedUser) {
+    return this.authService.logout(user);
+  }
+
+  private getIpAddress(request: Request) {
+    const forwardedFor = request.headers['x-forwarded-for'];
+    if (Array.isArray(forwardedFor)) {
+      return forwardedFor[0];
+    }
+
+    if (typeof forwardedFor === 'string') {
+      return forwardedFor.split(',')[0]?.trim();
+    }
+
+    return request.ip;
   }
 }

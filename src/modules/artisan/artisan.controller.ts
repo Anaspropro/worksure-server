@@ -156,9 +156,12 @@ export class ArtisanController {
 
     const updateData: any = {};
     if (updateDto.bio !== undefined) updateData.bio = updateDto.bio;
-    if (updateDto.skills !== undefined) updateData.skills = JSON.stringify(updateDto.skills);
-    if (updateDto.experience !== undefined) updateData.experience = updateDto.experience;
-    if (updateDto.portfolio !== undefined) updateData.portfolio = JSON.stringify(updateDto.portfolio);
+    if (updateDto.skills !== undefined)
+      updateData.skills = JSON.stringify(updateDto.skills);
+    if (updateDto.experience !== undefined)
+      updateData.experience = updateDto.experience;
+    if (updateDto.portfolio !== undefined)
+      updateData.portfolio = JSON.stringify(updateDto.portfolio);
 
     const profile = await this.prisma.artisanProfile.update({
       where: { userId: user.id },

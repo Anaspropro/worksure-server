@@ -1,8 +1,15 @@
-import { IsString, IsOptional, IsNumber, IsEnum, IsDateString, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsDateString,
+  Min,
+  Max,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ContractStatus } from '../../../generated/prisma';
 
-export class FundContractDto {
+export class PaymentFundContractDto {
   @ApiProperty({ description: 'Contract ID to fund' })
   @IsString()
   contractId: string;
@@ -60,7 +67,7 @@ export class CompleteContractDto {
   evidence?: string[];
 }
 
-export class ConfirmCompletionDto {
+export class PaymentConfirmCompletionDto {
   @ApiProperty({ description: 'Contract ID' })
   @IsString()
   contractId: string;
@@ -145,7 +152,9 @@ export class PaymentListQueryDto {
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Items per page (default: 10, max: 100)' })
+  @ApiPropertyOptional({
+    description: 'Items per page (default: 10, max: 100)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(1)

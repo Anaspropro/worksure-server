@@ -49,7 +49,7 @@ describe('AuthModule (e2e)', () => {
     await testDatabase?.teardown();
   });
 
-  it('registers a user, logs in, resets the password, and resolves the current user from jwt', async () => {
+  it('registers a user, manages session-backed auth, and resets the password', async () => {
     const email = `auth-spec-${Date.now()}@worksure.dev`;
     const password = 'SecurePass123';
 
@@ -86,6 +86,27 @@ describe('AuthModule (e2e)', () => {
     expect(meResponse.body.data.email).toBe(email);
     expect(meResponse.body.data.role).toBe('CLIENT');
 
+    await request(app.getHttpServer())
+      .post('/auth/logout')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(401);
+
+    const secondLoginResponse = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email,
+        password,
+      })
+      .expect(201);
+
+    const secondAccessToken = secondLoginResponse.body.data
+      .accessToken as string;
+
     const forgotPasswordResponse = await request(app.getHttpServer())
       .post('/auth/forgot-password')
       .send({ email })
@@ -101,6 +122,11 @@ describe('AuthModule (e2e)', () => {
         newPassword: 'SecurePass456',
       })
       .expect(201);
+
+    await request(app.getHttpServer())
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${secondAccessToken}`)
+      .expect(401);
 
     await request(app.getHttpServer())
       .post('/auth/login')

@@ -1,4 +1,13 @@
-import { IsString, IsOptional, IsNumber, IsEnum, IsDateString, Min, Max, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsDateString,
+  Min,
+  Max,
+  IsArray,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DisputeStatus, DisputeDecision } from '../../../generated/prisma';
 
@@ -155,7 +164,9 @@ export class DisputeListQueryDto {
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Items per page (default: 10, max: 100)' })
+  @ApiPropertyOptional({
+    description: 'Items per page (default: 10, max: 100)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(1)

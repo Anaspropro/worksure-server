@@ -48,14 +48,12 @@ describe('API Integration Tests', () => {
 
     it('POST /auth/login - should login with valid credentials', async () => {
       // First register a user
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          name: 'Login Test',
-          email: 'login.test@example.com',
-          password: 'LoginPass123',
-          role: 'CLIENT',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        name: 'Login Test',
+        email: 'login.test@example.com',
+        password: 'LoginPass123',
+        role: 'CLIENT',
+      });
 
       return request(app.getHttpServer())
         .post('/auth/login')
@@ -76,6 +74,107 @@ describe('API Integration Tests', () => {
         .send({
           email: 'nonexistent@example.com',
           password: 'wrongpassword',
+        })
+        .expect(401);
+    });
+
+    it('POST /auth/forgot-password - should request password reset', async () => {
+      // First register a user
+      await request(app.getHttpServer()).post('/auth/register').send({
+        name: 'Password Reset User',
+        email: 'password.reset@example.com',
+        password: 'OriginalPass123',
+        role: 'CLIENT',
+      });
+
+      return request(app.getHttpServer())
+        .post('/auth/forgot-password')
+        .send({
+          email: 'password.reset@example.com',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.message).toContain('Password reset token generated');
+        });
+    });
+
+    it('POST /auth/forgot-password - should handle non-existent email gracefully', () => {
+      return request(app.getHttpServer())
+        .post('/auth/forgot-password')
+        .send({
+          email: 'nonexistent@example.com',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.message).toContain('If an account exists');
+        });
+    });
+
+    it('POST /auth/reset-password - should reject invalid token', () => {
+      return request(app.getHttpServer())
+        .post('/auth/reset-password')
+        .send({
+          token: 'invalid-token',
+          newPassword: 'NewPass123',
+        })
+        .expect(404);
+    });
+
+    it('should complete full password reset flow', async () => {
+      // Register a user
+      await request(app.getHttpServer()).post('/auth/register').send({
+        name: 'Full Flow User',
+        email: 'full.flow@example.com',
+        password: 'OriginalPass123',
+        role: 'CLIENT',
+      });
+
+      // Request password reset
+      await request(app.getHttpServer())
+        .post('/auth/forgot-password')
+        .send({
+          email: 'full.flow@example.com',
+        })
+        .expect(200);
+
+      // Get services from the app
+      const authService = app.get('AuthService');
+      const usersService = app.get('UsersService');
+
+      const user = await usersService.findByEmail('full.flow@example.com');
+      const tokenData = await authService.issueUserPasswordReset(user.id, 30);
+
+      // Reset password with valid token
+      await request(app.getHttpServer())
+        .post('/auth/reset-password')
+        .send({
+          token: tokenData.resetToken,
+          newPassword: 'NewSecurePass456',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.message).toContain('Password reset successful');
+        });
+
+      // Login with new password
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: 'full.flow@example.com',
+          password: 'NewSecurePass456',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.access_token).toBeDefined();
+          expect(body.user.email).toBe('full.flow@example.com');
+        });
+
+      // Login with old password should fail
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: 'full.flow@example.com',
+          password: 'OriginalPass123',
         })
         .expect(401);
     });
@@ -298,6 +397,219 @@ describe('API Integration Tests', () => {
     });
   });
 
+  describe('Wallet Endpoints', () => {
+    let clientToken: string;
+    let clientUserId: string;
+
+    beforeAll(async () => {
+      // Register and login a client
+      const registerResponse = await request(app.getHttpServer())
+        .post('/auth/register')
+        .send({
+          name: 'Wallet Client',
+          email: 'wallet.client@example.com',
+          password: 'WalletPass123',
+          role: 'CLIENT',
+        });
+
+      clientToken = registerResponse.body.access_token;
+      clientUserId = registerResponse.body.user.id;
+    });
+
+    it('POST /wallet/create - should create a wallet', () => {
+      return request(app.getHttpServer())
+        .post('/wallet/create')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .expect(201)
+        .expect(({ body }) => {
+          expect(body.message).toContain('Wallet created successfully');
+          expect(body.data.userId).toBe(clientUserId);
+        });
+    });
+
+    it('GET /wallet/balance - should get wallet balance', () => {
+      return request(app.getHttpServer())
+        .get('/wallet/balance')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.data.balance).toBeDefined();
+          expect(body.data.frozen).toBeDefined();
+          expect(body.data.available).toBeDefined();
+        });
+    });
+
+    it('POST /wallet/add-funds - should add funds to wallet', () => {
+      return request(app.getHttpServer())
+        .post('/wallet/add-funds')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({
+          amount: 100000, // $1000.00 in cents
+          reference: 'test-funding',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.message).toContain('Funds added successfully');
+          expect(body.balance).toBe(100000);
+        });
+    });
+
+    it('GET /wallet/transactions - should get wallet transactions', () => {
+      return request(app.getHttpServer())
+        .get('/wallet/transactions')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .expect(200)
+        .expect(({ body }) => {
+          expect(Array.isArray(body.data.transactions)).toBe(true);
+          expect(body.data.pagination).toBeDefined();
+        });
+    });
+  });
+
+  describe('Contracts Endpoints', () => {
+    let clientToken: string;
+    let artisanToken: string;
+    let jobId: string;
+    let proposalId: string;
+
+    beforeAll(async () => {
+      // Register and login a client
+      const clientResponse = await request(app.getHttpServer())
+        .post('/auth/register')
+        .send({
+          name: 'Contract Client',
+          email: 'contract.client@example.com',
+          password: 'ContractPass123',
+          role: 'CLIENT',
+        });
+
+      clientToken = clientResponse.body.access_token;
+
+      // Create a job
+      const jobResponse = await request(app.getHttpServer())
+        .post('/jobs')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({
+          title: 'Contract Test Job',
+          description: 'Job for contract testing',
+          budget: 50000,
+        });
+
+      jobId = jobResponse.body.id;
+
+      // Register and login an artisan
+      const artisanResponse = await request(app.getHttpServer())
+        .post('/auth/register')
+        .send({
+          name: 'Contract Artisan',
+          email: 'contract.artisan@example.com',
+          password: 'ArtPass123',
+          role: 'ARTISAN',
+        });
+
+      artisanToken = artisanResponse.body.access_token;
+
+      // Create a proposal
+      const proposalResponse = await request(app.getHttpServer())
+        .post('/proposals')
+        .set('Authorization', `Bearer ${artisanToken}`)
+        .send({
+          jobId,
+          amount: 50000,
+          message: 'I can complete this job professionally.',
+        });
+
+      proposalId = proposalResponse.body.id;
+
+      // Accept the proposal (simulate acceptance)
+      await request(app.getHttpServer())
+        .put(`/proposals/${proposalId}/accept`)
+        .set('Authorization', `Bearer ${clientToken}`);
+    });
+
+    it('POST /contracts - should create a contract', () => {
+      return request(app.getHttpServer())
+        .post('/contracts')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({
+          proposalId,
+        })
+        .expect(201)
+        .expect(({ body }) => {
+          expect(body.message).toContain('Contract created successfully');
+          expect(body.data.proposalId).toBe(proposalId);
+          expect(body.data.status).toBe('DRAFT');
+        });
+    });
+
+    it('GET /contracts - should get user contracts', () => {
+      return request(app.getHttpServer())
+        .get('/contracts')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .expect(200)
+        .expect(({ body }) => {
+          expect(Array.isArray(body.data)).toBe(true);
+          expect(body.data.length).toBeGreaterThan(0);
+        });
+    });
+  });
+
+  describe('Payments Endpoints', () => {
+    let clientToken: string;
+    let contractId: string;
+
+    beforeAll(async () => {
+      // Register and login a client
+      const clientResponse = await request(app.getHttpServer())
+        .post('/auth/register')
+        .send({
+          name: 'Payment Client',
+          email: 'payment.client@example.com',
+          password: 'PaymentPass123',
+          role: 'CLIENT',
+        });
+
+      clientToken = clientResponse.body.access_token;
+
+      // Create wallet and add funds
+      await request(app.getHttpServer())
+        .post('/wallet/create')
+        .set('Authorization', `Bearer ${clientToken}`);
+
+      await request(app.getHttpServer())
+        .post('/wallet/add-funds')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({
+          amount: 75000,
+          reference: 'payment-test-funds',
+        });
+
+      // Create a simple contract for testing
+      const contractResponse = await request(app.getHttpServer())
+        .post('/contracts')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({
+          proposalId: 'test-proposal-id', // This would need to be a real proposal in a real test
+        });
+
+      contractId = contractResponse.body.id || 'test-contract-id';
+    });
+
+    it('POST /payments/fund-contract - should fund a contract', () => {
+      return request(app.getHttpServer())
+        .post(`/payments/fund-contract/${contractId}`)
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({
+          amount: 50000,
+          paymentMethod: 'wallet',
+        })
+        .expect(200)
+        .expect(({ body }) => {
+          expect(body.message).toContain('Contract funded successfully');
+        });
+    });
+  });
+
   describe('Error Handling', () => {
     it('should return 404 for non-existent endpoints', () => {
       return request(app.getHttpServer())
@@ -310,9 +622,7 @@ describe('API Integration Tests', () => {
     });
 
     it('should return 401 for unauthorized access', () => {
-      return request(app.getHttpServer())
-        .get('/jobs/me')
-        .expect(401);
+      return request(app.getHttpServer()).get('/jobs/me').expect(401);
     });
 
     it('should return 400 for validation errors', () => {

@@ -2,8 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
-  Param,
   Body,
   Query,
   UseGuards,
@@ -20,42 +18,33 @@ import {
   ApiOperation,
   ApiTags,
   ApiQuery,
-  ApiParam,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserRole } from '../../common/constants/roles.constants';
 import { PrismaService } from '../../database/prisma.service';
 import { randomUUID } from 'node:crypto';
 import {
-  FundContractDto,
+  PaymentFundContractDto,
   VerifyPaymentDto,
   ActivateContractDto,
   CompleteContractDto,
-  ConfirmCompletionDto,
+  PaymentConfirmCompletionDto,
   PaymentResponseDto,
   PaymentListQueryDto,
 } from './dto/payment.dto';
-import { $Enums, ContractStatus, TransactionType, TransactionStatus } from '../../generated/prisma';
+import {
+  $Enums,
+  ContractStatus,
+  TransactionType,
+  TransactionStatus,
+} from '../../generated/prisma';
 
 @ApiTags('payments')
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly prisma: PrismaService) {}
-
-  private ensureOwnerOrAdmin(
-    user: { id: string; role: $Enums.UserRole },
-    paymentUserId: string,
-  ) {
-    const isOwner = user.id === paymentUserId;
-    const isAdmin = user.role === UserRole.ADMIN;
-    
-    if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage your own payments');
-    }
-  }
 
   private ensureContractParticipantOrAdmin(
     user: { id: string; role: $Enums.UserRole },
@@ -65,9 +54,11 @@ export class PaymentsController {
     const isClient = user.id === clientId;
     const isArtisan = user.id === artisanId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isClient && !isArtisan && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage contracts you participate in');
+      throw new ForbiddenException(
+        'Access denied: You can only manage contracts you participate in',
+      );
     }
   }
 
@@ -81,7 +72,7 @@ export class PaymentsController {
   @Post('fund')
   async fundContract(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() fundDto: FundContractDto,
+    @Body() fundDto: PaymentFundContractDto,
   ): Promise<PaymentResponseDto> {
     const contract = await this.prisma.contract.findUnique({
       where: { id: fundDto.contractId },
@@ -107,7 +98,9 @@ export class PaymentsController {
 
     // Check contract status
     if (contract.status !== ContractStatus.DRAFT) {
-      throw new BadRequestException('Contract must be in DRAFT status to be funded');
+      throw new BadRequestException(
+        'Contract must be in DRAFT status to be funded',
+      );
     }
 
     // Check if already funded
@@ -133,7 +126,10 @@ export class PaymentsController {
           status: 'pending',
           paymentMethod: fundDto.paymentMethod || null,
           paymentReference: fundDto.paymentReference || null,
-          verificationCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+          verificationCode: Math.random()
+            .toString(36)
+            .substring(2, 8)
+            .toUpperCase(),
           isVerified: false,
           createdAt: new Date(),
         },
@@ -255,7 +251,11 @@ export class PaymentsController {
     }
 
     // Check if user is participant
-    this.ensureContractParticipantOrAdmin(user, contract.clientId, contract.artisanId);
+    this.ensureContractParticipantOrAdmin(
+      user,
+      contract.clientId,
+      contract.artisanId,
+    );
 
     if (contract.status !== ContractStatus.ACTIVE) {
       throw new BadRequestException('Contract must be ACTIVE to be activated');
@@ -293,6 +293,9 @@ export class PaymentsController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Body() completeDto: CompleteContractDto,
   ): Promise<any> {
+    void completeDto.notes;
+    void completeDto.evidence;
+
     const contract = await this.prisma.contract.findUnique({
       where: { id: completeDto.contractId },
       include: {
@@ -318,14 +321,21 @@ export class PaymentsController {
     }
 
     // Check if user is participant
-    this.ensureContractParticipantOrAdmin(user, contract.clientId, contract.artisanId);
+    this.ensureContractParticipantOrAdmin(
+      user,
+      contract.clientId,
+      contract.artisanId,
+    );
 
     if (contract.status !== ContractStatus.ACTIVE) {
       throw new BadRequestException('Contract must be ACTIVE to be completed');
     }
 
     // Check if already completed
-    if (contract.clientConfirmedCompletion && contract.artisanConfirmedCompletion) {
+    if (
+      contract.clientConfirmedCompletion &&
+      contract.artisanConfirmedCompletion
+    ) {
       throw new BadRequestException('Contract is already completed');
     }
 
@@ -335,12 +345,17 @@ export class PaymentsController {
       data: {
         clientConfirmedCompletion: user.id === contract.clientId,
         artisanConfirmedCompletion: user.id === contract.artisanId,
-        [user.id === contract.clientId ? 'clientConfirmedAt' : 'artisanConfirmedAt']: new Date(),
+        [user.id === contract.clientId
+          ? 'clientConfirmedAt'
+          : 'artisanConfirmedAt']: new Date(),
       },
     });
 
     // Check if both parties have confirmed
-    if (updatedContract.clientConfirmedCompletion && updatedContract.artisanConfirmedCompletion) {
+    if (
+      updatedContract.clientConfirmedCompletion &&
+      updatedContract.artisanConfirmedCompletion
+    ) {
       await this.finalizeContractCompletion(updatedContract.id);
     }
 
@@ -360,8 +375,10 @@ export class PaymentsController {
   @Post('confirm-completion')
   async confirmCompletion(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() confirmDto: ConfirmCompletionDto,
+    @Body() confirmDto: PaymentConfirmCompletionDto,
   ): Promise<any> {
+    void confirmDto.notes;
+
     const contract = await this.prisma.contract.findUnique({
       where: { id: confirmDto.contractId },
       include: {
@@ -387,16 +404,26 @@ export class PaymentsController {
     }
 
     // Check if user is participant
-    this.ensureContractParticipantOrAdmin(user, contract.clientId, contract.artisanId);
+    this.ensureContractParticipantOrAdmin(
+      user,
+      contract.clientId,
+      contract.artisanId,
+    );
 
     if (contract.status !== ContractStatus.ACTIVE) {
-      throw new BadRequestException('Contract must be ACTIVE to confirm completion');
+      throw new BadRequestException(
+        'Contract must be ACTIVE to confirm completion',
+      );
     }
 
     // Update confirmation status
     const updateData: any = {
-      [confirmDto.role === 'client' ? 'clientConfirmedCompletion' : 'artisanConfirmedCompletion']: true,
-      [confirmDto.role === 'client' ? 'clientConfirmedAt' : 'artisanConfirmedAt']: new Date(),
+      [confirmDto.role === 'client'
+        ? 'clientConfirmedCompletion'
+        : 'artisanConfirmedCompletion']: true,
+      [confirmDto.role === 'client'
+        ? 'clientConfirmedAt'
+        : 'artisanConfirmedAt']: new Date(),
     };
 
     const updatedContract = await this.prisma.contract.update({
@@ -405,7 +432,10 @@ export class PaymentsController {
     });
 
     // Check if both parties have confirmed
-    if (updatedContract.clientConfirmedCompletion && updatedContract.artisanConfirmedCompletion) {
+    if (
+      updatedContract.clientConfirmedCompletion &&
+      updatedContract.artisanConfirmedCompletion
+    ) {
       await this.finalizeContractCompletion(updatedContract.id);
     }
 
@@ -432,8 +462,16 @@ export class PaymentsController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Query() query: PaymentListQueryDto,
   ) {
-    const { page = 1, limit = 10, contractId, status, verificationStatus, dateFrom, dateTo } = query;
-    
+    const {
+      page = 1,
+      limit = 10,
+      contractId,
+      status,
+      verificationStatus,
+      dateFrom,
+      dateTo,
+    } = query;
+
     const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
 
@@ -465,7 +503,7 @@ export class PaymentsController {
     ]);
 
     return {
-      payments: payments.map(payment => this.formatPaymentResponse(payment)),
+      payments: payments.map((payment) => this.formatPaymentResponse(payment)),
       pagination: {
         page,
         limit,

@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString, MaxLength, IsJSON } from 'class-validator';
+import { IsArray, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateArtisanProfileDto {
   @IsOptional()

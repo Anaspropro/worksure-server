@@ -6,7 +6,6 @@ import {
   Body,
   UseGuards,
   NotFoundException,
-  ForbiddenException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,8 +20,8 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UsersService } from './users.service';
-import { UpdateUserProfileDto, UserProfileResponseDto } from './dto/update-user-profile.dto';
-import { $Enums, User } from '../../generated/prisma';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
+import { $Enums } from '../../generated/prisma';
 import { PrismaService } from '../../database/prisma.service';
 import { UserRole } from '../../common/constants/roles.constants';
 
@@ -40,7 +39,9 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'User not found.' })
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getCurrentUser(@CurrentUser() user: { id: string; role: $Enums.UserRole }) {
+  async getCurrentUser(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+  ) {
     const userWithProfile = await this.prisma.user.findUnique({
       where: { id: user.id },
       include: {
