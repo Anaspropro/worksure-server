@@ -35,6 +35,117 @@ export class PaymentsService {
     }
   }
 
+  private getPaystackSecretKey(): string {
+    const key = process.env.PAYSTACK_SECRET_KEY;
+    if (!key) {
+      throw new Error(
+        'PAYSTACK_SECRET_KEY is required in environment variables',
+      );
+    }
+    return key;
+  }
+
+  private getPaystackHeaders() {
+    return {
+      Authorization: `Bearer ${this.getPaystackSecretKey()}`,
+      'Content-Type': 'application/json',
+    };
+  }
+
+  async initPaystackPayment(
+    userId: string,
+    amount: number,
+    email: string,
+    callbackUrl?: string,
+  ) {
+    if (amount <= 0) {
+      throw new BadRequestException('Amount must be greater than 0');
+    }
+
+    const payload = {
+      amount: Math.round(amount * 100),
+      email,
+      callback_url: callbackUrl || `${process.env.APP_URL}/wallet`,
+      metadata: {
+        userId,
+        gateway: 'paystack',
+      },
+    };
+
+    const response = await fetch(
+      'https://api.paystack.co/transaction/initialize',
+      {
+        method: 'POST',
+        headers: this.getPaystackHeaders(),
+        body: JSON.stringify(payload),
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status) {
+      throw new BadRequestException(
+        data.message || 'Failed to initialize Paystack payment',
+      );
+    }
+
+    return {
+      authorizationUrl: data.data.authorization_url,
+      accessCode: data.data.access_code,
+      reference: data.data.reference,
+    };
+  }
+
+  async verifyPaystackPayment(userId: string, reference: string) {
+    if (!reference) {
+      throw new BadRequestException(
+        'Reference is required for Paystack verification',
+      );
+    }
+
+    const existingTransaction = await this.prisma.transaction.findFirst({
+      where: { reference },
+    });
+
+    if (existingTransaction?.status === 'COMPLETED') {
+      return {
+        message: 'Payment already processed',
+        reference,
+        amount: existingTransaction.amount,
+      };
+    }
+
+    const response = await fetch(
+      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+      {
+        method: 'GET',
+        headers: this.getPaystackHeaders(),
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status || data.data.status !== 'success') {
+      throw new BadRequestException(
+        data.message || 'Paystack transaction verification failed',
+      );
+    }
+
+    const amount = Math.round(data.data.amount / 100);
+
+    await this.walletService.addFunds(userId, amount, reference, {
+      gateway: 'paystack',
+      paystackStatus: data.data.status,
+      paystackResponse: data.data,
+    });
+
+    return {
+      message: 'Paystack payment verified and wallet funded',
+      reference,
+      amount,
+    };
+  }
+
   async fundContract(
     userId: string,
     contractId: string,

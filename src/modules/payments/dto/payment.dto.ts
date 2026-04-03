@@ -30,6 +30,32 @@ export class PaymentFundContractDto {
   paymentReference?: string;
 }
 
+export class PaystackInitDto {
+  @ApiProperty({
+    description: 'Amount in base currency units (e.g. 1000 for NGN)',
+  })
+  @IsNumber()
+  @Min(1)
+  amount: number;
+
+  @ApiProperty({ description: 'Payer email for Paystack' })
+  @IsString()
+  email: string;
+
+  @ApiPropertyOptional({
+    description: 'Callback URL for Paystack to return to',
+  })
+  @IsOptional()
+  @IsString()
+  callbackUrl?: string;
+}
+
+export class PaystackVerifyDto {
+  @ApiProperty({ description: 'Paystack transaction reference to verify' })
+  @IsString()
+  reference: string;
+}
+
 export class VerifyPaymentDto {
   @ApiProperty({ description: 'Payment ID to verify' })
   @IsString()

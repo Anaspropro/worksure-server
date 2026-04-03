@@ -5,6 +5,7 @@ import {
   Body,
   Query,
   UseGuards,
+  Req,
   NotFoundException,
   ForbiddenException,
   BadRequestException,
@@ -19,15 +20,19 @@ import {
   ApiTags,
   ApiQuery,
 } from '@nestjs/swagger';
+import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserRole } from '../../common/constants/roles.constants';
 import { PrismaService } from '../../database/prisma.service';
+import { PaymentsService } from './payments.service';
 import { randomUUID } from 'node:crypto';
 import {
   PaymentFundContractDto,
   VerifyPaymentDto,
+  PaystackInitDto,
+  PaystackVerifyDto,
   ActivateContractDto,
   CompleteContractDto,
   PaymentConfirmCompletionDto,
@@ -44,7 +49,10 @@ import {
 @ApiTags('payments')
 @Controller('payments')
 export class PaymentsController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paymentsService: PaymentsService,
+  ) {}
 
   private ensureContractParticipantOrAdmin(
     user: { id: string; role: $Enums.UserRole },
@@ -212,6 +220,94 @@ export class PaymentsController {
     });
 
     return this.formatPaymentResponse(updatedPayment);
+  }
+
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Initialize a Paystack deposit' })
+  @ApiOkResponse({ description: 'Paystack initialization data returned.' })
+  @ApiBadRequestResponse({
+    description: 'Invalid Paystack initialization data.',
+  })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('paystack/init')
+  async initPaystack(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @Body() dto: PaystackInitDto,
+  ) {
+    const result = await this.paymentsService.initPaystackPayment(
+      user.id,
+      dto.amount,
+      dto.email,
+      dto.callbackUrl,
+    );
+
+    return {
+      message: 'Paystack initialization successful',
+      data: result,
+    };
+  }
+
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Verify Paystack payment after redirect' })
+  @ApiOkResponse({
+    description: 'Paystack payment verified and wallet funded.',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid Paystack verification data.' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('paystack/verify')
+  async verifyPaystack(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @Body() dto: PaystackVerifyDto,
+  ) {
+    const result = await this.paymentsService.verifyPaystackPayment(
+      user.id,
+      dto.reference,
+    );
+
+    return {
+      message: result.message,
+      data: result,
+    };
+  }
+
+  @Public()
+  @Post('paystack/webhook')
+  async paystackWebhook(@Req() request: any, @Body() payload: any) {
+    const signature = request.headers['x-paystack-signature'];
+    const secret = process.env.PAYSTACK_WEBHOOK_SECRET;
+
+    if (!secret || typeof signature !== 'string') {
+      throw new BadRequestException('Invalid webhook signature');
+    }
+
+    const crypto = await import('node:crypto');
+    const rawPayload = JSON.stringify(payload);
+    const computed = crypto
+      .createHmac('sha512', secret)
+      .update(rawPayload)
+      .digest('hex');
+
+    if (computed !== signature) {
+      throw new BadRequestException('Invalid webhook signature');
+    }
+
+    if (payload.event === 'charge.success') {
+      const reference = payload.data?.reference as string | undefined;
+      const email = payload.data?.customer?.email as string | undefined;
+      const amount = Math.round((payload.data?.amount ?? 0) / 100);
+
+      if (reference && email && amount > 0) {
+        const user = await this.prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (user) {
+          await this.paymentsService.verifyPaystackPayment(user.id, reference);
+        }
+      }
+    }
+
+    return { status: 'success' };
   }
 
   @ApiBearerAuth('bearer')
