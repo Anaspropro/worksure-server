@@ -131,9 +131,11 @@ export class PaymentsService {
       );
     }
 
+    const resolvedUserId =
+      (data.data.metadata?.userId as string | undefined) ?? userId;
     const amount = Math.round(data.data.amount / 100);
 
-    await this.walletService.addFunds(userId, amount, reference, {
+    await this.walletService.addFunds(resolvedUserId, amount, reference, {
       gateway: 'paystack',
       paystackStatus: data.data.status,
       paystackResponse: data.data,

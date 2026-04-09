@@ -41,6 +41,14 @@ export class AdminController {
     return this.adminService.getAllUsers();
   }
 
+  @ApiOperation({ summary: 'Get detailed admin view of a user' })
+  @ApiOkResponse({ description: 'Detailed user view returned successfully.' })
+  @ApiParam({ name: 'id', description: 'User identifier' })
+  @Get('users/:id')
+  getUserDetail(@Param('id') userId: string) {
+    return this.adminService.getUserDetail(userId);
+  }
+
   @ApiOperation({ summary: 'Ban a user account' })
   @ApiParam({ name: 'id', description: 'User identifier' })
   @Patch('users/:id/ban')

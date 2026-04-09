@@ -228,7 +228,7 @@ export class ProposalsController {
     if (search) {
       where.OR = [
         { message: { contains: search, mode: 'insensitive' } },
-        { notes: { contains: search, mode: 'insensitive' } },
+        { job: { title: { contains: search, mode: 'insensitive' } } },
       ];
     }
 

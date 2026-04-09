@@ -274,7 +274,8 @@ export class PaymentsController {
   @Post('paystack/webhook')
   async paystackWebhook(@Req() request: any, @Body() payload: any) {
     const signature = request.headers['x-paystack-signature'];
-    const secret = process.env.PAYSTACK_WEBHOOK_SECRET;
+    const secret =
+      process.env.PAYSTACK_WEBHOOK_SECRET ?? process.env.PAYSTACK_SECRET_KEY;
 
     if (!secret || typeof signature !== 'string') {
       throw new BadRequestException('Invalid webhook signature');
@@ -294,12 +295,21 @@ export class PaymentsController {
     if (payload.event === 'charge.success') {
       const reference = payload.data?.reference as string | undefined;
       const email = payload.data?.customer?.email as string | undefined;
+      const metadataUserId = payload.data?.metadata?.userId as string | undefined;
       const amount = Math.round((payload.data?.amount ?? 0) / 100);
 
-      if (reference && email && amount > 0) {
-        const user = await this.prisma.user.findUnique({
-          where: { email },
-        });
+      if (reference && amount > 0) {
+        const user =
+          (metadataUserId
+            ? await this.prisma.user.findUnique({
+                where: { id: metadataUserId },
+              })
+            : null) ??
+          (email
+            ? await this.prisma.user.findUnique({
+                where: { email },
+              })
+            : null);
 
         if (user) {
           await this.paymentsService.verifyPaystackPayment(user.id, reference);

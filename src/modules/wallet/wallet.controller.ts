@@ -108,7 +108,9 @@ export class WalletController {
     const wallet = await this.walletService.createWallet(user.id);
 
     return {
-      message: 'Wallet created successfully',
+      message: wallet.created
+        ? 'Wallet created successfully'
+        : 'Wallet already exists',
       data: wallet,
     };
   }

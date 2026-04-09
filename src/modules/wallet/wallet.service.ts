@@ -12,20 +12,161 @@ import { randomUUID } from 'node:crypto';
 export class WalletService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getWalletBalance(userId: string) {
-    let wallet = await this.prisma.wallet.findUnique({
-      where: { userId },
-    });
+  private getPaystackSecretKey() {
+    return process.env.PAYSTACK_SECRET_KEY ?? null;
+  }
 
-    if (!wallet) {
-      wallet = await this.createWallet(userId);
+  private getPaystackHeaders() {
+    const secretKey = this.getPaystackSecretKey();
+    if (!secretKey) {
+      return null;
     }
 
     return {
-      balance: wallet.balance,
-      frozen: wallet.frozen,
-      available: wallet.balance - wallet.frozen,
-      version: wallet.version,
+      Authorization: `Bearer ${secretKey}`,
+      'Content-Type': 'application/json',
+    };
+  }
+
+  private async getWalletOwner(userId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+  }
+
+  private splitName(name: string) {
+    const [firstName, ...rest] = name.trim().split(/\s+/);
+    return {
+      firstName: firstName || 'WorkSure',
+      lastName: rest.join(' ') || 'User',
+    };
+  }
+
+  private mapDedicatedAccount(value: any) {
+    if (!value) {
+      return null;
+    }
+
+    return {
+      accountNumber: value.account_number ?? null,
+      accountName: value.account_name ?? null,
+      bankName: value.bank?.name ?? value.bank_name ?? null,
+      status: value.status ?? 'active',
+    };
+  }
+
+  private async getExistingDedicatedAccount(email: string) {
+    const headers = this.getPaystackHeaders();
+    if (!headers) {
+      return null;
+    }
+
+    const response = await fetch(
+      `https://api.paystack.co/customer/${encodeURIComponent(email)}`,
+      {
+        method: 'GET',
+        headers,
+      },
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const payload = await response.json();
+    return this.mapDedicatedAccount(payload?.data?.dedicated_account);
+  }
+
+  private async ensureDedicatedAccount(userId: string) {
+    const headers = this.getPaystackHeaders();
+    if (!headers) {
+      return null;
+    }
+
+    const user = await this.getWalletOwner(userId);
+    if (!user) {
+      return null;
+    }
+
+    const existingAccount = await this.getExistingDedicatedAccount(user.email);
+    if (existingAccount) {
+      return existingAccount;
+    }
+
+    const { firstName, lastName } = this.splitName(user.name);
+
+    await fetch('https://api.paystack.co/customer', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        email: user.email,
+        first_name: firstName,
+        last_name: lastName,
+      }),
+    }).catch(() => null);
+
+    const assignResponse = await fetch(
+      'https://api.paystack.co/dedicated_account/assign',
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          email: user.email,
+          first_name: firstName,
+          last_name: lastName,
+          preferred_bank: 'wema-bank',
+          country: 'NG',
+        }),
+      },
+    );
+
+    const assignPayload = await assignResponse.json().catch(() => null);
+
+    return (
+      this.mapDedicatedAccount(assignPayload?.data?.dedicated_account) ??
+      this.mapDedicatedAccount(assignPayload?.data) ??
+      {
+        accountNumber: null,
+        accountName: user.name,
+        bankName: 'Paystack',
+        status: assignResponse.ok ? 'provisioning' : 'unavailable',
+      }
+    );
+  }
+
+  async ensureWallet(userId: string) {
+    const existingWallet = await this.prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (existingWallet) {
+      return existingWallet;
+    }
+
+    return this.prisma.wallet.create({
+      data: {
+        id: randomUUID(),
+        userId,
+        balance: 0,
+        frozen: 0,
+        version: 1,
+      },
+    });
+  }
+
+  async getWalletBalance(userId: string) {
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { userId },
+    });
+    const virtualAccount = await this.ensureDedicatedAccount(userId);
+
+    return {
+      exists: Boolean(wallet),
+      balance: wallet?.balance ?? 0,
+      frozen: wallet?.frozen ?? 0,
+      available: wallet ? wallet.balance - wallet.frozen : 0,
+      version: wallet?.version ?? 0,
+      virtualAccount,
     };
   }
 
@@ -67,7 +208,11 @@ export class WalletService {
     });
 
     if (existingWallet) {
-      throw new BadRequestException('Wallet already exists for this user');
+      return {
+        created: false,
+        wallet: existingWallet,
+        virtualAccount: await this.ensureDedicatedAccount(userId),
+      };
     }
 
     const wallet = await this.prisma.wallet.create({
@@ -80,7 +225,11 @@ export class WalletService {
       },
     });
 
-    return wallet;
+    return {
+      created: true,
+      wallet,
+      virtualAccount: await this.ensureDedicatedAccount(userId),
+    };
   }
 
   async addFunds(
@@ -94,13 +243,19 @@ export class WalletService {
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({
-        where: { userId },
-      });
-
-      if (!wallet) {
-        throw new NotFoundException('Wallet not found');
-      }
+      const wallet =
+        (await tx.wallet.findUnique({
+          where: { userId },
+        })) ??
+        (await tx.wallet.create({
+          data: {
+            id: randomUUID(),
+            userId,
+            balance: 0,
+            frozen: 0,
+            version: 1,
+          },
+        }));
 
       const updatedWallet = await tx.wallet.update({
         where: {
@@ -523,10 +678,7 @@ export class WalletService {
     const wallet = await this.prisma.wallet.findUnique({
       where: { userId },
     });
-
-    if (!wallet) {
-      throw new NotFoundException('Wallet not found');
-    }
+    const virtualAccount = await this.ensureDedicatedAccount(userId);
 
     const transactions = await this.prisma.transaction.groupBy({
       by: ['type', 'status'],
@@ -547,10 +699,12 @@ export class WalletService {
 
     return {
       wallet: {
-        balance: wallet.balance,
-        frozen: wallet.frozen,
-        available: wallet.balance - wallet.frozen,
-        version: wallet.version,
+        exists: Boolean(wallet),
+        balance: wallet?.balance ?? 0,
+        frozen: wallet?.frozen ?? 0,
+        available: wallet ? wallet.balance - wallet.frozen : 0,
+        version: wallet?.version ?? 0,
+        virtualAccount,
       },
       transactionSummary: transactions,
       recentTransactions,
