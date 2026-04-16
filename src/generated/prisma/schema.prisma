@@ -50,6 +50,14 @@ enum ContractStatus {
   DISPUTED
 }
 
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  FILE
+}
+
 enum TransactionType {
   FUNDING
   ESCROW_HOLD
@@ -73,6 +81,24 @@ enum AuditEntityType {
   REPORT
 }
 
+enum KycDocumentType {
+  ID
+  ADDRESS
+  CERTIFICATE
+}
+
+enum KycDocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id                          String     @id
   name                        String
@@ -90,6 +116,7 @@ model User {
 
   // Relations
   artisanProfile    ArtisanProfile?
+  kycDocuments      KycDocument[]
   sentProposals     Proposal[]      @relation("SentProposals")
   receivedProposals Proposal[]      @relation("ReceivedProposals")
   clientContracts   Contract[]      @relation("ClientContracts")
@@ -271,16 +298,50 @@ model Contract {
   updatedAt DateTime @updatedAt
 
   // Relations
-  job      Job       @relation(fields: [jobId], references: [id])
-  proposal Proposal  @relation(fields: [proposalId], references: [id])
-  client   User      @relation("ClientContracts", fields: [clientId], references: [id])
-  artisan  User      @relation("ArtisanContracts", fields: [artisanId], references: [id])
-  review   Review?
-  payments Payment[]
+  job          Job           @relation(fields: [jobId], references: [id])
+  proposal     Proposal      @relation(fields: [proposalId], references: [id])
+  client       User          @relation("ClientContracts", fields: [clientId], references: [id])
+  artisan      User          @relation("ArtisanContracts", fields: [artisanId], references: [id])
+  conversation Conversation?
+  review       Review?
+  payments     Payment[]
 
   @@index([clientId, status])
   @@index([artisanId, status])
   @@index([status, activatedAt])
+}
+
+model Conversation {
+  id         String   @id
+  contractId String   @unique
+  clientId   String
+  artisanId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  contract Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@index([clientId, updatedAt])
+  @@index([artisanId, updatedAt])
+}
+
+model Message {
+  id             String      @id
+  conversationId String
+  senderId       String
+  content        String?
+  type           MessageType @default(TEXT)
+  fileUrl        String?
+  fileType       String?
+  fileName       String?
+  fileSize       Int?
+  createdAt      DateTime    @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([senderId, createdAt])
 }
 
 model Wallet {
@@ -321,6 +382,7 @@ model Notification {
   userId    String
   title     String
   message   String
+  read      Boolean  @default(false)
   createdAt DateTime
   user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
 
@@ -340,16 +402,16 @@ model AuditLog {
 }
 
 model Payment {
-  id               String    @id
+  id               String        @id
   contractId       String
   userId           String
   amount           Int
-  status           String    @default("pending") // pending, completed, failed
+  status           PaymentStatus @default(PENDING)
   paymentMethod    String?
   paymentReference String?
   verificationCode String?
-  isVerified       Boolean   @default(false)
-  createdAt        DateTime  @default(now())
+  isVerified       Boolean       @default(false)
+  createdAt        DateTime      @default(now())
   verifiedAt       DateTime?
   completedAt      DateTime?
 
@@ -359,5 +421,24 @@ model Payment {
 
   @@index([contractId, status])
   @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
+model KycDocument {
+  id              String            @id
+  userId          String
+  documentType    KycDocumentType
+  documentUrl     String
+  status          KycDocumentStatus @default(PENDING)
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
   @@index([status, createdAt])
 }

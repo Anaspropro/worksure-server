@@ -250,6 +250,28 @@ exports.Prisma.ContractScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ConversationScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  clientId: 'clientId',
+  artisanId: 'artisanId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  senderId: 'senderId',
+  content: 'content',
+  type: 'type',
+  fileUrl: 'fileUrl',
+  fileType: 'fileType',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.WalletScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -275,6 +297,7 @@ exports.Prisma.NotificationScalarFieldEnum = {
   userId: 'userId',
   title: 'title',
   message: 'message',
+  read: 'read',
   createdAt: 'createdAt'
 };
 
@@ -301,6 +324,19 @@ exports.Prisma.PaymentScalarFieldEnum = {
   createdAt: 'createdAt',
   verifiedAt: 'verifiedAt',
   completedAt: 'completedAt'
+};
+
+exports.Prisma.KycDocumentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  documentType: 'documentType',
+  documentUrl: 'documentUrl',
+  status: 'status',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -391,11 +427,37 @@ exports.ContractStatus = exports.$Enums.ContractStatus = {
   DISPUTED: 'DISPUTED'
 };
 
+exports.MessageType = exports.$Enums.MessageType = {
+  TEXT: 'TEXT',
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  AUDIO: 'AUDIO',
+  FILE: 'FILE'
+};
+
 exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   USER: 'USER',
   DISPUTE: 'DISPUTE',
   JOB: 'JOB',
   REPORT: 'REPORT'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+exports.KycDocumentType = exports.$Enums.KycDocumentType = {
+  ID: 'ID',
+  ADDRESS: 'ADDRESS',
+  CERTIFICATE: 'CERTIFICATE'
+};
+
+exports.KycDocumentStatus = exports.$Enums.KycDocumentStatus = {
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
 };
 
 exports.Prisma.ModelName = {
@@ -407,11 +469,14 @@ exports.Prisma.ModelName = {
   ArtisanProfile: 'ArtisanProfile',
   Proposal: 'Proposal',
   Contract: 'Contract',
+  Conversation: 'Conversation',
+  Message: 'Message',
   Wallet: 'Wallet',
   Review: 'Review',
   Notification: 'Notification',
   AuditLog: 'AuditLog',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  KycDocument: 'KycDocument'
 };
 
 /**

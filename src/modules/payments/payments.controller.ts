@@ -115,7 +115,7 @@ export class PaymentsController {
     const existingPayment = await this.prisma.payment.findFirst({
       where: {
         contractId: fundDto.contractId,
-        status: 'completed',
+        status: 'COMPLETED',
       },
     });
 
@@ -201,7 +201,7 @@ export class PaymentsController {
       const updated = await tx.payment.update({
         where: { id: verifyDto.paymentId },
         data: {
-          status: 'completed',
+          status: 'COMPLETED',
           isVerified: true,
           verifiedAt: new Date(),
         },

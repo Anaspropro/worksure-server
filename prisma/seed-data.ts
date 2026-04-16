@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { PrismaClient, TransactionStatus } from '../src/generated/prisma';
+import { PrismaClient } from '../src/generated/prisma';
 
 export async function resetAdminFixtures(prisma: PrismaClient) {
   await prisma.review.deleteMany();

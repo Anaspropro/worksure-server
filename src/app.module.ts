@@ -14,6 +14,7 @@ import { ProposalsModule } from './modules/proposals/proposals.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { UsersModule } from './modules/users/users.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { ChatModule } from './modules/chat/chat.module';
 import { AppConfigModule } from './config/app-config.module';
 import { PrismaModule } from './database/prisma.module';
 import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
@@ -33,6 +34,7 @@ import { SanitizationService } from './common/services/sanitization.service';
     ProposalsModule,
     ContractsModule,
     WalletModule,
+    ChatModule,
     PaymentsModule,
     ReviewsModule,
     DisputesModule,

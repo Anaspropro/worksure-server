@@ -193,7 +193,7 @@ export class PaymentsService {
         contractId,
         userId,
         amount,
-        status: 'completed',
+        status: 'COMPLETED',
         paymentMethod: paymentMethod || null,
         paymentReference: paymentReference || null,
         verificationCode: Math.random()
@@ -241,7 +241,7 @@ export class PaymentsService {
     const updatedPayment = await this.prisma.payment.update({
       where: { id: paymentId },
       data: {
-        status: 'completed',
+        status: 'COMPLETED',
         isVerified: true,
         verifiedAt: new Date(),
         completedAt: new Date(),
