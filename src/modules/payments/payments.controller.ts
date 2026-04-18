@@ -25,6 +25,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserRole } from '../../common/constants/roles.constants';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { PrismaService } from '../../database/prisma.service';
 import { PaymentsService } from './payments.service';
 import { randomUUID } from 'node:crypto';
@@ -48,6 +49,7 @@ import {
 
 @ApiTags('payments')
 @Controller('payments')
+@UseGuards(JwtAuthGuard, RolesGuard, ThrottlerGuard)
 export class PaymentsController {
   constructor(
     private readonly prisma: PrismaService,
@@ -77,6 +79,7 @@ export class PaymentsController {
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid funding data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
   @Post('fund')
   async fundContract(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
@@ -131,7 +134,7 @@ export class PaymentsController {
           contractId: fundDto.contractId,
           userId: user.id,
           amount: fundDto.amount,
-          status: 'pending',
+          status: 'PENDING',
           paymentMethod: fundDto.paymentMethod || null,
           paymentReference: fundDto.paymentReference || null,
           verificationCode: Math.random()
@@ -156,6 +159,7 @@ export class PaymentsController {
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid verification data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
   @Post('verify')
   async verifyPayment(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
@@ -327,6 +331,7 @@ export class PaymentsController {
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid activation data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
   @Post('activate')
   async activateContract(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
@@ -394,6 +399,7 @@ export class PaymentsController {
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid completion data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
   @Post('complete')
   async completeContract(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },

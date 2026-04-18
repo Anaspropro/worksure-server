@@ -16,10 +16,20 @@ export class MediaService {
   ];
 
   constructor() {
+    const cloudName = process.env.CLOUDINARY_NAME;
+    const apiKey = process.env.CLOUDINARY_KEY;
+    const apiSecret = process.env.CLOUDINARY_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      throw new InternalServerErrorException(
+        'Cloudinary credentials are not properly configured'
+      );
+    }
+
     cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_NAME,
-      api_key: process.env.CLOUDINARY_KEY,
-      api_secret: process.env.CLOUDINARY_SECRET,
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
     });
   }
 

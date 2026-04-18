@@ -159,8 +159,8 @@ export class PaymentListQueryDto {
 
   @ApiPropertyOptional({ description: 'Filter by verification status' })
   @IsOptional()
-  @IsEnum(['verified', 'pending', 'failed'])
-  verificationStatus?: 'verified' | 'pending' | 'failed';
+  @IsEnum(['verified', 'PENDING', 'FAILED'])
+  verificationStatus?: 'verified' | 'PENDING' | 'FAILED';
 
   @ApiPropertyOptional({ description: 'Filter by date from' })
   @IsOptional()
