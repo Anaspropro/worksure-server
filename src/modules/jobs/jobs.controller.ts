@@ -18,7 +18,6 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiForbiddenResponse,
-  ApiBadRequestResponse,
   ApiOperation,
   ApiTags,
   ApiQuery,
@@ -56,9 +55,11 @@ export class JobsController {
   ) {
     const isOwner = user.id === jobClientId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage your own jobs');
+      throw new ForbiddenException(
+        'Access denied: You can only manage your own jobs',
+      );
     }
   }
 
@@ -83,7 +84,9 @@ export class JobsController {
         description: createDto.description,
         budget: createDto.budget,
         location: createDto.location || null,
-        requiredSkills: createDto.requiredSkills ? createDto.requiredSkills : undefined,
+        requiredSkills: createDto.requiredSkills
+          ? createDto.requiredSkills
+          : undefined,
         category: createDto.category,
         deadline: createDto.deadline ? new Date(createDto.deadline) : null,
         requirements: createDto.requirements,
@@ -128,8 +131,16 @@ export class JobsController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @Get()
   async listJobs(@Query() query: JobListQueryDto) {
-    const { page = 1, limit = 10, status, clientId, artisanId, category, search } = query;
-    
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      clientId,
+      artisanId,
+      category,
+      search,
+    } = query;
+
     const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
 
@@ -181,7 +192,7 @@ export class JobsController {
     ]);
 
     return {
-      jobs: jobs.map(job => this.formatJobResponse(job)),
+      jobs: jobs.map((job) => this.formatJobResponse(job)),
       pagination: {
         page,
         limit,
@@ -261,14 +272,20 @@ export class JobsController {
 
     const updateData: any = {};
     if (updateDto.title !== undefined) updateData.title = updateDto.title;
-    if (updateDto.description !== undefined) updateData.description = updateDto.description;
+    if (updateDto.description !== undefined)
+      updateData.description = updateDto.description;
     if (updateDto.budget !== undefined) updateData.budget = updateDto.budget;
-    if (updateDto.location !== undefined) updateData.location = updateDto.location;
-    if (updateDto.requiredSkills !== undefined) updateData.requiredSkills = updateDto.requiredSkills;
-    if (updateDto.category !== undefined) updateData.category = updateDto.category;
-    if (updateDto.deadline !== undefined) updateData.deadline = new Date(updateDto.deadline);
+    if (updateDto.location !== undefined)
+      updateData.location = updateDto.location;
+    if (updateDto.requiredSkills !== undefined)
+      updateData.requiredSkills = updateDto.requiredSkills;
+    if (updateDto.category !== undefined)
+      updateData.category = updateDto.category;
+    if (updateDto.deadline !== undefined)
+      updateData.deadline = new Date(updateDto.deadline);
     if (updateDto.status !== undefined) updateData.status = updateDto.status;
-    if (updateDto.requirements !== undefined) updateData.requirements = updateDto.requirements;
+    if (updateDto.requirements !== undefined)
+      updateData.requirements = updateDto.requirements;
 
     const updatedJob = await this.prisma.job.update({
       where: { id },
@@ -414,7 +431,9 @@ export class JobsController {
       description: job.description,
       budget: job.budget,
       location: job.location,
-      requiredSkills: job.requiredSkills ? JSON.parse(job.requiredSkills as string) : [],
+      requiredSkills: job.requiredSkills
+        ? JSON.parse(job.requiredSkills as string)
+        : [],
       category: job.category,
       deadline: job.deadline?.toISOString() || null,
       requirements: job.requirements,

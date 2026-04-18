@@ -18,7 +18,6 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiForbiddenResponse,
-  ApiBadRequestResponse,
   ApiOperation,
   ApiTags,
   ApiQuery,
@@ -51,6 +50,26 @@ export class ProposalsController {
     }
   }
 
+  private async ensureVerifiedArtisan(userId: string) {
+    const artisan = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        artisanVerified: true,
+        status: true,
+      },
+    });
+
+    if (!artisan) {
+      throw new NotFoundException('Artisan account not found');
+    }
+
+    if (!artisan.artisanVerified) {
+      throw new ForbiddenException(
+        'Artisan verification is required before submitting proposals.',
+      );
+    }
+  }
+
   private ensureClientRole(user: { role: $Enums.UserRole }) {
     if (user.role !== UserRole.CLIENT) {
       throw new ForbiddenException('Client access required');
@@ -63,9 +82,11 @@ export class ProposalsController {
   ) {
     const isOwner = user.id === proposalUserId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage your own proposals');
+      throw new ForbiddenException(
+        'Access denied: You can only manage your own proposals',
+      );
     }
   }
 
@@ -75,9 +96,11 @@ export class ProposalsController {
   ) {
     const isOwner = user.id === jobClientId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage proposals for your own jobs');
+      throw new ForbiddenException(
+        'Access denied: You can only manage proposals for your own jobs',
+      );
     }
   }
 
@@ -94,6 +117,7 @@ export class ProposalsController {
     @Body() createDto: CreateProposalDto,
   ): Promise<ProposalResponseDto> {
     this.ensureArtisanRole(user);
+    await this.ensureVerifiedArtisan(user.id);
 
     // Check if job exists and is OPEN
     const job = await this.prisma.job.findUnique({
@@ -105,7 +129,15 @@ export class ProposalsController {
     }
 
     if (job.status !== JobStatus.OPEN) {
-      throw new BadRequestException('Proposals can only be created for open jobs');
+      throw new BadRequestException(
+        'Proposals can only be created for open jobs',
+      );
+    }
+
+    if (job.clientId === user.id) {
+      throw new BadRequestException(
+        'You cannot submit a proposal to your own job.',
+      );
     }
 
     // Check if user already has a proposal for this job
@@ -118,7 +150,9 @@ export class ProposalsController {
     });
 
     if (existingProposal) {
-      throw new BadRequestException('You already have an active proposal for this job');
+      throw new BadRequestException(
+        'You already have an active proposal for this job',
+      );
     }
 
     const proposal = await this.prisma.proposal.create({
@@ -172,8 +206,16 @@ export class ProposalsController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @Get()
   async listProposals(@Query() query: ProposalListQueryDto) {
-    const { page = 1, limit = 10, status, jobId, clientId, artisanId, search } = query;
-    
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      jobId,
+      clientId,
+      artisanId,
+      search,
+    } = query;
+
     const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
 
@@ -186,7 +228,7 @@ export class ProposalsController {
     if (search) {
       where.OR = [
         { message: { contains: search, mode: 'insensitive' } },
-        { notes: { contains: search, mode: 'insensitive' } },
+        { job: { title: { contains: search, mode: 'insensitive' } } },
       ];
     }
 
@@ -226,7 +268,9 @@ export class ProposalsController {
     ]);
 
     return {
-      proposals: proposals.map(proposal => this.formatProposalResponse(proposal)),
+      proposals: proposals.map((proposal) =>
+        this.formatProposalResponse(proposal),
+      ),
       pagination: {
         page,
         limit,
@@ -307,7 +351,10 @@ export class ProposalsController {
     }
 
     // Prevent updates if proposal is not pending
-    if (existingProposal.status === ProposalStatus.ACCEPTED || existingProposal.status === ProposalStatus.REJECTED) {
+    if (
+      existingProposal.status === ProposalStatus.ACCEPTED ||
+      existingProposal.status === ProposalStatus.REJECTED
+    ) {
       throw new BadRequestException('Cannot update proposal in current status');
     }
 
@@ -374,8 +421,13 @@ export class ProposalsController {
     }
 
     // Prevent withdrawal if proposal is already accepted or rejected
-    if (existingProposal.status === ProposalStatus.ACCEPTED || existingProposal.status === ProposalStatus.REJECTED) {
-      throw new BadRequestException('Cannot withdraw proposal in current status');
+    if (
+      existingProposal.status === ProposalStatus.ACCEPTED ||
+      existingProposal.status === ProposalStatus.REJECTED
+    ) {
+      throw new BadRequestException(
+        'Cannot withdraw proposal in current status',
+      );
     }
 
     await this.prisma.proposal.update({
@@ -419,12 +471,18 @@ export class ProposalsController {
 
     // Check ownership (client can accept proposals for their jobs, admin can accept any)
     if (user.role !== UserRole.ADMIN) {
-      this.ensureJobOwnerOrAdmin(user, existingProposal.job!.clientId);
+      this.ensureJobOwnerOrAdmin(user, existingProposal.job.clientId);
     }
 
     // Prevent acceptance if proposal is not pending
     if (existingProposal.status !== ProposalStatus.PENDING) {
       throw new BadRequestException('Can only accept pending proposals');
+    }
+
+    if (existingProposal.job?.status !== JobStatus.OPEN) {
+      throw new BadRequestException(
+        'Only proposals for open jobs can be accepted.',
+      );
     }
 
     // Update proposal status
@@ -472,8 +530,10 @@ export class ProposalsController {
   async rejectProposal(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Param('id') id: string,
-    @Body() body: ProposalActionDto,
+    @Body() _body: ProposalActionDto,
   ): Promise<ProposalResponseDto> {
+    void _body;
+
     const existingProposal = await this.prisma.proposal.findUnique({
       where: { id },
       include: {
@@ -493,11 +553,14 @@ export class ProposalsController {
 
     // Check ownership (client can reject proposals for their jobs, admin can reject any)
     if (user.role !== UserRole.ADMIN) {
-      this.ensureJobOwnerOrAdmin(user, existingProposal.job!.clientId);
+      this.ensureJobOwnerOrAdmin(user, existingProposal.job.clientId);
     }
 
     // Prevent rejection if proposal is not pending
-    if (existingProposal.status === ProposalStatus.ACCEPTED || existingProposal.status === ProposalStatus.REJECTED) {
+    if (
+      existingProposal.status === ProposalStatus.ACCEPTED ||
+      existingProposal.status === ProposalStatus.REJECTED
+    ) {
       throw new BadRequestException('Can only reject pending proposals');
     }
 

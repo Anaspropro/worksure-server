@@ -17,10 +17,20 @@ export class AppConfigService {
   }
 
   get jwtSecret(): string {
-    return process.env.JWT_SECRET || 'worksure-dev-jwt-secret';
+    const secret = process.env.JWT_SECRET;
+    if (!secret || secret.length < 32) {
+      throw new Error(
+        'JWT_SECRET environment variable is required and must be at least 32 characters long',
+      );
+    }
+    return secret;
   }
 
   get jwtExpiresIn(): StringValue {
     return (process.env.JWT_EXPIRES_IN || '1d') as StringValue;
+  }
+
+  get nodeEnv(): string {
+    return process.env.NODE_ENV || 'development';
   }
 }

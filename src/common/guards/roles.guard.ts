@@ -6,7 +6,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Request } from 'express';
 import { ROLES_KEY, UserRole } from '../constants/roles.constants';
+import { AuthenticatedUser } from '../../modules/auth/auth.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -23,17 +25,21 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context
+      .switchToHttp()
+      .getRequest<Request & { user?: AuthenticatedUser }>();
     const currentRole = request.user?.role;
 
     if (!currentRole) {
       throw new UnauthorizedException('Authentication is required.');
     }
 
-    if (requiredRoles.includes(currentRole)) {
+    if (requiredRoles.includes(currentRole as unknown as UserRole)) {
       return true;
     }
 
-    throw new ForbiddenException('You do not have permission to access this resource.');
+    throw new ForbiddenException(
+      'You do not have permission to access this resource.',
+    );
   }
 }

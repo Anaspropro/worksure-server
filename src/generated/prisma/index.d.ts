@@ -54,6 +54,16 @@ export type Proposal = $Result.DefaultSelection<Prisma.$ProposalPayload>
  */
 export type Contract = $Result.DefaultSelection<Prisma.$ContractPayload>
 /**
+ * Model Conversation
+ * 
+ */
+export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
+/**
+ * Model Message
+ * 
+ */
+export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
+/**
  * Model Wallet
  * 
  */
@@ -78,6 +88,11 @@ export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
  * 
  */
 export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
+/**
+ * Model KycDocument
+ * 
+ */
+export type KycDocument = $Result.DefaultSelection<Prisma.$KycDocumentPayload>
 
 /**
  * Enums
@@ -147,6 +162,17 @@ export const ContractStatus: {
 export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus]
 
 
+export const MessageType: {
+  TEXT: 'TEXT',
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  AUDIO: 'AUDIO',
+  FILE: 'FILE'
+};
+
+export type MessageType = (typeof MessageType)[keyof typeof MessageType]
+
+
 export const TransactionType: {
   FUNDING: 'FUNDING',
   ESCROW_HOLD: 'ESCROW_HOLD',
@@ -178,6 +204,33 @@ export const AuditEntityType: {
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
 
+
+export const KycDocumentType: {
+  ID: 'ID',
+  ADDRESS: 'ADDRESS',
+  CERTIFICATE: 'CERTIFICATE'
+};
+
+export type KycDocumentType = (typeof KycDocumentType)[keyof typeof KycDocumentType]
+
+
+export const KycDocumentStatus: {
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+};
+
+export type KycDocumentStatus = (typeof KycDocumentStatus)[keyof typeof KycDocumentStatus]
+
+
+export const PaymentStatus: {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -208,6 +261,10 @@ export type ContractStatus = $Enums.ContractStatus
 
 export const ContractStatus: typeof $Enums.ContractStatus
 
+export type MessageType = $Enums.MessageType
+
+export const MessageType: typeof $Enums.MessageType
+
 export type TransactionType = $Enums.TransactionType
 
 export const TransactionType: typeof $Enums.TransactionType
@@ -219,6 +276,18 @@ export const TransactionStatus: typeof $Enums.TransactionStatus
 export type AuditEntityType = $Enums.AuditEntityType
 
 export const AuditEntityType: typeof $Enums.AuditEntityType
+
+export type KycDocumentType = $Enums.KycDocumentType
+
+export const KycDocumentType: typeof $Enums.KycDocumentType
+
+export type KycDocumentStatus = $Enums.KycDocumentStatus
+
+export const KycDocumentStatus: typeof $Enums.KycDocumentStatus
+
+export type PaymentStatus = $Enums.PaymentStatus
+
+export const PaymentStatus: typeof $Enums.PaymentStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -422,6 +491,26 @@ export class PrismaClient<
   get contract(): Prisma.ContractDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.conversation`: Exposes CRUD operations for the **Conversation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Conversations
+    * const conversations = await prisma.conversation.findMany()
+    * ```
+    */
+  get conversation(): Prisma.ConversationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.message`: Exposes CRUD operations for the **Message** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Messages
+    * const messages = await prisma.message.findMany()
+    * ```
+    */
+  get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.wallet`: Exposes CRUD operations for the **Wallet** model.
     * Example usage:
     * ```ts
@@ -470,6 +559,16 @@ export class PrismaClient<
     * ```
     */
   get payment(): Prisma.PaymentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.kycDocument`: Exposes CRUD operations for the **KycDocument** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KycDocuments
+    * const kycDocuments = await prisma.kycDocument.findMany()
+    * ```
+    */
+  get kycDocument(): Prisma.KycDocumentDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -912,11 +1011,14 @@ export namespace Prisma {
     ArtisanProfile: 'ArtisanProfile',
     Proposal: 'Proposal',
     Contract: 'Contract',
+    Conversation: 'Conversation',
+    Message: 'Message',
     Wallet: 'Wallet',
     Review: 'Review',
     Notification: 'Notification',
     AuditLog: 'AuditLog',
-    Payment: 'Payment'
+    Payment: 'Payment',
+    KycDocument: 'KycDocument'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -932,7 +1034,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "wallet" | "review" | "notification" | "auditLog" | "payment"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1528,6 +1630,154 @@ export namespace Prisma {
           }
         }
       }
+      Conversation: {
+        payload: Prisma.$ConversationPayload<ExtArgs>
+        fields: Prisma.ConversationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ConversationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ConversationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>
+          }
+          findFirst: {
+            args: Prisma.ConversationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ConversationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>
+          }
+          findMany: {
+            args: Prisma.ConversationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>[]
+          }
+          create: {
+            args: Prisma.ConversationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>
+          }
+          createMany: {
+            args: Prisma.ConversationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ConversationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>[]
+          }
+          delete: {
+            args: Prisma.ConversationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>
+          }
+          update: {
+            args: Prisma.ConversationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ConversationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ConversationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ConversationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>[]
+          }
+          upsert: {
+            args: Prisma.ConversationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ConversationPayload>
+          }
+          aggregate: {
+            args: Prisma.ConversationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateConversation>
+          }
+          groupBy: {
+            args: Prisma.ConversationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ConversationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ConversationCountArgs<ExtArgs>
+            result: $Utils.Optional<ConversationCountAggregateOutputType> | number
+          }
+        }
+      }
+      Message: {
+        payload: Prisma.$MessagePayload<ExtArgs>
+        fields: Prisma.MessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findFirst: {
+            args: Prisma.MessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findMany: {
+            args: Prisma.MessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          create: {
+            args: Prisma.MessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          createMany: {
+            args: Prisma.MessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          delete: {
+            args: Prisma.MessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          update: {
+            args: Prisma.MessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          aggregate: {
+            args: Prisma.MessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessage>
+          }
+          groupBy: {
+            args: Prisma.MessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
       Wallet: {
         payload: Prisma.$WalletPayload<ExtArgs>
         fields: Prisma.WalletFieldRefs
@@ -1898,6 +2148,80 @@ export namespace Prisma {
           }
         }
       }
+      KycDocument: {
+        payload: Prisma.$KycDocumentPayload<ExtArgs>
+        fields: Prisma.KycDocumentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.KycDocumentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.KycDocumentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>
+          }
+          findFirst: {
+            args: Prisma.KycDocumentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.KycDocumentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>
+          }
+          findMany: {
+            args: Prisma.KycDocumentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>[]
+          }
+          create: {
+            args: Prisma.KycDocumentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>
+          }
+          createMany: {
+            args: Prisma.KycDocumentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.KycDocumentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>[]
+          }
+          delete: {
+            args: Prisma.KycDocumentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>
+          }
+          update: {
+            args: Prisma.KycDocumentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>
+          }
+          deleteMany: {
+            args: Prisma.KycDocumentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.KycDocumentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.KycDocumentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>[]
+          }
+          upsert: {
+            args: Prisma.KycDocumentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KycDocumentPayload>
+          }
+          aggregate: {
+            args: Prisma.KycDocumentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateKycDocument>
+          }
+          groupBy: {
+            args: Prisma.KycDocumentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<KycDocumentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.KycDocumentCountArgs<ExtArgs>
+            result: $Utils.Optional<KycDocumentCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2014,11 +2338,14 @@ export namespace Prisma {
     artisanProfile?: ArtisanProfileOmit
     proposal?: ProposalOmit
     contract?: ContractOmit
+    conversation?: ConversationOmit
+    message?: MessageOmit
     wallet?: WalletOmit
     review?: ReviewOmit
     notification?: NotificationOmit
     auditLog?: AuditLogOmit
     payment?: PaymentOmit
+    kycDocument?: KycDocumentOmit
   }
 
   /* Types for Logging */
@@ -2099,6 +2426,7 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    kycDocuments: number
     sentProposals: number
     receivedProposals: number
     clientContracts: number
@@ -2114,6 +2442,7 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    kycDocuments?: boolean | UserCountOutputTypeCountKycDocumentsArgs
     sentProposals?: boolean | UserCountOutputTypeCountSentProposalsArgs
     receivedProposals?: boolean | UserCountOutputTypeCountReceivedProposalsArgs
     clientContracts?: boolean | UserCountOutputTypeCountClientContractsArgs
@@ -2137,6 +2466,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountKycDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KycDocumentWhereInput
   }
 
   /**
@@ -2314,6 +2650,37 @@ export namespace Prisma {
    */
   export type ContractCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PaymentWhereInput
+  }
+
+
+  /**
+   * Count Type ConversationCountOutputType
+   */
+
+  export type ConversationCountOutputType = {
+    messages: number
+  }
+
+  export type ConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ConversationCountOutputType
+     */
+    select?: ConversationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ConversationCountOutputType without action
+   */
+  export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
   }
 
 
@@ -2550,6 +2917,7 @@ export namespace Prisma {
     lastLoginAt?: boolean
     updatedAt?: boolean
     artisanProfile?: boolean | User$artisanProfileArgs<ExtArgs>
+    kycDocuments?: boolean | User$kycDocumentsArgs<ExtArgs>
     sentProposals?: boolean | User$sentProposalsArgs<ExtArgs>
     receivedProposals?: boolean | User$receivedProposalsArgs<ExtArgs>
     clientContracts?: boolean | User$clientContractsArgs<ExtArgs>
@@ -2617,6 +2985,7 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt" | "role" | "status" | "artisanVerified" | "createdAt" | "lastLoginAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     artisanProfile?: boolean | User$artisanProfileArgs<ExtArgs>
+    kycDocuments?: boolean | User$kycDocumentsArgs<ExtArgs>
     sentProposals?: boolean | User$sentProposalsArgs<ExtArgs>
     receivedProposals?: boolean | User$receivedProposalsArgs<ExtArgs>
     clientContracts?: boolean | User$clientContractsArgs<ExtArgs>
@@ -2639,6 +3008,7 @@ export namespace Prisma {
     name: "User"
     objects: {
       artisanProfile: Prisma.$ArtisanProfilePayload<ExtArgs> | null
+      kycDocuments: Prisma.$KycDocumentPayload<ExtArgs>[]
       sentProposals: Prisma.$ProposalPayload<ExtArgs>[]
       receivedProposals: Prisma.$ProposalPayload<ExtArgs>[]
       clientContracts: Prisma.$ContractPayload<ExtArgs>[]
@@ -3062,6 +3432,7 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     artisanProfile<T extends User$artisanProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanProfileArgs<ExtArgs>>): Prisma__ArtisanProfileClient<$Result.GetResult<Prisma.$ArtisanProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    kycDocuments<T extends User$kycDocumentsArgs<ExtArgs> = {}>(args?: Subset<T, User$kycDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sentProposals<T extends User$sentProposalsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedProposals<T extends User$receivedProposalsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clientContracts<T extends User$clientContractsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientContractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3526,6 +3897,30 @@ export namespace Prisma {
      */
     include?: ArtisanProfileInclude<ExtArgs> | null
     where?: ArtisanProfileWhereInput
+  }
+
+  /**
+   * User.kycDocuments
+   */
+  export type User$kycDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    where?: KycDocumentWhereInput
+    orderBy?: KycDocumentOrderByWithRelationInput | KycDocumentOrderByWithRelationInput[]
+    cursor?: KycDocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: KycDocumentScalarFieldEnum | KycDocumentScalarFieldEnum[]
   }
 
   /**
@@ -11407,6 +11802,7 @@ export namespace Prisma {
     proposal?: boolean | ProposalDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | Contract$conversationArgs<ExtArgs>
     review?: boolean | Contract$reviewArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
@@ -11498,6 +11894,7 @@ export namespace Prisma {
     proposal?: boolean | ProposalDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
+    conversation?: boolean | Contract$conversationArgs<ExtArgs>
     review?: boolean | Contract$reviewArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
@@ -11522,6 +11919,7 @@ export namespace Prisma {
       proposal: Prisma.$ProposalPayload<ExtArgs>
       client: Prisma.$UserPayload<ExtArgs>
       artisan: Prisma.$UserPayload<ExtArgs>
+      conversation: Prisma.$ConversationPayload<ExtArgs> | null
       review: Prisma.$ReviewPayload<ExtArgs> | null
       payments: Prisma.$PaymentPayload<ExtArgs>[]
     }
@@ -11945,6 +12343,7 @@ export namespace Prisma {
     proposal<T extends ProposalDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProposalDefaultArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    conversation<T extends Contract$conversationArgs<ExtArgs> = {}>(args?: Subset<T, Contract$conversationArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     review<T extends Contract$reviewArgs<ExtArgs> = {}>(args?: Subset<T, Contract$reviewArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payments<T extends Contract$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Contract$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -12398,6 +12797,25 @@ export namespace Prisma {
   }
 
   /**
+   * Contract.conversation
+   */
+  export type Contract$conversationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    where?: ConversationWhereInput
+  }
+
+  /**
    * Contract.review
    */
   export type Contract$reviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12456,6 +12874,2274 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ContractInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Conversation
+   */
+
+  export type AggregateConversation = {
+    _count: ConversationCountAggregateOutputType | null
+    _min: ConversationMinAggregateOutputType | null
+    _max: ConversationMaxAggregateOutputType | null
+  }
+
+  export type ConversationMinAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    clientId: string | null
+    artisanId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ConversationMaxAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    clientId: string | null
+    artisanId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ConversationCountAggregateOutputType = {
+    id: number
+    contractId: number
+    clientId: number
+    artisanId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ConversationMinAggregateInputType = {
+    id?: true
+    contractId?: true
+    clientId?: true
+    artisanId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ConversationMaxAggregateInputType = {
+    id?: true
+    contractId?: true
+    clientId?: true
+    artisanId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ConversationCountAggregateInputType = {
+    id?: true
+    contractId?: true
+    clientId?: true
+    artisanId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ConversationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Conversation to aggregate.
+     */
+    where?: ConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Conversations to fetch.
+     */
+    orderBy?: ConversationOrderByWithRelationInput | ConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Conversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Conversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Conversations
+    **/
+    _count?: true | ConversationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ConversationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ConversationMaxAggregateInputType
+  }
+
+  export type GetConversationAggregateType<T extends ConversationAggregateArgs> = {
+        [P in keyof T & keyof AggregateConversation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateConversation[P]>
+      : GetScalarType<T[P], AggregateConversation[P]>
+  }
+
+
+
+
+  export type ConversationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ConversationWhereInput
+    orderBy?: ConversationOrderByWithAggregationInput | ConversationOrderByWithAggregationInput[]
+    by: ConversationScalarFieldEnum[] | ConversationScalarFieldEnum
+    having?: ConversationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ConversationCountAggregateInputType | true
+    _min?: ConversationMinAggregateInputType
+    _max?: ConversationMaxAggregateInputType
+  }
+
+  export type ConversationGroupByOutputType = {
+    id: string
+    contractId: string
+    clientId: string
+    artisanId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ConversationCountAggregateOutputType | null
+    _min: ConversationMinAggregateOutputType | null
+    _max: ConversationMaxAggregateOutputType | null
+  }
+
+  type GetConversationGroupByPayload<T extends ConversationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ConversationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ConversationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ConversationGroupByOutputType[P]>
+            : GetScalarType<T[P], ConversationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ConversationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversation"]>
+
+  export type ConversationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversation"]>
+
+  export type ConversationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["conversation"]>
+
+  export type ConversationSelectScalar = {
+    id?: boolean
+    contractId?: boolean
+    clientId?: boolean
+    artisanId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "clientId" | "artisanId" | "createdAt" | "updatedAt", ExtArgs["result"]["conversation"]>
+  export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }
+  export type ConversationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }
+
+  export type $ConversationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Conversation"
+    objects: {
+      contract: Prisma.$ContractPayload<ExtArgs>
+      messages: Prisma.$MessagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contractId: string
+      clientId: string
+      artisanId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["conversation"]>
+    composites: {}
+  }
+
+  type ConversationGetPayload<S extends boolean | null | undefined | ConversationDefaultArgs> = $Result.GetResult<Prisma.$ConversationPayload, S>
+
+  type ConversationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ConversationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ConversationCountAggregateInputType | true
+    }
+
+  export interface ConversationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Conversation'], meta: { name: 'Conversation' } }
+    /**
+     * Find zero or one Conversation that matches the filter.
+     * @param {ConversationFindUniqueArgs} args - Arguments to find a Conversation
+     * @example
+     * // Get one Conversation
+     * const conversation = await prisma.conversation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ConversationFindUniqueArgs>(args: SelectSubset<T, ConversationFindUniqueArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Conversation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ConversationFindUniqueOrThrowArgs} args - Arguments to find a Conversation
+     * @example
+     * // Get one Conversation
+     * const conversation = await prisma.conversation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ConversationFindUniqueOrThrowArgs>(args: SelectSubset<T, ConversationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Conversation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationFindFirstArgs} args - Arguments to find a Conversation
+     * @example
+     * // Get one Conversation
+     * const conversation = await prisma.conversation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ConversationFindFirstArgs>(args?: SelectSubset<T, ConversationFindFirstArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Conversation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationFindFirstOrThrowArgs} args - Arguments to find a Conversation
+     * @example
+     * // Get one Conversation
+     * const conversation = await prisma.conversation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ConversationFindFirstOrThrowArgs>(args?: SelectSubset<T, ConversationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Conversations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Conversations
+     * const conversations = await prisma.conversation.findMany()
+     * 
+     * // Get first 10 Conversations
+     * const conversations = await prisma.conversation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const conversationWithIdOnly = await prisma.conversation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ConversationFindManyArgs>(args?: SelectSubset<T, ConversationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Conversation.
+     * @param {ConversationCreateArgs} args - Arguments to create a Conversation.
+     * @example
+     * // Create one Conversation
+     * const Conversation = await prisma.conversation.create({
+     *   data: {
+     *     // ... data to create a Conversation
+     *   }
+     * })
+     * 
+     */
+    create<T extends ConversationCreateArgs>(args: SelectSubset<T, ConversationCreateArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Conversations.
+     * @param {ConversationCreateManyArgs} args - Arguments to create many Conversations.
+     * @example
+     * // Create many Conversations
+     * const conversation = await prisma.conversation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ConversationCreateManyArgs>(args?: SelectSubset<T, ConversationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Conversations and returns the data saved in the database.
+     * @param {ConversationCreateManyAndReturnArgs} args - Arguments to create many Conversations.
+     * @example
+     * // Create many Conversations
+     * const conversation = await prisma.conversation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Conversations and only return the `id`
+     * const conversationWithIdOnly = await prisma.conversation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ConversationCreateManyAndReturnArgs>(args?: SelectSubset<T, ConversationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Conversation.
+     * @param {ConversationDeleteArgs} args - Arguments to delete one Conversation.
+     * @example
+     * // Delete one Conversation
+     * const Conversation = await prisma.conversation.delete({
+     *   where: {
+     *     // ... filter to delete one Conversation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ConversationDeleteArgs>(args: SelectSubset<T, ConversationDeleteArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Conversation.
+     * @param {ConversationUpdateArgs} args - Arguments to update one Conversation.
+     * @example
+     * // Update one Conversation
+     * const conversation = await prisma.conversation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ConversationUpdateArgs>(args: SelectSubset<T, ConversationUpdateArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Conversations.
+     * @param {ConversationDeleteManyArgs} args - Arguments to filter Conversations to delete.
+     * @example
+     * // Delete a few Conversations
+     * const { count } = await prisma.conversation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ConversationDeleteManyArgs>(args?: SelectSubset<T, ConversationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Conversations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Conversations
+     * const conversation = await prisma.conversation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ConversationUpdateManyArgs>(args: SelectSubset<T, ConversationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Conversations and returns the data updated in the database.
+     * @param {ConversationUpdateManyAndReturnArgs} args - Arguments to update many Conversations.
+     * @example
+     * // Update many Conversations
+     * const conversation = await prisma.conversation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Conversations and only return the `id`
+     * const conversationWithIdOnly = await prisma.conversation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ConversationUpdateManyAndReturnArgs>(args: SelectSubset<T, ConversationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Conversation.
+     * @param {ConversationUpsertArgs} args - Arguments to update or create a Conversation.
+     * @example
+     * // Update or create a Conversation
+     * const conversation = await prisma.conversation.upsert({
+     *   create: {
+     *     // ... data to create a Conversation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Conversation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ConversationUpsertArgs>(args: SelectSubset<T, ConversationUpsertArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Conversations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationCountArgs} args - Arguments to filter Conversations to count.
+     * @example
+     * // Count the number of Conversations
+     * const count = await prisma.conversation.count({
+     *   where: {
+     *     // ... the filter for the Conversations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ConversationCountArgs>(
+      args?: Subset<T, ConversationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ConversationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Conversation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ConversationAggregateArgs>(args: Subset<T, ConversationAggregateArgs>): Prisma.PrismaPromise<GetConversationAggregateType<T>>
+
+    /**
+     * Group by Conversation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ConversationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ConversationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ConversationGroupByArgs['orderBy'] }
+        : { orderBy?: ConversationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ConversationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetConversationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Conversation model
+   */
+  readonly fields: ConversationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Conversation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ConversationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contract<T extends ContractDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContractDefaultArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    messages<T extends Conversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Conversation model
+   */
+  interface ConversationFieldRefs {
+    readonly id: FieldRef<"Conversation", 'String'>
+    readonly contractId: FieldRef<"Conversation", 'String'>
+    readonly clientId: FieldRef<"Conversation", 'String'>
+    readonly artisanId: FieldRef<"Conversation", 'String'>
+    readonly createdAt: FieldRef<"Conversation", 'DateTime'>
+    readonly updatedAt: FieldRef<"Conversation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Conversation findUnique
+   */
+  export type ConversationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which Conversation to fetch.
+     */
+    where: ConversationWhereUniqueInput
+  }
+
+  /**
+   * Conversation findUniqueOrThrow
+   */
+  export type ConversationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which Conversation to fetch.
+     */
+    where: ConversationWhereUniqueInput
+  }
+
+  /**
+   * Conversation findFirst
+   */
+  export type ConversationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which Conversation to fetch.
+     */
+    where?: ConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Conversations to fetch.
+     */
+    orderBy?: ConversationOrderByWithRelationInput | ConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Conversations.
+     */
+    cursor?: ConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Conversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Conversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Conversations.
+     */
+    distinct?: ConversationScalarFieldEnum | ConversationScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation findFirstOrThrow
+   */
+  export type ConversationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which Conversation to fetch.
+     */
+    where?: ConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Conversations to fetch.
+     */
+    orderBy?: ConversationOrderByWithRelationInput | ConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Conversations.
+     */
+    cursor?: ConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Conversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Conversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Conversations.
+     */
+    distinct?: ConversationScalarFieldEnum | ConversationScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation findMany
+   */
+  export type ConversationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which Conversations to fetch.
+     */
+    where?: ConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Conversations to fetch.
+     */
+    orderBy?: ConversationOrderByWithRelationInput | ConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Conversations.
+     */
+    cursor?: ConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Conversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Conversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Conversations.
+     */
+    distinct?: ConversationScalarFieldEnum | ConversationScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation create
+   */
+  export type ConversationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Conversation.
+     */
+    data: XOR<ConversationCreateInput, ConversationUncheckedCreateInput>
+  }
+
+  /**
+   * Conversation createMany
+   */
+  export type ConversationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Conversations.
+     */
+    data: ConversationCreateManyInput | ConversationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Conversation createManyAndReturn
+   */
+  export type ConversationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Conversations.
+     */
+    data: ConversationCreateManyInput | ConversationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Conversation update
+   */
+  export type ConversationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Conversation.
+     */
+    data: XOR<ConversationUpdateInput, ConversationUncheckedUpdateInput>
+    /**
+     * Choose, which Conversation to update.
+     */
+    where: ConversationWhereUniqueInput
+  }
+
+  /**
+   * Conversation updateMany
+   */
+  export type ConversationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Conversations.
+     */
+    data: XOR<ConversationUpdateManyMutationInput, ConversationUncheckedUpdateManyInput>
+    /**
+     * Filter which Conversations to update
+     */
+    where?: ConversationWhereInput
+    /**
+     * Limit how many Conversations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Conversation updateManyAndReturn
+   */
+  export type ConversationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * The data used to update Conversations.
+     */
+    data: XOR<ConversationUpdateManyMutationInput, ConversationUncheckedUpdateManyInput>
+    /**
+     * Filter which Conversations to update
+     */
+    where?: ConversationWhereInput
+    /**
+     * Limit how many Conversations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Conversation upsert
+   */
+  export type ConversationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Conversation to update in case it exists.
+     */
+    where: ConversationWhereUniqueInput
+    /**
+     * In case the Conversation found by the `where` argument doesn't exist, create a new Conversation with this data.
+     */
+    create: XOR<ConversationCreateInput, ConversationUncheckedCreateInput>
+    /**
+     * In case the Conversation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ConversationUpdateInput, ConversationUncheckedUpdateInput>
+  }
+
+  /**
+   * Conversation delete
+   */
+  export type ConversationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+    /**
+     * Filter which Conversation to delete.
+     */
+    where: ConversationWhereUniqueInput
+  }
+
+  /**
+   * Conversation deleteMany
+   */
+  export type ConversationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Conversations to delete
+     */
+    where?: ConversationWhereInput
+    /**
+     * Limit how many Conversations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Conversation.messages
+   */
+  export type Conversation$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation without action
+   */
+  export type ConversationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Conversation
+     */
+    select?: ConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Conversation
+     */
+    omit?: ConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ConversationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Message
+   */
+
+  export type AggregateMessage = {
+    _count: MessageCountAggregateOutputType | null
+    _avg: MessageAvgAggregateOutputType | null
+    _sum: MessageSumAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  export type MessageAvgAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type MessageSumAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type MessageMinAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    senderId: string | null
+    content: string | null
+    type: $Enums.MessageType | null
+    fileUrl: string | null
+    fileType: string | null
+    fileName: string | null
+    fileSize: number | null
+    createdAt: Date | null
+  }
+
+  export type MessageMaxAggregateOutputType = {
+    id: string | null
+    conversationId: string | null
+    senderId: string | null
+    content: string | null
+    type: $Enums.MessageType | null
+    fileUrl: string | null
+    fileType: string | null
+    fileName: string | null
+    fileSize: number | null
+    createdAt: Date | null
+  }
+
+  export type MessageCountAggregateOutputType = {
+    id: number
+    conversationId: number
+    senderId: number
+    content: number
+    type: number
+    fileUrl: number
+    fileType: number
+    fileName: number
+    fileSize: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type MessageAvgAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type MessageSumAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type MessageMinAggregateInputType = {
+    id?: true
+    conversationId?: true
+    senderId?: true
+    content?: true
+    type?: true
+    fileUrl?: true
+    fileType?: true
+    fileName?: true
+    fileSize?: true
+    createdAt?: true
+  }
+
+  export type MessageMaxAggregateInputType = {
+    id?: true
+    conversationId?: true
+    senderId?: true
+    content?: true
+    type?: true
+    fileUrl?: true
+    fileType?: true
+    fileName?: true
+    fileSize?: true
+    createdAt?: true
+  }
+
+  export type MessageCountAggregateInputType = {
+    id?: true
+    conversationId?: true
+    senderId?: true
+    content?: true
+    type?: true
+    fileUrl?: true
+    fileType?: true
+    fileName?: true
+    fileSize?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type MessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Message to aggregate.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Messages
+    **/
+    _count?: true | MessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MessageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MessageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type GetMessageAggregateType<T extends MessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessage[P]>
+      : GetScalarType<T[P], AggregateMessage[P]>
+  }
+
+
+
+
+  export type MessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithAggregationInput | MessageOrderByWithAggregationInput[]
+    by: MessageScalarFieldEnum[] | MessageScalarFieldEnum
+    having?: MessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageCountAggregateInputType | true
+    _avg?: MessageAvgAggregateInputType
+    _sum?: MessageSumAggregateInputType
+    _min?: MessageMinAggregateInputType
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type MessageGroupByOutputType = {
+    id: string
+    conversationId: string
+    senderId: string
+    content: string | null
+    type: $Enums.MessageType
+    fileUrl: string | null
+    fileType: string | null
+    fileName: string | null
+    fileSize: number | null
+    createdAt: Date
+    _count: MessageCountAggregateOutputType | null
+    _avg: MessageAvgAggregateOutputType | null
+    _sum: MessageSumAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  type GetMessageGroupByPayload<T extends MessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    senderId?: boolean
+    content?: boolean
+    type?: boolean
+    fileUrl?: boolean
+    fileType?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    senderId?: boolean
+    content?: boolean
+    type?: boolean
+    fileUrl?: boolean
+    fileType?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    conversationId?: boolean
+    senderId?: boolean
+    content?: boolean
+    type?: boolean
+    fileUrl?: boolean
+    fileType?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    createdAt?: boolean
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectScalar = {
+    id?: boolean
+    conversationId?: boolean
+    senderId?: boolean
+    content?: boolean
+    type?: boolean
+    fileUrl?: boolean
+    fileType?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    createdAt?: boolean
+  }
+
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "conversationId" | "senderId" | "content" | "type" | "fileUrl" | "fileType" | "fileName" | "fileSize" | "createdAt", ExtArgs["result"]["message"]>
+  export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+  export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+  export type MessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | ConversationDefaultArgs<ExtArgs>
+  }
+
+  export type $MessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Message"
+    objects: {
+      conversation: Prisma.$ConversationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      conversationId: string
+      senderId: string
+      content: string | null
+      type: $Enums.MessageType
+      fileUrl: string | null
+      fileType: string | null
+      fileName: string | null
+      fileSize: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["message"]>
+    composites: {}
+  }
+
+  type MessageGetPayload<S extends boolean | null | undefined | MessageDefaultArgs> = $Result.GetResult<Prisma.$MessagePayload, S>
+
+  type MessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageCountAggregateInputType | true
+    }
+
+  export interface MessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Message'], meta: { name: 'Message' } }
+    /**
+     * Find zero or one Message that matches the filter.
+     * @param {MessageFindUniqueArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageFindUniqueArgs>(args: SelectSubset<T, MessageFindUniqueArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Message that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageFindUniqueOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageFindFirstArgs>(args?: SelectSubset<T, MessageFindFirstArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Messages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Messages
+     * const messages = await prisma.message.findMany()
+     * 
+     * // Get first 10 Messages
+     * const messages = await prisma.message.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageWithIdOnly = await prisma.message.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageFindManyArgs>(args?: SelectSubset<T, MessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Message.
+     * @param {MessageCreateArgs} args - Arguments to create a Message.
+     * @example
+     * // Create one Message
+     * const Message = await prisma.message.create({
+     *   data: {
+     *     // ... data to create a Message
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageCreateArgs>(args: SelectSubset<T, MessageCreateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Messages.
+     * @param {MessageCreateManyArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageCreateManyArgs>(args?: SelectSubset<T, MessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Messages and returns the data saved in the database.
+     * @param {MessageCreateManyAndReturnArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Message.
+     * @param {MessageDeleteArgs} args - Arguments to delete one Message.
+     * @example
+     * // Delete one Message
+     * const Message = await prisma.message.delete({
+     *   where: {
+     *     // ... filter to delete one Message
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageDeleteArgs>(args: SelectSubset<T, MessageDeleteArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Message.
+     * @param {MessageUpdateArgs} args - Arguments to update one Message.
+     * @example
+     * // Update one Message
+     * const message = await prisma.message.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageUpdateArgs>(args: SelectSubset<T, MessageUpdateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Messages.
+     * @param {MessageDeleteManyArgs} args - Arguments to filter Messages to delete.
+     * @example
+     * // Delete a few Messages
+     * const { count } = await prisma.message.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageDeleteManyArgs>(args?: SelectSubset<T, MessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageUpdateManyArgs>(args: SelectSubset<T, MessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages and returns the data updated in the database.
+     * @param {MessageUpdateManyAndReturnArgs} args - Arguments to update many Messages.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Message.
+     * @param {MessageUpsertArgs} args - Arguments to update or create a Message.
+     * @example
+     * // Update or create a Message
+     * const message = await prisma.message.upsert({
+     *   create: {
+     *     // ... data to create a Message
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Message we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageUpsertArgs>(args: SelectSubset<T, MessageUpsertArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCountArgs} args - Arguments to filter Messages to count.
+     * @example
+     * // Count the number of Messages
+     * const count = await prisma.message.count({
+     *   where: {
+     *     // ... the filter for the Messages we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageCountArgs>(
+      args?: Subset<T, MessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageAggregateArgs>(args: Subset<T, MessageAggregateArgs>): Prisma.PrismaPromise<GetMessageAggregateType<T>>
+
+    /**
+     * Group by Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageGroupByArgs['orderBy'] }
+        : { orderBy?: MessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Message model
+   */
+  readonly fields: MessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Message.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversation<T extends ConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConversationDefaultArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Message model
+   */
+  interface MessageFieldRefs {
+    readonly id: FieldRef<"Message", 'String'>
+    readonly conversationId: FieldRef<"Message", 'String'>
+    readonly senderId: FieldRef<"Message", 'String'>
+    readonly content: FieldRef<"Message", 'String'>
+    readonly type: FieldRef<"Message", 'MessageType'>
+    readonly fileUrl: FieldRef<"Message", 'String'>
+    readonly fileType: FieldRef<"Message", 'String'>
+    readonly fileName: FieldRef<"Message", 'String'>
+    readonly fileSize: FieldRef<"Message", 'Int'>
+    readonly createdAt: FieldRef<"Message", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Message findUnique
+   */
+  export type MessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findUniqueOrThrow
+   */
+  export type MessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findFirst
+   */
+  export type MessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findFirstOrThrow
+   */
+  export type MessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findMany
+   */
+  export type MessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message create
+   */
+  export type MessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Message.
+     */
+    data: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+  }
+
+  /**
+   * Message createMany
+   */
+  export type MessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Message createManyAndReturn
+   */
+  export type MessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message update
+   */
+  export type MessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Message.
+     */
+    data: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+    /**
+     * Choose, which Message to update.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message updateMany
+   */
+  export type MessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message updateManyAndReturn
+   */
+  export type MessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message upsert
+   */
+  export type MessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Message to update in case it exists.
+     */
+    where: MessageWhereUniqueInput
+    /**
+     * In case the Message found by the `where` argument doesn't exist, create a new Message with this data.
+     */
+    create: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+    /**
+     * In case the Message was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+  }
+
+  /**
+   * Message delete
+   */
+  export type MessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter which Message to delete.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message deleteMany
+   */
+  export type MessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Messages to delete
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message without action
+   */
+  export type MessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
   }
 
 
@@ -14744,6 +17430,7 @@ export namespace Prisma {
     userId: string | null
     title: string | null
     message: string | null
+    read: boolean | null
     createdAt: Date | null
   }
 
@@ -14752,6 +17439,7 @@ export namespace Prisma {
     userId: string | null
     title: string | null
     message: string | null
+    read: boolean | null
     createdAt: Date | null
   }
 
@@ -14760,6 +17448,7 @@ export namespace Prisma {
     userId: number
     title: number
     message: number
+    read: number
     createdAt: number
     _all: number
   }
@@ -14770,6 +17459,7 @@ export namespace Prisma {
     userId?: true
     title?: true
     message?: true
+    read?: true
     createdAt?: true
   }
 
@@ -14778,6 +17468,7 @@ export namespace Prisma {
     userId?: true
     title?: true
     message?: true
+    read?: true
     createdAt?: true
   }
 
@@ -14786,6 +17477,7 @@ export namespace Prisma {
     userId?: true
     title?: true
     message?: true
+    read?: true
     createdAt?: true
     _all?: true
   }
@@ -14867,6 +17559,7 @@ export namespace Prisma {
     userId: string
     title: string
     message: string
+    read: boolean
     createdAt: Date
     _count: NotificationCountAggregateOutputType | null
     _min: NotificationMinAggregateOutputType | null
@@ -14892,6 +17585,7 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     message?: boolean
+    read?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
@@ -14901,6 +17595,7 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     message?: boolean
+    read?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
@@ -14910,6 +17605,7 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     message?: boolean
+    read?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
@@ -14919,10 +17615,11 @@ export namespace Prisma {
     userId?: boolean
     title?: boolean
     message?: boolean
+    read?: boolean
     createdAt?: boolean
   }
 
-  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "message" | "createdAt", ExtArgs["result"]["notification"]>
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "message" | "read" | "createdAt", ExtArgs["result"]["notification"]>
   export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -14943,6 +17640,7 @@ export namespace Prisma {
       userId: string
       title: string
       message: string
+      read: boolean
       createdAt: Date
     }, ExtArgs["result"]["notification"]>
     composites: {}
@@ -15372,6 +18070,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"Notification", 'String'>
     readonly title: FieldRef<"Notification", 'String'>
     readonly message: FieldRef<"Notification", 'String'>
+    readonly read: FieldRef<"Notification", 'Boolean'>
     readonly createdAt: FieldRef<"Notification", 'DateTime'>
   }
     
@@ -16839,7 +19538,7 @@ export namespace Prisma {
     contractId: string | null
     userId: string | null
     amount: number | null
-    status: string | null
+    status: $Enums.PaymentStatus | null
     paymentMethod: string | null
     paymentReference: string | null
     verificationCode: string | null
@@ -16854,7 +19553,7 @@ export namespace Prisma {
     contractId: string | null
     userId: string | null
     amount: number | null
-    status: string | null
+    status: $Enums.PaymentStatus | null
     paymentMethod: string | null
     paymentReference: string | null
     verificationCode: string | null
@@ -17026,7 +19725,7 @@ export namespace Prisma {
     contractId: string
     userId: string
     amount: number
-    status: string
+    status: $Enums.PaymentStatus
     paymentMethod: string | null
     paymentReference: string | null
     verificationCode: string | null
@@ -17146,7 +19845,7 @@ export namespace Prisma {
       contractId: string
       userId: string
       amount: number
-      status: string
+      status: $Enums.PaymentStatus
       paymentMethod: string | null
       paymentReference: string | null
       verificationCode: string | null
@@ -17583,7 +20282,7 @@ export namespace Prisma {
     readonly contractId: FieldRef<"Payment", 'String'>
     readonly userId: FieldRef<"Payment", 'String'>
     readonly amount: FieldRef<"Payment", 'Int'>
-    readonly status: FieldRef<"Payment", 'String'>
+    readonly status: FieldRef<"Payment", 'PaymentStatus'>
     readonly paymentMethod: FieldRef<"Payment", 'String'>
     readonly paymentReference: FieldRef<"Payment", 'String'>
     readonly verificationCode: FieldRef<"Payment", 'String'>
@@ -18011,6 +20710,1134 @@ export namespace Prisma {
 
 
   /**
+   * Model KycDocument
+   */
+
+  export type AggregateKycDocument = {
+    _count: KycDocumentCountAggregateOutputType | null
+    _min: KycDocumentMinAggregateOutputType | null
+    _max: KycDocumentMaxAggregateOutputType | null
+  }
+
+  export type KycDocumentMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    documentType: $Enums.KycDocumentType | null
+    documentUrl: string | null
+    status: $Enums.KycDocumentStatus | null
+    reviewedBy: string | null
+    reviewedAt: Date | null
+    rejectionReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type KycDocumentMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    documentType: $Enums.KycDocumentType | null
+    documentUrl: string | null
+    status: $Enums.KycDocumentStatus | null
+    reviewedBy: string | null
+    reviewedAt: Date | null
+    rejectionReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type KycDocumentCountAggregateOutputType = {
+    id: number
+    userId: number
+    documentType: number
+    documentUrl: number
+    status: number
+    reviewedBy: number
+    reviewedAt: number
+    rejectionReason: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type KycDocumentMinAggregateInputType = {
+    id?: true
+    userId?: true
+    documentType?: true
+    documentUrl?: true
+    status?: true
+    reviewedBy?: true
+    reviewedAt?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type KycDocumentMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    documentType?: true
+    documentUrl?: true
+    status?: true
+    reviewedBy?: true
+    reviewedAt?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type KycDocumentCountAggregateInputType = {
+    id?: true
+    userId?: true
+    documentType?: true
+    documentUrl?: true
+    status?: true
+    reviewedBy?: true
+    reviewedAt?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type KycDocumentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KycDocument to aggregate.
+     */
+    where?: KycDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KycDocuments to fetch.
+     */
+    orderBy?: KycDocumentOrderByWithRelationInput | KycDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KycDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KycDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KycDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KycDocuments
+    **/
+    _count?: true | KycDocumentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KycDocumentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KycDocumentMaxAggregateInputType
+  }
+
+  export type GetKycDocumentAggregateType<T extends KycDocumentAggregateArgs> = {
+        [P in keyof T & keyof AggregateKycDocument]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKycDocument[P]>
+      : GetScalarType<T[P], AggregateKycDocument[P]>
+  }
+
+
+
+
+  export type KycDocumentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KycDocumentWhereInput
+    orderBy?: KycDocumentOrderByWithAggregationInput | KycDocumentOrderByWithAggregationInput[]
+    by: KycDocumentScalarFieldEnum[] | KycDocumentScalarFieldEnum
+    having?: KycDocumentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KycDocumentCountAggregateInputType | true
+    _min?: KycDocumentMinAggregateInputType
+    _max?: KycDocumentMaxAggregateInputType
+  }
+
+  export type KycDocumentGroupByOutputType = {
+    id: string
+    userId: string
+    documentType: $Enums.KycDocumentType
+    documentUrl: string
+    status: $Enums.KycDocumentStatus
+    reviewedBy: string | null
+    reviewedAt: Date | null
+    rejectionReason: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: KycDocumentCountAggregateOutputType | null
+    _min: KycDocumentMinAggregateOutputType | null
+    _max: KycDocumentMaxAggregateOutputType | null
+  }
+
+  type GetKycDocumentGroupByPayload<T extends KycDocumentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<KycDocumentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KycDocumentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KycDocumentGroupByOutputType[P]>
+            : GetScalarType<T[P], KycDocumentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KycDocumentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    documentType?: boolean
+    documentUrl?: boolean
+    status?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["kycDocument"]>
+
+  export type KycDocumentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    documentType?: boolean
+    documentUrl?: boolean
+    status?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["kycDocument"]>
+
+  export type KycDocumentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    documentType?: boolean
+    documentUrl?: boolean
+    status?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["kycDocument"]>
+
+  export type KycDocumentSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    documentType?: boolean
+    documentUrl?: boolean
+    status?: boolean
+    reviewedBy?: boolean
+    reviewedAt?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type KycDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "documentType" | "documentUrl" | "status" | "reviewedBy" | "reviewedAt" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["kycDocument"]>
+  export type KycDocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type KycDocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type KycDocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $KycDocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "KycDocument"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      documentType: $Enums.KycDocumentType
+      documentUrl: string
+      status: $Enums.KycDocumentStatus
+      reviewedBy: string | null
+      reviewedAt: Date | null
+      rejectionReason: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["kycDocument"]>
+    composites: {}
+  }
+
+  type KycDocumentGetPayload<S extends boolean | null | undefined | KycDocumentDefaultArgs> = $Result.GetResult<Prisma.$KycDocumentPayload, S>
+
+  type KycDocumentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<KycDocumentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: KycDocumentCountAggregateInputType | true
+    }
+
+  export interface KycDocumentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['KycDocument'], meta: { name: 'KycDocument' } }
+    /**
+     * Find zero or one KycDocument that matches the filter.
+     * @param {KycDocumentFindUniqueArgs} args - Arguments to find a KycDocument
+     * @example
+     * // Get one KycDocument
+     * const kycDocument = await prisma.kycDocument.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KycDocumentFindUniqueArgs>(args: SelectSubset<T, KycDocumentFindUniqueArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one KycDocument that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KycDocumentFindUniqueOrThrowArgs} args - Arguments to find a KycDocument
+     * @example
+     * // Get one KycDocument
+     * const kycDocument = await prisma.kycDocument.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KycDocumentFindUniqueOrThrowArgs>(args: SelectSubset<T, KycDocumentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KycDocument that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KycDocumentFindFirstArgs} args - Arguments to find a KycDocument
+     * @example
+     * // Get one KycDocument
+     * const kycDocument = await prisma.kycDocument.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KycDocumentFindFirstArgs>(args?: SelectSubset<T, KycDocumentFindFirstArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KycDocument that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KycDocumentFindFirstOrThrowArgs} args - Arguments to find a KycDocument
+     * @example
+     * // Get one KycDocument
+     * const kycDocument = await prisma.kycDocument.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KycDocumentFindFirstOrThrowArgs>(args?: SelectSubset<T, KycDocumentFindFirstOrThrowArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more KycDocuments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KycDocumentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KycDocuments
+     * const kycDocuments = await prisma.kycDocument.findMany()
+     * 
+     * // Get first 10 KycDocuments
+     * const kycDocuments = await prisma.kycDocument.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const kycDocumentWithIdOnly = await prisma.kycDocument.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends KycDocumentFindManyArgs>(args?: SelectSubset<T, KycDocumentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a KycDocument.
+     * @param {KycDocumentCreateArgs} args - Arguments to create a KycDocument.
+     * @example
+     * // Create one KycDocument
+     * const KycDocument = await prisma.kycDocument.create({
+     *   data: {
+     *     // ... data to create a KycDocument
+     *   }
+     * })
+     * 
+     */
+    create<T extends KycDocumentCreateArgs>(args: SelectSubset<T, KycDocumentCreateArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many KycDocuments.
+     * @param {KycDocumentCreateManyArgs} args - Arguments to create many KycDocuments.
+     * @example
+     * // Create many KycDocuments
+     * const kycDocument = await prisma.kycDocument.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends KycDocumentCreateManyArgs>(args?: SelectSubset<T, KycDocumentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many KycDocuments and returns the data saved in the database.
+     * @param {KycDocumentCreateManyAndReturnArgs} args - Arguments to create many KycDocuments.
+     * @example
+     * // Create many KycDocuments
+     * const kycDocument = await prisma.kycDocument.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many KycDocuments and only return the `id`
+     * const kycDocumentWithIdOnly = await prisma.kycDocument.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends KycDocumentCreateManyAndReturnArgs>(args?: SelectSubset<T, KycDocumentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a KycDocument.
+     * @param {KycDocumentDeleteArgs} args - Arguments to delete one KycDocument.
+     * @example
+     * // Delete one KycDocument
+     * const KycDocument = await prisma.kycDocument.delete({
+     *   where: {
+     *     // ... filter to delete one KycDocument
+     *   }
+     * })
+     * 
+     */
+    delete<T extends KycDocumentDeleteArgs>(args: SelectSubset<T, KycDocumentDeleteArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one KycDocument.
+     * @param {KycDocumentUpdateArgs} args - Arguments to update one KycDocument.
+     * @example
+     * // Update one KycDocument
+     * const kycDocument = await prisma.kycDocument.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends KycDocumentUpdateArgs>(args: SelectSubset<T, KycDocumentUpdateArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more KycDocuments.
+     * @param {KycDocumentDeleteManyArgs} args - Arguments to filter KycDocuments to delete.
+     * @example
+     * // Delete a few KycDocuments
+     * const { count } = await prisma.kycDocument.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends KycDocumentDeleteManyArgs>(args?: SelectSubset<T, KycDocumentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KycDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KycDocumentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KycDocuments
+     * const kycDocument = await prisma.kycDocument.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends KycDocumentUpdateManyArgs>(args: SelectSubset<T, KycDocumentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KycDocuments and returns the data updated in the database.
+     * @param {KycDocumentUpdateManyAndReturnArgs} args - Arguments to update many KycDocuments.
+     * @example
+     * // Update many KycDocuments
+     * const kycDocument = await prisma.kycDocument.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more KycDocuments and only return the `id`
+     * const kycDocumentWithIdOnly = await prisma.kycDocument.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends KycDocumentUpdateManyAndReturnArgs>(args: SelectSubset<T, KycDocumentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one KycDocument.
+     * @param {KycDocumentUpsertArgs} args - Arguments to update or create a KycDocument.
+     * @example
+     * // Update or create a KycDocument
+     * const kycDocument = await prisma.kycDocument.upsert({
+     *   create: {
+     *     // ... data to create a KycDocument
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KycDocument we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KycDocumentUpsertArgs>(args: SelectSubset<T, KycDocumentUpsertArgs<ExtArgs>>): Prisma__KycDocumentClient<$Result.GetResult<Prisma.$KycDocumentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of KycDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KycDocumentCountArgs} args - Arguments to filter KycDocuments to count.
+     * @example
+     * // Count the number of KycDocuments
+     * const count = await prisma.kycDocument.count({
+     *   where: {
+     *     // ... the filter for the KycDocuments we want to count
+     *   }
+     * })
+    **/
+    count<T extends KycDocumentCountArgs>(
+      args?: Subset<T, KycDocumentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KycDocumentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KycDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KycDocumentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KycDocumentAggregateArgs>(args: Subset<T, KycDocumentAggregateArgs>): Prisma.PrismaPromise<GetKycDocumentAggregateType<T>>
+
+    /**
+     * Group by KycDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KycDocumentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KycDocumentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KycDocumentGroupByArgs['orderBy'] }
+        : { orderBy?: KycDocumentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KycDocumentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKycDocumentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the KycDocument model
+   */
+  readonly fields: KycDocumentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KycDocument.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__KycDocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the KycDocument model
+   */
+  interface KycDocumentFieldRefs {
+    readonly id: FieldRef<"KycDocument", 'String'>
+    readonly userId: FieldRef<"KycDocument", 'String'>
+    readonly documentType: FieldRef<"KycDocument", 'KycDocumentType'>
+    readonly documentUrl: FieldRef<"KycDocument", 'String'>
+    readonly status: FieldRef<"KycDocument", 'KycDocumentStatus'>
+    readonly reviewedBy: FieldRef<"KycDocument", 'String'>
+    readonly reviewedAt: FieldRef<"KycDocument", 'DateTime'>
+    readonly rejectionReason: FieldRef<"KycDocument", 'String'>
+    readonly createdAt: FieldRef<"KycDocument", 'DateTime'>
+    readonly updatedAt: FieldRef<"KycDocument", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * KycDocument findUnique
+   */
+  export type KycDocumentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which KycDocument to fetch.
+     */
+    where: KycDocumentWhereUniqueInput
+  }
+
+  /**
+   * KycDocument findUniqueOrThrow
+   */
+  export type KycDocumentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which KycDocument to fetch.
+     */
+    where: KycDocumentWhereUniqueInput
+  }
+
+  /**
+   * KycDocument findFirst
+   */
+  export type KycDocumentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which KycDocument to fetch.
+     */
+    where?: KycDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KycDocuments to fetch.
+     */
+    orderBy?: KycDocumentOrderByWithRelationInput | KycDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KycDocuments.
+     */
+    cursor?: KycDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KycDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KycDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KycDocuments.
+     */
+    distinct?: KycDocumentScalarFieldEnum | KycDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * KycDocument findFirstOrThrow
+   */
+  export type KycDocumentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which KycDocument to fetch.
+     */
+    where?: KycDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KycDocuments to fetch.
+     */
+    orderBy?: KycDocumentOrderByWithRelationInput | KycDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KycDocuments.
+     */
+    cursor?: KycDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KycDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KycDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KycDocuments.
+     */
+    distinct?: KycDocumentScalarFieldEnum | KycDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * KycDocument findMany
+   */
+  export type KycDocumentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which KycDocuments to fetch.
+     */
+    where?: KycDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KycDocuments to fetch.
+     */
+    orderBy?: KycDocumentOrderByWithRelationInput | KycDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KycDocuments.
+     */
+    cursor?: KycDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KycDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KycDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KycDocuments.
+     */
+    distinct?: KycDocumentScalarFieldEnum | KycDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * KycDocument create
+   */
+  export type KycDocumentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a KycDocument.
+     */
+    data: XOR<KycDocumentCreateInput, KycDocumentUncheckedCreateInput>
+  }
+
+  /**
+   * KycDocument createMany
+   */
+  export type KycDocumentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KycDocuments.
+     */
+    data: KycDocumentCreateManyInput | KycDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KycDocument createManyAndReturn
+   */
+  export type KycDocumentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * The data used to create many KycDocuments.
+     */
+    data: KycDocumentCreateManyInput | KycDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KycDocument update
+   */
+  export type KycDocumentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a KycDocument.
+     */
+    data: XOR<KycDocumentUpdateInput, KycDocumentUncheckedUpdateInput>
+    /**
+     * Choose, which KycDocument to update.
+     */
+    where: KycDocumentWhereUniqueInput
+  }
+
+  /**
+   * KycDocument updateMany
+   */
+  export type KycDocumentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KycDocuments.
+     */
+    data: XOR<KycDocumentUpdateManyMutationInput, KycDocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which KycDocuments to update
+     */
+    where?: KycDocumentWhereInput
+    /**
+     * Limit how many KycDocuments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KycDocument updateManyAndReturn
+   */
+  export type KycDocumentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * The data used to update KycDocuments.
+     */
+    data: XOR<KycDocumentUpdateManyMutationInput, KycDocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which KycDocuments to update
+     */
+    where?: KycDocumentWhereInput
+    /**
+     * Limit how many KycDocuments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KycDocument upsert
+   */
+  export type KycDocumentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the KycDocument to update in case it exists.
+     */
+    where: KycDocumentWhereUniqueInput
+    /**
+     * In case the KycDocument found by the `where` argument doesn't exist, create a new KycDocument with this data.
+     */
+    create: XOR<KycDocumentCreateInput, KycDocumentUncheckedCreateInput>
+    /**
+     * In case the KycDocument was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KycDocumentUpdateInput, KycDocumentUncheckedUpdateInput>
+  }
+
+  /**
+   * KycDocument delete
+   */
+  export type KycDocumentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+    /**
+     * Filter which KycDocument to delete.
+     */
+    where: KycDocumentWhereUniqueInput
+  }
+
+  /**
+   * KycDocument deleteMany
+   */
+  export type KycDocumentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KycDocuments to delete
+     */
+    where?: KycDocumentWhereInput
+    /**
+     * Limit how many KycDocuments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * KycDocument without action
+   */
+  export type KycDocumentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KycDocument
+     */
+    select?: KycDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KycDocument
+     */
+    omit?: KycDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KycDocumentInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18178,6 +22005,34 @@ export namespace Prisma {
   export type ContractScalarFieldEnum = (typeof ContractScalarFieldEnum)[keyof typeof ContractScalarFieldEnum]
 
 
+  export const ConversationScalarFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    clientId: 'clientId',
+    artisanId: 'artisanId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+  export const MessageScalarFieldEnum: {
+    id: 'id',
+    conversationId: 'conversationId',
+    senderId: 'senderId',
+    content: 'content',
+    type: 'type',
+    fileUrl: 'fileUrl',
+    fileType: 'fileType',
+    fileName: 'fileName',
+    fileSize: 'fileSize',
+    createdAt: 'createdAt'
+  };
+
+  export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
   export const WalletScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -18209,6 +22064,7 @@ export namespace Prisma {
     userId: 'userId',
     title: 'title',
     message: 'message',
+    read: 'read',
     createdAt: 'createdAt'
   };
 
@@ -18244,6 +22100,22 @@ export namespace Prisma {
   };
 
   export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+  export const KycDocumentScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    documentType: 'documentType',
+    documentUrl: 'documentUrl',
+    status: 'status',
+    reviewedBy: 'reviewedBy',
+    reviewedAt: 'reviewedAt',
+    rejectionReason: 'rejectionReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type KycDocumentScalarFieldEnum = (typeof KycDocumentScalarFieldEnum)[keyof typeof KycDocumentScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -18503,6 +22375,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'MessageType'
+   */
+  export type EnumMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageType'>
+    
+
+
+  /**
+   * Reference to a field of type 'MessageType[]'
+   */
+  export type ListEnumMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'AuditEntityType'
    */
   export type EnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType'>
@@ -18513,6 +22399,48 @@ export namespace Prisma {
    * Reference to a field of type 'AuditEntityType[]'
    */
   export type ListEnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus'
+   */
+  export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentStatus[]'
+   */
+  export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'KycDocumentType'
+   */
+  export type EnumKycDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycDocumentType'>
+    
+
+
+  /**
+   * Reference to a field of type 'KycDocumentType[]'
+   */
+  export type ListEnumKycDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycDocumentType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'KycDocumentStatus'
+   */
+  export type EnumKycDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycDocumentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'KycDocumentStatus[]'
+   */
+  export type ListEnumKycDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycDocumentStatus[]'>
     
   /**
    * Deep Input Types
@@ -18537,6 +22465,7 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
     artisanProfile?: XOR<ArtisanProfileNullableScalarRelationFilter, ArtisanProfileWhereInput> | null
+    kycDocuments?: KycDocumentListRelationFilter
     sentProposals?: ProposalListRelationFilter
     receivedProposals?: ProposalListRelationFilter
     clientContracts?: ContractListRelationFilter
@@ -18567,6 +22496,7 @@ export namespace Prisma {
     lastLoginAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     artisanProfile?: ArtisanProfileOrderByWithRelationInput
+    kycDocuments?: KycDocumentOrderByRelationAggregateInput
     sentProposals?: ProposalOrderByRelationAggregateInput
     receivedProposals?: ProposalOrderByRelationAggregateInput
     clientContracts?: ContractOrderByRelationAggregateInput
@@ -18600,6 +22530,7 @@ export namespace Prisma {
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
     artisanProfile?: XOR<ArtisanProfileNullableScalarRelationFilter, ArtisanProfileWhereInput> | null
+    kycDocuments?: KycDocumentListRelationFilter
     sentProposals?: ProposalListRelationFilter
     receivedProposals?: ProposalListRelationFilter
     clientContracts?: ContractListRelationFilter
@@ -19254,6 +23185,7 @@ export namespace Prisma {
     proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<ConversationNullableScalarRelationFilter, ConversationWhereInput> | null
     review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
     payments?: PaymentListRelationFilter
   }
@@ -19284,6 +23216,7 @@ export namespace Prisma {
     proposal?: ProposalOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
     artisan?: UserOrderByWithRelationInput
+    conversation?: ConversationOrderByWithRelationInput
     review?: ReviewOrderByWithRelationInput
     payments?: PaymentOrderByRelationAggregateInput
   }
@@ -19317,6 +23250,7 @@ export namespace Prisma {
     proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    conversation?: XOR<ConversationNullableScalarRelationFilter, ConversationWhereInput> | null
     review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
     payments?: PaymentListRelationFilter
   }, "id" | "jobId" | "proposalId">
@@ -19375,6 +23309,151 @@ export namespace Prisma {
     platformFeeDeducted?: BoolWithAggregatesFilter<"Contract"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
+  }
+
+  export type ConversationWhereInput = {
+    AND?: ConversationWhereInput | ConversationWhereInput[]
+    OR?: ConversationWhereInput[]
+    NOT?: ConversationWhereInput | ConversationWhereInput[]
+    id?: StringFilter<"Conversation"> | string
+    contractId?: StringFilter<"Conversation"> | string
+    clientId?: StringFilter<"Conversation"> | string
+    artisanId?: StringFilter<"Conversation"> | string
+    createdAt?: DateTimeFilter<"Conversation"> | Date | string
+    updatedAt?: DateTimeFilter<"Conversation"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    messages?: MessageListRelationFilter
+  }
+
+  export type ConversationOrderByWithRelationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    contract?: ContractOrderByWithRelationInput
+    messages?: MessageOrderByRelationAggregateInput
+  }
+
+  export type ConversationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contractId?: string
+    AND?: ConversationWhereInput | ConversationWhereInput[]
+    OR?: ConversationWhereInput[]
+    NOT?: ConversationWhereInput | ConversationWhereInput[]
+    clientId?: StringFilter<"Conversation"> | string
+    artisanId?: StringFilter<"Conversation"> | string
+    createdAt?: DateTimeFilter<"Conversation"> | Date | string
+    updatedAt?: DateTimeFilter<"Conversation"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    messages?: MessageListRelationFilter
+  }, "id" | "contractId">
+
+  export type ConversationOrderByWithAggregationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ConversationCountOrderByAggregateInput
+    _max?: ConversationMaxOrderByAggregateInput
+    _min?: ConversationMinOrderByAggregateInput
+  }
+
+  export type ConversationScalarWhereWithAggregatesInput = {
+    AND?: ConversationScalarWhereWithAggregatesInput | ConversationScalarWhereWithAggregatesInput[]
+    OR?: ConversationScalarWhereWithAggregatesInput[]
+    NOT?: ConversationScalarWhereWithAggregatesInput | ConversationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Conversation"> | string
+    contractId?: StringWithAggregatesFilter<"Conversation"> | string
+    clientId?: StringWithAggregatesFilter<"Conversation"> | string
+    artisanId?: StringWithAggregatesFilter<"Conversation"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Conversation"> | Date | string
+  }
+
+  export type MessageWhereInput = {
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    id?: StringFilter<"Message"> | string
+    conversationId?: StringFilter<"Message"> | string
+    senderId?: StringFilter<"Message"> | string
+    content?: StringNullableFilter<"Message"> | string | null
+    type?: EnumMessageTypeFilter<"Message"> | $Enums.MessageType
+    fileUrl?: StringNullableFilter<"Message"> | string | null
+    fileType?: StringNullableFilter<"Message"> | string | null
+    fileName?: StringNullableFilter<"Message"> | string | null
+    fileSize?: IntNullableFilter<"Message"> | number | null
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    conversation?: XOR<ConversationScalarRelationFilter, ConversationWhereInput>
+  }
+
+  export type MessageOrderByWithRelationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    senderId?: SortOrder
+    content?: SortOrderInput | SortOrder
+    type?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
+    fileType?: SortOrderInput | SortOrder
+    fileName?: SortOrderInput | SortOrder
+    fileSize?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    conversation?: ConversationOrderByWithRelationInput
+  }
+
+  export type MessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    conversationId?: StringFilter<"Message"> | string
+    senderId?: StringFilter<"Message"> | string
+    content?: StringNullableFilter<"Message"> | string | null
+    type?: EnumMessageTypeFilter<"Message"> | $Enums.MessageType
+    fileUrl?: StringNullableFilter<"Message"> | string | null
+    fileType?: StringNullableFilter<"Message"> | string | null
+    fileName?: StringNullableFilter<"Message"> | string | null
+    fileSize?: IntNullableFilter<"Message"> | number | null
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    conversation?: XOR<ConversationScalarRelationFilter, ConversationWhereInput>
+  }, "id">
+
+  export type MessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    senderId?: SortOrder
+    content?: SortOrderInput | SortOrder
+    type?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
+    fileType?: SortOrderInput | SortOrder
+    fileName?: SortOrderInput | SortOrder
+    fileSize?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: MessageCountOrderByAggregateInput
+    _avg?: MessageAvgOrderByAggregateInput
+    _max?: MessageMaxOrderByAggregateInput
+    _min?: MessageMinOrderByAggregateInput
+    _sum?: MessageSumOrderByAggregateInput
+  }
+
+  export type MessageScalarWhereWithAggregatesInput = {
+    AND?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    OR?: MessageScalarWhereWithAggregatesInput[]
+    NOT?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Message"> | string
+    conversationId?: StringWithAggregatesFilter<"Message"> | string
+    senderId?: StringWithAggregatesFilter<"Message"> | string
+    content?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    type?: EnumMessageTypeWithAggregatesFilter<"Message"> | $Enums.MessageType
+    fileUrl?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    fileType?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    fileName?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    fileSize?: IntNullableWithAggregatesFilter<"Message"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
   }
 
   export type WalletWhereInput = {
@@ -19525,6 +23604,7 @@ export namespace Prisma {
     userId?: StringFilter<"Notification"> | string
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    read?: BoolFilter<"Notification"> | boolean
     createdAt?: DateTimeFilter<"Notification"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -19534,6 +23614,7 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    read?: SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -19546,6 +23627,7 @@ export namespace Prisma {
     userId?: StringFilter<"Notification"> | string
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    read?: BoolFilter<"Notification"> | boolean
     createdAt?: DateTimeFilter<"Notification"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -19555,6 +23637,7 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    read?: SortOrder
     createdAt?: SortOrder
     _count?: NotificationCountOrderByAggregateInput
     _max?: NotificationMaxOrderByAggregateInput
@@ -19569,6 +23652,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Notification"> | string
     title?: StringWithAggregatesFilter<"Notification"> | string
     message?: StringWithAggregatesFilter<"Notification"> | string
+    read?: BoolWithAggregatesFilter<"Notification"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
   }
 
@@ -19642,7 +23726,7 @@ export namespace Prisma {
     contractId?: StringFilter<"Payment"> | string
     userId?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
-    status?: StringFilter<"Payment"> | string
+    status?: EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
     paymentMethod?: StringNullableFilter<"Payment"> | string | null
     paymentReference?: StringNullableFilter<"Payment"> | string | null
     verificationCode?: StringNullableFilter<"Payment"> | string | null
@@ -19679,7 +23763,7 @@ export namespace Prisma {
     contractId?: StringFilter<"Payment"> | string
     userId?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
-    status?: StringFilter<"Payment"> | string
+    status?: EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
     paymentMethod?: StringNullableFilter<"Payment"> | string | null
     paymentReference?: StringNullableFilter<"Payment"> | string | null
     verificationCode?: StringNullableFilter<"Payment"> | string | null
@@ -19719,7 +23803,7 @@ export namespace Prisma {
     contractId?: StringWithAggregatesFilter<"Payment"> | string
     userId?: StringWithAggregatesFilter<"Payment"> | string
     amount?: IntWithAggregatesFilter<"Payment"> | number
-    status?: StringWithAggregatesFilter<"Payment"> | string
+    status?: EnumPaymentStatusWithAggregatesFilter<"Payment"> | $Enums.PaymentStatus
     paymentMethod?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     paymentReference?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     verificationCode?: StringNullableWithAggregatesFilter<"Payment"> | string | null
@@ -19727,6 +23811,86 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
     verifiedAt?: DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+  }
+
+  export type KycDocumentWhereInput = {
+    AND?: KycDocumentWhereInput | KycDocumentWhereInput[]
+    OR?: KycDocumentWhereInput[]
+    NOT?: KycDocumentWhereInput | KycDocumentWhereInput[]
+    id?: StringFilter<"KycDocument"> | string
+    userId?: StringFilter<"KycDocument"> | string
+    documentType?: EnumKycDocumentTypeFilter<"KycDocument"> | $Enums.KycDocumentType
+    documentUrl?: StringFilter<"KycDocument"> | string
+    status?: EnumKycDocumentStatusFilter<"KycDocument"> | $Enums.KycDocumentStatus
+    reviewedBy?: StringNullableFilter<"KycDocument"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"KycDocument"> | Date | string | null
+    rejectionReason?: StringNullableFilter<"KycDocument"> | string | null
+    createdAt?: DateTimeFilter<"KycDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"KycDocument"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type KycDocumentOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentType?: SortOrder
+    documentUrl?: SortOrder
+    status?: SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type KycDocumentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: KycDocumentWhereInput | KycDocumentWhereInput[]
+    OR?: KycDocumentWhereInput[]
+    NOT?: KycDocumentWhereInput | KycDocumentWhereInput[]
+    userId?: StringFilter<"KycDocument"> | string
+    documentType?: EnumKycDocumentTypeFilter<"KycDocument"> | $Enums.KycDocumentType
+    documentUrl?: StringFilter<"KycDocument"> | string
+    status?: EnumKycDocumentStatusFilter<"KycDocument"> | $Enums.KycDocumentStatus
+    reviewedBy?: StringNullableFilter<"KycDocument"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"KycDocument"> | Date | string | null
+    rejectionReason?: StringNullableFilter<"KycDocument"> | string | null
+    createdAt?: DateTimeFilter<"KycDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"KycDocument"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type KycDocumentOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentType?: SortOrder
+    documentUrl?: SortOrder
+    status?: SortOrder
+    reviewedBy?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: KycDocumentCountOrderByAggregateInput
+    _max?: KycDocumentMaxOrderByAggregateInput
+    _min?: KycDocumentMinOrderByAggregateInput
+  }
+
+  export type KycDocumentScalarWhereWithAggregatesInput = {
+    AND?: KycDocumentScalarWhereWithAggregatesInput | KycDocumentScalarWhereWithAggregatesInput[]
+    OR?: KycDocumentScalarWhereWithAggregatesInput[]
+    NOT?: KycDocumentScalarWhereWithAggregatesInput | KycDocumentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"KycDocument"> | string
+    userId?: StringWithAggregatesFilter<"KycDocument"> | string
+    documentType?: EnumKycDocumentTypeWithAggregatesFilter<"KycDocument"> | $Enums.KycDocumentType
+    documentUrl?: StringWithAggregatesFilter<"KycDocument"> | string
+    status?: EnumKycDocumentStatusWithAggregatesFilter<"KycDocument"> | $Enums.KycDocumentStatus
+    reviewedBy?: StringNullableWithAggregatesFilter<"KycDocument"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"KycDocument"> | Date | string | null
+    rejectionReason?: StringNullableWithAggregatesFilter<"KycDocument"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"KycDocument"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"KycDocument"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -19744,6 +23908,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -19774,6 +23939,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -19804,6 +23970,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -19834,6 +24001,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -20556,6 +24724,7 @@ export namespace Prisma {
     proposal: ProposalCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
   }
@@ -20582,6 +24751,7 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
   }
@@ -20608,6 +24778,7 @@ export namespace Prisma {
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
   }
@@ -20634,6 +24805,7 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
   }
@@ -20704,6 +24876,162 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationCreateInput = {
+    id: string
+    clientId: string
+    artisanId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract: ContractCreateNestedOneWithoutConversationInput
+    messages?: MessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateInput = {
+    id: string
+    contractId: string
+    clientId: string
+    artisanId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutConversationNestedInput
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationCreateManyInput = {
+    id: string
+    contractId: string
+    clientId: string
+    artisanId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConversationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ConversationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCreateInput = {
+    id: string
+    senderId: string
+    content?: string | null
+    type?: $Enums.MessageType
+    fileUrl?: string | null
+    fileType?: string | null
+    fileName?: string | null
+    fileSize?: number | null
+    createdAt?: Date | string
+    conversation: ConversationCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateInput = {
+    id: string
+    conversationId: string
+    senderId: string
+    content?: string | null
+    type?: $Enums.MessageType
+    fileUrl?: string | null
+    fileType?: string | null
+    fileName?: string | null
+    fileSize?: number | null
+    createdAt?: Date | string
+  }
+
+  export type MessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderId?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderId?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageCreateManyInput = {
+    id: string
+    conversationId: string
+    senderId: string
+    content?: string | null
+    type?: $Enums.MessageType
+    fileUrl?: string | null
+    fileType?: string | null
+    fileName?: string | null
+    fileSize?: number | null
+    createdAt?: Date | string
+  }
+
+  export type MessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderId?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    conversationId?: StringFieldUpdateOperationsInput | string
+    senderId?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WalletCreateInput = {
@@ -20846,6 +25174,7 @@ export namespace Prisma {
     id: string
     title: string
     message: string
+    read?: boolean
     createdAt: Date | string
     user: UserCreateNestedOneWithoutNotificationsInput
   }
@@ -20855,6 +25184,7 @@ export namespace Prisma {
     userId: string
     title: string
     message: string
+    read?: boolean
     createdAt: Date | string
   }
 
@@ -20862,6 +25192,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
   }
@@ -20871,6 +25202,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20879,6 +25211,7 @@ export namespace Prisma {
     userId: string
     title: string
     message: string
+    read?: boolean
     createdAt: Date | string
   }
 
@@ -20886,6 +25219,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20894,6 +25228,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20970,7 +25305,7 @@ export namespace Prisma {
   export type PaymentCreateInput = {
     id: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -20987,7 +25322,7 @@ export namespace Prisma {
     contractId: string
     userId: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -21000,7 +25335,7 @@ export namespace Prisma {
   export type PaymentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21017,7 +25352,7 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21032,7 +25367,7 @@ export namespace Prisma {
     contractId: string
     userId: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -21045,7 +25380,7 @@ export namespace Prisma {
   export type PaymentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21060,7 +25395,7 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21068,6 +25403,96 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type KycDocumentCreateInput = {
+    id: string
+    documentType: $Enums.KycDocumentType
+    documentUrl: string
+    status?: $Enums.KycDocumentStatus
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutKycDocumentsInput
+  }
+
+  export type KycDocumentUncheckedCreateInput = {
+    id: string
+    userId: string
+    documentType: $Enums.KycDocumentType
+    documentUrl: string
+    status?: $Enums.KycDocumentStatus
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KycDocumentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentType?: EnumKycDocumentTypeFieldUpdateOperationsInput | $Enums.KycDocumentType
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    status?: EnumKycDocumentStatusFieldUpdateOperationsInput | $Enums.KycDocumentStatus
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutKycDocumentsNestedInput
+  }
+
+  export type KycDocumentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    documentType?: EnumKycDocumentTypeFieldUpdateOperationsInput | $Enums.KycDocumentType
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    status?: EnumKycDocumentStatusFieldUpdateOperationsInput | $Enums.KycDocumentStatus
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KycDocumentCreateManyInput = {
+    id: string
+    userId: string
+    documentType: $Enums.KycDocumentType
+    documentUrl: string
+    status?: $Enums.KycDocumentStatus
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KycDocumentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentType?: EnumKycDocumentTypeFieldUpdateOperationsInput | $Enums.KycDocumentType
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    status?: EnumKycDocumentStatusFieldUpdateOperationsInput | $Enums.KycDocumentStatus
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KycDocumentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    documentType?: EnumKycDocumentTypeFieldUpdateOperationsInput | $Enums.KycDocumentType
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    status?: EnumKycDocumentStatusFieldUpdateOperationsInput | $Enums.KycDocumentStatus
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -21146,6 +25571,12 @@ export namespace Prisma {
     isNot?: ArtisanProfileWhereInput | null
   }
 
+  export type KycDocumentListRelationFilter = {
+    every?: KycDocumentWhereInput
+    some?: KycDocumentWhereInput
+    none?: KycDocumentWhereInput
+  }
+
   export type ProposalListRelationFilter = {
     every?: ProposalWhereInput
     some?: ProposalWhereInput
@@ -21202,6 +25633,10 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type KycDocumentOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ProposalOrderByRelationAggregateInput = {
@@ -22009,6 +26444,11 @@ export namespace Prisma {
     isNot?: ProposalWhereInput
   }
 
+  export type ConversationNullableScalarRelationFilter = {
+    is?: ConversationWhereInput | null
+    isNot?: ConversationWhereInput | null
+  }
+
   export type ReviewNullableScalarRelationFilter = {
     is?: ReviewWhereInput | null
     isNot?: ReviewWhereInput | null
@@ -22104,6 +26544,117 @@ export namespace Prisma {
     _max?: NestedEnumContractStatusFilter<$PrismaModel>
   }
 
+  export type ContractScalarRelationFilter = {
+    is?: ContractWhereInput
+    isNot?: ContractWhereInput
+  }
+
+  export type MessageListRelationFilter = {
+    every?: MessageWhereInput
+    some?: MessageWhereInput
+    none?: MessageWhereInput
+  }
+
+  export type MessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ConversationCountOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConversationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ConversationMinOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    clientId?: SortOrder
+    artisanId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumMessageTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMessageTypeFilter<$PrismaModel> | $Enums.MessageType
+  }
+
+  export type ConversationScalarRelationFilter = {
+    is?: ConversationWhereInput
+    isNot?: ConversationWhereInput
+  }
+
+  export type MessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    senderId?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    fileUrl?: SortOrder
+    fileType?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageAvgOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
+  export type MessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    senderId?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    fileUrl?: SortOrder
+    fileType?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    conversationId?: SortOrder
+    senderId?: SortOrder
+    content?: SortOrder
+    type?: SortOrder
+    fileUrl?: SortOrder
+    fileType?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageSumOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
+  export type EnumMessageTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMessageTypeWithAggregatesFilter<$PrismaModel> | $Enums.MessageType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMessageTypeFilter<$PrismaModel>
+    _max?: NestedEnumMessageTypeFilter<$PrismaModel>
+  }
+
   export type WalletCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -22144,11 +26695,6 @@ export namespace Prisma {
     balance?: SortOrder
     frozen?: SortOrder
     version?: SortOrder
-  }
-
-  export type ContractScalarRelationFilter = {
-    is?: ContractWhereInput
-    isNot?: ContractWhereInput
   }
 
   export type ReviewCountOrderByAggregateInput = {
@@ -22194,6 +26740,7 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    read?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22202,6 +26749,7 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    read?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22210,6 +26758,7 @@ export namespace Prisma {
     userId?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    read?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -22256,6 +26805,13 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
     _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
   }
 
   export type PaymentCountOrderByAggregateInput = {
@@ -22311,10 +26867,100 @@ export namespace Prisma {
     amount?: SortOrder
   }
 
+  export type EnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumKycDocumentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentType | EnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentTypeFilter<$PrismaModel> | $Enums.KycDocumentType
+  }
+
+  export type EnumKycDocumentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentStatus | EnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentStatusFilter<$PrismaModel> | $Enums.KycDocumentStatus
+  }
+
+  export type KycDocumentCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentType?: SortOrder
+    documentUrl?: SortOrder
+    status?: SortOrder
+    reviewedBy?: SortOrder
+    reviewedAt?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KycDocumentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentType?: SortOrder
+    documentUrl?: SortOrder
+    status?: SortOrder
+    reviewedBy?: SortOrder
+    reviewedAt?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KycDocumentMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    documentType?: SortOrder
+    documentUrl?: SortOrder
+    status?: SortOrder
+    reviewedBy?: SortOrder
+    reviewedAt?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumKycDocumentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentType | EnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentTypeWithAggregatesFilter<$PrismaModel> | $Enums.KycDocumentType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKycDocumentTypeFilter<$PrismaModel>
+    _max?: NestedEnumKycDocumentTypeFilter<$PrismaModel>
+  }
+
+  export type EnumKycDocumentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentStatus | EnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentStatusWithAggregatesFilter<$PrismaModel> | $Enums.KycDocumentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
+    _max?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
+  }
+
   export type ArtisanProfileCreateNestedOneWithoutUserInput = {
     create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
     connect?: ArtisanProfileWhereUniqueInput
+  }
+
+  export type KycDocumentCreateNestedManyWithoutUserInput = {
+    create?: XOR<KycDocumentCreateWithoutUserInput, KycDocumentUncheckedCreateWithoutUserInput> | KycDocumentCreateWithoutUserInput[] | KycDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: KycDocumentCreateOrConnectWithoutUserInput | KycDocumentCreateOrConnectWithoutUserInput[]
+    createMany?: KycDocumentCreateManyUserInputEnvelope
+    connect?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
   }
 
   export type ProposalCreateNestedManyWithoutArtisanInput = {
@@ -22411,6 +27057,13 @@ export namespace Prisma {
     create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
     connect?: ArtisanProfileWhereUniqueInput
+  }
+
+  export type KycDocumentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<KycDocumentCreateWithoutUserInput, KycDocumentUncheckedCreateWithoutUserInput> | KycDocumentCreateWithoutUserInput[] | KycDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: KycDocumentCreateOrConnectWithoutUserInput | KycDocumentCreateOrConnectWithoutUserInput[]
+    createMany?: KycDocumentCreateManyUserInputEnvelope
+    connect?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
   }
 
   export type ProposalUncheckedCreateNestedManyWithoutArtisanInput = {
@@ -22539,6 +27192,20 @@ export namespace Prisma {
     delete?: ArtisanProfileWhereInput | boolean
     connect?: ArtisanProfileWhereUniqueInput
     update?: XOR<XOR<ArtisanProfileUpdateToOneWithWhereWithoutUserInput, ArtisanProfileUpdateWithoutUserInput>, ArtisanProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type KycDocumentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<KycDocumentCreateWithoutUserInput, KycDocumentUncheckedCreateWithoutUserInput> | KycDocumentCreateWithoutUserInput[] | KycDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: KycDocumentCreateOrConnectWithoutUserInput | KycDocumentCreateOrConnectWithoutUserInput[]
+    upsert?: KycDocumentUpsertWithWhereUniqueWithoutUserInput | KycDocumentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: KycDocumentCreateManyUserInputEnvelope
+    set?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    disconnect?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    delete?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    connect?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    update?: KycDocumentUpdateWithWhereUniqueWithoutUserInput | KycDocumentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: KycDocumentUpdateManyWithWhereWithoutUserInput | KycDocumentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: KycDocumentScalarWhereInput | KycDocumentScalarWhereInput[]
   }
 
   export type ProposalUpdateManyWithoutArtisanNestedInput = {
@@ -22727,6 +27394,20 @@ export namespace Prisma {
     delete?: ArtisanProfileWhereInput | boolean
     connect?: ArtisanProfileWhereUniqueInput
     update?: XOR<XOR<ArtisanProfileUpdateToOneWithWhereWithoutUserInput, ArtisanProfileUpdateWithoutUserInput>, ArtisanProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type KycDocumentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<KycDocumentCreateWithoutUserInput, KycDocumentUncheckedCreateWithoutUserInput> | KycDocumentCreateWithoutUserInput[] | KycDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: KycDocumentCreateOrConnectWithoutUserInput | KycDocumentCreateOrConnectWithoutUserInput[]
+    upsert?: KycDocumentUpsertWithWhereUniqueWithoutUserInput | KycDocumentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: KycDocumentCreateManyUserInputEnvelope
+    set?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    disconnect?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    delete?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    connect?: KycDocumentWhereUniqueInput | KycDocumentWhereUniqueInput[]
+    update?: KycDocumentUpdateWithWhereUniqueWithoutUserInput | KycDocumentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: KycDocumentUpdateManyWithWhereWithoutUserInput | KycDocumentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: KycDocumentScalarWhereInput | KycDocumentScalarWhereInput[]
   }
 
   export type ProposalUncheckedUpdateManyWithoutArtisanNestedInput = {
@@ -23255,6 +27936,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type ConversationCreateNestedOneWithoutContractInput = {
+    create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
+    connect?: ConversationWhereUniqueInput
+  }
+
   export type ReviewCreateNestedOneWithoutContractInput = {
     create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
     connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
@@ -23266,6 +27953,12 @@ export namespace Prisma {
     connectOrCreate?: PaymentCreateOrConnectWithoutContractInput | PaymentCreateOrConnectWithoutContractInput[]
     createMany?: PaymentCreateManyContractInputEnvelope
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  }
+
+  export type ConversationUncheckedCreateNestedOneWithoutContractInput = {
+    create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
+    connect?: ConversationWhereUniqueInput
   }
 
   export type ReviewUncheckedCreateNestedOneWithoutContractInput = {
@@ -23317,6 +28010,16 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutArtisanContractsInput, UserUpdateWithoutArtisanContractsInput>, UserUncheckedUpdateWithoutArtisanContractsInput>
   }
 
+  export type ConversationUpdateOneWithoutContractNestedInput = {
+    create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
+    upsert?: ConversationUpsertWithoutContractInput
+    disconnect?: ConversationWhereInput | boolean
+    delete?: ConversationWhereInput | boolean
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutContractInput, ConversationUpdateWithoutContractInput>, ConversationUncheckedUpdateWithoutContractInput>
+  }
+
   export type ReviewUpdateOneWithoutContractNestedInput = {
     create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
     connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
@@ -23341,6 +28044,16 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
+  export type ConversationUncheckedUpdateOneWithoutContractNestedInput = {
+    create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
+    upsert?: ConversationUpsertWithoutContractInput
+    disconnect?: ConversationWhereInput | boolean
+    delete?: ConversationWhereInput | boolean
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutContractInput, ConversationUpdateWithoutContractInput>, ConversationUncheckedUpdateWithoutContractInput>
+  }
+
   export type ReviewUncheckedUpdateOneWithoutContractNestedInput = {
     create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
     connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
@@ -23363,6 +28076,80 @@ export namespace Prisma {
     update?: PaymentUpdateWithWhereUniqueWithoutContractInput | PaymentUpdateWithWhereUniqueWithoutContractInput[]
     updateMany?: PaymentUpdateManyWithWhereWithoutContractInput | PaymentUpdateManyWithWhereWithoutContractInput[]
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
+  }
+
+  export type ContractCreateNestedOneWithoutConversationInput = {
+    create?: XOR<ContractCreateWithoutConversationInput, ContractUncheckedCreateWithoutConversationInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutConversationInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type MessageCreateNestedManyWithoutConversationInput = {
+    create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
+    createMany?: MessageCreateManyConversationInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
+    createMany?: MessageCreateManyConversationInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type ContractUpdateOneRequiredWithoutConversationNestedInput = {
+    create?: XOR<ContractCreateWithoutConversationInput, ContractUncheckedCreateWithoutConversationInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutConversationInput
+    upsert?: ContractUpsertWithoutConversationInput
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutConversationInput, ContractUpdateWithoutConversationInput>, ContractUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type MessageUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutConversationInput | MessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: MessageCreateManyConversationInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutConversationInput | MessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutConversationInput | MessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type MessageUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutConversationInput | MessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: MessageCreateManyConversationInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutConversationInput | MessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutConversationInput | MessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type ConversationCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutMessagesInput
+    connect?: ConversationWhereUniqueInput
+  }
+
+  export type EnumMessageTypeFieldUpdateOperationsInput = {
+    set?: $Enums.MessageType
+  }
+
+  export type ConversationUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ConversationCreateOrConnectWithoutMessagesInput
+    upsert?: ConversationUpsertWithoutMessagesInput
+    connect?: ConversationWhereUniqueInput
+    update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutMessagesInput, ConversationUpdateWithoutMessagesInput>, ConversationUncheckedUpdateWithoutMessagesInput>
   }
 
   export type UserCreateNestedOneWithoutWalletInput = {
@@ -23451,6 +28238,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type EnumPaymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentStatus
+  }
+
   export type ContractUpdateOneRequiredWithoutPaymentsNestedInput = {
     create?: XOR<ContractCreateWithoutPaymentsInput, ContractUncheckedCreateWithoutPaymentsInput>
     connectOrCreate?: ContractCreateOrConnectWithoutPaymentsInput
@@ -23465,6 +28256,28 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutPaymentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPaymentsInput, UserUpdateWithoutPaymentsInput>, UserUncheckedUpdateWithoutPaymentsInput>
+  }
+
+  export type UserCreateNestedOneWithoutKycDocumentsInput = {
+    create?: XOR<UserCreateWithoutKycDocumentsInput, UserUncheckedCreateWithoutKycDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutKycDocumentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumKycDocumentTypeFieldUpdateOperationsInput = {
+    set?: $Enums.KycDocumentType
+  }
+
+  export type EnumKycDocumentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.KycDocumentStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutKycDocumentsNestedInput = {
+    create?: XOR<UserCreateWithoutKycDocumentsInput, UserUncheckedCreateWithoutKycDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutKycDocumentsInput
+    upsert?: UserUpsertWithoutKycDocumentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutKycDocumentsInput, UserUpdateWithoutKycDocumentsInput>, UserUncheckedUpdateWithoutKycDocumentsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -23883,6 +28696,23 @@ export namespace Prisma {
     _max?: NestedEnumContractStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumMessageTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMessageTypeFilter<$PrismaModel> | $Enums.MessageType
+  }
+
+  export type NestedEnumMessageTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumMessageTypeWithAggregatesFilter<$PrismaModel> | $Enums.MessageType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMessageTypeFilter<$PrismaModel>
+    _max?: NestedEnumMessageTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumAuditEntityTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
     in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
@@ -23898,6 +28728,57 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
     _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentStatus | EnumPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumKycDocumentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentType | EnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentTypeFilter<$PrismaModel> | $Enums.KycDocumentType
+  }
+
+  export type NestedEnumKycDocumentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentStatus | EnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentStatusFilter<$PrismaModel> | $Enums.KycDocumentStatus
+  }
+
+  export type NestedEnumKycDocumentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentType | EnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentType[] | ListEnumKycDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentTypeWithAggregatesFilter<$PrismaModel> | $Enums.KycDocumentType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKycDocumentTypeFilter<$PrismaModel>
+    _max?: NestedEnumKycDocumentTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumKycDocumentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycDocumentStatus | EnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycDocumentStatus[] | ListEnumKycDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycDocumentStatusWithAggregatesFilter<$PrismaModel> | $Enums.KycDocumentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
+    _max?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
   }
 
   export type ArtisanProfileCreateWithoutUserInput = {
@@ -23929,6 +28810,40 @@ export namespace Prisma {
   export type ArtisanProfileCreateOrConnectWithoutUserInput = {
     where: ArtisanProfileWhereUniqueInput
     create: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
+  }
+
+  export type KycDocumentCreateWithoutUserInput = {
+    id: string
+    documentType: $Enums.KycDocumentType
+    documentUrl: string
+    status?: $Enums.KycDocumentStatus
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KycDocumentUncheckedCreateWithoutUserInput = {
+    id: string
+    documentType: $Enums.KycDocumentType
+    documentUrl: string
+    status?: $Enums.KycDocumentStatus
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KycDocumentCreateOrConnectWithoutUserInput = {
+    where: KycDocumentWhereUniqueInput
+    create: XOR<KycDocumentCreateWithoutUserInput, KycDocumentUncheckedCreateWithoutUserInput>
+  }
+
+  export type KycDocumentCreateManyUserInputEnvelope = {
+    data: KycDocumentCreateManyUserInput | KycDocumentCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type ProposalCreateWithoutArtisanInput = {
@@ -24020,6 +28935,7 @@ export namespace Prisma {
     job: JobCreateNestedOneWithoutContractInput
     proposal: ProposalCreateNestedOneWithoutContractInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
   }
@@ -24045,6 +28961,7 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
   }
@@ -24080,6 +28997,7 @@ export namespace Prisma {
     job: JobCreateNestedOneWithoutContractInput
     proposal: ProposalCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
   }
@@ -24105,6 +29023,7 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
   }
@@ -24314,6 +29233,7 @@ export namespace Prisma {
     id: string
     title: string
     message: string
+    read?: boolean
     createdAt: Date | string
   }
 
@@ -24321,6 +29241,7 @@ export namespace Prisma {
     id: string
     title: string
     message: string
+    read?: boolean
     createdAt: Date | string
   }
 
@@ -24373,7 +29294,7 @@ export namespace Prisma {
   export type PaymentCreateWithoutUserInput = {
     id: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -24388,7 +29309,7 @@ export namespace Prisma {
     id: string
     contractId: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -24491,6 +29412,38 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KycDocumentUpsertWithWhereUniqueWithoutUserInput = {
+    where: KycDocumentWhereUniqueInput
+    update: XOR<KycDocumentUpdateWithoutUserInput, KycDocumentUncheckedUpdateWithoutUserInput>
+    create: XOR<KycDocumentCreateWithoutUserInput, KycDocumentUncheckedCreateWithoutUserInput>
+  }
+
+  export type KycDocumentUpdateWithWhereUniqueWithoutUserInput = {
+    where: KycDocumentWhereUniqueInput
+    data: XOR<KycDocumentUpdateWithoutUserInput, KycDocumentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type KycDocumentUpdateManyWithWhereWithoutUserInput = {
+    where: KycDocumentScalarWhereInput
+    data: XOR<KycDocumentUpdateManyMutationInput, KycDocumentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type KycDocumentScalarWhereInput = {
+    AND?: KycDocumentScalarWhereInput | KycDocumentScalarWhereInput[]
+    OR?: KycDocumentScalarWhereInput[]
+    NOT?: KycDocumentScalarWhereInput | KycDocumentScalarWhereInput[]
+    id?: StringFilter<"KycDocument"> | string
+    userId?: StringFilter<"KycDocument"> | string
+    documentType?: EnumKycDocumentTypeFilter<"KycDocument"> | $Enums.KycDocumentType
+    documentUrl?: StringFilter<"KycDocument"> | string
+    status?: EnumKycDocumentStatusFilter<"KycDocument"> | $Enums.KycDocumentStatus
+    reviewedBy?: StringNullableFilter<"KycDocument"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"KycDocument"> | Date | string | null
+    rejectionReason?: StringNullableFilter<"KycDocument"> | string | null
+    createdAt?: DateTimeFilter<"KycDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"KycDocument"> | Date | string
   }
 
   export type ProposalUpsertWithWhereUniqueWithoutArtisanInput = {
@@ -24754,6 +29707,7 @@ export namespace Prisma {
     userId?: StringFilter<"Notification"> | string
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    read?: BoolFilter<"Notification"> | boolean
     createdAt?: DateTimeFilter<"Notification"> | Date | string
   }
 
@@ -24814,7 +29768,7 @@ export namespace Prisma {
     contractId?: StringFilter<"Payment"> | string
     userId?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
-    status?: StringFilter<"Payment"> | string
+    status?: EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
     paymentMethod?: StringNullableFilter<"Payment"> | string | null
     paymentReference?: StringNullableFilter<"Payment"> | string | null
     verificationCode?: StringNullableFilter<"Payment"> | string | null
@@ -24903,6 +29857,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -24932,6 +29887,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -25005,6 +29961,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -25034,6 +29991,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -25155,6 +30113,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -25184,6 +30143,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -25218,6 +30178,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -25247,6 +30208,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -25287,6 +30249,7 @@ export namespace Prisma {
     proposal: ProposalCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
   }
@@ -25312,6 +30275,7 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
   }
@@ -25381,6 +30345,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -25410,6 +30375,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -25450,6 +30416,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -25479,6 +30446,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -25525,6 +30493,7 @@ export namespace Prisma {
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
   }
@@ -25550,6 +30519,7 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
   }
@@ -25585,6 +30555,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -25614,6 +30585,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -25659,6 +30631,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -25688,6 +30661,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -25716,6 +30690,7 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -25745,6 +30720,7 @@ export namespace Prisma {
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -25790,6 +30766,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -25819,6 +30796,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -25900,6 +30878,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
@@ -25929,6 +30908,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
@@ -25963,6 +30943,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
@@ -25992,6 +30973,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
@@ -26032,6 +31014,7 @@ export namespace Prisma {
     job: JobCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
   }
@@ -26057,6 +31040,7 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
   }
@@ -26149,6 +31133,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
@@ -26178,6 +31163,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
@@ -26218,6 +31204,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
@@ -26247,6 +31234,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
@@ -26293,6 +31281,7 @@ export namespace Prisma {
     job?: JobUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
   }
@@ -26318,6 +31307,7 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
   }
@@ -26417,6 +31407,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
@@ -26446,6 +31437,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
@@ -26480,6 +31472,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -26509,6 +31502,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -26526,6 +31520,29 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutArtisanContractsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutArtisanContractsInput, UserUncheckedCreateWithoutArtisanContractsInput>
+  }
+
+  export type ConversationCreateWithoutContractInput = {
+    id: string
+    clientId: string
+    artisanId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: MessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutContractInput = {
+    id: string
+    clientId: string
+    artisanId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type ConversationCreateOrConnectWithoutContractInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
   }
 
   export type ReviewCreateWithoutContractInput = {
@@ -26554,7 +31571,7 @@ export namespace Prisma {
   export type PaymentCreateWithoutContractInput = {
     id: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -26569,7 +31586,7 @@ export namespace Prisma {
     id: string
     userId: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -26707,6 +31724,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
@@ -26736,6 +31754,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
@@ -26776,6 +31795,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -26805,6 +31825,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -26817,6 +31838,35 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ConversationUpsertWithoutContractInput = {
+    update: XOR<ConversationUpdateWithoutContractInput, ConversationUncheckedUpdateWithoutContractInput>
+    create: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutContractInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutContractInput, ConversationUncheckedUpdateWithoutContractInput>
+  }
+
+  export type ConversationUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: MessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
   }
 
   export type ReviewUpsertWithoutContractInput = {
@@ -26864,6 +31914,244 @@ export namespace Prisma {
     data: XOR<PaymentUpdateManyMutationInput, PaymentUncheckedUpdateManyWithoutContractInput>
   }
 
+  export type ContractCreateWithoutConversationInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+    payments?: PaymentCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutConversationInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutConversationInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutConversationInput, ContractUncheckedCreateWithoutConversationInput>
+  }
+
+  export type MessageCreateWithoutConversationInput = {
+    id: string
+    senderId: string
+    content?: string | null
+    type?: $Enums.MessageType
+    fileUrl?: string | null
+    fileType?: string | null
+    fileName?: string | null
+    fileSize?: number | null
+    createdAt?: Date | string
+  }
+
+  export type MessageUncheckedCreateWithoutConversationInput = {
+    id: string
+    senderId: string
+    content?: string | null
+    type?: $Enums.MessageType
+    fileUrl?: string | null
+    fileType?: string | null
+    fileName?: string | null
+    fileSize?: number | null
+    createdAt?: Date | string
+  }
+
+  export type MessageCreateOrConnectWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type MessageCreateManyConversationInputEnvelope = {
+    data: MessageCreateManyConversationInput | MessageCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContractUpsertWithoutConversationInput = {
+    update: XOR<ContractUpdateWithoutConversationInput, ContractUncheckedUpdateWithoutConversationInput>
+    create: XOR<ContractCreateWithoutConversationInput, ContractUncheckedCreateWithoutConversationInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutConversationInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutConversationInput, ContractUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type ContractUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+    payments?: PaymentUpdateManyWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+  }
+
+  export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
+    create: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutConversationInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type MessageScalarWhereInput = {
+    AND?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    OR?: MessageScalarWhereInput[]
+    NOT?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    id?: StringFilter<"Message"> | string
+    conversationId?: StringFilter<"Message"> | string
+    senderId?: StringFilter<"Message"> | string
+    content?: StringNullableFilter<"Message"> | string | null
+    type?: EnumMessageTypeFilter<"Message"> | $Enums.MessageType
+    fileUrl?: StringNullableFilter<"Message"> | string | null
+    fileType?: StringNullableFilter<"Message"> | string | null
+    fileName?: StringNullableFilter<"Message"> | string | null
+    fileSize?: IntNullableFilter<"Message"> | number | null
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+  }
+
+  export type ConversationCreateWithoutMessagesInput = {
+    id: string
+    clientId: string
+    artisanId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract: ContractCreateNestedOneWithoutConversationInput
+  }
+
+  export type ConversationUncheckedCreateWithoutMessagesInput = {
+    id: string
+    contractId: string
+    clientId: string
+    artisanId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ConversationCreateOrConnectWithoutMessagesInput = {
+    where: ConversationWhereUniqueInput
+    create: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type ConversationUpsertWithoutMessagesInput = {
+    update: XOR<ConversationUpdateWithoutMessagesInput, ConversationUncheckedUpdateWithoutMessagesInput>
+    create: XOR<ConversationCreateWithoutMessagesInput, ConversationUncheckedCreateWithoutMessagesInput>
+    where?: ConversationWhereInput
+  }
+
+  export type ConversationUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: ConversationWhereInput
+    data: XOR<ConversationUpdateWithoutMessagesInput, ConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type ConversationUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutConversationNestedInput
+  }
+
+  export type ConversationUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateWithoutWalletInput = {
     id: string
     name: string
@@ -26879,6 +32167,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -26908,6 +32197,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -26953,6 +32243,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -26982,6 +32273,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -27018,6 +32310,7 @@ export namespace Prisma {
     proposal: ProposalCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
   }
 
@@ -27043,6 +32336,7 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
   }
 
@@ -27066,6 +32360,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -27095,6 +32390,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -27129,6 +32425,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -27158,6 +32455,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -27210,6 +32508,7 @@ export namespace Prisma {
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
   }
 
@@ -27235,6 +32534,7 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
   }
 
@@ -27264,6 +32564,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -27293,6 +32594,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -27333,6 +32635,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -27362,6 +32665,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -27391,6 +32695,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -27420,6 +32725,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -27465,6 +32771,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -27494,6 +32801,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -27530,6 +32838,7 @@ export namespace Prisma {
     proposal: ProposalCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
   }
 
@@ -27555,6 +32864,7 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
   }
 
@@ -27578,6 +32888,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
     sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalCreateNestedManyWithoutClientInput
     clientContracts?: ContractCreateNestedManyWithoutClientInput
@@ -27607,6 +32918,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
     artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
     sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
     receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
@@ -27659,6 +32971,7 @@ export namespace Prisma {
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
   }
 
@@ -27684,6 +32997,7 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
   }
 
@@ -27713,6 +33027,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
@@ -27742,6 +33057,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
     sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
     receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
@@ -27754,6 +33070,154 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutKycDocumentsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutKycDocumentsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutKycDocumentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutKycDocumentsInput, UserUncheckedCreateWithoutKycDocumentsInput>
+  }
+
+  export type UserUpsertWithoutKycDocumentsInput = {
+    update: XOR<UserUpdateWithoutKycDocumentsInput, UserUncheckedUpdateWithoutKycDocumentsInput>
+    create: XOR<UserCreateWithoutKycDocumentsInput, UserUncheckedCreateWithoutKycDocumentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutKycDocumentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutKycDocumentsInput, UserUncheckedUpdateWithoutKycDocumentsInput>
+  }
+
+  export type UserUpdateWithoutKycDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutKycDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type KycDocumentCreateManyUserInput = {
+    id: string
+    documentType: $Enums.KycDocumentType
+    documentUrl: string
+    status?: $Enums.KycDocumentStatus
+    reviewedBy?: string | null
+    reviewedAt?: Date | string | null
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ProposalCreateManyArtisanInput = {
@@ -27888,6 +33352,7 @@ export namespace Prisma {
     id: string
     title: string
     message: string
+    read?: boolean
     createdAt: Date | string
   }
 
@@ -27908,7 +33373,7 @@ export namespace Prisma {
     id: string
     contractId: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -27934,6 +33399,42 @@ export namespace Prisma {
     resolutionNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type KycDocumentUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentType?: EnumKycDocumentTypeFieldUpdateOperationsInput | $Enums.KycDocumentType
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    status?: EnumKycDocumentStatusFieldUpdateOperationsInput | $Enums.KycDocumentStatus
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KycDocumentUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentType?: EnumKycDocumentTypeFieldUpdateOperationsInput | $Enums.KycDocumentType
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    status?: EnumKycDocumentStatusFieldUpdateOperationsInput | $Enums.KycDocumentStatus
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KycDocumentUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentType?: EnumKycDocumentTypeFieldUpdateOperationsInput | $Enums.KycDocumentType
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    status?: EnumKycDocumentStatusFieldUpdateOperationsInput | $Enums.KycDocumentStatus
+    reviewedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProposalUpdateWithoutArtisanInput = {
@@ -28027,6 +33528,7 @@ export namespace Prisma {
     job?: JobUpdateOneRequiredWithoutContractNestedInput
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
   }
@@ -28052,6 +33554,7 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
   }
@@ -28100,6 +33603,7 @@ export namespace Prisma {
     job?: JobUpdateOneRequiredWithoutContractNestedInput
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
   }
@@ -28125,6 +33629,7 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
   }
@@ -28344,6 +33849,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28351,6 +33857,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28358,6 +33865,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -28403,7 +33911,7 @@ export namespace Prisma {
   export type PaymentUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28418,7 +33926,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28432,7 +33940,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28580,7 +34088,7 @@ export namespace Prisma {
     id: string
     userId: string
     amount: number
-    status?: string
+    status?: $Enums.PaymentStatus
     paymentMethod?: string | null
     paymentReference?: string | null
     verificationCode?: string | null
@@ -28593,7 +34101,7 @@ export namespace Prisma {
   export type PaymentUpdateWithoutContractInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28608,7 +34116,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28622,7 +34130,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28630,6 +34138,54 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MessageCreateManyConversationInput = {
+    id: string
+    senderId: string
+    content?: string | null
+    type?: $Enums.MessageType
+    fileUrl?: string | null
+    fileType?: string | null
+    fileName?: string | null
+    fileSize?: number | null
+    createdAt?: Date | string
+  }
+
+  export type MessageUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderId?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderId?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderId?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    fileType?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

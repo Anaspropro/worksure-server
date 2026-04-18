@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { randomUUID } from 'node:crypto';
 import { NotificationType, NotificationPriority } from './dto/notification.dto';
@@ -7,11 +11,7 @@ import { NotificationType, NotificationPriority } from './dto/notification.dto';
 export class NotificationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createNotification(
-    userId: string,
-    title: string,
-    message: string,
-  ) {
+  async createNotification(userId: string, title: string, message: string) {
     // Verify user exists
     const targetUser = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -38,9 +38,12 @@ export class NotificationsService {
   async updateNotification(
     notificationId: string,
     userId: string,
-    actionUrl?: string,
-    metadata?: Record<string, any>,
+    _actionUrl?: string,
+    _metadata?: Record<string, any>,
   ) {
+    void _actionUrl;
+    void _metadata;
+
     const notification = await this.prisma.notification.findUnique({
       where: { id: notificationId },
     });
@@ -51,7 +54,9 @@ export class NotificationsService {
 
     // Check if user is the notification owner
     if (notification.userId !== userId) {
-      throw new BadRequestException('You can only update your own notifications');
+      throw new BadRequestException(
+        'You can only update your own notifications',
+      );
     }
 
     // Current schema doesn't support updating fields, so just return the notification
@@ -67,7 +72,7 @@ export class NotificationsService {
     pagination?: {
       page?: number;
       limit?: number;
-    }
+    },
   ) {
     const where: any = { userId };
 
@@ -79,7 +84,9 @@ export class NotificationsService {
       }
     }
 
-    const skip = pagination?.page ? (pagination.page - 1) * (pagination.limit || 20) : 0;
+    const skip = pagination?.page
+      ? (pagination.page - 1) * (pagination.limit || 20)
+      : 0;
     const take = Math.min(pagination?.limit || 20, 100);
 
     const [notifications, total] = await Promise.all([
@@ -116,27 +123,38 @@ export class NotificationsService {
 
     // Check access if userId provided
     if (userId && notification.userId !== userId) {
-      throw new BadRequestException('Access denied: You can only view your own notifications');
+      throw new BadRequestException(
+        'Access denied: You can only view your own notifications',
+      );
     }
 
     return notification;
   }
 
   async markNotificationsAsRead(
-    userId: string,
+    _userId: string,
     notificationIds: string[],
-    isAdmin = false
+    _isAdmin = false,
   ) {
+    void _userId;
+    void _isAdmin;
+
     // Current schema doesn't support read status, so just return count
     return notificationIds.length;
   }
 
-  async markAllAsRead(userId: string) {
+  async markAllAsRead(_userId: string) {
+    void _userId;
+
     // Current schema doesn't support read status, so just return 0
     return 0;
   }
 
-  async deleteNotification(notificationId: string, userId: string, isAdmin = false) {
+  async deleteNotification(
+    notificationId: string,
+    userId: string,
+    isAdmin = false,
+  ) {
     const notification = await this.prisma.notification.findUnique({
       where: { id: notificationId },
     });
@@ -147,7 +165,9 @@ export class NotificationsService {
 
     // Check access
     if (!isAdmin && notification.userId !== userId) {
-      throw new BadRequestException('You can only delete your own notifications');
+      throw new BadRequestException(
+        'You can only delete your own notifications',
+      );
     }
 
     await this.prisma.notification.delete({
@@ -170,13 +190,13 @@ export class NotificationsService {
 
     // Count by type - not available in current schema
     const byType: Record<NotificationType, number> = {} as any;
-    Object.values(NotificationType).forEach(type => {
+    Object.values(NotificationType).forEach((type) => {
       byType[type] = 0;
     });
 
     // Count by priority - not available in current schema
     const byPriority: Record<NotificationPriority, number> = {} as any;
-    Object.values(NotificationPriority).forEach(priority => {
+    Object.values(NotificationPriority).forEach((priority) => {
       byPriority[priority] = 0;
     });
 
@@ -192,10 +212,14 @@ export class NotificationsService {
   // Helper methods for creating specific notification types
   async createProposalNotification(
     userId: string,
-    type: 'proposal_received' | 'proposal_accepted' | 'proposal_rejected' | 'proposal_withdrawn',
+    type:
+      | 'proposal_received'
+      | 'proposal_accepted'
+      | 'proposal_rejected'
+      | 'proposal_withdrawn',
     proposalId: string,
     jobTitle: string,
-    artisanName?: string
+    artisanName?: string,
   ) {
     const titles = {
       proposal_received: 'New Proposal Received',
@@ -211,18 +235,18 @@ export class NotificationsService {
       proposal_withdrawn: `A proposal for "${jobTitle}" has been withdrawn`,
     };
 
-    return this.createNotification(
-      userId,
-      titles[type],
-      messages[type]
-    );
+    return this.createNotification(userId, titles[type], messages[type]);
   }
 
   async createContractNotification(
     userId: string,
-    type: 'contract_created' | 'contract_funded' | 'contract_started' | 'contract_completed',
-    contractId: string,
-    jobTitle: string
+    type:
+      | 'contract_created'
+      | 'contract_funded'
+      | 'contract_started'
+      | 'contract_completed',
+    _contractId: string,
+    jobTitle: string,
   ) {
     const titles = {
       contract_created: 'Contract Created',
@@ -238,18 +262,14 @@ export class NotificationsService {
       contract_completed: `The contract for "${jobTitle}" has been completed`,
     };
 
-    return this.createNotification(
-      userId,
-      titles[type],
-      messages[type]
-    );
+    return this.createNotification(userId, titles[type], messages[type]);
   }
 
   async createDisputeNotification(
     userId: string,
     type: 'dispute_created' | 'dispute_resolved',
-    disputeId: string,
-    contractTitle: string
+    _disputeId: string,
+    contractTitle: string,
   ) {
     const titles = {
       dispute_created: 'Dispute Created',
@@ -261,23 +281,19 @@ export class NotificationsService {
       dispute_resolved: `The dispute for "${contractTitle}" has been resolved`,
     };
 
-    return this.createNotification(
-      userId,
-      titles[type],
-      messages[type]
-    );
+    return this.createNotification(userId, titles[type], messages[type]);
   }
 
   async createReviewNotification(
     userId: string,
-    reviewId: string,
+    _reviewId: string,
     jobTitle: string,
-    rating: number
+    rating: number,
   ) {
     return this.createNotification(
       userId,
       'New Review Received',
-      `You received a ${rating}-star review for "${jobTitle}"`
+      `You received a ${rating}-star review for "${jobTitle}"`,
     );
   }
 

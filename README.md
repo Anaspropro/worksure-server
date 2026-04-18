@@ -1,398 +1,111 @@
-# 🛠️ Backend Engineering Specification
-
-## Project: Escrow-Based Artisan Marketplace API
-
----
-
-## 1. 📌 Overview
+# WorkSure Server
 
-This backend system powers an escrow-based digital marketplace that connects **clients** with **artisans**.
+Escrow-based marketplace backend for connecting clients with artisans.
 
-The platform enables:
+## Status
 
-* Job posting and bidding
-* Agreement formation via contracts
-* Secure escrow-based payments
-* Controlled release of funds upon task completion
-* Platform fee deduction per transaction
+WorkSure has the core modules for the intended product, but it is still in an active hardening phase.
 
-The backend is responsible for:
+- Implemented: auth, users, artisan profiles, jobs, proposals, contracts, wallets, payments, reviews, disputes, notifications, and admin APIs
+- Implemented: Prisma schema, migrations, Swagger setup, Docker assets, and isolated-db e2e test support
+- Implemented: session-aware JWT validation, logout, account lockout, sanitization, and rate limiting on auth-sensitive routes
+- In progress: financial workflow consolidation, lifecycle enforcement, and broader end-to-end coverage
+- Not yet claimed: production readiness
 
-* Business logic enforcement
-* Payment and escrow integrity
-* Data persistence
-* Authentication and authorization
+## Product Goal
 
----
+WorkSure is meant to be a trust-first marketplace where:
 
-## 2. 🧠 Core System Concept
+1. Clients post jobs.
+2. Artisans submit proposals.
+3. Accepted proposals become contracts.
+4. Clients fund escrow before work starts.
+5. Both parties confirm completion.
+6. Funds are released safely, with refunds and dispute handling when needed.
 
-The system operates on a **trust-based escrow workflow**:
+The platform's value is not just job discovery. It is trust, escrow safety, and enforceable workflow rules.
 
-1. Client posts a job with a budget
-2. Artisans submit proposals
-3. Client selects an artisan
-4. A contract is created
-5. Client funds the contract (money held in escrow)
-6. Artisan completes the job
-7. Client confirms completion
-8. Artisan acknowledges completion
-9. System releases payment:
+## Current Backend Highlights
 
-   * Artisan receives payment minus platform fee
-   * Platform earns percentage fee
+- JWT authentication with role-based access
+- Session-aware token verification and logout support
+- Account lockout and security middleware
+- Wallet balances, frozen funds, and transaction ledger
+- Contract funding, activation, completion confirmation, release, and refund paths
+- Admin flows for moderation and dispute handling
 
----
+## Known Focus Areas
 
-## 3. 🏗️ Architecture Style
+The current work is focused on:
 
-* **Framework:** NestJS
-* **ORM:** Prisma
-* **Database:** PostgreSQL
-* **Architecture:** Modular Monolith
-* **Design Pattern:** Service-oriented modular structure
+- removing duplicate or conflicting payment/contract paths
+- tightening lifecycle checks around contract state transitions
+- enforcing artisan verification where the business rules require it
+- expanding tests around the full marketplace journey
+- keeping the docs aligned with actual tested behavior
 
-Each domain is implemented as an isolated module with its own service.
+## Tech Stack
 
-server/
-│
-├── src/
-│   ├── modules/
-|   |   ├── admin/
-│   │   ├── auth/
-│   │   ├── users/
-│   │   ├── artisan/
-│   │   ├── jobs/
-│   │   ├── proposals/
-│   │   ├── contracts/
-│   │   ├── wallet/
-│   │   ├── payments/
-│   │   ├── reviews/
-│   │   ├── disputes/
-│   │   ├── notifications/
-│   │
-│   ├── common/
-│   │   ├── guards/
-│   │   ├── decorators/
-│   │   ├── filters/
-│   │   ├── interceptors/
-│   │
-│   ├── prisma/  
-│   │
-│   ├── config/
-│   │
-│   └── main.ts
-│
-├── package.json
-└── README.md
+- NestJS
+- TypeScript
+- PostgreSQL
+- Prisma
+- Jest
+- Swagger / OpenAPI
+- Docker
 
----
+## Local Setup
 
-## 4. 📦 Core Modules
+Prerequisites:
 
-## 4.1 Auth Module
+- Node.js 18+
+- PostgreSQL 15+
 
-Handles authentication and authorization.
+Install:
 
-### Responsibilities
+```bash
+npm install
+```
 
-* User registration
-* Login
-* JWT token generation
-* Password hashing and validation
+Environment:
 
----
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/worksure_db"
+JWT_SECRET="your-super-secret-jwt-key"
+JWT_EXPIRES_IN="24h"
+PORT=3000
+NODE_ENV="development"
+ALLOWED_ORIGINS="http://localhost:3000"
+```
 
-## 4.2 Users Module
+Database:
 
-Manages base user data.
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
 
-### Responsibilities
+Run:
 
-* Create and retrieve users
-* Update profile
-* Role assignment (CLIENT, ARTISAN, ADMIN)
+```bash
+npm run start:dev
+```
 
----
+Swagger:
 
-## 4.3 Artisan Module
+- `http://localhost:3000/api`
+- `http://localhost:3000/api/openapi.json`
 
-Manages artisan-specific data.
+## Testing
 
-### Responsibilities
+```bash
+npm run test
+npm run test:e2e
+npm run test:cov
+```
 
-* Create artisan profiles
-* Store skills and bio
-* Manage verification status
+Tests use isolated databases so development data is not reused. Coverage is strongest around auth and targeted workflow enforcement; broader marketplace lifecycle coverage is still being expanded.
 
----
+## Deployment Note
 
-## 4.4 Jobs Module
-
-Handles job lifecycle.
-
-### Responsibilities
-
-* Create job postings
-* Update and delete jobs
-* Fetch jobs with filters
-* Manage job status
-
----
-
-## 4.5 Proposals Module
-
-Handles artisan applications to jobs.
-
-### Responsibilities
-
-* Submit proposal
-* Fetch proposals per job
-* Accept/reject proposal
-
-### Important
-
-Accepting a proposal must trigger contract creation.
-
----
-
-## 4.6 Contracts Module (Core Domain)
-
-### Responsibilities
-
-* Create contract between client and artisan
-* Store agreed price and job reference
-* Manage contract lifecycle:
-
-  * PENDING
-  * ACTIVE
-  * COMPLETED
-  * DISPUTED
-
-### Rules
-
-* A job can have only one active contract
-* Contract is required before any payment action
-
----
-
-## 4.7 Wallet Module
-
-### Responsibilities
-
-* Maintain user balances
-* Handle credits and debits
-* Provide transaction history
-
-### Rules
-
-* Wallet balance must never be modified directly
-* All changes must go through transactions
-
----
-
-## 4.8 Payments Module (Critical System)
-
-### Responsibilities
-
-* Handle wallet funding
-* Integrate payment gateway
-* Manage escrow logic
-* Release payments
-* Deduct platform fees
-
-### Payment Flow
-
-#### Funding
-
-* User initiates payment
-* Payment verified
-* Wallet credited
-
-#### Escrow
-
-* Funds moved from client wallet to escrow on contract activation
-
-#### Release
-
-* Triggered after dual confirmation
-* Platform fee deducted
-* Artisan wallet credited
-
----
-
-## 4.9 Transactions System
-
-Tracks all financial operations.
-
-### Types
-
-* FUND
-* ESCROW
-* RELEASE
-* WITHDRAW
-* FEE
-
-### Rules
-
-* Every balance change must create a transaction record
-* Transactions must be immutable
-
----
-
-## 4.10 Reviews Module
-
-### Responsibilities
-
-* Create reviews after job completion
-* Store ratings and feedback
-
----
-
-## 4.11 Disputes Module
-
-### Responsibilities
-
-* Handle conflict cases
-* Store dispute details
-* Allow admin resolution
-
----
-
-## 4.12 Notifications Module (Optional Initial Scope)
-
-### Responsibilities
-
-* Emit system events
-* Notify users of important actions
-
----
-
-# 5. 🔄 Core Workflows
-
----
-
-## 5.1 Job → Proposal → Contract Flow
-
-1. Client creates job
-2. Artisan submits proposal
-3. Client accepts proposal
-4. System creates contract
-5. Contract status becomes ACTIVE
-
----
-
-## 5.2 Escrow Flow
-
-1. Client funds wallet
-2. Client activates contract
-3. Backend:
-
-   * Debits client wallet
-   * Creates ESCROW transaction
-
----
-
-## 5.3 Completion Flow
-
-1. Client marks job as completed
-2. Artisan confirms completion
-
----
-
-## 5.4 Payment Release Flow
-
-Backend must:
-
-1. Validate both confirmations
-2. Calculate platform fee
-3. Execute transaction:
-
-   * Credit artisan wallet
-   * Credit platform wallet
-4. Mark contract as COMPLETED
-
----
-
-## 5.5 Dispute Flow
-
-1. User raises dispute
-2. Admin reviews evidence
-3. Admin decides outcome:
-
-   * Refund client OR
-   * Pay artisan
-
----
-
-# 6. 🧾 Data Integrity Rules
-
-* All financial operations must use **database transactions**
-* No direct wallet updates without transaction logs
-* Contract must exist before escrow
-* Escrow must exist before release
-* Release must happen only once per contract
-
----
-
-# 7. 🔐 Security Requirements
-
-* JWT-based authentication
-* Role-based authorization
-* Password hashing (bcrypt)
-* Input validation using DTOs
-* Secure payment verification
-
----
-
-# 8. ⚙️ Technical Constraints
-
-* Use Prisma for all database operations
-* Use transactions for financial logic
-* Keep services modular and loosely coupled
-* Avoid circular dependencies between modules
-
----
-
-# 9. 🧪 Testing Expectations
-
-* Unit tests for services
-* Integration tests for payment workflows
-* Edge cases:
-
-  * Double payment prevention
-  * Unauthorized access
-  * Invalid contract state transitions
-
----
-
-# 10. 🚀 Future Scalability
-
-The system should be designed to allow future extraction into microservices:
-
-Potential services:
-
-* Auth Service
-* Payment Service
-* Job Service
-* Notification Service
-
----
-
-# 11. 📌 Key Engineering Principles
-
-* Single source of truth for financial data
-* Strong consistency over eventual consistency (especially for payments)
-* Explicit state transitions (no hidden logic)
-* Clear separation of concerns across modules
-
----
-
-# ✅ End Goal
-
-The backend should function as a **secure, scalable, and reliable transaction system** that ensures:
-
-* Trust between users
-* Safe handling of money
-* Clear and enforceable workflows
-* Extensibility for future features
+Docker and production-oriented configuration files exist, but the project should still go through additional workflow verification before being treated as production-ready.

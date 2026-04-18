@@ -1,4 +1,13 @@
-import { IsString, IsOptional, IsNumber, IsEnum, IsDateString, Min, Max, ArrayNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsDateString,
+  Min,
+  Max,
+  ArrayNotEmpty,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateReviewDto {
@@ -234,7 +243,9 @@ export class ReviewListQueryDto {
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Items per page (default: 10, max: 100)' })
+  @ApiPropertyOptional({
+    description: 'Items per page (default: 10, max: 100)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(1)

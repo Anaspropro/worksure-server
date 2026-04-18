@@ -11,4 +11,4 @@ async function bootstrap() {
 
   await app.listen(appConfigService.port);
 }
-bootstrap();
+void bootstrap();

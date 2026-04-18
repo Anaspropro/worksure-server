@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { randomUUID } from 'node:crypto';
 import { ContractStatus } from '../../generated/prisma';
@@ -12,13 +16,20 @@ export class ReviewsService {
     contractId: string,
     rating: number,
     comment: string,
-    categories?: string[],
-    workQuality?: number,
-    communication?: number,
-    timeliness?: number,
-    professionalism?: number,
-    evidence?: string[],
+    _categories?: string[],
+    _workQuality?: number,
+    _communication?: number,
+    _timeliness?: number,
+    _professionalism?: number,
+    _evidence?: string[],
   ) {
+    void _categories;
+    void _workQuality;
+    void _communication;
+    void _timeliness;
+    void _professionalism;
+    void _evidence;
+
     const contract = await this.prisma.contract.findUnique({
       where: { id: contractId },
     });
@@ -70,13 +81,20 @@ export class ReviewsService {
     userId: string,
     rating?: number,
     comment?: string,
-    categories?: string[],
-    workQuality?: number,
-    communication?: number,
-    timeliness?: number,
-    professionalism?: number,
-    evidence?: string[],
+    _categories?: string[],
+    _workQuality?: number,
+    _communication?: number,
+    _timeliness?: number,
+    _professionalism?: number,
+    _evidence?: string[],
   ) {
+    void _categories;
+    void _workQuality;
+    void _communication;
+    void _timeliness;
+    void _professionalism;
+    void _evidence;
+
     const review = await this.prisma.review.findUnique({
       where: { id: reviewId },
     });
@@ -138,7 +156,9 @@ export class ReviewsService {
     });
   }
 
-  async getReviewById(reviewId: string, userId?: string) {
+  async getReviewById(reviewId: string, _userId?: string) {
+    void _userId;
+
     const review = await this.prisma.review.findUnique({
       where: { id: reviewId },
       include: {
@@ -185,16 +205,17 @@ export class ReviewsService {
     });
 
     const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0 
-      ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews 
-      : 0;
+    const averageRating =
+      totalReviews > 0
+        ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+        : 0;
 
     const ratingDistribution = {
-      1: reviews.filter(r => r.rating === 1).length,
-      2: reviews.filter(r => r.rating === 2).length,
-      3: reviews.filter(r => r.rating === 3).length,
-      4: reviews.filter(r => r.rating === 4).length,
-      5: reviews.filter(r => r.rating === 5).length,
+      1: reviews.filter((r) => r.rating === 1).length,
+      2: reviews.filter((r) => r.rating === 2).length,
+      3: reviews.filter((r) => r.rating === 3).length,
+      4: reviews.filter((r) => r.rating === 4).length,
+      5: reviews.filter((r) => r.rating === 5).length,
     };
 
     // Category averages are not available in the current schema

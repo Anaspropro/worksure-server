@@ -1,4 +1,12 @@
-import { IsString, IsOptional, IsEnum, IsDateString, Min, Max, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsDateString,
+  Min,
+  Max,
+  IsNumber,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum NotificationType {
@@ -180,7 +188,9 @@ export class NotificationListQueryDto {
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Items per page (default: 20, max: 100)' })
+  @ApiPropertyOptional({
+    description: 'Items per page (default: 20, max: 100)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(1)

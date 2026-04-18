@@ -1,8 +1,15 @@
-import { IsString, IsOptional, IsNumber, IsEnum, IsDateString, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsDateString,
+  Min,
+  Max,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ContractStatus } from '../../../generated/prisma';
 
-export class FundContractDto {
+export class PaymentFundContractDto {
   @ApiProperty({ description: 'Contract ID to fund' })
   @IsString()
   contractId: string;
@@ -21,6 +28,32 @@ export class FundContractDto {
   @IsOptional()
   @IsString()
   paymentReference?: string;
+}
+
+export class PaystackInitDto {
+  @ApiProperty({
+    description: 'Amount in base currency units (e.g. 1000 for NGN)',
+  })
+  @IsNumber()
+  @Min(1)
+  amount: number;
+
+  @ApiProperty({ description: 'Payer email for Paystack' })
+  @IsString()
+  email: string;
+
+  @ApiPropertyOptional({
+    description: 'Callback URL for Paystack to return to',
+  })
+  @IsOptional()
+  @IsString()
+  callbackUrl?: string;
+}
+
+export class PaystackVerifyDto {
+  @ApiProperty({ description: 'Paystack transaction reference to verify' })
+  @IsString()
+  reference: string;
 }
 
 export class VerifyPaymentDto {
@@ -60,7 +93,7 @@ export class CompleteContractDto {
   evidence?: string[];
 }
 
-export class ConfirmCompletionDto {
+export class PaymentConfirmCompletionDto {
   @ApiProperty({ description: 'Contract ID' })
   @IsString()
   contractId: string;
@@ -126,8 +159,8 @@ export class PaymentListQueryDto {
 
   @ApiPropertyOptional({ description: 'Filter by verification status' })
   @IsOptional()
-  @IsEnum(['verified', 'pending', 'failed'])
-  verificationStatus?: 'verified' | 'pending' | 'failed';
+  @IsEnum(['verified', 'PENDING', 'FAILED'])
+  verificationStatus?: 'verified' | 'PENDING' | 'FAILED';
 
   @ApiPropertyOptional({ description: 'Filter by date from' })
   @IsOptional()
@@ -145,7 +178,9 @@ export class PaymentListQueryDto {
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Items per page (default: 10, max: 100)' })
+  @ApiPropertyOptional({
+    description: 'Items per page (default: 10, max: 100)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(1)

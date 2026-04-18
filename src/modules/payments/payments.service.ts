@@ -1,11 +1,152 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { WalletService } from '../wallet/wallet.service';
+import { ContractsService } from '../contracts/contracts.service';
 import { randomUUID } from 'node:crypto';
-import { TransactionType } from '../../generated/prisma';
 
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => WalletService))
+    private readonly walletService: WalletService,
+    @Inject(forwardRef(() => ContractsService))
+    private readonly contractsService: ContractsService,
+  ) {}
+
+  private async ensureVerifiedArtisan(artisanId: string) {
+    const artisan = await this.prisma.user.findUnique({
+      where: { id: artisanId },
+      select: {
+        artisanVerified: true,
+      },
+    });
+
+    if (!artisan?.artisanVerified) {
+      throw new BadRequestException(
+        'Artisan verification is required before releasing payment.',
+      );
+    }
+  }
+
+  private getPaystackSecretKey(): string {
+    const key = process.env.PAYSTACK_SECRET_KEY;
+    if (!key) {
+      throw new Error(
+        'PAYSTACK_SECRET_KEY is required in environment variables',
+      );
+    }
+    return key;
+  }
+
+  private getPaystackHeaders() {
+    return {
+      Authorization: `Bearer ${this.getPaystackSecretKey()}`,
+      'Content-Type': 'application/json',
+    };
+  }
+
+  async initPaystackPayment(
+    userId: string,
+    amount: number,
+    email: string,
+    callbackUrl?: string,
+  ) {
+    if (amount <= 0) {
+      throw new BadRequestException('Amount must be greater than 0');
+    }
+
+    const payload = {
+      amount: Math.round(amount * 100),
+      email,
+      callback_url: callbackUrl || `${process.env.APP_URL}/wallet`,
+      metadata: {
+        userId,
+        gateway: 'paystack',
+      },
+    };
+
+    const response = await fetch(
+      'https://api.paystack.co/transaction/initialize',
+      {
+        method: 'POST',
+        headers: this.getPaystackHeaders(),
+        body: JSON.stringify(payload),
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status) {
+      throw new BadRequestException(
+        data.message || 'Failed to initialize Paystack payment',
+      );
+    }
+
+    return {
+      authorizationUrl: data.data.authorization_url,
+      accessCode: data.data.access_code,
+      reference: data.data.reference,
+    };
+  }
+
+  async verifyPaystackPayment(userId: string, reference: string) {
+    if (!reference) {
+      throw new BadRequestException(
+        'Reference is required for Paystack verification',
+      );
+    }
+
+    const existingTransaction = await this.prisma.transaction.findFirst({
+      where: { reference },
+    });
+
+    if (existingTransaction?.status === 'COMPLETED') {
+      return {
+        message: 'Payment already processed',
+        reference,
+        amount: existingTransaction.amount,
+      };
+    }
+
+    const response = await fetch(
+      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+      {
+        method: 'GET',
+        headers: this.getPaystackHeaders(),
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status || data.data.status !== 'success') {
+      throw new BadRequestException(
+        data.message || 'Paystack transaction verification failed',
+      );
+    }
+
+    const resolvedUserId =
+      (data.data.metadata?.userId as string | undefined) ?? userId;
+    const amount = Math.round(data.data.amount / 100);
+
+    await this.walletService.addFunds(resolvedUserId, amount, reference, {
+      gateway: 'paystack',
+      paystackStatus: data.data.status,
+      paystackResponse: data.data,
+    });
+
+    return {
+      message: 'Paystack payment verified and wallet funded',
+      reference,
+      amount,
+    };
+  }
 
   async fundContract(
     userId: string,
@@ -23,8 +164,27 @@ export class PaymentsService {
     }
 
     if (contract.status !== 'DRAFT') {
-      throw new BadRequestException('Contract must be in DRAFT status to be funded');
+      throw new BadRequestException(
+        'Contract must be in DRAFT status to be funded',
+      );
     }
+
+    if (contract.clientId !== userId) {
+      throw new BadRequestException('Only the client can fund the contract');
+    }
+
+    // Use wallet service to handle the funding with proper transaction management
+    const result = await this.walletService.freezeFunds(
+      userId,
+      amount,
+      `contract_funding_${contractId}`,
+      {
+        action: 'contract_funding',
+        contractId,
+        paymentMethod,
+        paymentReference,
+      },
+    );
 
     // Create payment record
     const payment = await this.prisma.payment.create({
@@ -33,16 +193,28 @@ export class PaymentsService {
         contractId,
         userId,
         amount,
-        status: 'pending',
+        status: 'COMPLETED',
         paymentMethod: paymentMethod || null,
         paymentReference: paymentReference || null,
-        verificationCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
-        isVerified: false,
+        verificationCode: Math.random()
+          .toString(36)
+          .substring(2, 8)
+          .toUpperCase(),
+        isVerified: true,
         createdAt: new Date(),
+        verifiedAt: new Date(),
+        completedAt: new Date(),
       },
     });
 
-    return payment;
+    // Update contract status using contracts service
+    await this.contractsService.fundContract(contractId, userId, amount);
+
+    return {
+      payment,
+      walletTransaction: result.transaction,
+      message: 'Contract funded successfully',
+    };
   }
 
   async verifyPayment(paymentId: string, verificationCode: string) {
@@ -65,68 +237,40 @@ export class PaymentsService {
       throw new BadRequestException('Invalid verification code');
     }
 
-    // Verify payment and update contract
-    const updatedPayment = await this.prisma.$transaction(async (tx) => {
-      // Update payment
-      const updated = await tx.payment.update({
-        where: { id: paymentId },
-        data: {
-          status: 'completed',
-          isVerified: true,
-          verifiedAt: new Date(),
-        },
-      });
-
-      // Update contract status to ACTIVE
-      await tx.contract.update({
-        where: { id: payment.contractId },
-        data: {
-          status: 'ACTIVE',
-          fundedAt: new Date(),
-        },
-      });
-
-      return updated;
+    // Update payment status
+    const updatedPayment = await this.prisma.payment.update({
+      where: { id: paymentId },
+      data: {
+        status: 'COMPLETED',
+        isVerified: true,
+        verifiedAt: new Date(),
+        completedAt: new Date(),
+      },
     });
 
     return updatedPayment;
   }
 
-  async activateContract(contractId: string) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    if (contract.status !== 'ACTIVE') {
-      throw new BadRequestException('Contract must be ACTIVE to be activated');
-    }
-
-    if (contract.startedAt) {
-      throw new BadRequestException('Contract is already started');
-    }
-
-    // Activate contract
-    const updatedContract = await this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        status: 'ACTIVE',
-        startedAt: new Date(),
-      },
-    });
-
-    return updatedContract;
+  async activateContract(contractId: string, userId: string) {
+    return await this.contractsService.activateContract(contractId, userId);
   }
 
   async completeContract(
     contractId: string,
     userId: string,
     isClient: boolean,
-    notes?: string,
+    _notes?: string,
   ) {
+    void _notes;
+
+    return await this.contractsService.confirmCompletion(
+      contractId,
+      userId,
+      isClient,
+    );
+  }
+
+  async releaseEscrow(contractId: string, userId: string) {
     const contract = await this.prisma.contract.findUnique({
       where: { id: contractId },
     });
@@ -135,78 +279,78 @@ export class PaymentsService {
       throw new NotFoundException('Contract not found');
     }
 
-    if (contract.status !== 'ACTIVE') {
-      throw new BadRequestException('Contract must be ACTIVE to be completed');
+    if (contract.clientId !== userId) {
+      throw new BadRequestException('Only the client can release escrow');
     }
 
-    // Update completion status
-    const updateData: any = {
-      [isClient ? 'clientConfirmedCompletion' : 'artisanConfirmedCompletion']: true,
-      [isClient ? 'clientConfirmedAt' : 'artisanConfirmedAt']: new Date(),
-    };
+    await this.ensureVerifiedArtisan(contract.artisanId);
 
-    const updatedContract = await this.prisma.contract.update({
-      where: { id: contractId },
-      data: updateData,
-    });
+    // Use contracts service to handle escrow release
+    const result = await this.contractsService.releaseEscrow(
+      contractId,
+      userId,
+    );
 
-    // Check if both parties have confirmed
-    if (updatedContract.clientConfirmedCompletion && updatedContract.artisanConfirmedCompletion) {
-      await this.finalizeContractCompletion(contractId);
+    // Settle escrow from client to artisan
+    await this.walletService.releaseEscrowToUser(
+      contract.clientId,
+      contract.artisanId,
+      contract.amount,
+      `escrow_release_${contractId}`,
+      {
+        action: 'escrow_release',
+        contractId,
+      },
+    );
+
+    const platformFee = Math.floor(contract.amount * 0.05);
+    if (platformFee > 0) {
+      await this.walletService.chargePlatformFee(
+        contract.clientId,
+        platformFee,
+        `platform_fee_${contractId}`,
+        {
+          action: 'platform_fee',
+          contractId,
+        },
+      );
     }
 
-    return updatedContract;
+    return result;
   }
 
-  private async finalizeContractCompletion(contractId: string) {
-    await this.prisma.$transaction(async (tx) => {
-      // Update contract status to COMPLETED
-      await tx.contract.update({
-        where: { id: contractId },
-        data: {
-          status: 'COMPLETED',
-          completedAt: new Date(),
-        },
-      });
-
-      // Get contract details for payment processing
-      const contract = await tx.contract.findUnique({
-        where: { id: contractId },
-      });
-
-      if (contract) {
-        // Create escrow release transaction for artisan
-        await tx.transaction.create({
-          data: {
-            id: randomUUID(),
-            userId: contract.artisanId,
-            type: TransactionType.ESCROW_RELEASE,
-            amount: contract.amount,
-            status: 'COMPLETED',
-            reference: contractId,
-            metadata: { action: 'contract_completion', contractId },
-            createdAt: new Date(),
-            completedAt: new Date(),
-          },
-        });
-
-        // Deduct platform fee from client's wallet
-        const platformFee = Math.floor(contract.amount * 0.05); // 5% platform fee
-        await tx.transaction.create({
-          data: {
-            id: randomUUID(),
-            userId: contract.clientId,
-            type: TransactionType.PLATFORM_FEE,
-            amount: platformFee,
-            status: 'COMPLETED',
-            reference: contractId,
-            metadata: { action: 'platform_fee', contractId },
-            createdAt: new Date(),
-            completedAt: new Date(),
-          },
-        });
-      }
+  async refundContract(contractId: string, userId: string, reason?: string) {
+    const contract = await this.prisma.contract.findUnique({
+      where: { id: contractId },
     });
+
+    if (!contract) {
+      throw new NotFoundException('Contract not found');
+    }
+
+    if (contract.clientId !== userId) {
+      throw new BadRequestException('Only the client can request a refund');
+    }
+
+    // Use contracts service to handle refund
+    const result = await this.contractsService.refundContract(
+      contractId,
+      userId,
+    );
+
+    // Release frozen funds back to client
+    await this.walletService.unfreezeFunds(
+      contract.clientId,
+      contract.amount,
+      `contract_refund_${contractId}`,
+      {
+        action: 'contract_refund',
+        contractId,
+        reason,
+      },
+    );
+
+    return result;
   }
 
   getDefinition() {

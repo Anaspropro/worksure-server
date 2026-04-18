@@ -23,7 +23,6 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserRole } from '../../common/constants/roles.constants';
@@ -51,9 +50,11 @@ export class ReviewsController {
     const isClient = user.id === clientId;
     const isArtisan = user.id === artisanId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isClient && !isArtisan && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage reviews you participate in');
+      throw new ForbiddenException(
+        'Access denied: You can only manage reviews you participate in',
+      );
     }
   }
 
@@ -61,8 +62,12 @@ export class ReviewsController {
   @ApiOperation({ summary: 'Create a new review' })
   @ApiOkResponse({ description: 'Review created successfully.' })
   @ApiNotFoundResponse({ description: 'Contract not found.' })
-  @ApiForbiddenResponse({ description: 'Access denied or not eligible to review.' })
-  @ApiBadRequestResponse({ description: 'Invalid review data or contract not completed.' })
+  @ApiForbiddenResponse({
+    description: 'Access denied or not eligible to review.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid review data or contract not completed.',
+  })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   async createReview(
@@ -157,20 +162,22 @@ export class ReviewsController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Query() query: ReviewListQueryDto,
   ) {
-    const { 
-      page = 1, 
-      limit = 10, 
-      contractId, 
-      clientId, 
-      artisanId, 
-      minRating, 
-      maxRating, 
-      categories, 
-      dateFrom, 
-      dateTo, 
-      isPublic 
+    const {
+      page = 1,
+      limit = 10,
+      contractId,
+      clientId,
+      artisanId,
+      minRating,
+      maxRating,
+      categories: _categories,
+      dateFrom,
+      dateTo,
+      isPublic: _isPublic,
     } = query;
-    
+    void _categories;
+    void _isPublic;
+
     const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
 
@@ -231,7 +238,9 @@ export class ReviewsController {
     ]);
 
     return {
-      reviews: reviews.map(review => this.formatReviewResponse(review, review.contract)),
+      reviews: reviews.map((review) =>
+        this.formatReviewResponse(review, review.contract),
+      ),
       pagination: {
         page,
         limit,
@@ -249,7 +258,9 @@ export class ReviewsController {
   @ApiForbiddenResponse({ description: 'Authentication required.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('me')
-  async getMyReviews(@CurrentUser() user: { id: string; role: $Enums.UserRole }) {
+  async getMyReviews(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+  ) {
     const reviews = await this.prisma.review.findMany({
       where: {
         clientId: user.id,
@@ -282,7 +293,9 @@ export class ReviewsController {
       orderBy: { createdAt: 'desc' },
     });
 
-    return reviews.map(review => this.formatReviewResponse(review, review.contract));
+    return reviews.map((review) =>
+      this.formatReviewResponse(review, review.contract),
+    );
   }
 
   @ApiBearerAuth('bearer')
@@ -369,7 +382,9 @@ export class ReviewsController {
 
     // Check if user is the review owner or admin
     if (user.role !== UserRole.ADMIN && review.clientId !== user.id) {
-      throw new ForbiddenException('Access denied: You can only update your own reviews');
+      throw new ForbiddenException(
+        'Access denied: You can only update your own reviews',
+      );
     }
 
     const updateData: any = {
@@ -428,16 +443,17 @@ export class ReviewsController {
     });
 
     const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0 
-      ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews 
-      : 0;
+    const averageRating =
+      totalReviews > 0
+        ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+        : 0;
 
     const ratingDistribution = {
-      1: reviews.filter(r => r.rating === 1).length,
-      2: reviews.filter(r => r.rating === 2).length,
-      3: reviews.filter(r => r.rating === 3).length,
-      4: reviews.filter(r => r.rating === 4).length,
-      5: reviews.filter(r => r.rating === 5).length,
+      1: reviews.filter((r) => r.rating === 1).length,
+      2: reviews.filter((r) => r.rating === 2).length,
+      3: reviews.filter((r) => r.rating === 3).length,
+      4: reviews.filter((r) => r.rating === 4).length,
+      5: reviews.filter((r) => r.rating === 5).length,
     };
 
     // Category averages are not available in the current schema
@@ -473,12 +489,14 @@ export class ReviewsController {
       isPublic: true, // All reviews are public in current schema
       createdAt: review.createdAt.toISOString(),
       updatedAt: review.updatedAt?.toISOString() || undefined,
-      contract: contract ? {
-        id: contract.id,
-        amount: contract.amount,
-        status: contract.status,
-        jobTitle: contract.job?.title || '',
-      } : undefined,
+      contract: contract
+        ? {
+            id: contract.id,
+            amount: contract.amount,
+            status: contract.status,
+            jobTitle: contract.job?.title || '',
+          }
+        : undefined,
       client: review.client,
       artisan: review.artisan,
     };

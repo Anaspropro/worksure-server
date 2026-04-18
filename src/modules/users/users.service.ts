@@ -96,19 +96,23 @@ export class UsersService {
       passwordResetRequestedAt: Date | null;
     },
   >(user: T) {
-    const { passwordHash, ...safeUser } = user;
     const {
+      passwordHash,
       passwordResetTokenHash,
       passwordResetTokenExpiresAt,
       passwordResetRequestedAt,
-      ...rest
-    } = safeUser;
+      ...safeUser
+    } = user;
+    void passwordHash;
+    void passwordResetTokenHash;
+    void passwordResetTokenExpiresAt;
+    void passwordResetRequestedAt;
 
     return {
-      ...rest,
-      createdAt: rest.createdAt.toISOString(),
-      updatedAt: rest.updatedAt.toISOString(),
-      lastLoginAt: rest.lastLoginAt?.toISOString() ?? null,
+      ...safeUser,
+      createdAt: safeUser.createdAt.toISOString(),
+      updatedAt: safeUser.updatedAt.toISOString(),
+      lastLoginAt: safeUser.lastLoginAt?.toISOString() ?? null,
     };
   }
 }

@@ -2,11 +2,10 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
-  Param,
   Body,
   Query,
   UseGuards,
+  Req,
   NotFoundException,
   ForbiddenException,
   BadRequestException,
@@ -20,42 +19,42 @@ import {
   ApiOperation,
   ApiTags,
   ApiQuery,
-  ApiParam,
 } from '@nestjs/swagger';
+import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserRole } from '../../common/constants/roles.constants';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { PrismaService } from '../../database/prisma.service';
+import { PaymentsService } from './payments.service';
 import { randomUUID } from 'node:crypto';
 import {
-  FundContractDto,
+  PaymentFundContractDto,
   VerifyPaymentDto,
+  PaystackInitDto,
+  PaystackVerifyDto,
   ActivateContractDto,
   CompleteContractDto,
-  ConfirmCompletionDto,
+  PaymentConfirmCompletionDto,
   PaymentResponseDto,
   PaymentListQueryDto,
 } from './dto/payment.dto';
-import { $Enums, ContractStatus, TransactionType, TransactionStatus } from '../../generated/prisma';
+import {
+  $Enums,
+  ContractStatus,
+  TransactionType,
+  TransactionStatus,
+} from '../../generated/prisma';
 
 @ApiTags('payments')
 @Controller('payments')
+@UseGuards(JwtAuthGuard, RolesGuard, ThrottlerGuard)
 export class PaymentsController {
-  constructor(private readonly prisma: PrismaService) {}
-
-  private ensureOwnerOrAdmin(
-    user: { id: string; role: $Enums.UserRole },
-    paymentUserId: string,
-  ) {
-    const isOwner = user.id === paymentUserId;
-    const isAdmin = user.role === UserRole.ADMIN;
-    
-    if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage your own payments');
-    }
-  }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paymentsService: PaymentsService,
+  ) {}
 
   private ensureContractParticipantOrAdmin(
     user: { id: string; role: $Enums.UserRole },
@@ -65,9 +64,11 @@ export class PaymentsController {
     const isClient = user.id === clientId;
     const isArtisan = user.id === artisanId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isClient && !isArtisan && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage contracts you participate in');
+      throw new ForbiddenException(
+        'Access denied: You can only manage contracts you participate in',
+      );
     }
   }
 
@@ -78,10 +79,11 @@ export class PaymentsController {
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid funding data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
   @Post('fund')
   async fundContract(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() fundDto: FundContractDto,
+    @Body() fundDto: PaymentFundContractDto,
   ): Promise<PaymentResponseDto> {
     const contract = await this.prisma.contract.findUnique({
       where: { id: fundDto.contractId },
@@ -107,14 +109,16 @@ export class PaymentsController {
 
     // Check contract status
     if (contract.status !== ContractStatus.DRAFT) {
-      throw new BadRequestException('Contract must be in DRAFT status to be funded');
+      throw new BadRequestException(
+        'Contract must be in DRAFT status to be funded',
+      );
     }
 
     // Check if already funded
     const existingPayment = await this.prisma.payment.findFirst({
       where: {
         contractId: fundDto.contractId,
-        status: 'completed',
+        status: 'COMPLETED',
       },
     });
 
@@ -130,10 +134,13 @@ export class PaymentsController {
           contractId: fundDto.contractId,
           userId: user.id,
           amount: fundDto.amount,
-          status: 'pending',
+          status: 'PENDING',
           paymentMethod: fundDto.paymentMethod || null,
           paymentReference: fundDto.paymentReference || null,
-          verificationCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+          verificationCode: Math.random()
+            .toString(36)
+            .substring(2, 8)
+            .toUpperCase(),
           isVerified: false,
           createdAt: new Date(),
         },
@@ -152,6 +159,7 @@ export class PaymentsController {
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid verification data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
   @Post('verify')
   async verifyPayment(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
@@ -197,7 +205,7 @@ export class PaymentsController {
       const updated = await tx.payment.update({
         where: { id: verifyDto.paymentId },
         data: {
-          status: 'completed',
+          status: 'COMPLETED',
           isVerified: true,
           verifiedAt: new Date(),
         },
@@ -219,12 +227,111 @@ export class PaymentsController {
   }
 
   @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Initialize a Paystack deposit' })
+  @ApiOkResponse({ description: 'Paystack initialization data returned.' })
+  @ApiBadRequestResponse({
+    description: 'Invalid Paystack initialization data.',
+  })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('paystack/init')
+  async initPaystack(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @Body() dto: PaystackInitDto,
+  ) {
+    const result = await this.paymentsService.initPaystackPayment(
+      user.id,
+      dto.amount,
+      dto.email,
+      dto.callbackUrl,
+    );
+
+    return {
+      message: 'Paystack initialization successful',
+      data: result,
+    };
+  }
+
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Verify Paystack payment after redirect' })
+  @ApiOkResponse({
+    description: 'Paystack payment verified and wallet funded.',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid Paystack verification data.' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('paystack/verify')
+  async verifyPaystack(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @Body() dto: PaystackVerifyDto,
+  ) {
+    const result = await this.paymentsService.verifyPaystackPayment(
+      user.id,
+      dto.reference,
+    );
+
+    return {
+      message: result.message,
+      data: result,
+    };
+  }
+
+  @Public()
+  @Post('paystack/webhook')
+  async paystackWebhook(@Req() request: any, @Body() payload: any) {
+    const signature = request.headers['x-paystack-signature'];
+    const secret =
+      process.env.PAYSTACK_WEBHOOK_SECRET ?? process.env.PAYSTACK_SECRET_KEY;
+
+    if (!secret || typeof signature !== 'string') {
+      throw new BadRequestException('Invalid webhook signature');
+    }
+
+    const crypto = await import('node:crypto');
+    const rawPayload = JSON.stringify(payload);
+    const computed = crypto
+      .createHmac('sha512', secret)
+      .update(rawPayload)
+      .digest('hex');
+
+    if (computed !== signature) {
+      throw new BadRequestException('Invalid webhook signature');
+    }
+
+    if (payload.event === 'charge.success') {
+      const reference = payload.data?.reference as string | undefined;
+      const email = payload.data?.customer?.email as string | undefined;
+      const metadataUserId = payload.data?.metadata?.userId as string | undefined;
+      const amount = Math.round((payload.data?.amount ?? 0) / 100);
+
+      if (reference && amount > 0) {
+        const user =
+          (metadataUserId
+            ? await this.prisma.user.findUnique({
+                where: { id: metadataUserId },
+              })
+            : null) ??
+          (email
+            ? await this.prisma.user.findUnique({
+                where: { email },
+              })
+            : null);
+
+        if (user) {
+          await this.paymentsService.verifyPaystackPayment(user.id, reference);
+        }
+      }
+    }
+
+    return { status: 'success' };
+  }
+
+  @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Activate a contract' })
   @ApiOkResponse({ description: 'Contract activated successfully.' })
   @ApiNotFoundResponse({ description: 'Contract not found.' })
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid activation data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
   @Post('activate')
   async activateContract(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
@@ -255,7 +362,11 @@ export class PaymentsController {
     }
 
     // Check if user is participant
-    this.ensureContractParticipantOrAdmin(user, contract.clientId, contract.artisanId);
+    this.ensureContractParticipantOrAdmin(
+      user,
+      contract.clientId,
+      contract.artisanId,
+    );
 
     if (contract.status !== ContractStatus.ACTIVE) {
       throw new BadRequestException('Contract must be ACTIVE to be activated');
@@ -288,11 +399,15 @@ export class PaymentsController {
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiBadRequestResponse({ description: 'Invalid completion data.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
   @Post('complete')
   async completeContract(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Body() completeDto: CompleteContractDto,
   ): Promise<any> {
+    void completeDto.notes;
+    void completeDto.evidence;
+
     const contract = await this.prisma.contract.findUnique({
       where: { id: completeDto.contractId },
       include: {
@@ -318,14 +433,21 @@ export class PaymentsController {
     }
 
     // Check if user is participant
-    this.ensureContractParticipantOrAdmin(user, contract.clientId, contract.artisanId);
+    this.ensureContractParticipantOrAdmin(
+      user,
+      contract.clientId,
+      contract.artisanId,
+    );
 
     if (contract.status !== ContractStatus.ACTIVE) {
       throw new BadRequestException('Contract must be ACTIVE to be completed');
     }
 
     // Check if already completed
-    if (contract.clientConfirmedCompletion && contract.artisanConfirmedCompletion) {
+    if (
+      contract.clientConfirmedCompletion &&
+      contract.artisanConfirmedCompletion
+    ) {
       throw new BadRequestException('Contract is already completed');
     }
 
@@ -335,12 +457,17 @@ export class PaymentsController {
       data: {
         clientConfirmedCompletion: user.id === contract.clientId,
         artisanConfirmedCompletion: user.id === contract.artisanId,
-        [user.id === contract.clientId ? 'clientConfirmedAt' : 'artisanConfirmedAt']: new Date(),
+        [user.id === contract.clientId
+          ? 'clientConfirmedAt'
+          : 'artisanConfirmedAt']: new Date(),
       },
     });
 
     // Check if both parties have confirmed
-    if (updatedContract.clientConfirmedCompletion && updatedContract.artisanConfirmedCompletion) {
+    if (
+      updatedContract.clientConfirmedCompletion &&
+      updatedContract.artisanConfirmedCompletion
+    ) {
       await this.finalizeContractCompletion(updatedContract.id);
     }
 
@@ -360,8 +487,10 @@ export class PaymentsController {
   @Post('confirm-completion')
   async confirmCompletion(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() confirmDto: ConfirmCompletionDto,
+    @Body() confirmDto: PaymentConfirmCompletionDto,
   ): Promise<any> {
+    void confirmDto.notes;
+
     const contract = await this.prisma.contract.findUnique({
       where: { id: confirmDto.contractId },
       include: {
@@ -387,16 +516,26 @@ export class PaymentsController {
     }
 
     // Check if user is participant
-    this.ensureContractParticipantOrAdmin(user, contract.clientId, contract.artisanId);
+    this.ensureContractParticipantOrAdmin(
+      user,
+      contract.clientId,
+      contract.artisanId,
+    );
 
     if (contract.status !== ContractStatus.ACTIVE) {
-      throw new BadRequestException('Contract must be ACTIVE to confirm completion');
+      throw new BadRequestException(
+        'Contract must be ACTIVE to confirm completion',
+      );
     }
 
     // Update confirmation status
     const updateData: any = {
-      [confirmDto.role === 'client' ? 'clientConfirmedCompletion' : 'artisanConfirmedCompletion']: true,
-      [confirmDto.role === 'client' ? 'clientConfirmedAt' : 'artisanConfirmedAt']: new Date(),
+      [confirmDto.role === 'client'
+        ? 'clientConfirmedCompletion'
+        : 'artisanConfirmedCompletion']: true,
+      [confirmDto.role === 'client'
+        ? 'clientConfirmedAt'
+        : 'artisanConfirmedAt']: new Date(),
     };
 
     const updatedContract = await this.prisma.contract.update({
@@ -405,7 +544,10 @@ export class PaymentsController {
     });
 
     // Check if both parties have confirmed
-    if (updatedContract.clientConfirmedCompletion && updatedContract.artisanConfirmedCompletion) {
+    if (
+      updatedContract.clientConfirmedCompletion &&
+      updatedContract.artisanConfirmedCompletion
+    ) {
       await this.finalizeContractCompletion(updatedContract.id);
     }
 
@@ -432,8 +574,16 @@ export class PaymentsController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Query() query: PaymentListQueryDto,
   ) {
-    const { page = 1, limit = 10, contractId, status, verificationStatus, dateFrom, dateTo } = query;
-    
+    const {
+      page = 1,
+      limit = 10,
+      contractId,
+      status,
+      verificationStatus,
+      dateFrom,
+      dateTo,
+    } = query;
+
     const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
 
@@ -465,7 +615,7 @@ export class PaymentsController {
     ]);
 
     return {
-      payments: payments.map(payment => this.formatPaymentResponse(payment)),
+      payments: payments.map((payment) => this.formatPaymentResponse(payment)),
       pagination: {
         page,
         limit,

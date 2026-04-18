@@ -23,10 +23,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminResetPasswordDto } from './dto/admin-reset-password.dto';
 import { ForceCloseJobDto } from './dto/force-close-job.dto';
 import { ResolveDisputeDto } from './dto/resolve-dispute.dto';
-import {
-  AdminService,
-  ReportType,
-} from './admin.service';
+import { AdminService, ReportType } from './admin.service';
+import { AuthenticatedUser } from '../auth/auth.service';
 
 @ApiTags('admin')
 @ApiBearerAuth('bearer')
@@ -43,12 +41,20 @@ export class AdminController {
     return this.adminService.getAllUsers();
   }
 
+  @ApiOperation({ summary: 'Get detailed admin view of a user' })
+  @ApiOkResponse({ description: 'Detailed user view returned successfully.' })
+  @ApiParam({ name: 'id', description: 'User identifier' })
+  @Get('users/:id')
+  getUserDetail(@Param('id') userId: string) {
+    return this.adminService.getUserDetail(userId);
+  }
+
   @ApiOperation({ summary: 'Ban a user account' })
   @ApiParam({ name: 'id', description: 'User identifier' })
   @Patch('users/:id/ban')
   banUser(
     @Param('id') userId: string,
-    @CurrentUser() adminUser: { sub: string; role: UserRole },
+    @CurrentUser() adminUser: AuthenticatedUser,
   ) {
     return this.adminService.banUser(userId, this.getActor(adminUser));
   }
@@ -58,7 +64,7 @@ export class AdminController {
   @Patch('users/:id/unban')
   unbanUser(
     @Param('id') userId: string,
-    @CurrentUser() adminUser: { sub: string; role: UserRole },
+    @CurrentUser() adminUser: AuthenticatedUser,
   ) {
     return this.adminService.unbanUser(userId, this.getActor(adminUser));
   }
@@ -68,7 +74,7 @@ export class AdminController {
   @Patch('users/:id/verify')
   verifyArtisan(
     @Param('id') userId: string,
-    @CurrentUser() adminUser: { sub: string; role: UserRole },
+    @CurrentUser() adminUser: AuthenticatedUser,
   ) {
     return this.adminService.verifyArtisan(userId, this.getActor(adminUser));
   }
@@ -79,7 +85,7 @@ export class AdminController {
   resetUserPassword(
     @Param('id') userId: string,
     @Body() body: AdminResetPasswordDto,
-    @CurrentUser() adminUser: { sub: string; role: UserRole },
+    @CurrentUser() adminUser: AuthenticatedUser,
   ) {
     return this.adminService.resetUserPassword(
       userId,
@@ -100,7 +106,7 @@ export class AdminController {
   resolveDispute(
     @Param('id') disputeId: string,
     @Body() body: ResolveDisputeDto,
-    @CurrentUser() adminUser: { sub: string; role: UserRole },
+    @CurrentUser() adminUser: AuthenticatedUser,
   ) {
     return this.adminService.resolveDispute(
       disputeId,
@@ -111,7 +117,11 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: 'List jobs with an optional status filter' })
-  @ApiQuery({ name: 'status', required: false, description: 'Job status filter' })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Job status filter',
+  })
   @Get('jobs')
   getAllJobs(@Query('status') status?: string) {
     return this.adminService.getAllJobs(status);
@@ -123,7 +133,7 @@ export class AdminController {
   forceCloseJob(
     @Param('id') jobId: string,
     @Body() body: ForceCloseJobDto,
-    @CurrentUser() adminUser: { sub: string; role: UserRole },
+    @CurrentUser() adminUser: AuthenticatedUser,
   ) {
     return this.adminService.forceCloseJob(
       jobId,
@@ -170,9 +180,9 @@ export class AdminController {
     return this.adminService.getAuditLogs();
   }
 
-  private getActor(adminUser: { sub: string; role: UserRole }) {
+  private getActor(adminUser: AuthenticatedUser) {
     return {
-      id: adminUser.sub,
+      id: adminUser.id,
       role: adminUser.role,
     };
   }

@@ -79,6 +79,117 @@ export class AdminService {
     };
   }
 
+  async getUserDetail(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        artisanProfile: true,
+        wallet: true,
+        transactions: {
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+        notifications: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+        clientJobs: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+        artisanJobs: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+        clientContracts: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+        artisanContracts: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+        sentReviews: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+        receivedReviews: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User ${userId} not found.`);
+    }
+
+    return {
+      data: {
+        ...this.mapUser(user),
+        lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
+        updatedAt: user.updatedAt.toISOString(),
+        wallet: user.wallet
+          ? {
+              balance: user.wallet.balance,
+              frozen: user.wallet.frozen,
+              available: user.wallet.balance - user.wallet.frozen,
+              updatedAt: user.wallet.updatedAt.toISOString(),
+            }
+          : null,
+        artisanProfile: user.artisanProfile
+          ? {
+              bio: user.artisanProfile.bio ?? '',
+              skills: this.jsonStringArray(user.artisanProfile.skills),
+              experience: user.artisanProfile.experience ?? '',
+              portfolio: this.jsonStringArray(user.artisanProfile.portfolio),
+              verified: user.artisanProfile.verified,
+              rating: user.artisanProfile.rating ?? 0,
+              reviewCount: user.artisanProfile.reviewCount,
+              updatedAt: user.artisanProfile.updatedAt.toISOString(),
+            }
+          : null,
+        transactions: user.transactions.map((transaction) =>
+          this.mapTransaction(transaction),
+        ),
+        notifications: user.notifications.map((notification) => ({
+          id: notification.id,
+          title: notification.title,
+          message: notification.message,
+          createdAt: notification.createdAt.toISOString(),
+        })),
+        activity: {
+          clientJobs: user.clientJobs.map((job) => this.mapJob(job)),
+          artisanJobs: user.artisanJobs.map((job) => this.mapJob(job)),
+          clientContracts: user.clientContracts.map((contract) => ({
+            id: contract.id,
+            amount: contract.amount,
+            status: contract.status,
+            createdAt: contract.createdAt.toISOString(),
+          })),
+          artisanContracts: user.artisanContracts.map((contract) => ({
+            id: contract.id,
+            amount: contract.amount,
+            status: contract.status,
+            createdAt: contract.createdAt.toISOString(),
+          })),
+          sentReviews: user.sentReviews.map((review) => ({
+            id: review.id,
+            rating: review.rating,
+            comment: review.comment,
+            createdAt: review.createdAt.toISOString(),
+          })),
+          receivedReviews: user.receivedReviews.map((review) => ({
+            id: review.id,
+            rating: review.rating,
+            comment: review.comment,
+            createdAt: review.createdAt.toISOString(),
+          })),
+        },
+      },
+    };
+  }
+
   async banUser(userId: string, actor: AdminActor) {
     const user = await this.findUser(userId);
     this.ensureAdminIsProtected(user, actor, 'ban');
@@ -769,7 +880,11 @@ export class AdminService {
   }
 
   private jsonStringArray(value: Prisma.JsonValue) {
-    return Array.isArray(value) ? value.map((item) => String(item)) : [];
+    return Array.isArray(value)
+      ? value
+          .map((item) => this.normalizeJsonPrimitive(item))
+          .filter((item): item is string => typeof item === 'string')
+      : [];
   }
 
   private jsonRecord(value: Prisma.JsonValue | null) {

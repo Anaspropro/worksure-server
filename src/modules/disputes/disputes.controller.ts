@@ -35,7 +35,7 @@ import {
   DisputeResponseDto,
   DisputeListQueryDto,
 } from './dto/dispute.dto';
-import { $Enums, DisputeStatus, DisputeDecision } from '../../generated/prisma';
+import { $Enums, DisputeStatus } from '../../generated/prisma';
 
 @ApiTags('disputes')
 @Controller('disputes')
@@ -50,9 +50,11 @@ export class DisputesController {
     const isClient = user.id === clientId;
     const isArtisan = user.id === artisanId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isClient && !isArtisan && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage disputes you participate in');
+      throw new ForbiddenException(
+        'Access denied: You can only manage disputes you participate in',
+      );
     }
   }
 
@@ -93,7 +95,9 @@ export class DisputesController {
       });
 
       if (existingDispute) {
-        throw new BadRequestException('Dispute already exists for this contract');
+        throw new BadRequestException(
+          'Dispute already exists for this contract',
+        );
       }
     } else if (createDto.jobId) {
       const job = await this.prisma.job.findUnique({
@@ -119,7 +123,9 @@ export class DisputesController {
         throw new BadRequestException('Dispute already exists for this job');
       }
     } else {
-      throw new BadRequestException('Either contractId or jobId must be provided');
+      throw new BadRequestException(
+        'Either contractId or jobId must be provided',
+      );
     }
 
     // Check if user is participant
@@ -147,7 +153,10 @@ export class DisputesController {
       await this.prisma.dispute.update({
         where: { id: dispute.id },
         data: {
-          evidenceMessages: [...(createDto.evidenceMessages || []), createDto.description],
+          evidenceMessages: [
+            ...(createDto.evidenceMessages || []),
+            createDto.description,
+          ],
         },
       });
     }
@@ -174,8 +183,18 @@ export class DisputesController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Query() query: DisputeListQueryDto,
   ) {
-    const { page = 1, limit = 10, status, contractId, jobId, clientId, artisanId, dateFrom, dateTo } = query;
-    
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      contractId,
+      jobId,
+      clientId,
+      artisanId,
+      dateFrom,
+      dateTo,
+    } = query;
+
     const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
 
@@ -183,10 +202,7 @@ export class DisputesController {
 
     // Non-admin users can only see disputes they participate in
     if (user.role !== UserRole.ADMIN) {
-      where.OR = [
-        { clientId: user.id },
-        { artisanId: user.id },
-      ];
+      where.OR = [{ clientId: user.id }, { artisanId: user.id }];
     }
 
     if (status) where.status = status;
@@ -220,7 +236,7 @@ export class DisputesController {
     ]);
 
     return {
-      disputes: disputes.map(dispute => this.formatDisputeResponse(dispute)),
+      disputes: disputes.map((dispute) => this.formatDisputeResponse(dispute)),
       pagination: {
         page,
         limit,
@@ -238,13 +254,12 @@ export class DisputesController {
   @ApiForbiddenResponse({ description: 'Authentication required.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('me')
-  async getMyDisputes(@CurrentUser() user: { id: string; role: $Enums.UserRole }) {
+  async getMyDisputes(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+  ) {
     const disputes = await this.prisma.dispute.findMany({
       where: {
-        OR: [
-          { clientId: user.id },
-          { artisanId: user.id },
-        ],
+        OR: [{ clientId: user.id }, { artisanId: user.id }],
       },
       include: {
         user: {
@@ -258,7 +273,7 @@ export class DisputesController {
       orderBy: { createdAt: 'desc' },
     });
 
-    return disputes.map(dispute => this.formatDisputeResponse(dispute));
+    return disputes.map((dispute) => this.formatDisputeResponse(dispute));
   }
 
   @ApiBearerAuth('bearer')
@@ -291,7 +306,11 @@ export class DisputesController {
     }
 
     // Check access
-    this.ensureDisputeParticipantOrAdmin(user, dispute.clientId, dispute.artisanId);
+    this.ensureDisputeParticipantOrAdmin(
+      user,
+      dispute.clientId,
+      dispute.artisanId,
+    );
 
     return this.formatDisputeResponse(dispute);
   }
@@ -350,14 +369,19 @@ export class DisputesController {
     return this.formatDisputeResponse(updatedDispute);
   }
 
-  private validateStatusTransition(currentStatus: DisputeStatus, newStatus: DisputeStatus) {
+  private validateStatusTransition(
+    currentStatus: DisputeStatus,
+    newStatus: DisputeStatus,
+  ) {
     const validTransitions: Record<DisputeStatus, DisputeStatus[]> = {
       [DisputeStatus.OPEN]: [DisputeStatus.RESOLVED],
       [DisputeStatus.RESOLVED]: [], // No transitions from resolved
     };
 
     if (!validTransitions[currentStatus]?.includes(newStatus)) {
-      throw new BadRequestException(`Invalid status transition from ${currentStatus} to ${newStatus}`);
+      throw new BadRequestException(
+        `Invalid status transition from ${currentStatus} to ${newStatus}`,
+      );
     }
   }
 

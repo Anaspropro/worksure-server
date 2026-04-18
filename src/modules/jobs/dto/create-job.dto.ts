@@ -1,4 +1,11 @@
-import { IsString, IsOptional, IsNumber, IsEnum, IsArray, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsArray,
+  IsDateString,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { JobStatus } from '../../../generated/prisma';
 
@@ -181,7 +188,9 @@ export class JobListQueryDto {
   @IsNumber()
   page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Items per page (default: 10, max: 100)' })
+  @ApiPropertyOptional({
+    description: 'Items per page (default: 10, max: 100)',
+  })
   @IsOptional()
   @IsNumber()
   limit?: number = 10;

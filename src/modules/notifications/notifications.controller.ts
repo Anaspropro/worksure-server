@@ -52,9 +52,11 @@ export class NotificationsController {
   ) {
     const isOwner = user.id === notificationUserId;
     const isAdmin = user.role === UserRole.ADMIN;
-    
+
     if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('Access denied: You can only manage your own notifications');
+      throw new ForbiddenException(
+        'Access denied: You can only manage your own notifications',
+      );
     }
   }
 
@@ -67,9 +69,11 @@ export class NotificationsController {
   @Roles(UserRole.ADMIN)
   @Post()
   async createNotification(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @CurrentUser() _user: { id: string; role: $Enums.UserRole },
     @Body() createDto: CreateNotificationDto,
   ): Promise<NotificationResponseDto> {
+    void _user;
+
     // Verify user exists
     const targetUser = await this.prisma.user.findUnique({
       where: { id: createDto.userId },
@@ -113,13 +117,8 @@ export class NotificationsController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Query() query: NotificationListQueryDto,
   ) {
-    const { 
-      page = 1, 
-      limit = 20, 
-      dateFrom, 
-      dateTo 
-    } = query;
-    
+    const { page = 1, limit = 20, dateFrom, dateTo } = query;
+
     const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
 
@@ -147,7 +146,9 @@ export class NotificationsController {
     ]);
 
     return {
-      notifications: notifications.map(notification => this.formatNotificationResponse(notification)),
+      notifications: notifications.map((notification) =>
+        this.formatNotificationResponse(notification),
+      ),
       pagination: {
         page,
         limit,
@@ -165,7 +166,9 @@ export class NotificationsController {
   @ApiForbiddenResponse({ description: 'Authentication required.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('me')
-  async getMyNotifications(@CurrentUser() user: { id: string; role: $Enums.UserRole }) {
+  async getMyNotifications(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+  ) {
     const notifications = await this.prisma.notification.findMany({
       where: {
         userId: user.id,
@@ -173,7 +176,9 @@ export class NotificationsController {
       orderBy: { createdAt: 'desc' },
     });
 
-    return notifications.map(notification => this.formatNotificationResponse(notification));
+    return notifications.map((notification) =>
+      this.formatNotificationResponse(notification),
+    );
   }
 
   @ApiBearerAuth('bearer')
@@ -214,8 +219,10 @@ export class NotificationsController {
   async updateNotification(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Param('id') id: string,
-    @Body() updateDto: UpdateNotificationDto,
+    @Body() _updateDto: UpdateNotificationDto,
   ): Promise<NotificationResponseDto> {
+    void _updateDto;
+
     const notification = await this.prisma.notification.findUnique({
       where: { id },
     });
@@ -245,9 +252,11 @@ export class NotificationsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('mark')
   async markNotifications(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @CurrentUser() _user: { id: string; role: $Enums.UserRole },
     @Body() markDto: MarkNotificationsDto,
   ): Promise<{ updated: number }> {
+    void _user;
+
     // Current schema doesn't support read/archived status, so just return count
     return { updated: markDto.notificationIds.length };
   }
@@ -257,17 +266,25 @@ export class NotificationsController {
   @ApiOkResponse({ description: 'All notifications marked as read.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('read-all')
-  async markAllAsRead(@CurrentUser() user: { id: string; role: $Enums.UserRole }): Promise<{ updated: number }> {
+  async markAllAsRead(
+    @CurrentUser() _user: { id: string; role: $Enums.UserRole },
+  ): Promise<{ updated: number }> {
+    void _user;
+
     // Current schema doesn't support read status, so just return 0
     return { updated: 0 };
   }
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Get notification statistics' })
-  @ApiOkResponse({ description: 'Notification statistics retrieved successfully.' })
+  @ApiOkResponse({
+    description: 'Notification statistics retrieved successfully.',
+  })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('stats/me')
-  async getNotificationStats(@CurrentUser() user: { id: string; role: $Enums.UserRole }): Promise<NotificationStatsDto> {
+  async getNotificationStats(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+  ): Promise<NotificationStatsDto> {
     const notifications = await this.prisma.notification.findMany({
       where: {
         userId: user.id,
@@ -280,13 +297,13 @@ export class NotificationsController {
 
     // Count by type - not available in current schema
     const byType: Record<NotificationType, number> = {} as any;
-    Object.values(NotificationType).forEach(type => {
+    Object.values(NotificationType).forEach((type) => {
       byType[type] = 0;
     });
 
     // Count by priority - not available in current schema
     const byPriority: Record<NotificationPriority, number> = {} as any;
-    Object.values(NotificationPriority).forEach(priority => {
+    Object.values(NotificationPriority).forEach((priority) => {
       byPriority[priority] = 0;
     });
 
@@ -329,7 +346,9 @@ export class NotificationsController {
     return { deleted: true };
   }
 
-  private formatNotificationResponse(notification: any): NotificationResponseDto {
+  private formatNotificationResponse(
+    notification: any,
+  ): NotificationResponseDto {
     return {
       id: notification.id,
       userId: notification.userId,
