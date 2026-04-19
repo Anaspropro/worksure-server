@@ -131,6 +131,10 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   status: 'status',
   artisanVerified: 'artisanVerified',
+  paystackRecipientCode: 'paystackRecipientCode',
+  payoutBankCode: 'payoutBankCode',
+  payoutAccountNumber: 'payoutAccountNumber',
+  payoutAccountName: 'payoutAccountName',
   createdAt: 'createdAt',
   lastLoginAt: 'lastLoginAt',
   updatedAt: 'updatedAt'
@@ -234,6 +238,16 @@ exports.Prisma.ContractScalarFieldEnum = {
   artisanId: 'artisanId',
   amount: 'amount',
   status: 'status',
+  currency: 'currency',
+  paystackReference: 'paystackReference',
+  paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+  paystackAccessCode: 'paystackAccessCode',
+  fundedPaymentId: 'fundedPaymentId',
+  payoutRequestedAt: 'payoutRequestedAt',
+  paidOutAt: 'paidOutAt',
+  refundedAt: 'refundedAt',
+  refundReason: 'refundReason',
+  payoutFailureReason: 'payoutFailureReason',
   fundedAt: 'fundedAt',
   activatedAt: 'activatedAt',
   startedAt: 'startedAt',
@@ -289,16 +303,33 @@ exports.Prisma.ReviewScalarFieldEnum = {
   artisanId: 'artisanId',
   rating: 'rating',
   comment: 'comment',
-  createdAt: 'createdAt'
+  categories: 'categories',
+  workQuality: 'workQuality',
+  communication: 'communication',
+  timeliness: 'timeliness',
+  professionalism: 'professionalism',
+  evidence: 'evidence',
+  isPublic: 'isPublic',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  type: 'type',
   title: 'title',
   message: 'message',
+  entityId: 'entityId',
+  entityType: 'entityType',
+  actionUrl: 'actionUrl',
+  priority: 'priority',
   read: 'read',
-  createdAt: 'createdAt'
+  isArchived: 'isArchived',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  readAt: 'readAt',
+  archivedAt: 'archivedAt'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {
@@ -317,13 +348,23 @@ exports.Prisma.PaymentScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   status: 'status',
+  currency: 'currency',
+  gateway: 'gateway',
   paymentMethod: 'paymentMethod',
   paymentReference: 'paymentReference',
+  paystackAccessCode: 'paystackAccessCode',
+  paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+  paystackTransactionId: 'paystackTransactionId',
+  recipientCode: 'recipientCode',
+  transferCode: 'transferCode',
   verificationCode: 'verificationCode',
   isVerified: 'isVerified',
+  metadata: 'metadata',
+  failureReason: 'failureReason',
   createdAt: 'createdAt',
   verifiedAt: 'verifiedAt',
-  completedAt: 'completedAt'
+  completedAt: 'completedAt',
+  refundedAt: 'refundedAt'
 };
 
 exports.Prisma.KycDocumentScalarFieldEnum = {
@@ -397,11 +438,13 @@ exports.JobStatus = exports.$Enums.JobStatus = {
 };
 
 exports.TransactionType = exports.$Enums.TransactionType = {
+  PAYMENT: 'PAYMENT',
   FUNDING: 'FUNDING',
   ESCROW_HOLD: 'ESCROW_HOLD',
   ESCROW_RELEASE: 'ESCROW_RELEASE',
   PLATFORM_FEE: 'PLATFORM_FEE',
   REFUND: 'REFUND',
+  TRANSFER: 'TRANSFER',
   PAYOUT: 'PAYOUT',
   ADJUSTMENT_NOTE: 'ADJUSTMENT_NOTE'
 };
@@ -421,10 +464,17 @@ exports.ProposalStatus = exports.$Enums.ProposalStatus = {
 
 exports.ContractStatus = exports.$Enums.ContractStatus = {
   DRAFT: 'DRAFT',
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  FUNDED: 'FUNDED',
   ACTIVE: 'ACTIVE',
+  IN_PROGRESS: 'IN_PROGRESS',
+  CLIENT_CONFIRMED: 'CLIENT_CONFIRMED',
+  READY_FOR_PAYOUT: 'READY_FOR_PAYOUT',
   COMPLETED: 'COMPLETED',
+  PAID_OUT: 'PAID_OUT',
   CANCELLED: 'CANCELLED',
-  DISPUTED: 'DISPUTED'
+  DISPUTED: 'DISPUTED',
+  REFUNDED: 'REFUNDED'
 };
 
 exports.MessageType = exports.$Enums.MessageType = {

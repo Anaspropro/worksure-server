@@ -1,39 +1,25 @@
 import {
+  BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
-  BadRequestException,
-  Inject,
-  forwardRef,
 } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
-import { WalletService } from '../wallet/wallet.service';
-import { ContractsService } from '../contracts/contracts.service';
 import { randomUUID } from 'node:crypto';
+import { PrismaService } from '../../database/prisma.service';
+import {
+  ContractStatus,
+  PaymentStatus,
+  TransactionStatus,
+  TransactionType,
+} from '../../generated/prisma';
+import { ContractsService } from '../contracts/contracts.service';
 
 @Injectable()
 export class PaymentsService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(forwardRef(() => WalletService))
-    private readonly walletService: WalletService,
-    @Inject(forwardRef(() => ContractsService))
     private readonly contractsService: ContractsService,
   ) {}
-
-  private async ensureVerifiedArtisan(artisanId: string) {
-    const artisan = await this.prisma.user.findUnique({
-      where: { id: artisanId },
-      select: {
-        artisanVerified: true,
-      },
-    });
-
-    if (!artisan?.artisanVerified) {
-      throw new BadRequestException(
-        'Artisan verification is required before releasing payment.',
-      );
-    }
-  }
 
   private getPaystackSecretKey(): string {
     const key = process.env.PAYSTACK_SECRET_KEY;
@@ -42,278 +28,501 @@ export class PaymentsService {
         'PAYSTACK_SECRET_KEY is required in environment variables',
       );
     }
+
     return key;
   }
 
-  private getPaystackHeaders() {
+  private getPaystackHeaders(extraHeaders?: Record<string, string>) {
     return {
       Authorization: `Bearer ${this.getPaystackSecretKey()}`,
       'Content-Type': 'application/json',
+      ...extraHeaders,
     };
   }
 
-  async initPaystackPayment(
-    userId: string,
-    amount: number,
-    email: string,
-    callbackUrl?: string,
-  ) {
-    if (amount <= 0) {
-      throw new BadRequestException('Amount must be greater than 0');
-    }
+  private getPlatformFeePercent() {
+    const raw = Number(process.env.PLATFORM_FEE_PERCENT ?? 10);
+    return Number.isFinite(raw) && raw >= 0 ? raw : 10;
+  }
 
-    const payload = {
-      amount: Math.round(amount * 100),
-      email,
-      callback_url: callbackUrl || `${process.env.APP_URL}/wallet`,
-      metadata: {
-        userId,
-        gateway: 'paystack',
-      },
-    };
+  private getPaystackBaseUrl() {
+    return 'https://api.paystack.co';
+  }
 
-    const response = await fetch(
-      'https://api.paystack.co/transaction/initialize',
-      {
-        method: 'POST',
-        headers: this.getPaystackHeaders(),
-        body: JSON.stringify(payload),
-      },
-    );
+  private async callPaystack<T>(
+    path: string,
+    init: RequestInit,
+    extraHeaders?: Record<string, string>,
+  ): Promise<T> {
+    const response = await fetch(`${this.getPaystackBaseUrl()}${path}`, {
+      ...init,
+      headers: this.getPaystackHeaders(extraHeaders),
+    });
 
-    const data = await response.json();
+    const payload = (await response.json().catch(() => null)) as {
+      status?: boolean;
+      message?: string;
+      data?: T;
+    } | null;
 
-    if (!response.ok || !data.status) {
+    if (!response.ok || !payload?.status) {
       throw new BadRequestException(
-        data.message || 'Failed to initialize Paystack payment',
+        payload?.message || 'Paystack request failed',
       );
     }
 
+    return payload.data as T;
+  }
+
+  private buildTransferReference(contractId: string) {
+    return `ws_transfer_${contractId}_${Date.now()}`;
+  }
+
+  private buildRefundReference(contractId: string) {
+    return `ws_refund_${contractId}_${Date.now()}`;
+  }
+
+  async initializeContractPayment(
+    userId: string,
+    contractId: string,
+    email: string,
+    callbackUrl?: string,
+  ) {
+    const contract = await this.prisma.contract.findUnique({
+      where: { id: contractId },
+    });
+
+    if (!contract) {
+      throw new NotFoundException('Contract not found');
+    }
+
+    if (contract.clientId !== userId) {
+      throw new ForbiddenException('Only the client can fund the contract');
+    }
+
+    const fundableStatuses = new Set<ContractStatus>([
+      ContractStatus.PENDING_PAYMENT,
+      ContractStatus.DRAFT,
+    ]);
+
+    if (!fundableStatuses.has(contract.status)) {
+      throw new BadRequestException(
+        'Contract is not eligible for a new payment initialization',
+      );
+    }
+
+    const payment = await this.prisma.payment.create({
+      data: {
+        id: randomUUID(),
+        contractId,
+        userId,
+        amount: contract.amount,
+        currency: contract.currency,
+        gateway: 'PAYSTACK',
+        status: PaymentStatus.PENDING,
+        paymentMethod: 'PAYSTACK',
+        isVerified: false,
+        metadata: {
+          stage: 'initialization_requested',
+        },
+      },
+    });
+
+    const paystackData = await this.callPaystack<{
+      authorization_url: string;
+      access_code: string;
+      reference: string;
+    }>('/transaction/initialize', {
+      method: 'POST',
+      body: JSON.stringify({
+        amount: contract.amount * 100,
+        email,
+        callback_url:
+          callbackUrl || `${process.env.APP_URL}/contracts/${contractId}`,
+        metadata: {
+          contractId,
+          userId,
+          paymentId: payment.id,
+          gateway: 'paystack',
+        },
+      }),
+    });
+
+    const updatedPayment = await this.prisma.payment.update({
+      where: { id: payment.id },
+      data: {
+        paymentReference: paystackData.reference,
+        paystackAccessCode: paystackData.access_code,
+        paystackAuthorizationUrl: paystackData.authorization_url,
+        metadata: {
+          stage: 'initialized',
+        },
+      },
+    });
+
+    await this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        status: ContractStatus.PENDING_PAYMENT,
+        paystackReference: paystackData.reference,
+        paystackAuthorizationUrl: paystackData.authorization_url,
+        paystackAccessCode: paystackData.access_code,
+      },
+    });
+
     return {
-      authorizationUrl: data.data.authorization_url,
-      accessCode: data.data.access_code,
-      reference: data.data.reference,
+      payment: updatedPayment,
+      authorizationUrl: paystackData.authorization_url,
+      accessCode: paystackData.access_code,
+      reference: paystackData.reference,
     };
   }
 
-  async verifyPaystackPayment(userId: string, reference: string) {
+  async verifyPaystackPayment(reference: string) {
     if (!reference) {
       throw new BadRequestException(
         'Reference is required for Paystack verification',
       );
     }
 
-    const existingTransaction = await this.prisma.transaction.findFirst({
-      where: { reference },
+    const payment = await this.prisma.payment.findFirst({
+      where: { paymentReference: reference },
+      include: {
+        contract: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
-    if (existingTransaction?.status === 'COMPLETED') {
+    if (!payment) {
+      throw new NotFoundException('Payment record not found for reference');
+    }
+
+    if (payment.isVerified && payment.status === PaymentStatus.COMPLETED) {
       return {
         message: 'Payment already processed',
-        reference,
-        amount: existingTransaction.amount,
+        payment,
       };
     }
 
-    const response = await fetch(
-      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
-      {
-        method: 'GET',
-        headers: this.getPaystackHeaders(),
-      },
+    const paystackData = await this.callPaystack<{
+      id: number;
+      status: string;
+      amount: number;
+      reference: string;
+      gateway_response?: string;
+      metadata?: {
+        contractId?: string;
+      };
+    }>(`/transaction/verify/${encodeURIComponent(reference)}`, {
+      method: 'GET',
+    });
+
+    if (paystackData.status !== 'success') {
+      throw new BadRequestException('Paystack transaction is not successful');
+    }
+
+    const contractId = paystackData.metadata?.contractId || payment.contractId;
+
+    const updatedPayment = await this.prisma.$transaction(async (tx) => {
+      const completedPayment = await tx.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: PaymentStatus.COMPLETED,
+          isVerified: true,
+          verifiedAt: new Date(),
+          completedAt: new Date(),
+          paystackTransactionId: String(paystackData.id),
+          metadata: {
+            gatewayResponse: paystackData.gateway_response ?? null,
+            verifiedReference: paystackData.reference,
+          },
+        },
+      });
+
+      await tx.transaction.create({
+        data: {
+          id: randomUUID(),
+          userId: payment.userId,
+          type: TransactionType.PAYMENT,
+          amount: Math.round(paystackData.amount / 100),
+          status: TransactionStatus.COMPLETED,
+          reference: paystackData.reference,
+          metadata: {
+            contractId,
+            gateway: 'paystack',
+          },
+          createdAt: new Date(),
+          completedAt: new Date(),
+        },
+      });
+
+      return completedPayment;
+    });
+
+    await this.contractsService.markFunded(
+      contractId,
+      updatedPayment.id,
+      paystackData.reference,
+      payment.paystackAuthorizationUrl,
+      payment.paystackAccessCode,
     );
 
-    const data = await response.json();
-
-    if (!response.ok || !data.status || data.data.status !== 'success') {
-      throw new BadRequestException(
-        data.message || 'Paystack transaction verification failed',
-      );
-    }
-
-    const resolvedUserId =
-      (data.data.metadata?.userId as string | undefined) ?? userId;
-    const amount = Math.round(data.data.amount / 100);
-
-    await this.walletService.addFunds(resolvedUserId, amount, reference, {
-      gateway: 'paystack',
-      paystackStatus: data.data.status,
-      paystackResponse: data.data,
-    });
-
     return {
-      message: 'Paystack payment verified and wallet funded',
-      reference,
-      amount,
-    };
-  }
-
-  async fundContract(
-    userId: string,
-    contractId: string,
-    amount: number,
-    paymentMethod?: string,
-    paymentReference?: string,
-  ) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    if (contract.status !== 'DRAFT') {
-      throw new BadRequestException(
-        'Contract must be in DRAFT status to be funded',
-      );
-    }
-
-    if (contract.clientId !== userId) {
-      throw new BadRequestException('Only the client can fund the contract');
-    }
-
-    // Use wallet service to handle the funding with proper transaction management
-    const result = await this.walletService.freezeFunds(
-      userId,
-      amount,
-      `contract_funding_${contractId}`,
-      {
-        action: 'contract_funding',
-        contractId,
-        paymentMethod,
-        paymentReference,
-      },
-    );
-
-    // Create payment record
-    const payment = await this.prisma.payment.create({
-      data: {
-        id: randomUUID(),
-        contractId,
-        userId,
-        amount,
-        status: 'COMPLETED',
-        paymentMethod: paymentMethod || null,
-        paymentReference: paymentReference || null,
-        verificationCode: Math.random()
-          .toString(36)
-          .substring(2, 8)
-          .toUpperCase(),
-        isVerified: true,
-        createdAt: new Date(),
-        verifiedAt: new Date(),
-        completedAt: new Date(),
-      },
-    });
-
-    // Update contract status using contracts service
-    await this.contractsService.fundContract(contractId, userId, amount);
-
-    return {
-      payment,
-      walletTransaction: result.transaction,
-      message: 'Contract funded successfully',
+      message: 'Paystack payment verified successfully',
+      payment: updatedPayment,
     };
   }
 
   async verifyPayment(paymentId: string, verificationCode: string) {
     const payment = await this.prisma.payment.findUnique({
       where: { id: paymentId },
-      include: {
-        contract: true,
-      },
     });
 
     if (!payment) {
       throw new NotFoundException('Payment not found');
     }
 
-    if (payment.isVerified) {
-      throw new BadRequestException('Payment is already verified');
-    }
-
     if (payment.verificationCode !== verificationCode) {
       throw new BadRequestException('Invalid verification code');
     }
 
-    // Update payment status
-    const updatedPayment = await this.prisma.payment.update({
+    if (payment.isVerified) {
+      return payment;
+    }
+
+    return this.prisma.payment.update({
       where: { id: paymentId },
       data: {
-        status: 'COMPLETED',
         isVerified: true,
+        status: PaymentStatus.COMPLETED,
         verifiedAt: new Date(),
         completedAt: new Date(),
       },
     });
-
-    return updatedPayment;
   }
 
   async activateContract(contractId: string, userId: string) {
-    return await this.contractsService.activateContract(contractId, userId);
+    return this.contractsService.activateContract(contractId, userId);
   }
 
   async completeContract(
     contractId: string,
     userId: string,
     isClient: boolean,
-    _notes?: string,
   ) {
-    void _notes;
-
-    return await this.contractsService.confirmCompletion(
+    return this.contractsService.confirmCompletion(
       contractId,
       userId,
       isClient,
     );
   }
 
+  private async ensureTransferRecipient(artisanId: string) {
+    const artisan = await this.prisma.user.findUnique({
+      where: { id: artisanId },
+      select: {
+        name: true,
+        email: true,
+        paystackRecipientCode: true,
+        payoutBankCode: true,
+        payoutAccountNumber: true,
+        payoutAccountName: true,
+      },
+    });
+
+    if (!artisan) {
+      throw new NotFoundException('Artisan not found');
+    }
+
+    if (artisan.paystackRecipientCode) {
+      return artisan.paystackRecipientCode;
+    }
+
+    if (!artisan.payoutBankCode || !artisan.payoutAccountNumber) {
+      throw new BadRequestException(
+        'Artisan payout profile is incomplete. Add bank code and account number before payout.',
+      );
+    }
+
+    const recipient = await this.callPaystack<{ recipient_code: string }>(
+      '/transferrecipient',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'nuban',
+          name: artisan.payoutAccountName || artisan.name,
+          account_number: artisan.payoutAccountNumber,
+          bank_code: artisan.payoutBankCode,
+          currency: 'NGN',
+          email: artisan.email,
+        }),
+      },
+    );
+
+    await this.prisma.user.update({
+      where: { id: artisanId },
+      data: {
+        paystackRecipientCode: recipient.recipient_code,
+      },
+    });
+
+    return recipient.recipient_code;
+  }
+
+  private async initiatePayout(contract: {
+    id: string;
+    amount: number;
+    artisanId: string;
+  }) {
+    const recipientCode = await this.ensureTransferRecipient(
+      contract.artisanId,
+    );
+    const platformFee = Math.floor(
+      (contract.amount * this.getPlatformFeePercent()) / 100,
+    );
+    const payoutAmount = contract.amount - platformFee;
+
+    if (payoutAmount <= 0) {
+      throw new BadRequestException('Calculated payout amount is invalid');
+    }
+
+    const reference = this.buildTransferReference(contract.id);
+    const transferData = await this.callPaystack<{
+      transfer_code: string;
+      reference?: string;
+      status?: string;
+    }>(
+      '/transfer',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          source: 'balance',
+          amount: payoutAmount * 100,
+          recipient: recipientCode,
+          reason: `WorkSure payout for contract ${contract.id}`,
+          reference,
+        }),
+      },
+      {
+        'X-Idempotency-Key': reference,
+      },
+    );
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.transaction.create({
+        data: {
+          id: randomUUID(),
+          userId: contract.artisanId,
+          type: TransactionType.TRANSFER,
+          amount: payoutAmount,
+          status: TransactionStatus.PENDING,
+          reference,
+          metadata: {
+            contractId: contract.id,
+            recipientCode,
+            transferCode: transferData.transfer_code,
+            platformFee,
+          },
+          createdAt: new Date(),
+        },
+      });
+
+      const payment = await tx.payment.findFirst({
+        where: {
+          contractId: contract.id,
+          isVerified: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      if (payment) {
+        await tx.payment.update({
+          where: { id: payment.id },
+          data: {
+            recipientCode,
+            transferCode: transferData.transfer_code,
+          },
+        });
+      }
+    });
+
+    await this.contractsService.markPayoutInitiated(contract.id);
+
+    return {
+      message: 'Payout initiated successfully',
+      reference,
+      recipientCode,
+      transferCode: transferData.transfer_code,
+      payoutAmount,
+      platformFee,
+    };
+  }
+
   async releaseEscrow(contractId: string, userId: string) {
+    const contract = await this.contractsService.assertReadyForPayout(
+      contractId,
+      userId,
+    );
+
+    return this.initiatePayout(contract);
+  }
+
+  async releaseEscrowByAdmin(contractId: string, reason?: string) {
     const contract = await this.prisma.contract.findUnique({
       where: { id: contractId },
+      include: {
+        artisan: {
+          select: {
+            artisanVerified: true,
+          },
+        },
+      },
     });
 
     if (!contract) {
       throw new NotFoundException('Contract not found');
     }
 
-    if (contract.clientId !== userId) {
-      throw new BadRequestException('Only the client can release escrow');
+    const adminPayoutStatuses = new Set<ContractStatus>([
+      ContractStatus.FUNDED,
+      ContractStatus.IN_PROGRESS,
+      ContractStatus.CLIENT_CONFIRMED,
+      ContractStatus.READY_FOR_PAYOUT,
+      ContractStatus.DISPUTED,
+    ]);
+
+    if (!adminPayoutStatuses.has(contract.status)) {
+      throw new BadRequestException(
+        'Contract is not in a state that can be settled by admin payout',
+      );
     }
 
-    await this.ensureVerifiedArtisan(contract.artisanId);
-
-    // Use contracts service to handle escrow release
-    const result = await this.contractsService.releaseEscrow(
-      contractId,
-      userId,
-    );
-
-    // Settle escrow from client to artisan
-    await this.walletService.releaseEscrowToUser(
-      contract.clientId,
-      contract.artisanId,
-      contract.amount,
-      `escrow_release_${contractId}`,
-      {
-        action: 'escrow_release',
-        contractId,
-      },
-    );
-
-    const platformFee = Math.floor(contract.amount * 0.05);
-    if (platformFee > 0) {
-      await this.walletService.chargePlatformFee(
-        contract.clientId,
-        platformFee,
-        `platform_fee_${contractId}`,
-        {
-          action: 'platform_fee',
-          contractId,
-        },
+    if (!contract.artisan.artisanVerified) {
+      throw new BadRequestException(
+        'Artisan verification is required before payout.',
       );
+    }
+
+    const result = await this.initiatePayout(contract);
+
+    if (reason) {
+      await this.prisma.transaction.updateMany({
+        where: {
+          reference: result.reference,
+          type: TransactionType.TRANSFER,
+        },
+        data: {
+          metadata: {
+            contractId: contract.id,
+            adminReason: reason,
+            settlementMode: 'admin_dispute_resolution',
+          },
+        },
+      });
     }
 
     return result;
@@ -322,6 +531,13 @@ export class PaymentsService {
   async refundContract(contractId: string, userId: string, reason?: string) {
     const contract = await this.prisma.contract.findUnique({
       where: { id: contractId },
+      include: {
+        payments: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
     });
 
     if (!contract) {
@@ -329,49 +545,296 @@ export class PaymentsService {
     }
 
     if (contract.clientId !== userId) {
-      throw new BadRequestException('Only the client can request a refund');
+      throw new ForbiddenException('Only the client can request a refund');
     }
 
-    // Use contracts service to handle refund
-    const result = await this.contractsService.refundContract(
-      contractId,
-      userId,
-    );
+    const payment = contract.payments.find((entry) => entry.isVerified);
+    if (!payment?.paymentReference) {
+      throw new BadRequestException(
+        'No successful Paystack payment was found for this contract',
+      );
+    }
 
-    // Release frozen funds back to client
-    await this.walletService.unfreezeFunds(
-      contract.clientId,
-      contract.amount,
-      `contract_refund_${contractId}`,
-      {
-        action: 'contract_refund',
-        contractId,
-        reason,
+    await this.contractsService.refundContract(contractId, userId, reason);
+
+    const reference = this.buildRefundReference(contractId);
+    await this.callPaystack<{
+      status?: string;
+    }>('/refund', {
+      method: 'POST',
+      body: JSON.stringify({
+        transaction: payment.paymentReference,
+        amount: contract.amount * 100,
+        merchant_note: reason || `Refund for contract ${contractId}`,
+      }),
+    });
+
+    await this.prisma.transaction.create({
+      data: {
+        id: randomUUID(),
+        userId: contract.clientId,
+        type: TransactionType.REFUND,
+        amount: contract.amount,
+        status: TransactionStatus.PENDING,
+        reference,
+        metadata: {
+          contractId,
+          originalReference: payment.paymentReference,
+          reason: reason || null,
+        },
+        createdAt: new Date(),
       },
-    );
+    });
 
-    return result;
+    return {
+      message: 'Refund requested successfully',
+      reference,
+    };
+  }
+
+  async processPaystackWebhook(payload: any) {
+    const event = payload?.event as string | undefined;
+
+    if (!event) {
+      throw new BadRequestException('Webhook event is required');
+    }
+
+    switch (event) {
+      case 'charge.success': {
+        const reference = payload?.data?.reference as string | undefined;
+        if (reference) {
+          await this.verifyPaystackPayment(reference);
+        }
+        return { handled: true, event };
+      }
+
+      case 'transfer.success': {
+        const reference = payload?.data?.reference as string | undefined;
+        const transferCode = payload?.data?.transfer_code as string | undefined;
+        if (!reference) {
+          return { handled: false, event };
+        }
+
+        const transferTx = await this.prisma.transaction.findFirst({
+          where: { reference, type: TransactionType.TRANSFER },
+        });
+
+        if (transferTx && transferTx.status !== TransactionStatus.COMPLETED) {
+          const contractId =
+            (transferTx.metadata as { contractId?: string } | null)
+              ?.contractId ?? null;
+
+          await this.prisma.transaction.update({
+            where: { id: transferTx.id },
+            data: {
+              status: TransactionStatus.COMPLETED,
+              completedAt: new Date(),
+              metadata: {
+                ...(typeof transferTx.metadata === 'object' &&
+                transferTx.metadata !== null
+                  ? transferTx.metadata
+                  : {}),
+                transferCode: transferCode || null,
+              },
+            },
+          });
+
+          if (contractId) {
+            await this.contractsService.markPaidOut(contractId);
+          }
+        }
+
+        return { handled: true, event };
+      }
+
+      case 'transfer.failed':
+      case 'transfer.reversed': {
+        const reference = payload?.data?.reference as string | undefined;
+        const reason =
+          (payload?.data?.reason as string | undefined) ||
+          (payload?.data?.status as string | undefined);
+
+        if (!reference) {
+          return { handled: false, event };
+        }
+
+        const transferTx = await this.prisma.transaction.findFirst({
+          where: { reference, type: TransactionType.TRANSFER },
+        });
+
+        if (transferTx) {
+          const contractId =
+            (transferTx.metadata as { contractId?: string } | null)
+              ?.contractId ?? null;
+
+          await this.prisma.transaction.update({
+            where: { id: transferTx.id },
+            data: {
+              status: TransactionStatus.FAILED,
+              failedAt: new Date(),
+              failureReason: reason || 'Transfer failed',
+            },
+          });
+
+          if (contractId) {
+            await this.contractsService.recordPayoutFailure(contractId, reason);
+          }
+        }
+
+        return { handled: true, event };
+      }
+
+      case 'refund.processed': {
+        const transactionReference =
+          (payload?.data?.transaction_reference as string | undefined) ||
+          (payload?.data?.transaction?.reference as string | undefined);
+
+        if (!transactionReference) {
+          return { handled: false, event };
+        }
+
+        const payment = await this.prisma.payment.findFirst({
+          where: { paymentReference: transactionReference },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        if (!payment) {
+          return { handled: false, event };
+        }
+
+        await this.prisma.$transaction(async (tx) => {
+          await tx.payment.update({
+            where: { id: payment.id },
+            data: {
+              refundedAt: new Date(),
+              metadata: {
+                refundProcessed: true,
+              },
+            },
+          });
+
+          const refundTx = await tx.transaction.findFirst({
+            where: {
+              type: TransactionType.REFUND,
+              metadata: {
+                path: ['originalReference'],
+                equals: transactionReference,
+              },
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          });
+
+          if (refundTx && refundTx.status !== TransactionStatus.COMPLETED) {
+            await tx.transaction.update({
+              where: { id: refundTx.id },
+              data: {
+                status: TransactionStatus.COMPLETED,
+                completedAt: new Date(),
+              },
+            });
+          }
+        });
+
+        await this.contractsService.markRefunded(
+          payment.contractId,
+          payload?.data?.merchant_note as string | undefined,
+        );
+
+        return { handled: true, event };
+      }
+
+      default:
+        return { handled: false, event };
+    }
+  }
+
+  async listPayments(
+    userId: string,
+    query: {
+      contractId?: string;
+      status?: string;
+      dateFrom?: string;
+      dateTo?: string;
+      page?: number;
+      limit?: number;
+    },
+  ) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const skip = (page - 1) * limit;
+
+    const where: Record<string, unknown> = {
+      OR: [
+        { userId },
+        {
+          contract: {
+            artisanId: userId,
+          },
+        },
+      ],
+    };
+
+    if (query.contractId) {
+      where.contractId = query.contractId;
+    }
+
+    if (query.status) {
+      where.status = query.status;
+    }
+
+    if (query.dateFrom || query.dateTo) {
+      where.createdAt = {
+        gte: query.dateFrom ? new Date(query.dateFrom) : undefined,
+        lte: query.dateTo ? new Date(query.dateTo) : undefined,
+      };
+    }
+
+    const [items, total] = await Promise.all([
+      this.prisma.payment.findMany({
+        where,
+        include: {
+          contract: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip,
+        take: limit,
+      }),
+      this.prisma.payment.count({ where }),
+    ]);
+
+    return {
+      data: items,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNext: skip + limit < total,
+        hasPrev: page > 1,
+      },
+    };
   }
 
   getDefinition() {
     return {
       name: 'payments',
-      description: 'Handles payment processing and escrow management',
+      description:
+        'Handles Paystack-backed contract funding, payouts, and refunds',
       responsibilities: [
-        'Process contract funding payments',
-        'Verify payment confirmations',
-        'Manage contract activation',
-        'Handle contract completion workflows',
-        'Process escrow releases',
-        'Deduct platform fees',
-        'Maintain payment records',
+        'Initialize Paystack payments for contracts',
+        'Verify charge webhooks and mark contracts funded',
+        'Create transfer recipients and initiate payouts',
+        'Track refunds, transfers, and payment audit data',
       ],
       rules: [
-        'All payment operations must use transactions',
-        'Funds can only be released with dual confirmation',
-        'Platform fees are automatically deducted',
-        'Payment verification codes are single-use',
-        'Contract status transitions are enforced',
+        'WorkSure does not directly custody client funds',
+        'Contract funding is confirmed from Paystack events',
+        'Payouts require both parties to confirm completion',
+        'Refunds are executed against the original Paystack payment',
       ],
     };
   }

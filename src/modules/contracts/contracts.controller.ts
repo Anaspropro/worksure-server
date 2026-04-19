@@ -82,14 +82,15 @@ export class ContractsController {
     @CurrentUser() user: AuthenticatedUser,
     @Body() fundDto: FundContractDto,
   ) {
-    const contract = await this.paymentsService.fundContract(
+    const contract = await this.paymentsService.initializeContractPayment(
       user.id,
       contractId,
-      fundDto.amount,
+      fundDto.email,
+      fundDto.callbackUrl,
     );
 
     return {
-      message: 'Contract funded successfully',
+      message: 'Contract payment initialized successfully',
       data: contract,
     };
   }

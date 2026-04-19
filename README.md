@@ -44,6 +44,197 @@ The current work is focused on:
 - expanding tests around the full marketplace journey
 - keeping the docs aligned with actual tested behavior
 
+## Sequence Diagrams
+
+This section describes the current end-to-end backend behavior for the main marketplace flows.
+
+Core rule:
+
+> Only `ContractsService` mutates contract status.
+> Paystack confirms money movement asynchronously through webhook calls handled by `PaymentsController`.
+
+Implementation note:
+
+- The diagrams below are aligned to the current codebase.
+- Participants labeled `Events` represent domain milestones and follow-on side effects conceptually.
+- The backend does not yet have a centralized event bus; most side effects are still direct service calls or future-facing architecture markers.
+
+### 1. Proposal Acceptance -> Contract Creation
+
+In the current backend, accepting a proposal and creating a contract are two separate actions.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant ProposalsController
+    participant DB
+    participant ContractsController
+    participant ContractsService
+
+    Client->>ProposalsController: Accept Proposal
+    ProposalsController->>DB: update Proposal (ACCEPTED)
+    ProposalsController-->>Client: Proposal accepted
+
+    Client->>ContractsController: Create Contract from accepted proposal
+    ContractsController->>ContractsService: createContract(proposalId, userId)
+    ContractsService->>DB: create Contract (PENDING_PAYMENT)
+    ContractsService-->>ContractsController: contract
+    ContractsController-->>Client: Contract created
+```
+
+### 2. Contract Funding (Paystack Checkout + Webhook)
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant PaymentsController
+    participant PaymentsService
+    participant Paystack
+    participant ContractsService
+    participant DB
+
+    Client->>PaymentsController: Fund Contract
+    PaymentsController->>PaymentsService: initializeContractPayment(contractId)
+    PaymentsService->>DB: create Payment (PENDING)
+    PaymentsService->>Paystack: POST /transaction/initialize
+    Paystack-->>PaymentsService: authorization_url, access_code, reference
+    PaymentsService->>DB: update Payment + Contract payment reference data
+    PaymentsController-->>Client: checkout URL
+
+    Client->>Paystack: complete payment
+    Paystack->>PaymentsController: charge.success webhook
+    PaymentsController->>PaymentsService: processPaystackWebhook(payload)
+    PaymentsService->>Paystack: verify transaction reference
+    PaymentsService->>DB: mark Payment completed + create Transaction(PAYMENT)
+    PaymentsService->>ContractsService: markFunded(contractId)
+    ContractsService->>DB: update Contract (FUNDED)
+```
+
+### 3. Work Progress -> Completion -> Ready For Payout
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Artisan
+    participant ContractsController
+    participant ContractsService
+    participant DB
+
+    Client->>ContractsController: Confirm Completion
+    ContractsController->>ContractsService: confirmCompletion(contractId, isClient=true)
+    ContractsService->>DB: update Contract (CLIENT_CONFIRMED)
+    ContractsController-->>Client: Client confirmation recorded
+
+    Artisan->>ContractsController: Confirm Completion
+    ContractsController->>ContractsService: confirmCompletion(contractId, isClient=false)
+    ContractsService->>DB: update Contract (READY_FOR_PAYOUT)
+    ContractsController-->>Artisan: Contract ready for payout
+```
+
+### 4. Payout to Artisan (Transfer Flow)
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant ContractsController
+    participant PaymentsService
+    participant Paystack
+    participant PaymentsController
+    participant ContractsService
+    participant DB
+
+    Client->>ContractsController: Release Escrow
+    ContractsController->>PaymentsService: releaseEscrow(contractId, userId)
+    PaymentsService->>ContractsService: assertReadyForPayout(contractId)
+    PaymentsService->>Paystack: POST /transferrecipient (if needed)
+    PaymentsService->>Paystack: POST /transfer
+    PaymentsService->>DB: create Transaction (TRANSFER, PENDING)
+    ContractsController-->>Client: Payout initiated
+
+    Paystack->>PaymentsController: transfer.success webhook
+    PaymentsController->>PaymentsService: processPaystackWebhook(payload)
+    PaymentsService->>DB: mark transfer transaction completed
+    PaymentsService->>ContractsService: markPaidOut(contractId)
+    ContractsService->>DB: update Contract (PAID_OUT)
+```
+
+### 5. Dispute -> Resolution (Refund or Admin Payout)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant DisputesController
+    participant DisputesService
+    participant Admin
+    participant PaymentsService
+    participant Paystack
+    participant PaymentsController
+    participant ContractsService
+    participant DB
+
+    User->>DisputesController: Open Dispute
+    DisputesController->>DisputesService: createDispute()
+    DisputesService->>DB: store dispute
+    DisputesService->>ContractsService: markDisputed(contractId)
+    ContractsService->>DB: update Contract (DISPUTED)
+
+    Admin->>DisputesController: Resolve Dispute
+    DisputesController->>DisputesService: updateDispute(...RESOLVED, decision)
+
+    alt Refund Client
+        DisputesService->>PaymentsService: refundContract(contractId, clientId, reason)
+        PaymentsService->>Paystack: POST /refund
+        PaymentsService->>DB: create Transaction (REFUND, PENDING)
+        Paystack->>PaymentsController: refund.processed webhook
+        PaymentsController->>PaymentsService: processPaystackWebhook(payload)
+        PaymentsService->>ContractsService: markRefunded(contractId)
+        ContractsService->>DB: update Contract (REFUNDED)
+    else Pay Artisan
+        DisputesService->>PaymentsService: releaseEscrowByAdmin(contractId, reason)
+        PaymentsService->>Paystack: POST /transfer
+        PaymentsService->>DB: create Transaction (TRANSFER, PENDING)
+        Paystack->>PaymentsController: transfer.success webhook
+        PaymentsController->>PaymentsService: processPaystackWebhook(payload)
+        PaymentsService->>ContractsService: markPaidOut(contractId)
+        ContractsService->>DB: update Contract (PAID_OUT)
+    end
+
+    DisputesService->>DB: update Dispute (RESOLVED)
+```
+
+### 6. Review Submission
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant ReviewsController
+    participant DB
+
+    Client->>ReviewsController: Submit Review
+    ReviewsController->>DB: load Contract + participants
+    Note over ReviewsController: Contract must be COMPLETED or PAID_OUT
+    ReviewsController->>DB: store Review
+    ReviewsController-->>Client: success
+```
+
+### Key Observations
+
+1. Contract state is centralized.
+   `ContractsService` is the only service that changes contract status.
+
+2. Payments are asynchronous.
+   Funding, payout, and refund are only finalized after Paystack webhook confirmation.
+
+3. Disputes decide outcomes, but `PaymentsService` executes money movement.
+
+4. The current backend already models domain milestones clearly, but side effects are not yet driven by a dedicated event bus.
+
+### Mental Model
+
+```text
+Action -> Contracts or Disputes -> Payments (if needed) -> Paystack webhook -> Contracts final state
+```
+
 ## Tech Stack
 
 - NestJS

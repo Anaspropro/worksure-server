@@ -153,10 +153,17 @@ export type ProposalStatus = (typeof ProposalStatus)[keyof typeof ProposalStatus
 
 export const ContractStatus: {
   DRAFT: 'DRAFT',
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  FUNDED: 'FUNDED',
   ACTIVE: 'ACTIVE',
+  IN_PROGRESS: 'IN_PROGRESS',
+  CLIENT_CONFIRMED: 'CLIENT_CONFIRMED',
+  READY_FOR_PAYOUT: 'READY_FOR_PAYOUT',
   COMPLETED: 'COMPLETED',
+  PAID_OUT: 'PAID_OUT',
   CANCELLED: 'CANCELLED',
-  DISPUTED: 'DISPUTED'
+  DISPUTED: 'DISPUTED',
+  REFUNDED: 'REFUNDED'
 };
 
 export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus]
@@ -174,11 +181,13 @@ export type MessageType = (typeof MessageType)[keyof typeof MessageType]
 
 
 export const TransactionType: {
+  PAYMENT: 'PAYMENT',
   FUNDING: 'FUNDING',
   ESCROW_HOLD: 'ESCROW_HOLD',
   ESCROW_RELEASE: 'ESCROW_RELEASE',
   PLATFORM_FEE: 'PLATFORM_FEE',
   REFUND: 'REFUND',
+  TRANSFER: 'TRANSFER',
   PAYOUT: 'PAYOUT',
   ADJUSTMENT_NOTE: 'ADJUSTMENT_NOTE'
 };
@@ -2709,6 +2718,10 @@ export namespace Prisma {
     role: $Enums.UserRole | null
     status: $Enums.UserStatus | null
     artisanVerified: boolean | null
+    paystackRecipientCode: string | null
+    payoutBankCode: string | null
+    payoutAccountNumber: string | null
+    payoutAccountName: string | null
     createdAt: Date | null
     lastLoginAt: Date | null
     updatedAt: Date | null
@@ -2725,6 +2738,10 @@ export namespace Prisma {
     role: $Enums.UserRole | null
     status: $Enums.UserStatus | null
     artisanVerified: boolean | null
+    paystackRecipientCode: string | null
+    payoutBankCode: string | null
+    payoutAccountNumber: string | null
+    payoutAccountName: string | null
     createdAt: Date | null
     lastLoginAt: Date | null
     updatedAt: Date | null
@@ -2741,6 +2758,10 @@ export namespace Prisma {
     role: number
     status: number
     artisanVerified: number
+    paystackRecipientCode: number
+    payoutBankCode: number
+    payoutAccountNumber: number
+    payoutAccountName: number
     createdAt: number
     lastLoginAt: number
     updatedAt: number
@@ -2759,6 +2780,10 @@ export namespace Prisma {
     role?: true
     status?: true
     artisanVerified?: true
+    paystackRecipientCode?: true
+    payoutBankCode?: true
+    payoutAccountNumber?: true
+    payoutAccountName?: true
     createdAt?: true
     lastLoginAt?: true
     updatedAt?: true
@@ -2775,6 +2800,10 @@ export namespace Prisma {
     role?: true
     status?: true
     artisanVerified?: true
+    paystackRecipientCode?: true
+    payoutBankCode?: true
+    payoutAccountNumber?: true
+    payoutAccountName?: true
     createdAt?: true
     lastLoginAt?: true
     updatedAt?: true
@@ -2791,6 +2820,10 @@ export namespace Prisma {
     role?: true
     status?: true
     artisanVerified?: true
+    paystackRecipientCode?: true
+    payoutBankCode?: true
+    payoutAccountNumber?: true
+    payoutAccountName?: true
     createdAt?: true
     lastLoginAt?: true
     updatedAt?: true
@@ -2880,6 +2913,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified: boolean
+    paystackRecipientCode: string | null
+    payoutBankCode: string | null
+    payoutAccountNumber: string | null
+    payoutAccountName: string | null
     createdAt: Date
     lastLoginAt: Date | null
     updatedAt: Date
@@ -2913,6 +2950,10 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    paystackRecipientCode?: boolean
+    payoutBankCode?: boolean
+    payoutAccountNumber?: boolean
+    payoutAccountName?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
@@ -2945,6 +2986,10 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    paystackRecipientCode?: boolean
+    payoutBankCode?: boolean
+    payoutAccountNumber?: boolean
+    payoutAccountName?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
@@ -2961,6 +3006,10 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    paystackRecipientCode?: boolean
+    payoutBankCode?: boolean
+    payoutAccountNumber?: boolean
+    payoutAccountName?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
@@ -2977,12 +3026,16 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    paystackRecipientCode?: boolean
+    payoutBankCode?: boolean
+    payoutAccountNumber?: boolean
+    payoutAccountName?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt" | "role" | "status" | "artisanVerified" | "createdAt" | "lastLoginAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt" | "role" | "status" | "artisanVerified" | "paystackRecipientCode" | "payoutBankCode" | "payoutAccountNumber" | "payoutAccountName" | "createdAt" | "lastLoginAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     artisanProfile?: boolean | User$artisanProfileArgs<ExtArgs>
     kycDocuments?: boolean | User$kycDocumentsArgs<ExtArgs>
@@ -3034,6 +3087,10 @@ export namespace Prisma {
       role: $Enums.UserRole
       status: $Enums.UserStatus
       artisanVerified: boolean
+      paystackRecipientCode: string | null
+      payoutBankCode: string | null
+      payoutAccountNumber: string | null
+      payoutAccountName: string | null
       createdAt: Date
       lastLoginAt: Date | null
       updatedAt: Date
@@ -3485,6 +3542,10 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'UserRole'>
     readonly status: FieldRef<"User", 'UserStatus'>
     readonly artisanVerified: FieldRef<"User", 'Boolean'>
+    readonly paystackRecipientCode: FieldRef<"User", 'String'>
+    readonly payoutBankCode: FieldRef<"User", 'String'>
+    readonly payoutAccountNumber: FieldRef<"User", 'String'>
+    readonly payoutAccountName: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -11500,6 +11561,16 @@ export namespace Prisma {
     artisanId: string | null
     amount: number | null
     status: $Enums.ContractStatus | null
+    currency: string | null
+    paystackReference: string | null
+    paystackAuthorizationUrl: string | null
+    paystackAccessCode: string | null
+    fundedPaymentId: string | null
+    payoutRequestedAt: Date | null
+    paidOutAt: Date | null
+    refundedAt: Date | null
+    refundReason: string | null
+    payoutFailureReason: string | null
     fundedAt: Date | null
     activatedAt: Date | null
     startedAt: Date | null
@@ -11524,6 +11595,16 @@ export namespace Prisma {
     artisanId: string | null
     amount: number | null
     status: $Enums.ContractStatus | null
+    currency: string | null
+    paystackReference: string | null
+    paystackAuthorizationUrl: string | null
+    paystackAccessCode: string | null
+    fundedPaymentId: string | null
+    payoutRequestedAt: Date | null
+    paidOutAt: Date | null
+    refundedAt: Date | null
+    refundReason: string | null
+    payoutFailureReason: string | null
     fundedAt: Date | null
     activatedAt: Date | null
     startedAt: Date | null
@@ -11548,6 +11629,16 @@ export namespace Prisma {
     artisanId: number
     amount: number
     status: number
+    currency: number
+    paystackReference: number
+    paystackAuthorizationUrl: number
+    paystackAccessCode: number
+    fundedPaymentId: number
+    payoutRequestedAt: number
+    paidOutAt: number
+    refundedAt: number
+    refundReason: number
+    payoutFailureReason: number
     fundedAt: number
     activatedAt: number
     startedAt: number
@@ -11582,6 +11673,16 @@ export namespace Prisma {
     artisanId?: true
     amount?: true
     status?: true
+    currency?: true
+    paystackReference?: true
+    paystackAuthorizationUrl?: true
+    paystackAccessCode?: true
+    fundedPaymentId?: true
+    payoutRequestedAt?: true
+    paidOutAt?: true
+    refundedAt?: true
+    refundReason?: true
+    payoutFailureReason?: true
     fundedAt?: true
     activatedAt?: true
     startedAt?: true
@@ -11606,6 +11707,16 @@ export namespace Prisma {
     artisanId?: true
     amount?: true
     status?: true
+    currency?: true
+    paystackReference?: true
+    paystackAuthorizationUrl?: true
+    paystackAccessCode?: true
+    fundedPaymentId?: true
+    payoutRequestedAt?: true
+    paidOutAt?: true
+    refundedAt?: true
+    refundReason?: true
+    payoutFailureReason?: true
     fundedAt?: true
     activatedAt?: true
     startedAt?: true
@@ -11630,6 +11741,16 @@ export namespace Prisma {
     artisanId?: true
     amount?: true
     status?: true
+    currency?: true
+    paystackReference?: true
+    paystackAuthorizationUrl?: true
+    paystackAccessCode?: true
+    fundedPaymentId?: true
+    payoutRequestedAt?: true
+    paidOutAt?: true
+    refundedAt?: true
+    refundReason?: true
+    payoutFailureReason?: true
     fundedAt?: true
     activatedAt?: true
     startedAt?: true
@@ -11741,6 +11862,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status: $Enums.ContractStatus
+    currency: string
+    paystackReference: string | null
+    paystackAuthorizationUrl: string | null
+    paystackAccessCode: string | null
+    fundedPaymentId: string | null
+    payoutRequestedAt: Date | null
+    paidOutAt: Date | null
+    refundedAt: Date | null
+    refundReason: string | null
+    payoutFailureReason: string | null
     fundedAt: Date | null
     activatedAt: Date | null
     startedAt: Date | null
@@ -11784,6 +11915,16 @@ export namespace Prisma {
     artisanId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    paystackReference?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackAccessCode?: boolean
+    fundedPaymentId?: boolean
+    payoutRequestedAt?: boolean
+    paidOutAt?: boolean
+    refundedAt?: boolean
+    refundReason?: boolean
+    payoutFailureReason?: boolean
     fundedAt?: boolean
     activatedAt?: boolean
     startedAt?: boolean
@@ -11816,6 +11957,16 @@ export namespace Prisma {
     artisanId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    paystackReference?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackAccessCode?: boolean
+    fundedPaymentId?: boolean
+    payoutRequestedAt?: boolean
+    paidOutAt?: boolean
+    refundedAt?: boolean
+    refundReason?: boolean
+    payoutFailureReason?: boolean
     fundedAt?: boolean
     activatedAt?: boolean
     startedAt?: boolean
@@ -11844,6 +11995,16 @@ export namespace Prisma {
     artisanId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    paystackReference?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackAccessCode?: boolean
+    fundedPaymentId?: boolean
+    payoutRequestedAt?: boolean
+    paidOutAt?: boolean
+    refundedAt?: boolean
+    refundReason?: boolean
+    payoutFailureReason?: boolean
     fundedAt?: boolean
     activatedAt?: boolean
     startedAt?: boolean
@@ -11872,6 +12033,16 @@ export namespace Prisma {
     artisanId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    paystackReference?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackAccessCode?: boolean
+    fundedPaymentId?: boolean
+    payoutRequestedAt?: boolean
+    paidOutAt?: boolean
+    refundedAt?: boolean
+    refundReason?: boolean
+    payoutFailureReason?: boolean
     fundedAt?: boolean
     activatedAt?: boolean
     startedAt?: boolean
@@ -11888,7 +12059,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "proposalId" | "clientId" | "artisanId" | "amount" | "status" | "fundedAt" | "activatedAt" | "startedAt" | "completedAt" | "cancelledAt" | "clientConfirmedCompletion" | "clientConfirmedAt" | "artisanConfirmedCompletion" | "artisanConfirmedAt" | "escrowReleased" | "escrowReleasedAt" | "platformFeeDeducted" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
+  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "proposalId" | "clientId" | "artisanId" | "amount" | "status" | "currency" | "paystackReference" | "paystackAuthorizationUrl" | "paystackAccessCode" | "fundedPaymentId" | "payoutRequestedAt" | "paidOutAt" | "refundedAt" | "refundReason" | "payoutFailureReason" | "fundedAt" | "activatedAt" | "startedAt" | "completedAt" | "cancelledAt" | "clientConfirmedCompletion" | "clientConfirmedAt" | "artisanConfirmedCompletion" | "artisanConfirmedAt" | "escrowReleased" | "escrowReleasedAt" | "platformFeeDeducted" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
   export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     proposal?: boolean | ProposalDefaultArgs<ExtArgs>
@@ -11931,6 +12102,16 @@ export namespace Prisma {
       artisanId: string
       amount: number
       status: $Enums.ContractStatus
+      currency: string
+      paystackReference: string | null
+      paystackAuthorizationUrl: string | null
+      paystackAccessCode: string | null
+      fundedPaymentId: string | null
+      payoutRequestedAt: Date | null
+      paidOutAt: Date | null
+      refundedAt: Date | null
+      refundReason: string | null
+      payoutFailureReason: string | null
       fundedAt: Date | null
       activatedAt: Date | null
       startedAt: Date | null
@@ -12382,6 +12563,16 @@ export namespace Prisma {
     readonly artisanId: FieldRef<"Contract", 'String'>
     readonly amount: FieldRef<"Contract", 'Int'>
     readonly status: FieldRef<"Contract", 'ContractStatus'>
+    readonly currency: FieldRef<"Contract", 'String'>
+    readonly paystackReference: FieldRef<"Contract", 'String'>
+    readonly paystackAuthorizationUrl: FieldRef<"Contract", 'String'>
+    readonly paystackAccessCode: FieldRef<"Contract", 'String'>
+    readonly fundedPaymentId: FieldRef<"Contract", 'String'>
+    readonly payoutRequestedAt: FieldRef<"Contract", 'DateTime'>
+    readonly paidOutAt: FieldRef<"Contract", 'DateTime'>
+    readonly refundedAt: FieldRef<"Contract", 'DateTime'>
+    readonly refundReason: FieldRef<"Contract", 'String'>
+    readonly payoutFailureReason: FieldRef<"Contract", 'String'>
     readonly fundedAt: FieldRef<"Contract", 'DateTime'>
     readonly activatedAt: FieldRef<"Contract", 'DateTime'>
     readonly startedAt: FieldRef<"Contract", 'DateTime'>
@@ -16290,10 +16481,18 @@ export namespace Prisma {
 
   export type ReviewAvgAggregateOutputType = {
     rating: number | null
+    workQuality: number | null
+    communication: number | null
+    timeliness: number | null
+    professionalism: number | null
   }
 
   export type ReviewSumAggregateOutputType = {
     rating: number | null
+    workQuality: number | null
+    communication: number | null
+    timeliness: number | null
+    professionalism: number | null
   }
 
   export type ReviewMinAggregateOutputType = {
@@ -16303,7 +16502,13 @@ export namespace Prisma {
     artisanId: string | null
     rating: number | null
     comment: string | null
+    workQuality: number | null
+    communication: number | null
+    timeliness: number | null
+    professionalism: number | null
+    isPublic: boolean | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ReviewMaxAggregateOutputType = {
@@ -16313,7 +16518,13 @@ export namespace Prisma {
     artisanId: string | null
     rating: number | null
     comment: string | null
+    workQuality: number | null
+    communication: number | null
+    timeliness: number | null
+    professionalism: number | null
+    isPublic: boolean | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ReviewCountAggregateOutputType = {
@@ -16323,17 +16534,33 @@ export namespace Prisma {
     artisanId: number
     rating: number
     comment: number
+    categories: number
+    workQuality: number
+    communication: number
+    timeliness: number
+    professionalism: number
+    evidence: number
+    isPublic: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
 
   export type ReviewAvgAggregateInputType = {
     rating?: true
+    workQuality?: true
+    communication?: true
+    timeliness?: true
+    professionalism?: true
   }
 
   export type ReviewSumAggregateInputType = {
     rating?: true
+    workQuality?: true
+    communication?: true
+    timeliness?: true
+    professionalism?: true
   }
 
   export type ReviewMinAggregateInputType = {
@@ -16343,7 +16570,13 @@ export namespace Prisma {
     artisanId?: true
     rating?: true
     comment?: true
+    workQuality?: true
+    communication?: true
+    timeliness?: true
+    professionalism?: true
+    isPublic?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type ReviewMaxAggregateInputType = {
@@ -16353,7 +16586,13 @@ export namespace Prisma {
     artisanId?: true
     rating?: true
     comment?: true
+    workQuality?: true
+    communication?: true
+    timeliness?: true
+    professionalism?: true
+    isPublic?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type ReviewCountAggregateInputType = {
@@ -16363,7 +16602,15 @@ export namespace Prisma {
     artisanId?: true
     rating?: true
     comment?: true
+    categories?: true
+    workQuality?: true
+    communication?: true
+    timeliness?: true
+    professionalism?: true
+    evidence?: true
+    isPublic?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -16460,7 +16707,15 @@ export namespace Prisma {
     artisanId: string
     rating: number
     comment: string | null
+    categories: JsonValue | null
+    workQuality: number | null
+    communication: number | null
+    timeliness: number | null
+    professionalism: number | null
+    evidence: JsonValue | null
+    isPublic: boolean
     createdAt: Date
+    updatedAt: Date
     _count: ReviewCountAggregateOutputType | null
     _avg: ReviewAvgAggregateOutputType | null
     _sum: ReviewSumAggregateOutputType | null
@@ -16489,7 +16744,15 @@ export namespace Prisma {
     artisanId?: boolean
     rating?: boolean
     comment?: boolean
+    categories?: boolean
+    workQuality?: boolean
+    communication?: boolean
+    timeliness?: boolean
+    professionalism?: boolean
+    evidence?: boolean
+    isPublic?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
@@ -16502,7 +16765,15 @@ export namespace Prisma {
     artisanId?: boolean
     rating?: boolean
     comment?: boolean
+    categories?: boolean
+    workQuality?: boolean
+    communication?: boolean
+    timeliness?: boolean
+    professionalism?: boolean
+    evidence?: boolean
+    isPublic?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
@@ -16515,7 +16786,15 @@ export namespace Prisma {
     artisanId?: boolean
     rating?: boolean
     comment?: boolean
+    categories?: boolean
+    workQuality?: boolean
+    communication?: boolean
+    timeliness?: boolean
+    professionalism?: boolean
+    evidence?: boolean
+    isPublic?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
@@ -16528,10 +16807,18 @@ export namespace Prisma {
     artisanId?: boolean
     rating?: boolean
     comment?: boolean
+    categories?: boolean
+    workQuality?: boolean
+    communication?: boolean
+    timeliness?: boolean
+    professionalism?: boolean
+    evidence?: boolean
+    isPublic?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "clientId" | "artisanId" | "rating" | "comment" | "createdAt", ExtArgs["result"]["review"]>
+  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "clientId" | "artisanId" | "rating" | "comment" | "categories" | "workQuality" | "communication" | "timeliness" | "professionalism" | "evidence" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
   export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
@@ -16562,7 +16849,15 @@ export namespace Prisma {
       artisanId: string
       rating: number
       comment: string | null
+      categories: Prisma.JsonValue | null
+      workQuality: number | null
+      communication: number | null
+      timeliness: number | null
+      professionalism: number | null
+      evidence: Prisma.JsonValue | null
+      isPublic: boolean
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["review"]>
     composites: {}
   }
@@ -16995,7 +17290,15 @@ export namespace Prisma {
     readonly artisanId: FieldRef<"Review", 'String'>
     readonly rating: FieldRef<"Review", 'Int'>
     readonly comment: FieldRef<"Review", 'String'>
+    readonly categories: FieldRef<"Review", 'Json'>
+    readonly workQuality: FieldRef<"Review", 'Int'>
+    readonly communication: FieldRef<"Review", 'Int'>
+    readonly timeliness: FieldRef<"Review", 'Int'>
+    readonly professionalism: FieldRef<"Review", 'Int'>
+    readonly evidence: FieldRef<"Review", 'Json'>
+    readonly isPublic: FieldRef<"Review", 'Boolean'>
     readonly createdAt: FieldRef<"Review", 'DateTime'>
+    readonly updatedAt: FieldRef<"Review", 'DateTime'>
   }
     
 
@@ -17428,28 +17731,53 @@ export namespace Prisma {
   export type NotificationMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    type: string | null
     title: string | null
     message: string | null
+    entityId: string | null
+    entityType: string | null
+    actionUrl: string | null
+    priority: string | null
     read: boolean | null
+    isArchived: boolean | null
     createdAt: Date | null
+    readAt: Date | null
+    archivedAt: Date | null
   }
 
   export type NotificationMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    type: string | null
     title: string | null
     message: string | null
+    entityId: string | null
+    entityType: string | null
+    actionUrl: string | null
+    priority: string | null
     read: boolean | null
+    isArchived: boolean | null
     createdAt: Date | null
+    readAt: Date | null
+    archivedAt: Date | null
   }
 
   export type NotificationCountAggregateOutputType = {
     id: number
     userId: number
+    type: number
     title: number
     message: number
+    entityId: number
+    entityType: number
+    actionUrl: number
+    priority: number
     read: number
+    isArchived: number
+    metadata: number
     createdAt: number
+    readAt: number
+    archivedAt: number
     _all: number
   }
 
@@ -17457,28 +17785,53 @@ export namespace Prisma {
   export type NotificationMinAggregateInputType = {
     id?: true
     userId?: true
+    type?: true
     title?: true
     message?: true
+    entityId?: true
+    entityType?: true
+    actionUrl?: true
+    priority?: true
     read?: true
+    isArchived?: true
     createdAt?: true
+    readAt?: true
+    archivedAt?: true
   }
 
   export type NotificationMaxAggregateInputType = {
     id?: true
     userId?: true
+    type?: true
     title?: true
     message?: true
+    entityId?: true
+    entityType?: true
+    actionUrl?: true
+    priority?: true
     read?: true
+    isArchived?: true
     createdAt?: true
+    readAt?: true
+    archivedAt?: true
   }
 
   export type NotificationCountAggregateInputType = {
     id?: true
     userId?: true
+    type?: true
     title?: true
     message?: true
+    entityId?: true
+    entityType?: true
+    actionUrl?: true
+    priority?: true
     read?: true
+    isArchived?: true
+    metadata?: true
     createdAt?: true
+    readAt?: true
+    archivedAt?: true
     _all?: true
   }
 
@@ -17557,10 +17910,19 @@ export namespace Prisma {
   export type NotificationGroupByOutputType = {
     id: string
     userId: string
+    type: string
     title: string
     message: string
+    entityId: string | null
+    entityType: string | null
+    actionUrl: string | null
+    priority: string
     read: boolean
+    isArchived: boolean
+    metadata: JsonValue | null
     createdAt: Date
+    readAt: Date | null
+    archivedAt: Date | null
     _count: NotificationCountAggregateOutputType | null
     _min: NotificationMinAggregateOutputType | null
     _max: NotificationMaxAggregateOutputType | null
@@ -17583,43 +17945,79 @@ export namespace Prisma {
   export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    entityId?: boolean
+    entityType?: boolean
+    actionUrl?: boolean
+    priority?: boolean
     read?: boolean
+    isArchived?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    readAt?: boolean
+    archivedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    entityId?: boolean
+    entityType?: boolean
+    actionUrl?: boolean
+    priority?: boolean
     read?: boolean
+    isArchived?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    readAt?: boolean
+    archivedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    entityId?: boolean
+    entityType?: boolean
+    actionUrl?: boolean
+    priority?: boolean
     read?: boolean
+    isArchived?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    readAt?: boolean
+    archivedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectScalar = {
     id?: boolean
     userId?: boolean
+    type?: boolean
     title?: boolean
     message?: boolean
+    entityId?: boolean
+    entityType?: boolean
+    actionUrl?: boolean
+    priority?: boolean
     read?: boolean
+    isArchived?: boolean
+    metadata?: boolean
     createdAt?: boolean
+    readAt?: boolean
+    archivedAt?: boolean
   }
 
-  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "message" | "read" | "createdAt", ExtArgs["result"]["notification"]>
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "title" | "message" | "entityId" | "entityType" | "actionUrl" | "priority" | "read" | "isArchived" | "metadata" | "createdAt" | "readAt" | "archivedAt", ExtArgs["result"]["notification"]>
   export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -17638,10 +18036,19 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      type: string
       title: string
       message: string
+      entityId: string | null
+      entityType: string | null
+      actionUrl: string | null
+      priority: string
       read: boolean
+      isArchived: boolean
+      metadata: Prisma.JsonValue | null
       createdAt: Date
+      readAt: Date | null
+      archivedAt: Date | null
     }, ExtArgs["result"]["notification"]>
     composites: {}
   }
@@ -18068,10 +18475,19 @@ export namespace Prisma {
   interface NotificationFieldRefs {
     readonly id: FieldRef<"Notification", 'String'>
     readonly userId: FieldRef<"Notification", 'String'>
+    readonly type: FieldRef<"Notification", 'String'>
     readonly title: FieldRef<"Notification", 'String'>
     readonly message: FieldRef<"Notification", 'String'>
+    readonly entityId: FieldRef<"Notification", 'String'>
+    readonly entityType: FieldRef<"Notification", 'String'>
+    readonly actionUrl: FieldRef<"Notification", 'String'>
+    readonly priority: FieldRef<"Notification", 'String'>
     readonly read: FieldRef<"Notification", 'Boolean'>
+    readonly isArchived: FieldRef<"Notification", 'Boolean'>
+    readonly metadata: FieldRef<"Notification", 'Json'>
     readonly createdAt: FieldRef<"Notification", 'DateTime'>
+    readonly readAt: FieldRef<"Notification", 'DateTime'>
+    readonly archivedAt: FieldRef<"Notification", 'DateTime'>
   }
     
 
@@ -19539,13 +19955,22 @@ export namespace Prisma {
     userId: string | null
     amount: number | null
     status: $Enums.PaymentStatus | null
+    currency: string | null
+    gateway: string | null
     paymentMethod: string | null
     paymentReference: string | null
+    paystackAccessCode: string | null
+    paystackAuthorizationUrl: string | null
+    paystackTransactionId: string | null
+    recipientCode: string | null
+    transferCode: string | null
     verificationCode: string | null
     isVerified: boolean | null
+    failureReason: string | null
     createdAt: Date | null
     verifiedAt: Date | null
     completedAt: Date | null
+    refundedAt: Date | null
   }
 
   export type PaymentMaxAggregateOutputType = {
@@ -19554,13 +19979,22 @@ export namespace Prisma {
     userId: string | null
     amount: number | null
     status: $Enums.PaymentStatus | null
+    currency: string | null
+    gateway: string | null
     paymentMethod: string | null
     paymentReference: string | null
+    paystackAccessCode: string | null
+    paystackAuthorizationUrl: string | null
+    paystackTransactionId: string | null
+    recipientCode: string | null
+    transferCode: string | null
     verificationCode: string | null
     isVerified: boolean | null
+    failureReason: string | null
     createdAt: Date | null
     verifiedAt: Date | null
     completedAt: Date | null
+    refundedAt: Date | null
   }
 
   export type PaymentCountAggregateOutputType = {
@@ -19569,13 +20003,23 @@ export namespace Prisma {
     userId: number
     amount: number
     status: number
+    currency: number
+    gateway: number
     paymentMethod: number
     paymentReference: number
+    paystackAccessCode: number
+    paystackAuthorizationUrl: number
+    paystackTransactionId: number
+    recipientCode: number
+    transferCode: number
     verificationCode: number
     isVerified: number
+    metadata: number
+    failureReason: number
     createdAt: number
     verifiedAt: number
     completedAt: number
+    refundedAt: number
     _all: number
   }
 
@@ -19594,13 +20038,22 @@ export namespace Prisma {
     userId?: true
     amount?: true
     status?: true
+    currency?: true
+    gateway?: true
     paymentMethod?: true
     paymentReference?: true
+    paystackAccessCode?: true
+    paystackAuthorizationUrl?: true
+    paystackTransactionId?: true
+    recipientCode?: true
+    transferCode?: true
     verificationCode?: true
     isVerified?: true
+    failureReason?: true
     createdAt?: true
     verifiedAt?: true
     completedAt?: true
+    refundedAt?: true
   }
 
   export type PaymentMaxAggregateInputType = {
@@ -19609,13 +20062,22 @@ export namespace Prisma {
     userId?: true
     amount?: true
     status?: true
+    currency?: true
+    gateway?: true
     paymentMethod?: true
     paymentReference?: true
+    paystackAccessCode?: true
+    paystackAuthorizationUrl?: true
+    paystackTransactionId?: true
+    recipientCode?: true
+    transferCode?: true
     verificationCode?: true
     isVerified?: true
+    failureReason?: true
     createdAt?: true
     verifiedAt?: true
     completedAt?: true
+    refundedAt?: true
   }
 
   export type PaymentCountAggregateInputType = {
@@ -19624,13 +20086,23 @@ export namespace Prisma {
     userId?: true
     amount?: true
     status?: true
+    currency?: true
+    gateway?: true
     paymentMethod?: true
     paymentReference?: true
+    paystackAccessCode?: true
+    paystackAuthorizationUrl?: true
+    paystackTransactionId?: true
+    recipientCode?: true
+    transferCode?: true
     verificationCode?: true
     isVerified?: true
+    metadata?: true
+    failureReason?: true
     createdAt?: true
     verifiedAt?: true
     completedAt?: true
+    refundedAt?: true
     _all?: true
   }
 
@@ -19726,13 +20198,23 @@ export namespace Prisma {
     userId: string
     amount: number
     status: $Enums.PaymentStatus
+    currency: string
+    gateway: string | null
     paymentMethod: string | null
     paymentReference: string | null
+    paystackAccessCode: string | null
+    paystackAuthorizationUrl: string | null
+    paystackTransactionId: string | null
+    recipientCode: string | null
+    transferCode: string | null
     verificationCode: string | null
     isVerified: boolean
+    metadata: JsonValue | null
+    failureReason: string | null
     createdAt: Date
     verifiedAt: Date | null
     completedAt: Date | null
+    refundedAt: Date | null
     _count: PaymentCountAggregateOutputType | null
     _avg: PaymentAvgAggregateOutputType | null
     _sum: PaymentSumAggregateOutputType | null
@@ -19760,13 +20242,23 @@ export namespace Prisma {
     userId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    gateway?: boolean
     paymentMethod?: boolean
     paymentReference?: boolean
+    paystackAccessCode?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackTransactionId?: boolean
+    recipientCode?: boolean
+    transferCode?: boolean
     verificationCode?: boolean
     isVerified?: boolean
+    metadata?: boolean
+    failureReason?: boolean
     createdAt?: boolean
     verifiedAt?: boolean
     completedAt?: boolean
+    refundedAt?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -19777,13 +20269,23 @@ export namespace Prisma {
     userId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    gateway?: boolean
     paymentMethod?: boolean
     paymentReference?: boolean
+    paystackAccessCode?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackTransactionId?: boolean
+    recipientCode?: boolean
+    transferCode?: boolean
     verificationCode?: boolean
     isVerified?: boolean
+    metadata?: boolean
+    failureReason?: boolean
     createdAt?: boolean
     verifiedAt?: boolean
     completedAt?: boolean
+    refundedAt?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -19794,13 +20296,23 @@ export namespace Prisma {
     userId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    gateway?: boolean
     paymentMethod?: boolean
     paymentReference?: boolean
+    paystackAccessCode?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackTransactionId?: boolean
+    recipientCode?: boolean
+    transferCode?: boolean
     verificationCode?: boolean
     isVerified?: boolean
+    metadata?: boolean
+    failureReason?: boolean
     createdAt?: boolean
     verifiedAt?: boolean
     completedAt?: boolean
+    refundedAt?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
@@ -19811,16 +20323,26 @@ export namespace Prisma {
     userId?: boolean
     amount?: boolean
     status?: boolean
+    currency?: boolean
+    gateway?: boolean
     paymentMethod?: boolean
     paymentReference?: boolean
+    paystackAccessCode?: boolean
+    paystackAuthorizationUrl?: boolean
+    paystackTransactionId?: boolean
+    recipientCode?: boolean
+    transferCode?: boolean
     verificationCode?: boolean
     isVerified?: boolean
+    metadata?: boolean
+    failureReason?: boolean
     createdAt?: boolean
     verifiedAt?: boolean
     completedAt?: boolean
+    refundedAt?: boolean
   }
 
-  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "userId" | "amount" | "status" | "paymentMethod" | "paymentReference" | "verificationCode" | "isVerified" | "createdAt" | "verifiedAt" | "completedAt", ExtArgs["result"]["payment"]>
+  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "userId" | "amount" | "status" | "currency" | "gateway" | "paymentMethod" | "paymentReference" | "paystackAccessCode" | "paystackAuthorizationUrl" | "paystackTransactionId" | "recipientCode" | "transferCode" | "verificationCode" | "isVerified" | "metadata" | "failureReason" | "createdAt" | "verifiedAt" | "completedAt" | "refundedAt", ExtArgs["result"]["payment"]>
   export type PaymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -19846,13 +20368,23 @@ export namespace Prisma {
       userId: string
       amount: number
       status: $Enums.PaymentStatus
+      currency: string
+      gateway: string | null
       paymentMethod: string | null
       paymentReference: string | null
+      paystackAccessCode: string | null
+      paystackAuthorizationUrl: string | null
+      paystackTransactionId: string | null
+      recipientCode: string | null
+      transferCode: string | null
       verificationCode: string | null
       isVerified: boolean
+      metadata: Prisma.JsonValue | null
+      failureReason: string | null
       createdAt: Date
       verifiedAt: Date | null
       completedAt: Date | null
+      refundedAt: Date | null
     }, ExtArgs["result"]["payment"]>
     composites: {}
   }
@@ -20283,13 +20815,23 @@ export namespace Prisma {
     readonly userId: FieldRef<"Payment", 'String'>
     readonly amount: FieldRef<"Payment", 'Int'>
     readonly status: FieldRef<"Payment", 'PaymentStatus'>
+    readonly currency: FieldRef<"Payment", 'String'>
+    readonly gateway: FieldRef<"Payment", 'String'>
     readonly paymentMethod: FieldRef<"Payment", 'String'>
     readonly paymentReference: FieldRef<"Payment", 'String'>
+    readonly paystackAccessCode: FieldRef<"Payment", 'String'>
+    readonly paystackAuthorizationUrl: FieldRef<"Payment", 'String'>
+    readonly paystackTransactionId: FieldRef<"Payment", 'String'>
+    readonly recipientCode: FieldRef<"Payment", 'String'>
+    readonly transferCode: FieldRef<"Payment", 'String'>
     readonly verificationCode: FieldRef<"Payment", 'String'>
     readonly isVerified: FieldRef<"Payment", 'Boolean'>
+    readonly metadata: FieldRef<"Payment", 'Json'>
+    readonly failureReason: FieldRef<"Payment", 'String'>
     readonly createdAt: FieldRef<"Payment", 'DateTime'>
     readonly verifiedAt: FieldRef<"Payment", 'DateTime'>
     readonly completedAt: FieldRef<"Payment", 'DateTime'>
+    readonly refundedAt: FieldRef<"Payment", 'DateTime'>
   }
     
 
@@ -21862,6 +22404,10 @@ export namespace Prisma {
     role: 'role',
     status: 'status',
     artisanVerified: 'artisanVerified',
+    paystackRecipientCode: 'paystackRecipientCode',
+    payoutBankCode: 'payoutBankCode',
+    payoutAccountNumber: 'payoutAccountNumber',
+    payoutAccountName: 'payoutAccountName',
     createdAt: 'createdAt',
     lastLoginAt: 'lastLoginAt',
     updatedAt: 'updatedAt'
@@ -21986,6 +22532,16 @@ export namespace Prisma {
     artisanId: 'artisanId',
     amount: 'amount',
     status: 'status',
+    currency: 'currency',
+    paystackReference: 'paystackReference',
+    paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+    paystackAccessCode: 'paystackAccessCode',
+    fundedPaymentId: 'fundedPaymentId',
+    payoutRequestedAt: 'payoutRequestedAt',
+    paidOutAt: 'paidOutAt',
+    refundedAt: 'refundedAt',
+    refundReason: 'refundReason',
+    payoutFailureReason: 'payoutFailureReason',
     fundedAt: 'fundedAt',
     activatedAt: 'activatedAt',
     startedAt: 'startedAt',
@@ -22053,7 +22609,15 @@ export namespace Prisma {
     artisanId: 'artisanId',
     rating: 'rating',
     comment: 'comment',
-    createdAt: 'createdAt'
+    categories: 'categories',
+    workQuality: 'workQuality',
+    communication: 'communication',
+    timeliness: 'timeliness',
+    professionalism: 'professionalism',
+    evidence: 'evidence',
+    isPublic: 'isPublic',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
@@ -22062,10 +22626,19 @@ export namespace Prisma {
   export const NotificationScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    type: 'type',
     title: 'title',
     message: 'message',
+    entityId: 'entityId',
+    entityType: 'entityType',
+    actionUrl: 'actionUrl',
+    priority: 'priority',
     read: 'read',
-    createdAt: 'createdAt'
+    isArchived: 'isArchived',
+    metadata: 'metadata',
+    createdAt: 'createdAt',
+    readAt: 'readAt',
+    archivedAt: 'archivedAt'
   };
 
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
@@ -22090,13 +22663,23 @@ export namespace Prisma {
     userId: 'userId',
     amount: 'amount',
     status: 'status',
+    currency: 'currency',
+    gateway: 'gateway',
     paymentMethod: 'paymentMethod',
     paymentReference: 'paymentReference',
+    paystackAccessCode: 'paystackAccessCode',
+    paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+    paystackTransactionId: 'paystackTransactionId',
+    recipientCode: 'recipientCode',
+    transferCode: 'transferCode',
     verificationCode: 'verificationCode',
     isVerified: 'isVerified',
+    metadata: 'metadata',
+    failureReason: 'failureReason',
     createdAt: 'createdAt',
     verifiedAt: 'verifiedAt',
-    completedAt: 'completedAt'
+    completedAt: 'completedAt',
+    refundedAt: 'refundedAt'
   };
 
   export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
@@ -22461,6 +23044,10 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     artisanVerified?: BoolFilter<"User"> | boolean
+    paystackRecipientCode?: StringNullableFilter<"User"> | string | null
+    payoutBankCode?: StringNullableFilter<"User"> | string | null
+    payoutAccountNumber?: StringNullableFilter<"User"> | string | null
+    payoutAccountName?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -22492,6 +23079,10 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    paystackRecipientCode?: SortOrderInput | SortOrder
+    payoutBankCode?: SortOrderInput | SortOrder
+    payoutAccountNumber?: SortOrderInput | SortOrder
+    payoutAccountName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
@@ -22526,6 +23117,10 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     artisanVerified?: BoolFilter<"User"> | boolean
+    paystackRecipientCode?: StringNullableFilter<"User"> | string | null
+    payoutBankCode?: StringNullableFilter<"User"> | string | null
+    payoutAccountNumber?: StringNullableFilter<"User"> | string | null
+    payoutAccountName?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -22557,6 +23152,10 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    paystackRecipientCode?: SortOrderInput | SortOrder
+    payoutBankCode?: SortOrderInput | SortOrder
+    payoutAccountNumber?: SortOrderInput | SortOrder
+    payoutAccountName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
@@ -22579,6 +23178,10 @@ export namespace Prisma {
     role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
     status?: EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
     artisanVerified?: BoolWithAggregatesFilter<"User"> | boolean
+    paystackRecipientCode?: StringNullableWithAggregatesFilter<"User"> | string | null
+    payoutBankCode?: StringNullableWithAggregatesFilter<"User"> | string | null
+    payoutAccountNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
+    payoutAccountName?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -23167,6 +23770,16 @@ export namespace Prisma {
     artisanId?: StringFilter<"Contract"> | string
     amount?: IntFilter<"Contract"> | number
     status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    currency?: StringFilter<"Contract"> | string
+    paystackReference?: StringNullableFilter<"Contract"> | string | null
+    paystackAuthorizationUrl?: StringNullableFilter<"Contract"> | string | null
+    paystackAccessCode?: StringNullableFilter<"Contract"> | string | null
+    fundedPaymentId?: StringNullableFilter<"Contract"> | string | null
+    payoutRequestedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    paidOutAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    refundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    refundReason?: StringNullableFilter<"Contract"> | string | null
+    payoutFailureReason?: StringNullableFilter<"Contract"> | string | null
     fundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     activatedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     startedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
@@ -23198,6 +23811,16 @@ export namespace Prisma {
     artisanId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    paystackReference?: SortOrderInput | SortOrder
+    paystackAuthorizationUrl?: SortOrderInput | SortOrder
+    paystackAccessCode?: SortOrderInput | SortOrder
+    fundedPaymentId?: SortOrderInput | SortOrder
+    payoutRequestedAt?: SortOrderInput | SortOrder
+    paidOutAt?: SortOrderInput | SortOrder
+    refundedAt?: SortOrderInput | SortOrder
+    refundReason?: SortOrderInput | SortOrder
+    payoutFailureReason?: SortOrderInput | SortOrder
     fundedAt?: SortOrderInput | SortOrder
     activatedAt?: SortOrderInput | SortOrder
     startedAt?: SortOrderInput | SortOrder
@@ -23225,6 +23848,7 @@ export namespace Prisma {
     id?: string
     jobId?: string
     proposalId?: string
+    paystackReference?: string
     AND?: ContractWhereInput | ContractWhereInput[]
     OR?: ContractWhereInput[]
     NOT?: ContractWhereInput | ContractWhereInput[]
@@ -23232,6 +23856,15 @@ export namespace Prisma {
     artisanId?: StringFilter<"Contract"> | string
     amount?: IntFilter<"Contract"> | number
     status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    currency?: StringFilter<"Contract"> | string
+    paystackAuthorizationUrl?: StringNullableFilter<"Contract"> | string | null
+    paystackAccessCode?: StringNullableFilter<"Contract"> | string | null
+    fundedPaymentId?: StringNullableFilter<"Contract"> | string | null
+    payoutRequestedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    paidOutAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    refundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    refundReason?: StringNullableFilter<"Contract"> | string | null
+    payoutFailureReason?: StringNullableFilter<"Contract"> | string | null
     fundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     activatedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     startedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
@@ -23253,7 +23886,7 @@ export namespace Prisma {
     conversation?: XOR<ConversationNullableScalarRelationFilter, ConversationWhereInput> | null
     review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
     payments?: PaymentListRelationFilter
-  }, "id" | "jobId" | "proposalId">
+  }, "id" | "jobId" | "proposalId" | "paystackReference">
 
   export type ContractOrderByWithAggregationInput = {
     id?: SortOrder
@@ -23263,6 +23896,16 @@ export namespace Prisma {
     artisanId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    paystackReference?: SortOrderInput | SortOrder
+    paystackAuthorizationUrl?: SortOrderInput | SortOrder
+    paystackAccessCode?: SortOrderInput | SortOrder
+    fundedPaymentId?: SortOrderInput | SortOrder
+    payoutRequestedAt?: SortOrderInput | SortOrder
+    paidOutAt?: SortOrderInput | SortOrder
+    refundedAt?: SortOrderInput | SortOrder
+    refundReason?: SortOrderInput | SortOrder
+    payoutFailureReason?: SortOrderInput | SortOrder
     fundedAt?: SortOrderInput | SortOrder
     activatedAt?: SortOrderInput | SortOrder
     startedAt?: SortOrderInput | SortOrder
@@ -23295,6 +23938,16 @@ export namespace Prisma {
     artisanId?: StringWithAggregatesFilter<"Contract"> | string
     amount?: IntWithAggregatesFilter<"Contract"> | number
     status?: EnumContractStatusWithAggregatesFilter<"Contract"> | $Enums.ContractStatus
+    currency?: StringWithAggregatesFilter<"Contract"> | string
+    paystackReference?: StringNullableWithAggregatesFilter<"Contract"> | string | null
+    paystackAuthorizationUrl?: StringNullableWithAggregatesFilter<"Contract"> | string | null
+    paystackAccessCode?: StringNullableWithAggregatesFilter<"Contract"> | string | null
+    fundedPaymentId?: StringNullableWithAggregatesFilter<"Contract"> | string | null
+    payoutRequestedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    paidOutAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    refundedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
+    refundReason?: StringNullableWithAggregatesFilter<"Contract"> | string | null
+    payoutFailureReason?: StringNullableWithAggregatesFilter<"Contract"> | string | null
     fundedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
     activatedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
     startedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
@@ -23533,7 +24186,15 @@ export namespace Prisma {
     artisanId?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
     comment?: StringNullableFilter<"Review"> | string | null
+    categories?: JsonNullableFilter<"Review">
+    workQuality?: IntNullableFilter<"Review"> | number | null
+    communication?: IntNullableFilter<"Review"> | number | null
+    timeliness?: IntNullableFilter<"Review"> | number | null
+    professionalism?: IntNullableFilter<"Review"> | number | null
+    evidence?: JsonNullableFilter<"Review">
+    isPublic?: BoolFilter<"Review"> | boolean
     createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -23546,7 +24207,15 @@ export namespace Prisma {
     artisanId?: SortOrder
     rating?: SortOrder
     comment?: SortOrderInput | SortOrder
+    categories?: SortOrderInput | SortOrder
+    workQuality?: SortOrderInput | SortOrder
+    communication?: SortOrderInput | SortOrder
+    timeliness?: SortOrderInput | SortOrder
+    professionalism?: SortOrderInput | SortOrder
+    evidence?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     contract?: ContractOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
     artisan?: UserOrderByWithRelationInput
@@ -23562,7 +24231,15 @@ export namespace Prisma {
     artisanId?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
     comment?: StringNullableFilter<"Review"> | string | null
+    categories?: JsonNullableFilter<"Review">
+    workQuality?: IntNullableFilter<"Review"> | number | null
+    communication?: IntNullableFilter<"Review"> | number | null
+    timeliness?: IntNullableFilter<"Review"> | number | null
+    professionalism?: IntNullableFilter<"Review"> | number | null
+    evidence?: JsonNullableFilter<"Review">
+    isPublic?: BoolFilter<"Review"> | boolean
     createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -23575,7 +24252,15 @@ export namespace Prisma {
     artisanId?: SortOrder
     rating?: SortOrder
     comment?: SortOrderInput | SortOrder
+    categories?: SortOrderInput | SortOrder
+    workQuality?: SortOrderInput | SortOrder
+    communication?: SortOrderInput | SortOrder
+    timeliness?: SortOrderInput | SortOrder
+    professionalism?: SortOrderInput | SortOrder
+    evidence?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ReviewCountOrderByAggregateInput
     _avg?: ReviewAvgOrderByAggregateInput
     _max?: ReviewMaxOrderByAggregateInput
@@ -23593,7 +24278,15 @@ export namespace Prisma {
     artisanId?: StringWithAggregatesFilter<"Review"> | string
     rating?: IntWithAggregatesFilter<"Review"> | number
     comment?: StringNullableWithAggregatesFilter<"Review"> | string | null
+    categories?: JsonNullableWithAggregatesFilter<"Review">
+    workQuality?: IntNullableWithAggregatesFilter<"Review"> | number | null
+    communication?: IntNullableWithAggregatesFilter<"Review"> | number | null
+    timeliness?: IntNullableWithAggregatesFilter<"Review"> | number | null
+    professionalism?: IntNullableWithAggregatesFilter<"Review"> | number | null
+    evidence?: JsonNullableWithAggregatesFilter<"Review">
+    isPublic?: BoolWithAggregatesFilter<"Review"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
   }
 
   export type NotificationWhereInput = {
@@ -23602,20 +24295,38 @@ export namespace Prisma {
     NOT?: NotificationWhereInput | NotificationWhereInput[]
     id?: StringFilter<"Notification"> | string
     userId?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    entityId?: StringNullableFilter<"Notification"> | string | null
+    entityType?: StringNullableFilter<"Notification"> | string | null
+    actionUrl?: StringNullableFilter<"Notification"> | string | null
+    priority?: StringFilter<"Notification"> | string
     read?: BoolFilter<"Notification"> | boolean
+    isArchived?: BoolFilter<"Notification"> | boolean
+    metadata?: JsonNullableFilter<"Notification">
     createdAt?: DateTimeFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type NotificationOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    entityId?: SortOrderInput | SortOrder
+    entityType?: SortOrderInput | SortOrder
+    actionUrl?: SortOrderInput | SortOrder
+    priority?: SortOrder
     read?: SortOrder
+    isArchived?: SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -23625,20 +24336,38 @@ export namespace Prisma {
     OR?: NotificationWhereInput[]
     NOT?: NotificationWhereInput | NotificationWhereInput[]
     userId?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    entityId?: StringNullableFilter<"Notification"> | string | null
+    entityType?: StringNullableFilter<"Notification"> | string | null
+    actionUrl?: StringNullableFilter<"Notification"> | string | null
+    priority?: StringFilter<"Notification"> | string
     read?: BoolFilter<"Notification"> | boolean
+    isArchived?: BoolFilter<"Notification"> | boolean
+    metadata?: JsonNullableFilter<"Notification">
     createdAt?: DateTimeFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type NotificationOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    entityId?: SortOrderInput | SortOrder
+    entityType?: SortOrderInput | SortOrder
+    actionUrl?: SortOrderInput | SortOrder
+    priority?: SortOrder
     read?: SortOrder
+    isArchived?: SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
     _count?: NotificationCountOrderByAggregateInput
     _max?: NotificationMaxOrderByAggregateInput
     _min?: NotificationMinOrderByAggregateInput
@@ -23650,10 +24379,19 @@ export namespace Prisma {
     NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Notification"> | string
     userId?: StringWithAggregatesFilter<"Notification"> | string
+    type?: StringWithAggregatesFilter<"Notification"> | string
     title?: StringWithAggregatesFilter<"Notification"> | string
     message?: StringWithAggregatesFilter<"Notification"> | string
+    entityId?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    entityType?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    actionUrl?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    priority?: StringWithAggregatesFilter<"Notification"> | string
     read?: BoolWithAggregatesFilter<"Notification"> | boolean
+    isArchived?: BoolWithAggregatesFilter<"Notification"> | boolean
+    metadata?: JsonNullableWithAggregatesFilter<"Notification">
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+    archivedAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
   }
 
   export type AuditLogWhereInput = {
@@ -23727,13 +24465,23 @@ export namespace Prisma {
     userId?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
     status?: EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
+    currency?: StringFilter<"Payment"> | string
+    gateway?: StringNullableFilter<"Payment"> | string | null
     paymentMethod?: StringNullableFilter<"Payment"> | string | null
     paymentReference?: StringNullableFilter<"Payment"> | string | null
+    paystackAccessCode?: StringNullableFilter<"Payment"> | string | null
+    paystackAuthorizationUrl?: StringNullableFilter<"Payment"> | string | null
+    paystackTransactionId?: StringNullableFilter<"Payment"> | string | null
+    recipientCode?: StringNullableFilter<"Payment"> | string | null
+    transferCode?: StringNullableFilter<"Payment"> | string | null
     verificationCode?: StringNullableFilter<"Payment"> | string | null
     isVerified?: BoolFilter<"Payment"> | boolean
+    metadata?: JsonNullableFilter<"Payment">
+    failureReason?: StringNullableFilter<"Payment"> | string | null
     createdAt?: DateTimeFilter<"Payment"> | Date | string
     verifiedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
+    refundedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -23744,13 +24492,23 @@ export namespace Prisma {
     userId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    gateway?: SortOrderInput | SortOrder
     paymentMethod?: SortOrderInput | SortOrder
     paymentReference?: SortOrderInput | SortOrder
+    paystackAccessCode?: SortOrderInput | SortOrder
+    paystackAuthorizationUrl?: SortOrderInput | SortOrder
+    paystackTransactionId?: SortOrderInput | SortOrder
+    recipientCode?: SortOrderInput | SortOrder
+    transferCode?: SortOrderInput | SortOrder
     verificationCode?: SortOrderInput | SortOrder
     isVerified?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     verifiedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
+    refundedAt?: SortOrderInput | SortOrder
     contract?: ContractOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
@@ -23764,13 +24522,23 @@ export namespace Prisma {
     userId?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
     status?: EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
+    currency?: StringFilter<"Payment"> | string
+    gateway?: StringNullableFilter<"Payment"> | string | null
     paymentMethod?: StringNullableFilter<"Payment"> | string | null
     paymentReference?: StringNullableFilter<"Payment"> | string | null
+    paystackAccessCode?: StringNullableFilter<"Payment"> | string | null
+    paystackAuthorizationUrl?: StringNullableFilter<"Payment"> | string | null
+    paystackTransactionId?: StringNullableFilter<"Payment"> | string | null
+    recipientCode?: StringNullableFilter<"Payment"> | string | null
+    transferCode?: StringNullableFilter<"Payment"> | string | null
     verificationCode?: StringNullableFilter<"Payment"> | string | null
     isVerified?: BoolFilter<"Payment"> | boolean
+    metadata?: JsonNullableFilter<"Payment">
+    failureReason?: StringNullableFilter<"Payment"> | string | null
     createdAt?: DateTimeFilter<"Payment"> | Date | string
     verifiedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
+    refundedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -23781,13 +24549,23 @@ export namespace Prisma {
     userId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    gateway?: SortOrderInput | SortOrder
     paymentMethod?: SortOrderInput | SortOrder
     paymentReference?: SortOrderInput | SortOrder
+    paystackAccessCode?: SortOrderInput | SortOrder
+    paystackAuthorizationUrl?: SortOrderInput | SortOrder
+    paystackTransactionId?: SortOrderInput | SortOrder
+    recipientCode?: SortOrderInput | SortOrder
+    transferCode?: SortOrderInput | SortOrder
     verificationCode?: SortOrderInput | SortOrder
     isVerified?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    failureReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     verifiedAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
+    refundedAt?: SortOrderInput | SortOrder
     _count?: PaymentCountOrderByAggregateInput
     _avg?: PaymentAvgOrderByAggregateInput
     _max?: PaymentMaxOrderByAggregateInput
@@ -23804,13 +24582,23 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Payment"> | string
     amount?: IntWithAggregatesFilter<"Payment"> | number
     status?: EnumPaymentStatusWithAggregatesFilter<"Payment"> | $Enums.PaymentStatus
+    currency?: StringWithAggregatesFilter<"Payment"> | string
+    gateway?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     paymentMethod?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     paymentReference?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    paystackAccessCode?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    paystackAuthorizationUrl?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    paystackTransactionId?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    recipientCode?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    transferCode?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     verificationCode?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     isVerified?: BoolWithAggregatesFilter<"Payment"> | boolean
+    metadata?: JsonNullableWithAggregatesFilter<"Payment">
+    failureReason?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
     verifiedAt?: DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
+    refundedAt?: DateTimeNullableWithAggregatesFilter<"Payment"> | Date | string | null
   }
 
   export type KycDocumentWhereInput = {
@@ -23904,6 +24692,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -23935,6 +24727,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -23966,6 +24762,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23997,6 +24797,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24028,6 +24832,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -24044,6 +24852,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24060,6 +24872,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24706,6 +25522,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -24737,6 +25563,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -24760,6 +25596,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24791,6 +25637,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24818,6 +25674,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -24838,6 +25704,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24862,6 +25738,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25107,7 +25993,15 @@ export namespace Prisma {
     id: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
     contract: ContractCreateNestedOneWithoutReviewInput
     client: UserCreateNestedOneWithoutSentReviewsInput
     artisan: UserCreateNestedOneWithoutReceivedReviewsInput
@@ -25120,14 +26014,30 @@ export namespace Prisma {
     artisanId: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ReviewUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
     client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
     artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
@@ -25140,7 +26050,15 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReviewCreateManyInput = {
@@ -25150,14 +26068,30 @@ export namespace Prisma {
     artisanId: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ReviewUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReviewUncheckedUpdateManyInput = {
@@ -25167,69 +26101,140 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationCreateInput = {
     id: string
+    type?: string
     title: string
     message: string
+    entityId?: string | null
+    entityType?: string | null
+    actionUrl?: string | null
+    priority?: string
     read?: boolean
+    isArchived?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt: Date | string
+    readAt?: Date | string | null
+    archivedAt?: Date | string | null
     user: UserCreateNestedOneWithoutNotificationsInput
   }
 
   export type NotificationUncheckedCreateInput = {
     id: string
     userId: string
+    type?: string
     title: string
     message: string
+    entityId?: string | null
+    entityType?: string | null
+    actionUrl?: string | null
+    priority?: string
     read?: boolean
+    isArchived?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt: Date | string
+    readAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type NotificationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: StringFieldUpdateOperationsInput | string
     read?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
   }
 
   export type NotificationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: StringFieldUpdateOperationsInput | string
     read?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type NotificationCreateManyInput = {
     id: string
     userId: string
+    type?: string
     title: string
     message: string
+    entityId?: string | null
+    entityType?: string | null
+    actionUrl?: string | null
+    priority?: string
     read?: boolean
+    isArchived?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt: Date | string
+    readAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type NotificationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: StringFieldUpdateOperationsInput | string
     read?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type NotificationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: StringFieldUpdateOperationsInput | string
     read?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AuditLogCreateInput = {
@@ -25306,13 +26311,23 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
     contract: ContractCreateNestedOneWithoutPaymentsInput
     user: UserCreateNestedOneWithoutPaymentsInput
   }
@@ -25323,26 +26338,46 @@ export namespace Prisma {
     userId: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
   }
 
   export type PaymentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contract?: ContractUpdateOneRequiredWithoutPaymentsNestedInput
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
   }
@@ -25353,13 +26388,23 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PaymentCreateManyInput = {
@@ -25368,26 +26413,46 @@ export namespace Prisma {
     userId: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
   }
 
   export type PaymentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PaymentUncheckedUpdateManyInput = {
@@ -25396,13 +26461,23 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KycDocumentCreateInput = {
@@ -25682,6 +26757,10 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    paystackRecipientCode?: SortOrder
+    payoutBankCode?: SortOrder
+    payoutAccountNumber?: SortOrder
+    payoutAccountName?: SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrder
     updatedAt?: SortOrder
@@ -25698,6 +26777,10 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    paystackRecipientCode?: SortOrder
+    payoutBankCode?: SortOrder
+    payoutAccountNumber?: SortOrder
+    payoutAccountName?: SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrder
     updatedAt?: SortOrder
@@ -25714,6 +26797,10 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    paystackRecipientCode?: SortOrder
+    payoutBankCode?: SortOrder
+    payoutAccountNumber?: SortOrder
+    payoutAccountName?: SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrder
     updatedAt?: SortOrder
@@ -26462,6 +27549,16 @@ export namespace Prisma {
     artisanId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    paystackReference?: SortOrder
+    paystackAuthorizationUrl?: SortOrder
+    paystackAccessCode?: SortOrder
+    fundedPaymentId?: SortOrder
+    payoutRequestedAt?: SortOrder
+    paidOutAt?: SortOrder
+    refundedAt?: SortOrder
+    refundReason?: SortOrder
+    payoutFailureReason?: SortOrder
     fundedAt?: SortOrder
     activatedAt?: SortOrder
     startedAt?: SortOrder
@@ -26490,6 +27587,16 @@ export namespace Prisma {
     artisanId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    paystackReference?: SortOrder
+    paystackAuthorizationUrl?: SortOrder
+    paystackAccessCode?: SortOrder
+    fundedPaymentId?: SortOrder
+    payoutRequestedAt?: SortOrder
+    paidOutAt?: SortOrder
+    refundedAt?: SortOrder
+    refundReason?: SortOrder
+    payoutFailureReason?: SortOrder
     fundedAt?: SortOrder
     activatedAt?: SortOrder
     startedAt?: SortOrder
@@ -26514,6 +27621,16 @@ export namespace Prisma {
     artisanId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    paystackReference?: SortOrder
+    paystackAuthorizationUrl?: SortOrder
+    paystackAccessCode?: SortOrder
+    fundedPaymentId?: SortOrder
+    payoutRequestedAt?: SortOrder
+    paidOutAt?: SortOrder
+    refundedAt?: SortOrder
+    refundReason?: SortOrder
+    payoutFailureReason?: SortOrder
     fundedAt?: SortOrder
     activatedAt?: SortOrder
     startedAt?: SortOrder
@@ -26704,11 +27821,23 @@ export namespace Prisma {
     artisanId?: SortOrder
     rating?: SortOrder
     comment?: SortOrder
+    categories?: SortOrder
+    workQuality?: SortOrder
+    communication?: SortOrder
+    timeliness?: SortOrder
+    professionalism?: SortOrder
+    evidence?: SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ReviewAvgOrderByAggregateInput = {
     rating?: SortOrder
+    workQuality?: SortOrder
+    communication?: SortOrder
+    timeliness?: SortOrder
+    professionalism?: SortOrder
   }
 
   export type ReviewMaxOrderByAggregateInput = {
@@ -26718,7 +27847,13 @@ export namespace Prisma {
     artisanId?: SortOrder
     rating?: SortOrder
     comment?: SortOrder
+    workQuality?: SortOrder
+    communication?: SortOrder
+    timeliness?: SortOrder
+    professionalism?: SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ReviewMinOrderByAggregateInput = {
@@ -26728,38 +27863,73 @@ export namespace Prisma {
     artisanId?: SortOrder
     rating?: SortOrder
     comment?: SortOrder
+    workQuality?: SortOrder
+    communication?: SortOrder
+    timeliness?: SortOrder
+    professionalism?: SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ReviewSumOrderByAggregateInput = {
     rating?: SortOrder
+    workQuality?: SortOrder
+    communication?: SortOrder
+    timeliness?: SortOrder
+    professionalism?: SortOrder
   }
 
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    entityId?: SortOrder
+    entityType?: SortOrder
+    actionUrl?: SortOrder
+    priority?: SortOrder
     read?: SortOrder
+    isArchived?: SortOrder
+    metadata?: SortOrder
     createdAt?: SortOrder
+    readAt?: SortOrder
+    archivedAt?: SortOrder
   }
 
   export type NotificationMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    entityId?: SortOrder
+    entityType?: SortOrder
+    actionUrl?: SortOrder
+    priority?: SortOrder
     read?: SortOrder
+    isArchived?: SortOrder
     createdAt?: SortOrder
+    readAt?: SortOrder
+    archivedAt?: SortOrder
   }
 
   export type NotificationMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    type?: SortOrder
     title?: SortOrder
     message?: SortOrder
+    entityId?: SortOrder
+    entityType?: SortOrder
+    actionUrl?: SortOrder
+    priority?: SortOrder
     read?: SortOrder
+    isArchived?: SortOrder
     createdAt?: SortOrder
+    readAt?: SortOrder
+    archivedAt?: SortOrder
   }
 
   export type EnumAuditEntityTypeFilter<$PrismaModel = never> = {
@@ -26820,13 +27990,23 @@ export namespace Prisma {
     userId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    gateway?: SortOrder
     paymentMethod?: SortOrder
     paymentReference?: SortOrder
+    paystackAccessCode?: SortOrder
+    paystackAuthorizationUrl?: SortOrder
+    paystackTransactionId?: SortOrder
+    recipientCode?: SortOrder
+    transferCode?: SortOrder
     verificationCode?: SortOrder
     isVerified?: SortOrder
+    metadata?: SortOrder
+    failureReason?: SortOrder
     createdAt?: SortOrder
     verifiedAt?: SortOrder
     completedAt?: SortOrder
+    refundedAt?: SortOrder
   }
 
   export type PaymentAvgOrderByAggregateInput = {
@@ -26839,13 +28019,22 @@ export namespace Prisma {
     userId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    gateway?: SortOrder
     paymentMethod?: SortOrder
     paymentReference?: SortOrder
+    paystackAccessCode?: SortOrder
+    paystackAuthorizationUrl?: SortOrder
+    paystackTransactionId?: SortOrder
+    recipientCode?: SortOrder
+    transferCode?: SortOrder
     verificationCode?: SortOrder
     isVerified?: SortOrder
+    failureReason?: SortOrder
     createdAt?: SortOrder
     verifiedAt?: SortOrder
     completedAt?: SortOrder
+    refundedAt?: SortOrder
   }
 
   export type PaymentMinOrderByAggregateInput = {
@@ -26854,13 +28043,22 @@ export namespace Prisma {
     userId?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    currency?: SortOrder
+    gateway?: SortOrder
     paymentMethod?: SortOrder
     paymentReference?: SortOrder
+    paystackAccessCode?: SortOrder
+    paystackAuthorizationUrl?: SortOrder
+    paystackTransactionId?: SortOrder
+    recipientCode?: SortOrder
+    transferCode?: SortOrder
     verificationCode?: SortOrder
     isVerified?: SortOrder
+    failureReason?: SortOrder
     createdAt?: SortOrder
     verifiedAt?: SortOrder
     completedAt?: SortOrder
+    refundedAt?: SortOrder
   }
 
   export type PaymentSumOrderByAggregateInput = {
@@ -28918,6 +30116,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -28947,6 +30155,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -28980,6 +30198,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -29009,6 +30237,16 @@ export namespace Prisma {
     clientId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -29177,7 +30415,15 @@ export namespace Prisma {
     id: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
     contract: ContractCreateNestedOneWithoutReviewInput
     artisan: UserCreateNestedOneWithoutReceivedReviewsInput
   }
@@ -29188,7 +30434,15 @@ export namespace Prisma {
     artisanId: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ReviewCreateOrConnectWithoutClientInput = {
@@ -29205,7 +30459,15 @@ export namespace Prisma {
     id: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
     contract: ContractCreateNestedOneWithoutReviewInput
     client: UserCreateNestedOneWithoutSentReviewsInput
   }
@@ -29216,7 +30478,15 @@ export namespace Prisma {
     clientId: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ReviewCreateOrConnectWithoutArtisanInput = {
@@ -29231,18 +30501,36 @@ export namespace Prisma {
 
   export type NotificationCreateWithoutUserInput = {
     id: string
+    type?: string
     title: string
     message: string
+    entityId?: string | null
+    entityType?: string | null
+    actionUrl?: string | null
+    priority?: string
     read?: boolean
+    isArchived?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt: Date | string
+    readAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type NotificationUncheckedCreateWithoutUserInput = {
     id: string
+    type?: string
     title: string
     message: string
+    entityId?: string | null
+    entityType?: string | null
+    actionUrl?: string | null
+    priority?: string
     read?: boolean
+    isArchived?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt: Date | string
+    readAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type NotificationCreateOrConnectWithoutUserInput = {
@@ -29295,13 +30583,23 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
     contract: ContractCreateNestedOneWithoutPaymentsInput
   }
 
@@ -29310,13 +30608,23 @@ export namespace Prisma {
     contractId: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
   }
 
   export type PaymentCreateOrConnectWithoutUserInput = {
@@ -29520,6 +30828,16 @@ export namespace Prisma {
     artisanId?: StringFilter<"Contract"> | string
     amount?: IntFilter<"Contract"> | number
     status?: EnumContractStatusFilter<"Contract"> | $Enums.ContractStatus
+    currency?: StringFilter<"Contract"> | string
+    paystackReference?: StringNullableFilter<"Contract"> | string | null
+    paystackAuthorizationUrl?: StringNullableFilter<"Contract"> | string | null
+    paystackAccessCode?: StringNullableFilter<"Contract"> | string | null
+    fundedPaymentId?: StringNullableFilter<"Contract"> | string | null
+    payoutRequestedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    paidOutAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    refundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
+    refundReason?: StringNullableFilter<"Contract"> | string | null
+    payoutFailureReason?: StringNullableFilter<"Contract"> | string | null
     fundedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     activatedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     startedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
@@ -29664,7 +30982,15 @@ export namespace Prisma {
     artisanId?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
     comment?: StringNullableFilter<"Review"> | string | null
+    categories?: JsonNullableFilter<"Review">
+    workQuality?: IntNullableFilter<"Review"> | number | null
+    communication?: IntNullableFilter<"Review"> | number | null
+    timeliness?: IntNullableFilter<"Review"> | number | null
+    professionalism?: IntNullableFilter<"Review"> | number | null
+    evidence?: JsonNullableFilter<"Review">
+    isPublic?: BoolFilter<"Review"> | boolean
     createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
   }
 
   export type ReviewUpsertWithWhereUniqueWithoutArtisanInput = {
@@ -29705,10 +31031,19 @@ export namespace Prisma {
     NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
     id?: StringFilter<"Notification"> | string
     userId?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
     title?: StringFilter<"Notification"> | string
     message?: StringFilter<"Notification"> | string
+    entityId?: StringNullableFilter<"Notification"> | string | null
+    entityType?: StringNullableFilter<"Notification"> | string | null
+    actionUrl?: StringNullableFilter<"Notification"> | string | null
+    priority?: StringFilter<"Notification"> | string
     read?: BoolFilter<"Notification"> | boolean
+    isArchived?: BoolFilter<"Notification"> | boolean
+    metadata?: JsonNullableFilter<"Notification">
     createdAt?: DateTimeFilter<"Notification"> | Date | string
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutUserInput = {
@@ -29769,13 +31104,23 @@ export namespace Prisma {
     userId?: StringFilter<"Payment"> | string
     amount?: IntFilter<"Payment"> | number
     status?: EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
+    currency?: StringFilter<"Payment"> | string
+    gateway?: StringNullableFilter<"Payment"> | string | null
     paymentMethod?: StringNullableFilter<"Payment"> | string | null
     paymentReference?: StringNullableFilter<"Payment"> | string | null
+    paystackAccessCode?: StringNullableFilter<"Payment"> | string | null
+    paystackAuthorizationUrl?: StringNullableFilter<"Payment"> | string | null
+    paystackTransactionId?: StringNullableFilter<"Payment"> | string | null
+    recipientCode?: StringNullableFilter<"Payment"> | string | null
+    transferCode?: StringNullableFilter<"Payment"> | string | null
     verificationCode?: StringNullableFilter<"Payment"> | string | null
     isVerified?: BoolFilter<"Payment"> | boolean
+    metadata?: JsonNullableFilter<"Payment">
+    failureReason?: StringNullableFilter<"Payment"> | string | null
     createdAt?: DateTimeFilter<"Payment"> | Date | string
     verifiedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
+    refundedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
   }
 
   export type DisputeUpsertWithWhereUniqueWithoutUserInput = {
@@ -29853,6 +31198,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -29883,6 +31232,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -29957,6 +31310,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29987,6 +31344,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30109,6 +31470,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30139,6 +31504,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30174,6 +31543,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30204,6 +31577,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30232,6 +31609,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -30261,6 +31648,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -30341,6 +31738,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30371,6 +31772,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30412,6 +31817,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30442,6 +31851,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30476,6 +31889,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30505,6 +31928,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30551,6 +31984,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30581,6 +32018,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30627,6 +32068,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30657,6 +32102,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30687,6 +32136,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30717,6 +32170,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30763,6 +32220,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30793,6 +32254,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30874,6 +32339,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30904,6 +32373,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30939,6 +32412,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30969,6 +32446,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -30997,6 +32478,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -31026,6 +32517,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -31129,6 +32630,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31159,6 +32664,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31200,6 +32709,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31230,6 +32743,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31264,6 +32781,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31293,6 +32820,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31403,6 +32940,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -31433,6 +32974,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -31468,6 +33013,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -31498,6 +33047,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -31549,7 +33102,15 @@ export namespace Prisma {
     id: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
     client: UserCreateNestedOneWithoutSentReviewsInput
     artisan: UserCreateNestedOneWithoutReceivedReviewsInput
   }
@@ -31560,7 +33121,15 @@ export namespace Prisma {
     artisanId: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ReviewCreateOrConnectWithoutContractInput = {
@@ -31572,13 +33141,23 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
     user: UserCreateNestedOneWithoutPaymentsInput
   }
 
@@ -31587,13 +33166,23 @@ export namespace Prisma {
     userId: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
   }
 
   export type PaymentCreateOrConnectWithoutContractInput = {
@@ -31720,6 +33309,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31750,6 +33343,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31791,6 +33388,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31821,6 +33422,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31884,7 +33489,15 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
     artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
   }
@@ -31895,7 +33508,15 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentUpsertWithWhereUniqueWithoutContractInput = {
@@ -31918,6 +33539,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -31948,6 +33579,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -32020,6 +33661,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32050,6 +33701,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32163,6 +33824,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32193,6 +33858,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32239,6 +33908,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32269,6 +33942,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32292,6 +33969,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -32322,6 +34009,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -32356,6 +34053,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32386,6 +34087,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32421,6 +34126,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32451,6 +34160,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32490,6 +34203,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32520,6 +34243,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32560,6 +34293,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32590,6 +34327,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32631,6 +34372,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32661,6 +34406,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32691,6 +34440,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32721,6 +34474,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32767,6 +34524,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32797,6 +34558,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32820,6 +34585,16 @@ export namespace Prisma {
     id: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -32850,6 +34625,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -32884,6 +34669,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32914,6 +34703,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -32953,6 +34746,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32983,6 +34786,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33023,6 +34836,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33053,6 +34870,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33083,6 +34904,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -33113,6 +34938,10 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -33159,6 +34988,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33189,6 +35022,10 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33249,6 +35086,16 @@ export namespace Prisma {
     artisanId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -33272,6 +35119,16 @@ export namespace Prisma {
     clientId: string
     amount: number
     status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
     fundedAt?: Date | string | null
     activatedAt?: Date | string | null
     startedAt?: Date | string | null
@@ -33336,7 +35193,15 @@ export namespace Prisma {
     artisanId: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ReviewCreateManyArtisanInput = {
@@ -33345,15 +35210,32 @@ export namespace Prisma {
     clientId: string
     rating: number
     comment?: string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: number | null
+    communication?: number | null
+    timeliness?: number | null
+    professionalism?: number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type NotificationCreateManyUserInput = {
     id: string
+    type?: string
     title: string
     message: string
+    entityId?: string | null
+    entityType?: string | null
+    actionUrl?: string | null
+    priority?: string
     read?: boolean
+    isArchived?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt: Date | string
+    readAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type TransactionCreateManyUserInput = {
@@ -33374,13 +35256,23 @@ export namespace Prisma {
     contractId: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
   }
 
   export type DisputeCreateManyUserInput = {
@@ -33511,6 +35403,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33540,6 +35442,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33566,6 +35478,16 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33586,6 +35508,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33615,6 +35547,16 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33641,6 +35583,16 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
     fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33795,7 +35747,15 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
     artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
   }
@@ -33806,7 +35766,15 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReviewUncheckedUpdateManyWithoutClientInput = {
@@ -33815,14 +35783,30 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReviewUpdateWithoutArtisanInput = {
     id?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
     client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
   }
@@ -33833,7 +35817,15 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReviewUncheckedUpdateManyWithoutArtisanInput = {
@@ -33842,31 +35834,66 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     rating?: IntFieldUpdateOperationsInput | number
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+    categories?: NullableJsonNullValueInput | InputJsonValue
+    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
+    communication?: NullableIntFieldUpdateOperationsInput | number | null
+    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
+    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: StringFieldUpdateOperationsInput | string
     read?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type NotificationUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: StringFieldUpdateOperationsInput | string
     read?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type NotificationUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    actionUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: StringFieldUpdateOperationsInput | string
     read?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionUpdateWithoutUserInput = {
@@ -33912,13 +35939,23 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contract?: ContractUpdateOneRequiredWithoutPaymentsNestedInput
   }
 
@@ -33927,13 +35964,23 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PaymentUncheckedUpdateManyWithoutUserInput = {
@@ -33941,13 +35988,23 @@ export namespace Prisma {
     contractId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type DisputeUpdateWithoutUserInput = {
@@ -34089,26 +36146,46 @@ export namespace Prisma {
     userId: string
     amount: number
     status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
     paymentMethod?: string | null
     paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
     verificationCode?: string | null
     isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
     createdAt?: Date | string
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
+    refundedAt?: Date | string | null
   }
 
   export type PaymentUpdateWithoutContractInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
   }
 
@@ -34117,13 +36194,23 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PaymentUncheckedUpdateManyWithoutContractInput = {
@@ -34131,13 +36218,23 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
     paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
     verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MessageCreateManyConversationInput = {
