@@ -37,3 +37,4 @@ yarn-error.log*
 # Optional npm files
 .npm
 .eslintcache
+.env
