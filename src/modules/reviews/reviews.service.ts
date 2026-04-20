@@ -44,8 +44,15 @@ export class ReviewsService {
     }
 
     // Check if contract is completed
-    if (contract.status !== ContractStatus.COMPLETED) {
-      throw new BadRequestException('You can only review completed contracts');
+    const reviewableStatuses = new Set<ContractStatus>([
+      ContractStatus.COMPLETED,
+      ContractStatus.PAID_OUT,
+    ]);
+
+    if (!reviewableStatuses.has(contract.status)) {
+      throw new BadRequestException(
+        'You can only review contracts that have been fully completed and settled',
+      );
     }
 
     // Check if review already exists for this contract
@@ -69,6 +76,13 @@ export class ReviewsService {
         artisanId: contract.artisanId,
         rating,
         comment,
+        categories: _categories ?? undefined,
+        workQuality: _workQuality,
+        communication: _communication,
+        timeliness: _timeliness,
+        professionalism: _professionalism,
+        evidence: _evidence ?? undefined,
+        isPublic: true,
         createdAt: new Date(),
       },
     });
@@ -111,7 +125,14 @@ export class ReviewsService {
     const updateData: any = {
       ...(rating !== undefined && { rating }),
       ...(comment && { comment }),
-      updatedAt: new Date(),
+      ...(_categories !== undefined && { categories: _categories }),
+      ...(_workQuality !== undefined && { workQuality: _workQuality }),
+      ...(_communication !== undefined && { communication: _communication }),
+      ...(_timeliness !== undefined && { timeliness: _timeliness }),
+      ...(_professionalism !== undefined && {
+        professionalism: _professionalism,
+      }),
+      ...(_evidence !== undefined && { evidence: _evidence }),
     };
 
     const updatedReview = await this.prisma.review.update({
@@ -219,11 +240,25 @@ export class ReviewsService {
     };
 
     // Category averages are not available in the current schema
+    const averageOf = (values: Array<number | null | undefined>) => {
+      const numeric = values.filter(
+        (value): value is number => typeof value === 'number',
+      );
+
+      if (numeric.length === 0) {
+        return 0;
+      }
+
+      return numeric.reduce((sum, value) => sum + value, 0) / numeric.length;
+    };
+
     const categoryAverages = {
-      workQuality: 0,
-      communication: 0,
-      timeliness: 0,
-      professionalism: 0,
+      workQuality: averageOf(reviews.map((review) => review.workQuality)),
+      communication: averageOf(reviews.map((review) => review.communication)),
+      timeliness: averageOf(reviews.map((review) => review.timeliness)),
+      professionalism: averageOf(
+        reviews.map((review) => review.professionalism),
+      ),
     };
 
     return {

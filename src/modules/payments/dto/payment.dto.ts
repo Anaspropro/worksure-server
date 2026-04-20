@@ -1,50 +1,41 @@
 import {
-  IsString,
-  IsOptional,
-  IsNumber,
-  IsEnum,
   IsDateString,
-  Min,
+  IsEmail,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
   Max,
+  Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PaymentFundContractDto {
   @ApiProperty({ description: 'Contract ID to fund' })
-  @IsString()
+  @IsUUID()
   contractId: string;
 
-  @ApiProperty({ description: 'Funding amount' })
-  @IsNumber()
-  @Min(1)
-  amount: number;
+  @ApiProperty({ description: 'Payer email for Paystack checkout' })
+  @IsEmail()
+  email: string;
 
-  @ApiPropertyOptional({ description: 'Payment method' })
+  @ApiPropertyOptional({ description: 'Callback URL for Paystack redirect' })
   @IsOptional()
   @IsString()
-  paymentMethod?: string;
-
-  @ApiPropertyOptional({ description: 'Payment reference' })
-  @IsOptional()
-  @IsString()
-  paymentReference?: string;
+  callbackUrl?: string;
 }
 
 export class PaystackInitDto {
-  @ApiProperty({
-    description: 'Amount in base currency units (e.g. 1000 for NGN)',
-  })
-  @IsNumber()
-  @Min(1)
-  amount: number;
+  @ApiProperty({ description: 'Contract ID to fund' })
+  @IsUUID()
+  contractId: string;
 
-  @ApiProperty({ description: 'Payer email for Paystack' })
-  @IsString()
+  @ApiProperty({ description: 'Payer email for Paystack checkout' })
+  @IsEmail()
   email: string;
 
-  @ApiPropertyOptional({
-    description: 'Callback URL for Paystack to return to',
-  })
+  @ApiPropertyOptional({ description: 'Callback URL for Paystack redirect' })
   @IsOptional()
   @IsString()
   callbackUrl?: string;
@@ -58,7 +49,7 @@ export class PaystackVerifyDto {
 
 export class VerifyPaymentDto {
   @ApiProperty({ description: 'Payment ID to verify' })
-  @IsString()
+  @IsUUID()
   paymentId: string;
 
   @ApiProperty({ description: 'Verification code' })
@@ -68,45 +59,26 @@ export class VerifyPaymentDto {
 
 export class ActivateContractDto {
   @ApiProperty({ description: 'Contract ID to activate' })
-  @IsString()
+  @IsUUID()
   contractId: string;
-
-  @ApiPropertyOptional({ description: 'Activation notes' })
-  @IsOptional()
-  @IsString()
-  notes?: string;
 }
 
 export class CompleteContractDto {
-  @ApiProperty({ description: 'Contract ID to complete' })
-  @IsString()
+  @ApiProperty({ description: 'Contract ID' })
+  @IsUUID()
   contractId: string;
+
+  @ApiProperty({ description: 'Confirmation type' })
+  @IsIn(['client', 'artisan'])
+  role: 'client' | 'artisan';
 
   @ApiPropertyOptional({ description: 'Completion notes' })
   @IsOptional()
   @IsString()
   notes?: string;
-
-  @ApiPropertyOptional({ description: 'Work evidence URLs' })
-  @IsOptional()
-  @IsString({ each: true })
-  evidence?: string[];
 }
 
-export class PaymentConfirmCompletionDto {
-  @ApiProperty({ description: 'Contract ID' })
-  @IsString()
-  contractId: string;
-
-  @ApiProperty({ description: 'Confirmation type (client or artisan)' })
-  @IsEnum(['client', 'artisan'])
-  role: 'client' | 'artisan';
-
-  @ApiPropertyOptional({ description: 'Confirmation notes' })
-  @IsOptional()
-  @IsString()
-  notes?: string;
-}
+export class PaymentConfirmCompletionDto extends CompleteContractDto {}
 
 export class PaymentResponseDto {
   @ApiProperty({ description: 'Payment ID' })
@@ -118,20 +90,20 @@ export class PaymentResponseDto {
   @ApiProperty({ description: 'User ID who made payment' })
   userId: string;
 
-  @ApiProperty({ description: 'Payment amount' })
+  @ApiProperty({ description: 'Payment amount in naira' })
   amount: number;
 
   @ApiProperty({ description: 'Payment status' })
   status: string;
 
-  @ApiPropertyOptional({ description: 'Payment method' })
-  paymentMethod?: string;
+  @ApiPropertyOptional({ description: 'Provider reference' })
+  paymentReference?: string | null;
 
-  @ApiPropertyOptional({ description: 'Payment reference' })
-  paymentReference?: string;
+  @ApiPropertyOptional({ description: 'Paystack access code' })
+  paystackAccessCode?: string | null;
 
-  @ApiPropertyOptional({ description: 'Verification code' })
-  verificationCode?: string;
+  @ApiPropertyOptional({ description: 'Paystack authorization URL' })
+  paystackAuthorizationUrl?: string | null;
 
   @ApiProperty({ description: 'Is verified' })
   isVerified: boolean;
@@ -140,27 +112,22 @@ export class PaymentResponseDto {
   createdAt: string;
 
   @ApiPropertyOptional({ description: 'Verification date' })
-  verifiedAt?: string;
+  verifiedAt?: string | null;
 
   @ApiPropertyOptional({ description: 'Completion date' })
-  completedAt?: string;
+  completedAt?: string | null;
 }
 
 export class PaymentListQueryDto {
   @ApiPropertyOptional({ description: 'Filter by contract ID' })
   @IsOptional()
-  @IsString()
+  @IsUUID()
   contractId?: string;
 
   @ApiPropertyOptional({ description: 'Filter by status' })
   @IsOptional()
   @IsString()
   status?: string;
-
-  @ApiPropertyOptional({ description: 'Filter by verification status' })
-  @IsOptional()
-  @IsEnum(['verified', 'PENDING', 'FAILED'])
-  verificationStatus?: 'verified' | 'PENDING' | 'FAILED';
 
   @ApiPropertyOptional({ description: 'Filter by date from' })
   @IsOptional()

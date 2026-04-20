@@ -1,10 +1,31 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 
 export class UpdateUserProfileDto {
   @IsOptional()
   @IsString()
   @MaxLength(100)
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(3, 10)
+  payoutBankCode?: string;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{10}$/)
+  payoutAccountNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(150)
+  payoutAccountName?: string;
 }
 
 export class UserProfileResponseDto {
@@ -14,6 +35,10 @@ export class UserProfileResponseDto {
   role: string;
   status: string;
   artisanVerified: boolean;
+  paystackRecipientCode?: string | null;
+  payoutBankCode?: string | null;
+  payoutAccountNumber?: string | null;
+  payoutAccountName?: string | null;
   createdAt: string;
   lastLoginAt: string | null;
   artisanProfile?: {

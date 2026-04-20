@@ -1,18 +1,13 @@
-import { IsUUID, IsInt, IsString, IsOptional, Min } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class FundContractDto {
   @IsUUID()
   contractId: string;
 
-  @IsInt()
-  @Min(1)
-  amount: number;
+  @IsEmail()
+  email: string;
 
   @IsString()
   @IsOptional()
-  paymentMethod?: string;
-
-  @IsString()
-  @IsOptional()
-  paymentReference?: string;
+  callbackUrl?: string;
 }

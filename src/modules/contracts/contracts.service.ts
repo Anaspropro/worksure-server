@@ -1,16 +1,55 @@
 import {
-  Injectable,
-  NotFoundException,
   BadRequestException,
   ForbiddenException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
 import { ContractStatus } from '../../generated/prisma';
-import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class ContractsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private readonly contractInclude = {
+    job: true,
+    proposal: true,
+    client: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    },
+    artisan: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        artisanVerified: true,
+        paystackRecipientCode: true,
+        payoutBankCode: true,
+        payoutAccountNumber: true,
+        payoutAccountName: true,
+      },
+    },
+    payments: true,
+    review: true,
+  } as const;
+
+  private async getContractOrThrow(contractId: string) {
+    const contract = await this.prisma.contract.findUnique({
+      where: { id: contractId },
+      include: this.contractInclude,
+    });
+
+    if (!contract) {
+      throw new NotFoundException('Contract not found');
+    }
+
+    return contract;
+  }
 
   async createContract(proposalId: string, userId: string) {
     const proposal = await this.prisma.proposal.findUnique({
@@ -61,26 +100,10 @@ export class ContractsService {
           clientId: proposal.clientId,
           artisanId: proposal.artisanId,
           amount: proposal.amount,
-          status: ContractStatus.DRAFT,
+          status: ContractStatus.PENDING_PAYMENT,
+          currency: 'NGN',
         },
-        include: {
-          job: true,
-          proposal: true,
-          client: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          artisan: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
+        include: this.contractInclude,
       });
 
       await tx.job.update({
@@ -95,16 +118,7 @@ export class ContractsService {
   }
 
   async activateContract(contractId: string, userId: string) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-      include: {
-        payments: true,
-      },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
+    const contract = await this.getContractOrThrow(contractId);
 
     if (contract.clientId !== userId && contract.artisanId !== userId) {
       throw new ForbiddenException(
@@ -112,169 +126,44 @@ export class ContractsService {
       );
     }
 
-    if (contract.status !== ContractStatus.ACTIVE) {
+    if (contract.status !== ContractStatus.FUNDED) {
       throw new BadRequestException(
-        'Contract must be funded and active to start work',
-      );
-    }
-
-    if (contract.startedAt) {
-      throw new BadRequestException('Contract is already started');
-    }
-
-    const updatedContract = await this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        startedAt: new Date(),
-        activatedAt: new Date(),
-      },
-      include: {
-        job: true,
-        proposal: true,
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    return updatedContract;
-  }
-
-  async fundContract(contractId: string, userId: string, amount: number) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    if (contract.clientId !== userId) {
-      throw new ForbiddenException('Only the client can fund the contract');
-    }
-
-    if (contract.status !== ContractStatus.DRAFT) {
-      throw new BadRequestException(
-        'Contract must be in DRAFT status to be funded',
-      );
-    }
-
-    if (amount !== contract.amount) {
-      throw new BadRequestException(
-        'Funding amount must match contract amount',
+        'Contract must be FUNDED before work can begin',
       );
     }
 
     return this.prisma.contract.update({
       where: { id: contractId },
       data: {
-        status: ContractStatus.ACTIVE,
+        status: ContractStatus.IN_PROGRESS,
+        activatedAt: contract.activatedAt ?? new Date(),
+        startedAt: contract.startedAt ?? new Date(),
+      },
+      include: this.contractInclude,
+    });
+  }
+
+  async markFunded(
+    contractId: string,
+    paymentId: string,
+    paystackReference: string,
+    authorizationUrl?: string | null,
+    accessCode?: string | null,
+  ) {
+    await this.getContractOrThrow(contractId);
+
+    return this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        status: ContractStatus.FUNDED,
         fundedAt: new Date(),
+        paystackReference: paystackReference || null,
+        paystackAuthorizationUrl: authorizationUrl || null,
+        paystackAccessCode: accessCode || null,
+        fundedPaymentId: paymentId,
       },
+      include: this.contractInclude,
     });
-  }
-
-  async releaseEscrow(contractId: string, userId: string) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-      include: {
-        artisan: {
-          select: {
-            artisanVerified: true,
-          },
-        },
-      },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    if (contract.clientId !== userId) {
-      throw new ForbiddenException('Only the client can release escrow');
-    }
-
-    if (contract.status !== ContractStatus.ACTIVE) {
-      throw new BadRequestException(
-        'Contract must be ACTIVE to release escrow',
-      );
-    }
-
-    if (
-      !contract.clientConfirmedCompletion ||
-      !contract.artisanConfirmedCompletion
-    ) {
-      throw new BadRequestException(
-        'Both parties must confirm completion before releasing escrow',
-      );
-    }
-
-    if (contract.escrowReleased) {
-      throw new BadRequestException('Escrow has already been released');
-    }
-
-    if (!contract.artisan.artisanVerified) {
-      throw new BadRequestException(
-        'Escrow cannot be released to an unverified artisan.',
-      );
-    }
-
-    await this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        escrowReleased: true,
-        escrowReleasedAt: new Date(),
-        status: ContractStatus.COMPLETED,
-        completedAt: new Date(),
-      },
-    });
-
-    return { message: 'Escrow released successfully' };
-  }
-
-  async refundContract(contractId: string, userId: string) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    if (contract.clientId !== userId) {
-      throw new ForbiddenException('Only the client can request a refund');
-    }
-
-    if (contract.status !== ContractStatus.ACTIVE) {
-      throw new BadRequestException('Contract must be ACTIVE to refund');
-    }
-
-    if (contract.escrowReleased) {
-      throw new BadRequestException(
-        'Cannot refund contract after escrow release',
-      );
-    }
-
-    await this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        status: ContractStatus.CANCELLED,
-        cancelledAt: new Date(),
-      },
-    });
-
-    return { message: 'Contract refunded successfully' };
   }
 
   async confirmCompletion(
@@ -282,13 +171,7 @@ export class ContractsService {
     userId: string,
     isClient: boolean,
   ) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
+    const contract = await this.getContractOrThrow(contractId);
 
     if (isClient && contract.clientId !== userId) {
       throw new ForbiddenException('Only the client can confirm completion');
@@ -298,9 +181,15 @@ export class ContractsService {
       throw new ForbiddenException('Only the artisan can confirm completion');
     }
 
-    if (contract.status !== ContractStatus.ACTIVE) {
+    const completableStatuses = new Set<ContractStatus>([
+      ContractStatus.IN_PROGRESS,
+      ContractStatus.CLIENT_CONFIRMED,
+      ContractStatus.READY_FOR_PAYOUT,
+    ]);
+
+    if (!completableStatuses.has(contract.status)) {
       throw new BadRequestException(
-        'Contract must be ACTIVE to confirm completion',
+        'Contract must be in progress before completion can be confirmed',
       );
     }
 
@@ -316,70 +205,155 @@ export class ContractsService {
 
     if (!isClient && contract.artisanConfirmedCompletion) {
       throw new BadRequestException(
-        'Artisan has already confirmed completion.',
+        'Artisan has already acknowledged completion.',
       );
     }
 
-    const updateData: any = {
-      [isClient ? 'clientConfirmedCompletion' : 'artisanConfirmedCompletion']:
-        true,
-      [isClient ? 'clientConfirmedAt' : 'artisanConfirmedAt']: new Date(),
-    };
+    const bothConfirmed = isClient
+      ? contract.artisanConfirmedCompletion
+      : contract.clientConfirmedCompletion;
 
-    const updatedContract = await this.prisma.contract.update({
+    return this.prisma.contract.update({
       where: { id: contractId },
-      data: updateData,
-      include: {
-        job: true,
-        proposal: true,
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
+      data: {
+        clientConfirmedCompletion: isClient ? true : undefined,
+        clientConfirmedAt: isClient ? new Date() : undefined,
+        artisanConfirmedCompletion: isClient ? undefined : true,
+        artisanConfirmedAt: isClient ? undefined : new Date(),
+        status: bothConfirmed
+          ? ContractStatus.READY_FOR_PAYOUT
+          : isClient
+            ? ContractStatus.CLIENT_CONFIRMED
+            : ContractStatus.IN_PROGRESS,
       },
+      include: this.contractInclude,
     });
+  }
 
-    return updatedContract;
+  async assertReadyForPayout(contractId: string, userId: string) {
+    const contract = await this.getContractOrThrow(contractId);
+
+    if (contract.clientId !== userId) {
+      throw new ForbiddenException('Only the client can trigger payout');
+    }
+
+    if (contract.status !== ContractStatus.READY_FOR_PAYOUT) {
+      throw new BadRequestException(
+        'Contract must be READY_FOR_PAYOUT before funds can be released',
+      );
+    }
+
+    if (!contract.artisan.artisanVerified) {
+      throw new BadRequestException(
+        'Artisan verification is required before payout.',
+      );
+    }
+
+    return contract;
+  }
+
+  async markPayoutInitiated(contractId: string) {
+    await this.getContractOrThrow(contractId);
+
+    return this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        payoutRequestedAt: new Date(),
+      },
+      include: this.contractInclude,
+    });
+  }
+
+  async markPaidOut(contractId: string) {
+    await this.getContractOrThrow(contractId);
+
+    return this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        escrowReleased: true,
+        escrowReleasedAt: new Date(),
+        paidOutAt: new Date(),
+        completedAt: new Date(),
+        platformFeeDeducted: true,
+        status: ContractStatus.PAID_OUT,
+      },
+      include: this.contractInclude,
+    });
+  }
+
+  async recordPayoutFailure(contractId: string, reason?: string) {
+    await this.getContractOrThrow(contractId);
+
+    return this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        payoutFailureReason: reason || null,
+        status: ContractStatus.READY_FOR_PAYOUT,
+      },
+      include: this.contractInclude,
+    });
+  }
+
+  async refundContract(contractId: string, userId: string, reason?: string) {
+    const contract = await this.getContractOrThrow(contractId);
+
+    const canRefund =
+      contract.clientId === userId ||
+      contract.status === ContractStatus.DISPUTED;
+
+    if (!canRefund) {
+      throw new ForbiddenException('Only the client can request a refund');
+    }
+
+    const finalStatuses = new Set<ContractStatus>([
+      ContractStatus.PAID_OUT,
+      ContractStatus.REFUNDED,
+    ]);
+
+    if (finalStatuses.has(contract.status)) {
+      throw new BadRequestException(
+        'Refund cannot be requested after final settlement',
+      );
+    }
+
+    return this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        refundReason: reason || null,
+      },
+      include: this.contractInclude,
+    });
+  }
+
+  async markRefunded(contractId: string, reason?: string) {
+    await this.getContractOrThrow(contractId);
+
+    return this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        refundedAt: new Date(),
+        cancelledAt: new Date(),
+        refundReason: reason || null,
+        status: ContractStatus.REFUNDED,
+      },
+      include: this.contractInclude,
+    });
+  }
+
+  async markDisputed(contractId: string) {
+    await this.getContractOrThrow(contractId);
+
+    return this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        status: ContractStatus.DISPUTED,
+      },
+      include: this.contractInclude,
+    });
   }
 
   async getContract(contractId: string, userId: string) {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-      include: {
-        job: true,
-        proposal: true,
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        payments: true,
-        review: true,
-      },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
+    const contract = await this.getContractOrThrow(contractId);
 
     if (contract.clientId !== userId && contract.artisanId !== userId) {
       throw new ForbiddenException(
@@ -391,7 +365,7 @@ export class ContractsService {
   }
 
   async getUserContracts(userId: string, status?: ContractStatus) {
-    const where: any = {
+    const where: Record<string, unknown> = {
       OR: [{ clientId: userId }, { artisanId: userId }],
     };
 
@@ -399,33 +373,12 @@ export class ContractsService {
       where.status = status;
     }
 
-    const contracts = await this.prisma.contract.findMany({
+    return this.prisma.contract.findMany({
       where,
-      include: {
-        job: true,
-        proposal: true,
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        payments: true,
-        review: true,
-      },
+      include: this.contractInclude,
       orderBy: {
         createdAt: 'desc',
       },
     });
-
-    return contracts;
   }
 }

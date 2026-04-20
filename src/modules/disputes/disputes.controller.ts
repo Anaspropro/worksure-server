@@ -28,7 +28,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserRole } from '../../common/constants/roles.constants';
 import { PrismaService } from '../../database/prisma.service';
-import { randomUUID } from 'node:crypto';
 import {
   CreateDisputeDto,
   UpdateDisputeDto,
@@ -36,11 +35,15 @@ import {
   DisputeListQueryDto,
 } from './dto/dispute.dto';
 import { $Enums, DisputeStatus } from '../../generated/prisma';
+import { DisputesService } from './disputes.service';
 
 @ApiTags('disputes')
 @Controller('disputes')
 export class DisputesController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly disputesService: DisputesService,
+  ) {}
 
   private ensureDisputeParticipantOrAdmin(
     user: { id: string; role: $Enums.UserRole },
@@ -70,96 +73,16 @@ export class DisputesController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Body() createDto: CreateDisputeDto,
   ): Promise<DisputeResponseDto> {
-    let clientId: string;
-    let artisanId: string;
-
-    // Validate contract or job exists and get participant IDs
-    if (createDto.contractId) {
-      const contract = await this.prisma.contract.findUnique({
-        where: { id: createDto.contractId },
-      });
-
-      if (!contract) {
-        throw new NotFoundException('Contract not found');
-      }
-
-      clientId = contract.clientId;
-      artisanId = contract.artisanId;
-
-      // Check if dispute already exists for this contract
-      const existingDispute = await this.prisma.dispute.findFirst({
-        where: {
-          contractId: createDto.contractId,
-          status: DisputeStatus.OPEN,
-        },
-      });
-
-      if (existingDispute) {
-        throw new BadRequestException(
-          'Dispute already exists for this contract',
-        );
-      }
-    } else if (createDto.jobId) {
-      const job = await this.prisma.job.findUnique({
-        where: { id: createDto.jobId },
-      });
-
-      if (!job) {
-        throw new NotFoundException('Job not found');
-      }
-
-      clientId = job.clientId;
-      artisanId = job.artisanId || '';
-
-      // Check if dispute already exists for this job
-      const existingDispute = await this.prisma.dispute.findFirst({
-        where: {
-          jobId: createDto.jobId,
-          status: DisputeStatus.OPEN,
-        },
-      });
-
-      if (existingDispute) {
-        throw new BadRequestException('Dispute already exists for this job');
-      }
-    } else {
-      throw new BadRequestException(
-        'Either contractId or jobId must be provided',
-      );
-    }
-
-    // Check if user is participant
-    this.ensureDisputeParticipantOrAdmin(user, clientId, artisanId);
-
-    // Create dispute
-    const dispute = await this.prisma.dispute.create({
-      data: {
-        id: randomUUID(),
-        contractId: createDto.contractId || null,
-        jobId: createDto.jobId || null,
-        clientId,
-        artisanId,
-        amount: createDto.amount,
-        status: DisputeStatus.OPEN,
-        evidenceImages: createDto.evidenceImages || [],
-        evidenceVideos: createDto.evidenceVideos || [],
-        evidenceMessages: createDto.evidenceMessages || [],
-        createdAt: new Date(),
-      },
-    });
-
-    // Add description as a message in evidenceMessages
-    if (createDto.description) {
-      await this.prisma.dispute.update({
-        where: { id: dispute.id },
-        data: {
-          evidenceMessages: [
-            ...(createDto.evidenceMessages || []),
-            createDto.description,
-          ],
-        },
-      });
-    }
+    const dispute = await this.disputesService.createDispute(
+      user.id,
+      createDto.amount,
+      createDto.description,
+      createDto.contractId,
+      createDto.jobId,
+      createDto.evidenceImages,
+      createDto.evidenceVideos,
+      createDto.evidenceMessages,
+    );
 
     return this.formatDisputeResponse(dispute);
   }
@@ -257,21 +180,7 @@ export class DisputesController {
   async getMyDisputes(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
   ) {
-    const disputes = await this.prisma.dispute.findMany({
-      where: {
-        OR: [{ clientId: user.id }, { artisanId: user.id }],
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const disputes = await this.disputesService.getDisputesByUser(user.id);
 
     return disputes.map((dispute) => this.formatDisputeResponse(dispute));
   }
@@ -288,29 +197,7 @@ export class DisputesController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Param('id') id: string,
   ): Promise<DisputeResponseDto> {
-    const dispute = await this.prisma.dispute.findUnique({
-      where: { id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (!dispute) {
-      throw new NotFoundException('Dispute not found');
-    }
-
-    // Check access
-    this.ensureDisputeParticipantOrAdmin(
-      user,
-      dispute.clientId,
-      dispute.artisanId,
-    );
+    const dispute = await this.disputesService.getDisputeById(id, user.id);
 
     return this.formatDisputeResponse(dispute);
   }
@@ -337,52 +224,15 @@ export class DisputesController {
       throw new NotFoundException('Dispute not found');
     }
 
-    // Validate status transitions
-    if (updateDto.status) {
-      this.validateStatusTransition(dispute.status, updateDto.status);
-    }
-
-    const updateData: any = {
-      ...updateDto,
-    };
-
-    // Add resolvedAt timestamp when status is RESOLVED
-    if (updateDto.status === DisputeStatus.RESOLVED) {
-      updateData.resolvedAt = new Date();
-      updateData.resolvedBy = user.id;
-    }
-
-    const updatedDispute = await this.prisma.dispute.update({
-      where: { id },
-      data: updateData,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
+    const updatedDispute = await this.disputesService.updateDispute(
+      id,
+      updateDto.status,
+      updateDto.resolutionDecision,
+      updateDto.resolutionNotes,
+      user.id,
+    );
 
     return this.formatDisputeResponse(updatedDispute);
-  }
-
-  private validateStatusTransition(
-    currentStatus: DisputeStatus,
-    newStatus: DisputeStatus,
-  ) {
-    const validTransitions: Record<DisputeStatus, DisputeStatus[]> = {
-      [DisputeStatus.OPEN]: [DisputeStatus.RESOLVED],
-      [DisputeStatus.RESOLVED]: [], // No transitions from resolved
-    };
-
-    if (!validTransitions[currentStatus]?.includes(newStatus)) {
-      throw new BadRequestException(
-        `Invalid status transition from ${currentStatus} to ${newStatus}`,
-      );
-    }
   }
 
   private formatDisputeResponse(dispute: any): DisputeResponseDto {

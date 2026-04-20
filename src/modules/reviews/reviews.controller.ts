@@ -108,9 +108,15 @@ export class ReviewsController {
       throw new ForbiddenException('Only clients can create reviews');
     }
 
-    // Check if contract is completed
-    if (contract.status !== ContractStatus.COMPLETED) {
-      throw new BadRequestException('You can only review completed contracts');
+    const reviewableStatuses = new Set<ContractStatus>([
+      ContractStatus.COMPLETED,
+      ContractStatus.PAID_OUT,
+    ]);
+
+    if (!reviewableStatuses.has(contract.status)) {
+      throw new BadRequestException(
+        'You can only review contracts that have been fully completed and settled',
+      );
     }
 
     // Check if review already exists for this contract
@@ -134,6 +140,13 @@ export class ReviewsController {
         artisanId: contract.artisanId,
         rating: createDto.rating,
         comment: createDto.comment,
+        categories: createDto.categories ?? undefined,
+        workQuality: createDto.workQuality,
+        communication: createDto.communication,
+        timeliness: createDto.timeliness,
+        professionalism: createDto.professionalism,
+        evidence: createDto.evidence ?? undefined,
+        isPublic: true,
         createdAt: new Date(),
       },
     });
@@ -390,7 +403,22 @@ export class ReviewsController {
     const updateData: any = {
       ...(updateDto.rating !== undefined && { rating: updateDto.rating }),
       ...(updateDto.comment && { comment: updateDto.comment }),
-      updatedAt: new Date(),
+      ...(updateDto.categories !== undefined && {
+        categories: updateDto.categories,
+      }),
+      ...(updateDto.workQuality !== undefined && {
+        workQuality: updateDto.workQuality,
+      }),
+      ...(updateDto.communication !== undefined && {
+        communication: updateDto.communication,
+      }),
+      ...(updateDto.timeliness !== undefined && {
+        timeliness: updateDto.timeliness,
+      }),
+      ...(updateDto.professionalism !== undefined && {
+        professionalism: updateDto.professionalism,
+      }),
+      ...(updateDto.evidence !== undefined && { evidence: updateDto.evidence }),
     };
 
     const updatedReview = await this.prisma.review.update({
@@ -456,12 +484,25 @@ export class ReviewsController {
       5: reviews.filter((r) => r.rating === 5).length,
     };
 
-    // Category averages are not available in the current schema
+    const averageOf = (values: Array<number | null | undefined>) => {
+      const numeric = values.filter(
+        (value): value is number => typeof value === 'number',
+      );
+
+      if (numeric.length === 0) {
+        return 0;
+      }
+
+      return numeric.reduce((sum, value) => sum + value, 0) / numeric.length;
+    };
+
     const categoryAverages = {
-      workQuality: 0,
-      communication: 0,
-      timeliness: 0,
-      professionalism: 0,
+      workQuality: averageOf(reviews.map((review) => review.workQuality)),
+      communication: averageOf(reviews.map((review) => review.communication)),
+      timeliness: averageOf(reviews.map((review) => review.timeliness)),
+      professionalism: averageOf(
+        reviews.map((review) => review.professionalism),
+      ),
     };
 
     return {
@@ -480,13 +521,13 @@ export class ReviewsController {
       artisanId: review.artisanId,
       rating: review.rating,
       comment: review.comment,
-      categories: undefined, // Not available in current schema
-      workQuality: undefined, // Not available in current schema
-      communication: undefined, // Not available in current schema
-      timeliness: undefined, // Not available in current schema
-      professionalism: undefined, // Not available in current schema
-      evidence: undefined, // Not available in current schema
-      isPublic: true, // All reviews are public in current schema
+      categories: review.categories ?? undefined,
+      workQuality: review.workQuality ?? undefined,
+      communication: review.communication ?? undefined,
+      timeliness: review.timeliness ?? undefined,
+      professionalism: review.professionalism ?? undefined,
+      evidence: review.evidence ?? undefined,
+      isPublic: review.isPublic ?? true,
       createdAt: review.createdAt.toISOString(),
       updatedAt: review.updatedAt?.toISOString() || undefined,
       contract: contract

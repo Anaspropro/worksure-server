@@ -44,10 +44,17 @@ enum ProposalStatus {
 
 enum ContractStatus {
   DRAFT
+  PENDING_PAYMENT
+  FUNDED
   ACTIVE
+  IN_PROGRESS
+  CLIENT_CONFIRMED
+  READY_FOR_PAYOUT
   COMPLETED
+  PAID_OUT
   CANCELLED
   DISPUTED
+  REFUNDED
 }
 
 enum MessageType {
@@ -59,11 +66,13 @@ enum MessageType {
 }
 
 enum TransactionType {
+  PAYMENT
   FUNDING
   ESCROW_HOLD
   ESCROW_RELEASE
   PLATFORM_FEE
   REFUND
+  TRANSFER
   PAYOUT
   ADJUSTMENT_NOTE
 }
@@ -110,6 +119,10 @@ model User {
   role             UserRole
   status           UserStatus
   artisanVerified  Boolean        @default(false)
+  paystackRecipientCode String?
+  payoutBankCode   String?
+  payoutAccountNumber String?
+  payoutAccountName String?
   createdAt        DateTime
   lastLoginAt      DateTime?
   updatedAt        DateTime       @updatedAt
@@ -275,6 +288,16 @@ model Contract {
   artisanId      String
   amount         Int
   status         ContractStatus  @default(DRAFT)
+  currency       String          @default("NGN")
+  paystackReference String?      @unique
+  paystackAuthorizationUrl String?
+  paystackAccessCode String?
+  fundedPaymentId String?
+  payoutRequestedAt DateTime?
+  paidOutAt      DateTime?
+  refundedAt     DateTime?
+  refundReason   String?
+  payoutFailureReason String?
   
   // Lifecycle timestamps
   fundedAt       DateTime?
@@ -366,7 +389,15 @@ model Review {
   artisanId  String
   rating     Int
   comment    String?
+  categories Json?
+  workQuality Int?
+  communication Int?
+  timeliness Int?
+  professionalism Int?
+  evidence   Json?
+  isPublic   Boolean  @default(true)
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   
   // Relations
   contract   Contract @relation(fields: [contractId], references: [id])
@@ -380,13 +411,23 @@ model Review {
 model Notification {
   id        String   @id
   userId    String
+  type      String   @default("system_update")
   title     String
   message   String
+  entityId  String?
+  entityType String?
+  actionUrl String?
+  priority  String   @default("medium")
   read      Boolean  @default(false)
+  isArchived Boolean @default(false)
+  metadata  Json?
   createdAt DateTime
+  readAt    DateTime?
+  archivedAt DateTime?
   user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@index([userId, createdAt])
+  @@index([userId, type, createdAt])
 }
 
 model AuditLog {
@@ -407,13 +448,23 @@ model Payment {
   userId            String
   amount            Int
   status            PaymentStatus  @default(PENDING)
+  currency          String         @default("NGN")
+  gateway           String?
   paymentMethod     String?
   paymentReference  String?
+  paystackAccessCode String?
+  paystackAuthorizationUrl String?
+  paystackTransactionId String?
+  recipientCode     String?
+  transferCode      String?
   verificationCode  String?
   isVerified        Boolean        @default(false)
+  metadata          Json?
+  failureReason     String?
   createdAt         DateTime       @default(now())
   verifiedAt        DateTime?
   completedAt       DateTime?
+  refundedAt        DateTime?
   
   // Relations
   contract          Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)

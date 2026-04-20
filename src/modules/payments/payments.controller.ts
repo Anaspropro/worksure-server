@@ -1,246 +1,101 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
+  Headers,
   Post,
-  Body,
   Query,
-  UseGuards,
   Req,
-  NotFoundException,
-  ForbiddenException,
-  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiOkResponse,
-  ApiNotFoundResponse,
-  ApiForbiddenResponse,
-  ApiBadRequestResponse,
   ApiOperation,
   ApiTags,
-  ApiQuery,
 } from '@nestjs/swagger';
-import { Public } from '../../common/decorators/public.decorator';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
-import { UserRole } from '../../common/constants/roles.constants';
-import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
-import { PrismaService } from '../../database/prisma.service';
 import { PaymentsService } from './payments.service';
-import { randomUUID } from 'node:crypto';
 import {
-  PaymentFundContractDto,
-  VerifyPaymentDto,
-  PaystackInitDto,
-  PaystackVerifyDto,
   ActivateContractDto,
   CompleteContractDto,
-  PaymentConfirmCompletionDto,
-  PaymentResponseDto,
+  PaymentFundContractDto,
   PaymentListQueryDto,
+  PaystackInitDto,
+  PaystackVerifyDto,
+  VerifyPaymentDto,
 } from './dto/payment.dto';
-import {
-  $Enums,
-  ContractStatus,
-  TransactionType,
-  TransactionStatus,
-} from '../../generated/prisma';
 
 @ApiTags('payments')
 @Controller('payments')
 @UseGuards(JwtAuthGuard, RolesGuard, ThrottlerGuard)
 export class PaymentsController {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly paymentsService: PaymentsService,
-  ) {}
+  constructor(private readonly paymentsService: PaymentsService) {}
 
-  private ensureContractParticipantOrAdmin(
-    user: { id: string; role: $Enums.UserRole },
-    clientId: string,
-    artisanId: string,
+  private verifyWebhookSignature(
+    signature: string | undefined,
+    rawBody: Buffer | undefined,
   ) {
-    const isClient = user.id === clientId;
-    const isArtisan = user.id === artisanId;
-    const isAdmin = user.role === UserRole.ADMIN;
+    const secret =
+      process.env.PAYSTACK_WEBHOOK_SECRET ?? process.env.PAYSTACK_SECRET_KEY;
 
-    if (!isClient && !isArtisan && !isAdmin) {
-      throw new ForbiddenException(
-        'Access denied: You can only manage contracts you participate in',
-      );
+    if (!secret || !signature || !rawBody) {
+      throw new BadRequestException('Invalid webhook signature');
+    }
+
+    const computed = createHmac('sha512', secret).update(rawBody).digest('hex');
+    const signatureBuffer = Buffer.from(signature, 'hex');
+    const computedBuffer = Buffer.from(computed, 'hex');
+
+    if (
+      signatureBuffer.length !== computedBuffer.length ||
+      !timingSafeEqual(signatureBuffer, computedBuffer)
+    ) {
+      throw new BadRequestException('Invalid webhook signature');
     }
   }
 
   @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'Fund a contract' })
-  @ApiOkResponse({ description: 'Contract funded successfully.' })
-  @ApiNotFoundResponse({ description: 'Contract not found.' })
-  @ApiForbiddenResponse({ description: 'Access denied.' })
-  @ApiBadRequestResponse({ description: 'Invalid funding data.' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
+  @ApiOperation({ summary: 'Initialize Paystack funding for a contract' })
+  @ApiOkResponse({ description: 'Paystack checkout initialized.' })
+  @ApiBadRequestResponse({ description: 'Invalid contract funding request.' })
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @Post('fund')
   async fundContract(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() fundDto: PaymentFundContractDto,
-  ): Promise<PaymentResponseDto> {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: fundDto.contractId },
-      include: {
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
+    @CurrentUser() user: { id: string },
+    @Body() dto: PaymentFundContractDto,
+  ) {
+    const result = await this.paymentsService.initializeContractPayment(
+      user.id,
+      dto.contractId,
+      dto.email,
+      dto.callbackUrl,
+    );
 
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    // Check if user is the client
-    if (user.role !== UserRole.ADMIN && contract.clientId !== user.id) {
-      throw new ForbiddenException('Only the client can fund the contract');
-    }
-
-    // Check contract status
-    if (contract.status !== ContractStatus.DRAFT) {
-      throw new BadRequestException(
-        'Contract must be in DRAFT status to be funded',
-      );
-    }
-
-    // Check if already funded
-    const existingPayment = await this.prisma.payment.findFirst({
-      where: {
-        contractId: fundDto.contractId,
-        status: 'COMPLETED',
-      },
-    });
-
-    if (existingPayment) {
-      throw new BadRequestException('Contract is already funded');
-    }
-
-    // Create payment record
-    const payment = await this.prisma.$transaction(async (tx) => {
-      const newPayment = await tx.payment.create({
-        data: {
-          id: randomUUID(),
-          contractId: fundDto.contractId,
-          userId: user.id,
-          amount: fundDto.amount,
-          status: 'PENDING',
-          paymentMethod: fundDto.paymentMethod || null,
-          paymentReference: fundDto.paymentReference || null,
-          verificationCode: Math.random()
-            .toString(36)
-            .substring(2, 8)
-            .toUpperCase(),
-          isVerified: false,
-          createdAt: new Date(),
-        },
-      });
-
-      return newPayment;
-    });
-
-    return this.formatPaymentResponse(payment);
+    return {
+      message: 'Paystack checkout initialized successfully',
+      data: result,
+    };
   }
 
   @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'Verify a payment' })
-  @ApiOkResponse({ description: 'Payment verified successfully.' })
-  @ApiNotFoundResponse({ description: 'Payment not found.' })
-  @ApiForbiddenResponse({ description: 'Access denied.' })
-  @ApiBadRequestResponse({ description: 'Invalid verification data.' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
-  @Post('verify')
-  async verifyPayment(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() verifyDto: VerifyPaymentDto,
-  ): Promise<PaymentResponseDto> {
-    const payment = await this.prisma.payment.findUnique({
-      where: { id: verifyDto.paymentId },
-      include: {
-        contract: {
-          include: {
-            client: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!payment) {
-      throw new NotFoundException('Payment not found');
-    }
-
-    // Check if user is the client
-    if (user.role !== UserRole.ADMIN && payment.contract.clientId !== user.id) {
-      throw new ForbiddenException('Only the client can verify the payment');
-    }
-
-    if (payment.isVerified) {
-      throw new BadRequestException('Payment is already verified');
-    }
-
-    if (payment.verificationCode !== verifyDto.verificationCode) {
-      throw new BadRequestException('Invalid verification code');
-    }
-
-    // Verify payment and update contract
-    const updatedPayment = await this.prisma.$transaction(async (tx) => {
-      // Update payment
-      const updated = await tx.payment.update({
-        where: { id: verifyDto.paymentId },
-        data: {
-          status: 'COMPLETED',
-          isVerified: true,
-          verifiedAt: new Date(),
-        },
-      });
-
-      // Update contract status to ACTIVE
-      await tx.contract.update({
-        where: { id: payment.contractId },
-        data: {
-          status: ContractStatus.ACTIVE,
-          fundedAt: new Date(),
-        },
-      });
-
-      return updated;
-    });
-
-    return this.formatPaymentResponse(updatedPayment);
-  }
-
-  @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'Initialize a Paystack deposit' })
-  @ApiOkResponse({ description: 'Paystack initialization data returned.' })
-  @ApiBadRequestResponse({
-    description: 'Invalid Paystack initialization data.',
-  })
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Initialize Paystack funding for a contract' })
+  @ApiOkResponse({ description: 'Paystack checkout initialized.' })
   @Post('paystack/init')
   async initPaystack(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @CurrentUser() user: { id: string },
     @Body() dto: PaystackInitDto,
   ) {
-    const result = await this.paymentsService.initPaystackPayment(
+    const result = await this.paymentsService.initializeContractPayment(
       user.id,
-      dto.amount,
+      dto.contractId,
       dto.email,
       dto.callbackUrl,
     );
@@ -253,18 +108,10 @@ export class PaymentsController {
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Verify Paystack payment after redirect' })
-  @ApiOkResponse({
-    description: 'Paystack payment verified and wallet funded.',
-  })
-  @ApiBadRequestResponse({ description: 'Invalid Paystack verification data.' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiOkResponse({ description: 'Paystack payment verified successfully.' })
   @Post('paystack/verify')
-  async verifyPaystack(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() dto: PaystackVerifyDto,
-  ) {
+  async verifyPaystack(@Body() dto: PaystackVerifyDto) {
     const result = await this.paymentsService.verifyPaystackPayment(
-      user.id,
       dto.reference,
     );
 
@@ -275,474 +122,89 @@ export class PaymentsController {
   }
 
   @Public()
+  @UseGuards(ThrottlerGuard)
   @Post('paystack/webhook')
-  async paystackWebhook(@Req() request: any, @Body() payload: any) {
-    const signature = request.headers['x-paystack-signature'];
-    const secret =
-      process.env.PAYSTACK_WEBHOOK_SECRET ?? process.env.PAYSTACK_SECRET_KEY;
+  async paystackWebhook(
+    @Req() request: { rawBody?: Buffer; body: any },
+    @Headers('x-paystack-signature') signature?: string,
+  ) {
+    this.verifyWebhookSignature(signature, request.rawBody);
 
-    if (!secret || typeof signature !== 'string') {
-      throw new BadRequestException('Invalid webhook signature');
-    }
-
-    const crypto = await import('node:crypto');
-    const rawPayload = JSON.stringify(payload);
-    const computed = crypto
-      .createHmac('sha512', secret)
-      .update(rawPayload)
-      .digest('hex');
-
-    if (computed !== signature) {
-      throw new BadRequestException('Invalid webhook signature');
-    }
-
-    if (payload.event === 'charge.success') {
-      const reference = payload.data?.reference as string | undefined;
-      const email = payload.data?.customer?.email as string | undefined;
-      const metadataUserId = payload.data?.metadata?.userId as string | undefined;
-      const amount = Math.round((payload.data?.amount ?? 0) / 100);
-
-      if (reference && amount > 0) {
-        const user =
-          (metadataUserId
-            ? await this.prisma.user.findUnique({
-                where: { id: metadataUserId },
-              })
-            : null) ??
-          (email
-            ? await this.prisma.user.findUnique({
-                where: { email },
-              })
-            : null);
-
-        if (user) {
-          await this.paymentsService.verifyPaystackPayment(user.id, reference);
-        }
-      }
-    }
-
-    return { status: 'success' };
-  }
-
-  @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'Activate a contract' })
-  @ApiOkResponse({ description: 'Contract activated successfully.' })
-  @ApiNotFoundResponse({ description: 'Contract not found.' })
-  @ApiForbiddenResponse({ description: 'Access denied.' })
-  @ApiBadRequestResponse({ description: 'Invalid activation data.' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
-  @Post('activate')
-  async activateContract(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() activateDto: ActivateContractDto,
-  ): Promise<any> {
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: activateDto.contractId },
-      include: {
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    // Check if user is participant
-    this.ensureContractParticipantOrAdmin(
-      user,
-      contract.clientId,
-      contract.artisanId,
+    const result = await this.paymentsService.processPaystackWebhook(
+      request.body,
     );
 
-    if (contract.status !== ContractStatus.ACTIVE) {
-      throw new BadRequestException('Contract must be ACTIVE to be activated');
-    }
-
-    // Check if already started
-    if (contract.startedAt) {
-      throw new BadRequestException('Contract is already started');
-    }
-
-    // Activate contract
-    const updatedContract = await this.prisma.contract.update({
-      where: { id: activateDto.contractId },
-      data: {
-        status: ContractStatus.ACTIVE,
-        startedAt: new Date(),
-      },
-    });
-
     return {
-      message: 'Contract activated successfully',
-      contract: this.formatContractResponse(updatedContract),
+      status: 'success',
+      data: result,
     };
   }
 
   @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'Complete a contract' })
-  @ApiOkResponse({ description: 'Contract completion initiated successfully.' })
-  @ApiNotFoundResponse({ description: 'Contract not found.' })
-  @ApiForbiddenResponse({ description: 'Access denied.' })
-  @ApiBadRequestResponse({ description: 'Invalid completion data.' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
-  @Post('complete')
-  async completeContract(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() completeDto: CompleteContractDto,
-  ): Promise<any> {
-    void completeDto.notes;
-    void completeDto.evidence;
-
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: completeDto.contractId },
-      include: {
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    // Check if user is participant
-    this.ensureContractParticipantOrAdmin(
-      user,
-      contract.clientId,
-      contract.artisanId,
+  @ApiOperation({ summary: 'Manually verify a payment record' })
+  @ApiOkResponse({ description: 'Payment verified successfully.' })
+  @Post('verify')
+  async verifyPayment(
+    @Body() dto: VerifyPaymentDto,
+  ) {
+    const result = await this.paymentsService.verifyPayment(
+      dto.paymentId,
+      dto.verificationCode,
     );
 
-    if (contract.status !== ContractStatus.ACTIVE) {
-      throw new BadRequestException('Contract must be ACTIVE to be completed');
-    }
+    return {
+      message: 'Payment verified successfully',
+      data: result,
+    };
+  }
 
-    // Check if already completed
-    if (
-      contract.clientConfirmedCompletion &&
-      contract.artisanConfirmedCompletion
-    ) {
-      throw new BadRequestException('Contract is already completed');
-    }
-
-    // Update completion status
-    const updatedContract = await this.prisma.contract.update({
-      where: { id: completeDto.contractId },
-      data: {
-        clientConfirmedCompletion: user.id === contract.clientId,
-        artisanConfirmedCompletion: user.id === contract.artisanId,
-        [user.id === contract.clientId
-          ? 'clientConfirmedAt'
-          : 'artisanConfirmedAt']: new Date(),
-      },
-    });
-
-    // Check if both parties have confirmed
-    if (
-      updatedContract.clientConfirmedCompletion &&
-      updatedContract.artisanConfirmedCompletion
-    ) {
-      await this.finalizeContractCompletion(updatedContract.id);
-    }
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Mark a funded contract as in progress' })
+  @ApiOkResponse({ description: 'Contract activated successfully.' })
+  @Post('activate')
+  async activateContract(
+    @CurrentUser() user: { id: string },
+    @Body() dto: ActivateContractDto,
+  ) {
+    const result = await this.paymentsService.activateContract(
+      dto.contractId,
+      user.id,
+    );
 
     return {
-      message: 'Contract completion confirmed',
-      contract: this.formatContractResponse(updatedContract),
+      message: 'Contract activated successfully',
+      data: result,
     };
   }
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Confirm contract completion' })
-  @ApiOkResponse({ description: 'Contract completion confirmed successfully.' })
-  @ApiNotFoundResponse({ description: 'Contract not found.' })
-  @ApiForbiddenResponse({ description: 'Access denied.' })
-  @ApiBadRequestResponse({ description: 'Invalid confirmation data.' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post('confirm-completion')
-  async confirmCompletion(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() confirmDto: PaymentConfirmCompletionDto,
-  ): Promise<any> {
-    void confirmDto.notes;
-
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: confirmDto.contractId },
-      include: {
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    // Check if user is participant
-    this.ensureContractParticipantOrAdmin(
-      user,
-      contract.clientId,
-      contract.artisanId,
+  @ApiOkResponse({ description: 'Completion recorded successfully.' })
+  @Post('complete')
+  async completeContract(
+    @CurrentUser() user: { id: string },
+    @Body() dto: CompleteContractDto,
+  ) {
+    const result = await this.paymentsService.completeContract(
+      dto.contractId,
+      user.id,
+      dto.role === 'client',
     );
 
-    if (contract.status !== ContractStatus.ACTIVE) {
-      throw new BadRequestException(
-        'Contract must be ACTIVE to confirm completion',
-      );
-    }
-
-    // Update confirmation status
-    const updateData: any = {
-      [confirmDto.role === 'client'
-        ? 'clientConfirmedCompletion'
-        : 'artisanConfirmedCompletion']: true,
-      [confirmDto.role === 'client'
-        ? 'clientConfirmedAt'
-        : 'artisanConfirmedAt']: new Date(),
-    };
-
-    const updatedContract = await this.prisma.contract.update({
-      where: { id: confirmDto.contractId },
-      data: updateData,
-    });
-
-    // Check if both parties have confirmed
-    if (
-      updatedContract.clientConfirmedCompletion &&
-      updatedContract.artisanConfirmedCompletion
-    ) {
-      await this.finalizeContractCompletion(updatedContract.id);
-    }
-
     return {
-      message: 'Contract completion confirmed',
-      contract: this.formatContractResponse(updatedContract),
+      message: 'Completion recorded successfully',
+      data: result,
     };
   }
 
   @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'List payments with filtering' })
+  @ApiOperation({ summary: 'List payments related to the current user' })
   @ApiOkResponse({ description: 'Payments retrieved successfully.' })
-  @ApiForbiddenResponse({ description: 'Authentication required.' })
-  @ApiQuery({ name: 'contractId', required: false })
-  @ApiQuery({ name: 'status', required: false })
-  @ApiQuery({ name: 'verificationStatus', required: false })
-  @ApiQuery({ name: 'dateFrom', required: false })
-  @ApiQuery({ name: 'dateTo', required: false })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async listPayments(
-    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @CurrentUser() user: { id: string },
     @Query() query: PaymentListQueryDto,
   ) {
-    const {
-      page = 1,
-      limit = 10,
-      contractId,
-      status,
-      verificationStatus,
-      dateFrom,
-      dateTo,
-    } = query;
-
-    const skip = (page - 1) * limit;
-    const take = Math.min(limit, 100);
-
-    const where: any = {};
-
-    if (user.role !== UserRole.ADMIN) {
-      where.userId = user.id;
-    }
-
-    if (contractId) where.contractId = contractId;
-    if (status) where.status = status;
-    if (verificationStatus) {
-      where.isVerified = verificationStatus === 'verified';
-    }
-    if (dateFrom || dateTo) {
-      where.createdAt = {};
-      if (dateFrom) where.createdAt.gte = new Date(dateFrom);
-      if (dateTo) where.createdAt.lte = new Date(dateTo);
-    }
-
-    const [payments, total] = await Promise.all([
-      this.prisma.payment.findMany({
-        where,
-        skip,
-        take,
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.payment.count({ where }),
-    ]);
-
-    return {
-      payments: payments.map((payment) => this.formatPaymentResponse(payment)),
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
-        hasPrev: page > 1,
-      },
-    };
-  }
-
-  private async finalizeContractCompletion(contractId: string) {
-    await this.prisma.$transaction(async (tx) => {
-      // Update contract status to COMPLETED
-      await tx.contract.update({
-        where: { id: contractId },
-        data: {
-          status: ContractStatus.COMPLETED,
-          completedAt: new Date(),
-        },
-      });
-
-      // Get contract details for payment processing
-      const contract = await tx.contract.findUnique({
-        where: { id: contractId },
-      });
-
-      if (contract) {
-        // Release escrow to artisan
-        await tx.wallet.update({
-          where: { userId: contract.artisanId },
-          data: {
-            frozen: {
-              decrement: contract.amount,
-            },
-            version: {
-              increment: 1,
-            },
-          },
-        });
-
-        // Create release transaction for artisan
-        await tx.transaction.create({
-          data: {
-            id: randomUUID(),
-            userId: contract.artisanId,
-            type: TransactionType.ESCROW_RELEASE,
-            amount: contract.amount,
-            status: TransactionStatus.COMPLETED,
-            reference: contractId,
-            metadata: { action: 'contract_completion', contractId },
-            createdAt: new Date(),
-            completedAt: new Date(),
-          },
-        });
-
-        // Deduct platform fee from client's wallet
-        const platformFee = Math.floor(contract.amount * 0.05); // 5% platform fee
-        await tx.wallet.update({
-          where: { userId: contract.clientId },
-          data: {
-            balance: {
-              decrement: platformFee,
-            },
-            version: {
-              increment: 1,
-            },
-          },
-        });
-
-        // Create platform fee transaction
-        await tx.transaction.create({
-          data: {
-            id: randomUUID(),
-            userId: contract.clientId,
-            type: TransactionType.PLATFORM_FEE,
-            amount: platformFee,
-            status: TransactionStatus.COMPLETED,
-            reference: contractId,
-            metadata: { action: 'platform_fee', contractId },
-            createdAt: new Date(),
-            completedAt: new Date(),
-          },
-        });
-      }
-    });
-  }
-
-  private formatPaymentResponse(payment: any): PaymentResponseDto {
-    return {
-      id: payment.id,
-      contractId: payment.contractId,
-      userId: payment.userId,
-      amount: payment.amount,
-      status: payment.status,
-      paymentMethod: payment.paymentMethod || null,
-      paymentReference: payment.paymentReference || null,
-      verificationCode: payment.verificationCode || null,
-      isVerified: payment.isVerified,
-      createdAt: payment.createdAt.toISOString(),
-      verifiedAt: payment.verifiedAt?.toISOString() || null,
-      completedAt: payment.completedAt?.toISOString() || null,
-    };
-  }
-
-  private formatContractResponse(contract: any): any {
-    return {
-      id: contract.id,
-      jobId: contract.jobId,
-      proposalId: contract.proposalId,
-      clientId: contract.clientId,
-      artisanId: contract.artisanId,
-      amount: contract.amount,
-      status: contract.status,
-      fundedAt: contract.fundedAt?.toISOString() || null,
-      activatedAt: contract.activatedAt?.toISOString() || null,
-      startedAt: contract.startedAt?.toISOString() || null,
-      completedAt: contract.completedAt?.toISOString() || null,
-      clientConfirmedCompletion: contract.clientConfirmedCompletion,
-      clientConfirmedAt: contract.clientConfirmedAt?.toISOString() || null,
-      artisanConfirmedCompletion: contract.artisanConfirmedCompletion,
-      artisanConfirmedAt: contract.artisanConfirmedAt?.toISOString() || null,
-      escrowReleased: contract.escrowReleased,
-      escrowReleasedAt: contract.escrowReleasedAt?.toISOString() || null,
-      platformFeeDeducted: contract.platformFeeDeducted,
-      createdAt: contract.createdAt.toISOString(),
-      updatedAt: contract.updatedAt.toISOString(),
-    };
+    return this.paymentsService.listPayments(user.id, query);
   }
 }
