@@ -6,11 +6,196 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
-import { ContractStatus } from '../../generated/prisma';
+import {
+  AuditEntityType,
+  ContractStatus,
+  Prisma,
+} from '../../generated/prisma';
 
 @Injectable()
 export class ContractsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private buildTransitionKey(
+    action: string,
+    contractId: string,
+    externalRef?: string,
+  ) {
+    return externalRef
+      ? `contract:${contractId}:${action}:${externalRef}`
+      : `contract:${contractId}:${action}`;
+  }
+
+  private async tryAcquireOperationLock(key: string, namespace: string) {
+    try {
+      await this.prisma.idempotencyKey.create({
+        data: {
+          key,
+          namespace,
+          lockedAt: new Date(),
+        },
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async completeOperationLock(key: string) {
+    await this.prisma.idempotencyKey.update({
+      where: { key },
+      data: {
+        completedAt: new Date(),
+      },
+    });
+  }
+
+  private async releaseOperationLock(key: string) {
+    await this.prisma.idempotencyKey.delete({
+      where: { key },
+    });
+  }
+
+  private async recordTransitionAudit(
+    contractId: string,
+    previousStatus: ContractStatus,
+    nextStatus: ContractStatus,
+    context?: {
+      actorId?: string;
+      action?: string;
+      reason?: string;
+      source?: string;
+      externalReference?: string;
+      changedFields?: string[];
+    },
+  ) {
+    await this.prisma.auditLog.create({
+      data: {
+        id: randomUUID(),
+        action: context?.action ?? 'CONTRACT_STATUS_TRANSITION',
+        entityType: AuditEntityType.JOB,
+        entityId: contractId,
+        performedBy: context?.actorId ?? 'system',
+        performedAt: new Date(),
+        metadata: {
+          previousStatus,
+          nextStatus,
+          reason: context?.reason ?? null,
+          source: context?.source ?? 'contracts_service',
+          externalReference: context?.externalReference ?? null,
+          changedFields: context?.changedFields ?? [],
+        },
+      },
+    });
+  }
+
+  // Centralized state machine validation
+  private readonly validStateTransitions: Record<
+    ContractStatus,
+    ContractStatus[]
+  > = {
+    [ContractStatus.DRAFT]: [
+      ContractStatus.PENDING_PAYMENT,
+      ContractStatus.CANCELLED,
+    ],
+    [ContractStatus.PENDING_PAYMENT]: [
+      ContractStatus.FUNDED,
+      ContractStatus.CANCELLED,
+      ContractStatus.PAYMENT_FAILED,
+      ContractStatus.EXPIRED,
+    ],
+    [ContractStatus.FUNDED]: [ContractStatus.ACTIVE, ContractStatus.CANCELLED],
+    [ContractStatus.ACTIVE]: [
+      ContractStatus.IN_PROGRESS,
+      ContractStatus.DISPUTED,
+      ContractStatus.CANCELLED,
+    ],
+    [ContractStatus.IN_PROGRESS]: [
+      ContractStatus.CLIENT_CONFIRMED,
+      ContractStatus.DISPUTED,
+      ContractStatus.CANCELLED,
+    ],
+    [ContractStatus.CLIENT_CONFIRMED]: [
+      ContractStatus.READY_FOR_PAYOUT,
+      ContractStatus.DISPUTED,
+      ContractStatus.IN_PROGRESS,
+    ],
+    [ContractStatus.READY_FOR_PAYOUT]: [
+      ContractStatus.PAID_OUT,
+      ContractStatus.DISPUTED,
+    ],
+    [ContractStatus.DISPUTED]: [
+      ContractStatus.REFUNDED,
+      ContractStatus.PAID_OUT,
+    ],
+    [ContractStatus.PAID_OUT]: [], // Terminal state
+    [ContractStatus.COMPLETED]: [], // Terminal state
+    [ContractStatus.REFUNDED]: [], // Terminal state
+    [ContractStatus.CANCELLED]: [], // Terminal state
+    [ContractStatus.PAYMENT_FAILED]: [
+      ContractStatus.PENDING_PAYMENT,
+      ContractStatus.CANCELLED,
+    ], // Can retry or cancel
+    [ContractStatus.EXPIRED]: [], // Terminal state
+  };
+
+  private validateStateTransition(
+    currentStatus: ContractStatus,
+    newStatus: ContractStatus,
+  ): void {
+    const validTransitions = this.validStateTransitions[currentStatus];
+    if (!validTransitions.includes(newStatus)) {
+      throw new BadRequestException(
+        `Invalid state transition from ${currentStatus} to ${newStatus}`,
+      );
+    }
+  }
+
+  private async transitionContractStatus(
+    contractId: string,
+    newStatus: ContractStatus,
+    data?: Prisma.ContractUpdateInput,
+    context?: {
+      actorId?: string;
+      action?: string;
+      reason?: string;
+      source?: string;
+      externalReference?: string;
+    },
+  ) {
+    const contract = await this.prisma.contract.findUnique({
+      where: { id: contractId },
+      select: { status: true, paystackReference: true },
+    });
+
+    if (!contract) {
+      throw new NotFoundException('Contract not found');
+    }
+
+    this.validateStateTransition(contract.status, newStatus);
+
+    const updatedContract = await this.prisma.contract.update({
+      where: { id: contractId },
+      data: {
+        status: newStatus,
+        updatedAt: new Date(),
+        ...(data ?? {}),
+      },
+      include: this.contractInclude,
+    });
+
+    await this.recordTransitionAudit(contractId, contract.status, newStatus, {
+      actorId: context?.actorId,
+      action: context?.action,
+      reason: context?.reason,
+      source: context?.source,
+      externalReference:
+        context?.externalReference ?? contract.paystackReference ?? undefined,
+      changedFields: data ? Object.keys(data) : [],
+    });
+
+    return updatedContract;
+  }
 
   private readonly contractInclude = {
     job: true,
@@ -132,15 +317,39 @@ export class ContractsService {
       );
     }
 
-    return this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        status: ContractStatus.IN_PROGRESS,
-        activatedAt: contract.activatedAt ?? new Date(),
-        startedAt: contract.startedAt ?? new Date(),
-      },
-      include: this.contractInclude,
-    });
+    const operationKey = this.buildTransitionKey(
+      'activate',
+      contractId,
+      userId,
+    );
+    const acquired = await this.tryAcquireOperationLock(
+      operationKey,
+      'contract_transition',
+    );
+    if (!acquired) {
+      return this.getContractOrThrow(contractId);
+    }
+
+    try {
+      const updatedContract = await this.transitionContractStatus(
+        contractId,
+        ContractStatus.IN_PROGRESS,
+        {
+          activatedAt: contract.activatedAt ?? new Date(),
+          startedAt: contract.startedAt ?? new Date(),
+        },
+        {
+          actorId: userId,
+          action: 'CONTRACT_ACTIVATED',
+          source: 'contracts.activate',
+        },
+      );
+      await this.completeOperationLock(operationKey);
+      return updatedContract;
+    } catch (error) {
+      await this.releaseOperationLock(operationKey);
+      throw error;
+    }
   }
 
   async markFunded(
@@ -151,16 +360,68 @@ export class ContractsService {
     accessCode?: string | null,
   ) {
     await this.getContractOrThrow(contractId);
+    const operationKey = this.buildTransitionKey(
+      'funded',
+      contractId,
+      paystackReference || paymentId,
+    );
+    const acquired = await this.tryAcquireOperationLock(
+      operationKey,
+      'contract_transition',
+    );
+    if (!acquired) {
+      return this.getContractOrThrow(contractId);
+    }
+
+    try {
+      const updatedContract = await this.transitionContractStatus(
+        contractId,
+        ContractStatus.FUNDED,
+        {
+          fundedAt: new Date(),
+          paystackReference: paystackReference || null,
+          paystackAuthorizationUrl: authorizationUrl || null,
+          paystackAccessCode: accessCode || null,
+          fundedPaymentId: paymentId,
+        },
+        {
+          actorId: 'system',
+          action: 'CONTRACT_FUNDED',
+          source: 'payments.verify',
+          externalReference: paystackReference || paymentId,
+        },
+      );
+      await this.completeOperationLock(operationKey);
+      return updatedContract;
+    } catch (error) {
+      await this.releaseOperationLock(operationKey);
+      throw error;
+    }
+  }
+
+  async markPaymentInitializationRequested(
+    contractId: string,
+    paystackReference: string,
+    authorizationUrl?: string | null,
+    accessCode?: string | null,
+  ) {
+    const contract = await this.getContractOrThrow(contractId);
+    const targetStatus = ContractStatus.PENDING_PAYMENT;
+
+    if (contract.status !== targetStatus) {
+      return this.transitionContractStatus(contractId, targetStatus, {
+        paystackReference: paystackReference || null,
+        paystackAuthorizationUrl: authorizationUrl || null,
+        paystackAccessCode: accessCode || null,
+      });
+    }
 
     return this.prisma.contract.update({
       where: { id: contractId },
       data: {
-        status: ContractStatus.FUNDED,
-        fundedAt: new Date(),
         paystackReference: paystackReference || null,
         paystackAuthorizationUrl: authorizationUrl || null,
         paystackAccessCode: accessCode || null,
-        fundedPaymentId: paymentId,
       },
       include: this.contractInclude,
     });
@@ -171,62 +432,76 @@ export class ContractsService {
     userId: string,
     isClient: boolean,
   ) {
-    const contract = await this.getContractOrThrow(contractId);
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Lock the row to prevent race conditions during concurrent confirmation attempts
+      await tx.$queryRaw`SELECT id FROM "Contract" WHERE "id" = ${contractId} FOR UPDATE`;
 
-    if (isClient && contract.clientId !== userId) {
-      throw new ForbiddenException('Only the client can confirm completion');
-    }
+      const contract = await tx.contract.findUnique({
+        where: { id: contractId },
+        include: this.contractInclude,
+      });
 
-    if (!isClient && contract.artisanId !== userId) {
-      throw new ForbiddenException('Only the artisan can confirm completion');
-    }
+      if (!contract) {
+        throw new NotFoundException('Contract not found');
+      }
 
-    const completableStatuses = new Set<ContractStatus>([
-      ContractStatus.IN_PROGRESS,
-      ContractStatus.CLIENT_CONFIRMED,
-      ContractStatus.READY_FOR_PAYOUT,
-    ]);
+      if (isClient && contract.clientId !== userId) {
+        throw new ForbiddenException('Only the client can confirm completion');
+      }
 
-    if (!completableStatuses.has(contract.status)) {
-      throw new BadRequestException(
-        'Contract must be in progress before completion can be confirmed',
-      );
-    }
+      if (!isClient && contract.artisanId !== userId) {
+        throw new ForbiddenException('Only the artisan can confirm completion');
+      }
 
-    if (!contract.startedAt) {
-      throw new BadRequestException(
-        'Contract must be activated before completion can be confirmed.',
-      );
-    }
+      const completableStatuses = new Set<ContractStatus>([
+        ContractStatus.IN_PROGRESS,
+        ContractStatus.CLIENT_CONFIRMED,
+        ContractStatus.READY_FOR_PAYOUT,
+      ]);
 
-    if (isClient && contract.clientConfirmedCompletion) {
-      throw new BadRequestException('Client has already confirmed completion.');
-    }
+      if (!completableStatuses.has(contract.status)) {
+        throw new BadRequestException(
+          'Contract must be in progress before completion can be confirmed',
+        );
+      }
 
-    if (!isClient && contract.artisanConfirmedCompletion) {
-      throw new BadRequestException(
-        'Artisan has already acknowledged completion.',
-      );
-    }
+      if (!contract.startedAt) {
+        throw new BadRequestException(
+          'Contract must be activated before completion can be confirmed.',
+        );
+      }
 
-    const bothConfirmed = isClient
-      ? contract.artisanConfirmedCompletion
-      : contract.clientConfirmedCompletion;
+      if (isClient && contract.clientConfirmedCompletion) {
+        throw new BadRequestException(
+          'Client has already confirmed completion.',
+        );
+      }
 
-    return this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        clientConfirmedCompletion: isClient ? true : undefined,
-        clientConfirmedAt: isClient ? new Date() : undefined,
-        artisanConfirmedCompletion: isClient ? undefined : true,
-        artisanConfirmedAt: isClient ? undefined : new Date(),
-        status: bothConfirmed
-          ? ContractStatus.READY_FOR_PAYOUT
-          : isClient
-            ? ContractStatus.CLIENT_CONFIRMED
-            : ContractStatus.IN_PROGRESS,
-      },
-      include: this.contractInclude,
+      if (!isClient && contract.artisanConfirmedCompletion) {
+        throw new BadRequestException(
+          'Artisan has already acknowledged completion.',
+        );
+      }
+
+      const bothConfirmed = isClient
+        ? contract.artisanConfirmedCompletion
+        : contract.clientConfirmedCompletion;
+
+      return tx.contract.update({
+        where: { id: contractId },
+        data: {
+          clientConfirmedCompletion: isClient ? true : undefined,
+          clientConfirmedAt: isClient ? new Date() : undefined,
+          artisanConfirmedCompletion: isClient ? undefined : true,
+          artisanConfirmedAt: isClient ? undefined : new Date(),
+          status: bothConfirmed
+            ? ContractStatus.READY_FOR_PAYOUT
+            : isClient
+              ? ContractStatus.CLIENT_CONFIRMED
+              : ContractStatus.IN_PROGRESS,
+        },
+        include: this.contractInclude,
+      });
     });
   }
 
@@ -265,25 +540,47 @@ export class ContractsService {
   }
 
   async markPaidOut(contractId: string) {
-    await this.getContractOrThrow(contractId);
+    const operationKey = this.buildTransitionKey('paid_out', contractId);
+    const acquired = await this.tryAcquireOperationLock(
+      operationKey,
+      'contract_transition',
+    );
+    if (!acquired) {
+      return this.getContractOrThrow(contractId);
+    }
 
-    return this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        escrowReleased: true,
-        escrowReleasedAt: new Date(),
-        paidOutAt: new Date(),
-        completedAt: new Date(),
-        platformFeeDeducted: true,
-        status: ContractStatus.PAID_OUT,
-      },
-      include: this.contractInclude,
-    });
+    try {
+      const updatedContract = await this.transitionContractStatus(
+        contractId,
+        ContractStatus.PAID_OUT,
+        {
+          escrowReleased: true,
+          escrowReleasedAt: new Date(),
+          paidOutAt: new Date(),
+          completedAt: new Date(),
+          platformFeeDeducted: true,
+        },
+        {
+          actorId: 'system',
+          action: 'CONTRACT_PAID_OUT',
+          source: 'payments.webhook',
+        },
+      );
+      await this.completeOperationLock(operationKey);
+      return updatedContract;
+    } catch (error) {
+      await this.releaseOperationLock(operationKey);
+      throw error;
+    }
   }
 
   async recordPayoutFailure(contractId: string, reason?: string) {
-    await this.getContractOrThrow(contractId);
-
+    const contract = await this.getContractOrThrow(contractId);
+    if (contract.status !== ContractStatus.READY_FOR_PAYOUT) {
+      throw new BadRequestException(
+        'Payout failure can only be recorded while contract is READY_FOR_PAYOUT',
+      );
+    }
     return this.prisma.contract.update({
       where: { id: contractId },
       data: {
@@ -326,30 +623,66 @@ export class ContractsService {
   }
 
   async markRefunded(contractId: string, reason?: string) {
-    await this.getContractOrThrow(contractId);
+    const operationKey = this.buildTransitionKey('refunded', contractId);
+    const acquired = await this.tryAcquireOperationLock(
+      operationKey,
+      'contract_transition',
+    );
+    if (!acquired) {
+      return this.getContractOrThrow(contractId);
+    }
 
-    return this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        refundedAt: new Date(),
-        cancelledAt: new Date(),
-        refundReason: reason || null,
-        status: ContractStatus.REFUNDED,
-      },
-      include: this.contractInclude,
-    });
+    try {
+      await this.transitionContractStatus(
+        contractId,
+        ContractStatus.REFUNDED,
+        {
+          refundedAt: new Date(),
+          cancelledAt: new Date(),
+          refundReason: reason || null,
+        },
+        {
+          actorId: 'system',
+          action: 'CONTRACT_REFUNDED',
+          source: 'payments.refund',
+          reason,
+        },
+      );
+      await this.completeOperationLock(operationKey);
+      return this.getContractOrThrow(contractId);
+    } catch (error) {
+      await this.releaseOperationLock(operationKey);
+      throw error;
+    }
   }
 
   async markDisputed(contractId: string) {
-    await this.getContractOrThrow(contractId);
+    const operationKey = this.buildTransitionKey('disputed', contractId);
+    const acquired = await this.tryAcquireOperationLock(
+      operationKey,
+      'contract_transition',
+    );
+    if (!acquired) {
+      return this.getContractOrThrow(contractId);
+    }
 
-    return this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        status: ContractStatus.DISPUTED,
-      },
-      include: this.contractInclude,
-    });
+    try {
+      await this.transitionContractStatus(
+        contractId,
+        ContractStatus.DISPUTED,
+        undefined,
+        {
+          actorId: 'system',
+          action: 'CONTRACT_DISPUTED',
+          source: 'disputes.create',
+        },
+      );
+      await this.completeOperationLock(operationKey);
+      return this.getContractOrThrow(contractId);
+    } catch (error) {
+      await this.releaseOperationLock(operationKey);
+      throw error;
+    }
   }
 
   async getContract(contractId: string, userId: string) {

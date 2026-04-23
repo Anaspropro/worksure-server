@@ -160,15 +160,12 @@ export class PaymentsService {
       },
     });
 
-    await this.prisma.contract.update({
-      where: { id: contractId },
-      data: {
-        status: ContractStatus.PENDING_PAYMENT,
-        paystackReference: paystackData.reference,
-        paystackAuthorizationUrl: paystackData.authorization_url,
-        paystackAccessCode: paystackData.access_code,
-      },
-    });
+    await this.contractsService.markPaymentInitializationRequested(
+      contractId,
+      paystackData.reference,
+      paystackData.authorization_url,
+      paystackData.access_code,
+    );
 
     return {
       payment: updatedPayment,
@@ -226,6 +223,20 @@ export class PaymentsService {
     const contractId = paystackData.metadata?.contractId || payment.contractId;
 
     const updatedPayment = await this.prisma.$transaction(async (tx) => {
+      const rawLocks = await tx.$queryRaw<
+        { id: string }[]
+      >`SELECT id FROM "Payment" WHERE "id" = ${payment.id} FOR UPDATE`;
+      if (!rawLocks || rawLocks.length === 0) {
+        throw new NotFoundException('Payment record locked or not found');
+      }
+
+      const lockedPayment = await tx.payment.findUnique({
+        where: { id: payment.id },
+      });
+      if (lockedPayment?.isVerified) {
+        return lockedPayment; // Handled concurrently
+      }
+
       const completedPayment = await tx.payment.update({
         where: { id: payment.id },
         data: {
@@ -241,22 +252,66 @@ export class PaymentsService {
         },
       });
 
-      await tx.transaction.create({
-        data: {
-          id: randomUUID(),
-          userId: payment.userId,
-          type: TransactionType.PAYMENT,
-          amount: Math.round(paystackData.amount / 100),
-          status: TransactionStatus.COMPLETED,
+      const existingTx = await tx.transaction.findFirst({
+        where: {
           reference: paystackData.reference,
-          metadata: {
-            contractId,
-            gateway: 'paystack',
-          },
-          createdAt: new Date(),
-          completedAt: new Date(),
+          type: TransactionType.PAYMENT,
         },
       });
+
+      if (!existingTx) {
+        await tx.transaction.create({
+          data: {
+            id: randomUUID(),
+            userId: payment.userId,
+            type: TransactionType.PAYMENT,
+            amount: Math.round(paystackData.amount / 100),
+            status: TransactionStatus.COMPLETED,
+            reference: paystackData.reference,
+            metadata: {
+              contractId,
+              gateway: 'paystack',
+            },
+            createdAt: new Date(),
+            completedAt: new Date(),
+          },
+        });
+
+        // DOUBLE-ENTRY LEDGER: Client Funding
+        let userWallet = await tx.ledgerAccount.findUnique({
+          where: { userId: payment.userId },
+        });
+        if (!userWallet) {
+          userWallet = await tx.ledgerAccount.create({
+            data: {
+              name: 'Client Wallet',
+              type: 'USER_WALLET',
+              userId: payment.userId,
+            },
+          });
+        }
+
+        let systemEscrow = await tx.ledgerAccount.findFirst({
+          where: { type: 'SYSTEM_ESCROW' },
+        });
+        if (!systemEscrow) {
+          systemEscrow = await tx.ledgerAccount.create({
+            data: { name: 'WorkSure Escrow', type: 'SYSTEM_ESCROW' },
+          });
+        }
+
+        await tx.ledgerEntry.create({
+          data: {
+            debitAccountId: userWallet.id,
+            creditAccountId: systemEscrow.id,
+            amount: Math.round(paystackData.amount / 100),
+            reference: paystackData.reference,
+            contractId,
+            paymentId: payment.id,
+            description: `Payment Funded Escrow for Contract ${contractId}`,
+          },
+        });
+      }
 
       return completedPayment;
     });
@@ -524,8 +579,6 @@ export class PaymentsService {
         },
       });
     }
-
-    return result;
   }
 
   async refundContract(contractId: string, userId: string, reason?: string) {
@@ -591,6 +644,8 @@ export class PaymentsService {
       reference,
     };
   }
+  // Duplicate releaseEscrow/releaseEscrowByAdmin implementations removed.
+  // The earlier implementations (above) are used.
 
   async processPaystackWebhook(payload: any) {
     const event = payload?.event as string | undefined;
@@ -615,34 +670,41 @@ export class PaymentsService {
           return { handled: false, event };
         }
 
-        const transferTx = await this.prisma.transaction.findFirst({
-          where: { reference, type: TransactionType.TRANSFER },
-        });
+        await this.prisma.$transaction(async (tx) => {
+          const rawLocks = await tx.$queryRaw<
+            { id: string }[]
+          >`SELECT id FROM "Transaction" WHERE "reference" = ${reference} FOR UPDATE`;
+          if (!rawLocks || rawLocks.length === 0) return;
 
-        if (transferTx && transferTx.status !== TransactionStatus.COMPLETED) {
-          const contractId =
-            (transferTx.metadata as { contractId?: string } | null)
-              ?.contractId ?? null;
-
-          await this.prisma.transaction.update({
-            where: { id: transferTx.id },
-            data: {
-              status: TransactionStatus.COMPLETED,
-              completedAt: new Date(),
-              metadata: {
-                ...(typeof transferTx.metadata === 'object' &&
-                transferTx.metadata !== null
-                  ? transferTx.metadata
-                  : {}),
-                transferCode: transferCode || null,
-              },
-            },
+          const transferTx = await tx.transaction.findFirst({
+            where: { reference, type: TransactionType.TRANSFER },
           });
 
-          if (contractId) {
-            await this.contractsService.markPaidOut(contractId);
+          if (transferTx && transferTx.status !== TransactionStatus.COMPLETED) {
+            const contractId =
+              (transferTx.metadata as { contractId?: string } | null)
+                ?.contractId ?? null;
+
+            await tx.transaction.update({
+              where: { id: transferTx.id },
+              data: {
+                status: TransactionStatus.COMPLETED,
+                completedAt: new Date(),
+                metadata: {
+                  ...(typeof transferTx.metadata === 'object' &&
+                  transferTx.metadata !== null
+                    ? transferTx.metadata
+                    : {}),
+                  transferCode: transferCode || null,
+                },
+              },
+            });
+
+            if (contractId) {
+              await this.contractsService.markPaidOut(contractId);
+            }
           }
-        }
+        });
 
         return { handled: true, event };
       }
@@ -818,24 +880,5 @@ export class PaymentsService {
       },
     };
   }
-
-  getDefinition() {
-    return {
-      name: 'payments',
-      description:
-        'Handles Paystack-backed contract funding, payouts, and refunds',
-      responsibilities: [
-        'Initialize Paystack payments for contracts',
-        'Verify charge webhooks and mark contracts funded',
-        'Create transfer recipients and initiate payouts',
-        'Track refunds, transfers, and payment audit data',
-      ],
-      rules: [
-        'WorkSure does not directly custody client funds',
-        'Contract funding is confirmed from Paystack events',
-        'Payouts require both parties to confirm completion',
-        'Refunds are executed against the original Paystack payment',
-      ],
-    };
-  }
+  // Duplicate webhook handlers removed — unified handler above is used.
 }

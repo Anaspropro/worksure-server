@@ -380,6 +380,38 @@ exports.Prisma.KycDocumentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.IdempotencyKeyScalarFieldEnum = {
+  key: 'key',
+  namespace: 'namespace',
+  lockedAt: 'lockedAt',
+  completedAt: 'completedAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LedgerAccountScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  userId: 'userId',
+  balance: 'balance',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LedgerEntryScalarFieldEnum = {
+  id: 'id',
+  debitAccountId: 'debitAccountId',
+  creditAccountId: 'creditAccountId',
+  amount: 'amount',
+  contractId: 'contractId',
+  paymentId: 'paymentId',
+  reference: 'reference',
+  description: 'description',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -474,7 +506,9 @@ exports.ContractStatus = exports.$Enums.ContractStatus = {
   PAID_OUT: 'PAID_OUT',
   CANCELLED: 'CANCELLED',
   DISPUTED: 'DISPUTED',
-  REFUNDED: 'REFUNDED'
+  REFUNDED: 'REFUNDED',
+  PAYMENT_FAILED: 'PAYMENT_FAILED',
+  EXPIRED: 'EXPIRED'
 };
 
 exports.MessageType = exports.$Enums.MessageType = {
@@ -510,6 +544,13 @@ exports.KycDocumentStatus = exports.$Enums.KycDocumentStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.LedgerAccountType = exports.$Enums.LedgerAccountType = {
+  USER_WALLET: 'USER_WALLET',
+  SYSTEM_ESCROW: 'SYSTEM_ESCROW',
+  SYSTEM_FEE: 'SYSTEM_FEE',
+  EXTERNAL_BANK: 'EXTERNAL_BANK'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Dispute: 'Dispute',
@@ -526,7 +567,10 @@ exports.Prisma.ModelName = {
   Notification: 'Notification',
   AuditLog: 'AuditLog',
   Payment: 'Payment',
-  KycDocument: 'KycDocument'
+  KycDocument: 'KycDocument',
+  IdempotencyKey: 'IdempotencyKey',
+  LedgerAccount: 'LedgerAccount',
+  LedgerEntry: 'LedgerEntry'
 };
 
 /**
