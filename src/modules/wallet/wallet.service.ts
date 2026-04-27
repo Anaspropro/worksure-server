@@ -124,8 +124,7 @@ export class WalletService {
 
     return (
       this.mapDedicatedAccount(assignPayload?.data?.dedicated_account) ??
-      this.mapDedicatedAccount(assignPayload?.data) ??
-      {
+      this.mapDedicatedAccount(assignPayload?.data) ?? {
         accountNumber: null,
         accountName: user.name,
         bankName: 'Paystack',

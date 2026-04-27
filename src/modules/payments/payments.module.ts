@@ -4,6 +4,7 @@ import { PaymentsService } from './payments.service';
 import { PaymentsController } from './payments.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ContractsModule } from '../contracts/contracts.module';
+import { WebhookSignatureService } from '../../common/services/webhook-signature.service';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { ContractsModule } from '../contracts/contracts.module';
     forwardRef(() => ContractsModule),
   ],
   controllers: [PaymentsController],
-  providers: [PaymentsService],
+  providers: [PaymentsService, WebhookSignatureService],
   exports: [PaymentsService],
 })
 export class PaymentsModule {}

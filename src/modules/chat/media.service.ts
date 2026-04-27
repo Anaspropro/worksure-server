@@ -22,7 +22,7 @@ export class MediaService {
 
     if (!cloudName || !apiKey || !apiSecret) {
       throw new InternalServerErrorException(
-        'Cloudinary credentials are not properly configured'
+        'Cloudinary credentials are not properly configured',
       );
     }
 

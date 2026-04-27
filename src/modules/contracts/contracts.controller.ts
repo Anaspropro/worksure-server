@@ -141,15 +141,50 @@ export class ContractsController {
     @Body() confirmDto: ConfirmCompletionDto,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    const contract = await this.contractsService.confirmCompletion(
+    // Verify user is part of the contract
+    const contract = await this.contractsService.getContract(
       contractId,
       user.id,
-      confirmDto.isClient,
     );
 
+    // Verify role matches user type
+    const isClient = contract.clientId === user.id;
+    if (confirmDto.isClient !== isClient) {
+      throw new Error('Role does not match user type');
+    }
+
+    // Confirm completion using centralized state management
+    await this.contractsService.confirmCompletion(
+      contractId,
+      user.id,
+      isClient,
+    );
+
+    // Get updated contract status
+    const updatedContract = await this.contractsService.getContract(
+      contractId,
+      user.id,
+    );
+
+    let message = '';
+    switch (updatedContract.status) {
+      case ContractStatus.CLIENT_CONFIRMED:
+        message =
+          'Client confirmation recorded. Waiting for artisan confirmation.';
+        break;
+      case ContractStatus.READY_FOR_PAYOUT:
+        message = 'Both parties confirmed. Contract is ready for payout.';
+        break;
+      default:
+        message = 'Completion confirmed successfully';
+    }
+
     return {
-      message: 'Completion confirmed successfully',
-      data: contract,
+      message,
+      contract: updatedContract,
+      status: updatedContract.status,
+      readyForPayout:
+        updatedContract.status === ContractStatus.READY_FOR_PAYOUT,
     };
   }
 

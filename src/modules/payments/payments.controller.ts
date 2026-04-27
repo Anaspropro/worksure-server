@@ -22,7 +22,9 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { PrismaService } from '../../database/prisma.service';
 import { PaymentsService } from './payments.service';
+import { WebhookSignatureService } from '../../common/services/webhook-signature.service';
 import {
   ActivateContractDto,
   CompleteContractDto,
@@ -37,7 +39,11 @@ import {
 @Controller('payments')
 @UseGuards(JwtAuthGuard, RolesGuard, ThrottlerGuard)
 export class PaymentsController {
-  constructor(private readonly paymentsService: PaymentsService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paymentsService: PaymentsService,
+    private readonly webhookSignatureService: WebhookSignatureService,
+  ) {}
 
   private verifyWebhookSignature(
     signature: string | undefined,
@@ -129,10 +135,36 @@ export class PaymentsController {
     @Headers('x-paystack-signature') signature?: string,
   ) {
     this.verifyWebhookSignature(signature, request.rawBody);
+    const eventType = request.body?.event as string | undefined;
+    const eventIdRaw = request.body?.data?.id;
+    const eventReference = request.body?.data?.reference as string | undefined;
+    const eventKey =
+      (typeof eventIdRaw === 'string' || typeof eventIdRaw === 'number'
+        ? String(eventIdRaw)
+        : undefined) ||
+      eventReference ||
+      `${eventType ?? 'unknown'}:${JSON.stringify(request.body?.data ?? {})}`;
 
-    const result = await this.paymentsService.processPaystackWebhook(
-      request.body,
-    );
+    const alreadyProcessed =
+      await this.webhookSignatureService.isEventProcessed(eventKey);
+    if (alreadyProcessed) {
+      return {
+        status: 'already_processed',
+        event: eventType ?? 'unknown',
+      };
+    }
+
+    const acquired =
+      await this.webhookSignatureService.tryBeginEventProcessing(eventKey);
+    if (!acquired) {
+      return {
+        status: 'already_processing',
+        event: eventType ?? 'unknown',
+      };
+    }
+
+    const result = await this.paymentsService.processPaystackWebhook(request.body);
+    await this.webhookSignatureService.markEventProcessed(eventKey);
 
     return {
       status: 'success',
@@ -144,9 +176,7 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Manually verify a payment record' })
   @ApiOkResponse({ description: 'Payment verified successfully.' })
   @Post('verify')
-  async verifyPayment(
-    @Body() dto: VerifyPaymentDto,
-  ) {
+  async verifyPayment(@Body() dto: VerifyPaymentDto) {
     const result = await this.paymentsService.verifyPayment(
       dto.paymentId,
       dto.verificationCode,
@@ -206,5 +236,14 @@ export class PaymentsController {
     @Query() query: PaymentListQueryDto,
   ) {
     return this.paymentsService.listPayments(user.id, query);
+  }
+
+  @Public()
+  @Post('webhook')
+  async handlePaystackWebhook(
+    @Req() req: any,
+    @Headers('x-paystack-signature') signature: string,
+  ) {
+    return this.paystackWebhook(req, signature);
   }
 }

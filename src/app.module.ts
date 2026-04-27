@@ -1,4 +1,5 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './modules/admin/admin.module';
@@ -23,6 +24,11 @@ import { SanitizationService } from './common/services/sanitization.service';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([{
+      name: 'default',
+      ttl: 60000,
+      limit: 10,
+    }]),
     AppConfigModule,
     PrismaModule,
     HealthModule,

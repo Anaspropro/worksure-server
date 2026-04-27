@@ -154,11 +154,7 @@ export class NotificationsService {
       throw new NotFoundException('Notification not found');
     }
 
-    if (
-      actor &&
-      actor.role !== 'ADMIN' &&
-      notification.userId !== actor.id
-    ) {
+    if (actor && actor.role !== 'ADMIN' && notification.userId !== actor.id) {
       throw new BadRequestException(
         'Access denied: You can only view your own notifications',
       );
@@ -238,7 +234,11 @@ export class NotificationsService {
     }
 
     const readAt =
-      dto.markAsRead === true ? new Date() : dto.markAsRead === false ? null : undefined;
+      dto.markAsRead === true
+        ? new Date()
+        : dto.markAsRead === false
+          ? null
+          : undefined;
     const archivedAt =
       dto.markAsArchived === true
         ? new Date()
@@ -404,9 +404,7 @@ export class NotificationsService {
 
   async createDisputeNotification(
     userId: string,
-    type:
-      | NotificationType.DISPUTE_CREATED
-      | NotificationType.DISPUTE_RESOLVED,
+    type: NotificationType.DISPUTE_CREATED | NotificationType.DISPUTE_RESOLVED,
     disputeId: string,
     contractTitle: string,
   ) {

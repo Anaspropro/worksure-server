@@ -1,67 +1,323 @@
-# WorkSure Server
+This is already very strong—you’ve clearly done real architectural thinking. I’m not going to rewrite everything from scratch. Instead, I’ll give you a **clean, production-grade merged `README.md`** that:
 
-Escrow-based marketplace backend for connecting clients with artisans.
+* removes duplication
+* aligns everything with your actual implementation
+* keeps your sequence diagrams (they’re good)
+* sharpens wording to “senior-level clarity”
 
-## Status
+---
 
-WorkSure has the core modules for the intended product, but it is still in an active hardening phase.
+# 🧾 WorkSure Server — Backend
 
-- Implemented: auth, users, artisan profiles, jobs, proposals, contracts, wallets, payments, reviews, disputes, notifications, and admin APIs
-- Implemented: Prisma schema, migrations, Swagger setup, Docker assets, and isolated-db e2e test support
-- Implemented: session-aware JWT validation, logout, account lockout, sanitization, and rate limiting on auth-sensitive routes
-- In progress: financial workflow consolidation, lifecycle enforcement, and broader end-to-end coverage
-- Not yet claimed: production readiness
+Escrow-based marketplace backend for connecting clients with artisans, built with **NestJS**, **Prisma**, and **PostgreSQL**, and powered by **Paystack** for payment orchestration.
 
-## Product Goal
+---
 
-WorkSure is meant to be a trust-first marketplace where:
+# 🚀 Overview
 
-1. Clients post jobs.
-2. Artisans submit proposals.
-3. Accepted proposals become contracts.
-4. Clients fund escrow before work starts.
-5. Both parties confirm completion.
-6. Funds are released safely, with refunds and dispute handling when needed.
+WorkSure is a **trust-first marketplace system** where:
 
-The platform's value is not just job discovery. It is trust, escrow safety, and enforceable workflow rules.
+1. Clients post jobs
+2. Artisans submit proposals
+3. Accepted proposals become contracts
+4. Clients fund contracts before work begins
+5. Both parties confirm completion
+6. Funds are released safely or refunded via dispute resolution
 
-## Current Backend Highlights
+---
 
-- JWT authentication with role-based access
-- Session-aware token verification and logout support
-- Account lockout and security middleware
-- Wallet balances, frozen funds, and transaction ledger
-- Contract funding, activation, completion confirmation, release, and refund paths
-- Admin flows for moderation and dispute handling
+# 🧠 Core Architecture
 
-## Known Focus Areas
+The system follows a **state-machine-driven modular monolith** design.
 
-The current work is focused on:
+---
 
-- removing duplicate or conflicting payment/contract paths
-- tightening lifecycle checks around contract state transitions
-- enforcing artisan verification where the business rules require it
-- expanding tests around the full marketplace journey
-- keeping the docs aligned with actual tested behavior
+## 🔑 Core Principle
 
-## Sequence Diagrams
+> **Contracts define business truth. Payments execute money movement.**
 
-This section describes the current end-to-end backend behavior for the main marketplace flows.
+---
 
-Core rule:
+## 🧩 System Layers
 
-> Only `ContractsService` mutates contract status.
-> Paystack confirms money movement asynchronously through webhook calls handled by `PaymentsController`.
+### 1. State Engine → `contracts`
 
-Implementation note:
+* Single source of truth for lifecycle
+* Enforces all valid transitions
+* No other module mutates contract state
 
-- The diagrams below are aligned to the current codebase.
-- Participants labeled `Events` represent domain milestones and follow-on side effects conceptually.
-- The backend does not yet have a centralized event bus; most side effects are still direct service calls or future-facing architecture markers.
+---
 
-### 1. Proposal Acceptance -> Contract Creation
+### 2. Settlement Engine → `payments`
 
-In the current backend, accepting a proposal and creating a contract are two separate actions.
+* Handles Paystack integration
+* Executes:
+
+  * funding
+  * payouts
+  * refunds
+* Confirms outcomes via **webhooks**
+
+---
+
+### 3. Interaction Layer
+
+* `jobs`, `proposals`, `chat`, `reviews`, `disputes`, `notifications`, `admin`
+* Supports user workflows around contracts
+
+---
+
+## 🔁 Core System Loop
+
+```text
+User Action → Contracts (state) → Payments → Paystack → Webhook → Contracts (final state)
+```
+
+---
+
+# 📦 Tech Stack
+
+## Core
+
+* NestJS
+* TypeScript
+
+## Database
+
+* PostgreSQL
+* Prisma ORM
+
+## Auth & Security
+
+* JWT (`@nestjs/jwt`)
+* Session validation
+* bcrypt
+* helmet
+* class-validator
+
+## Payments
+
+* Paystack API (transactions, transfers, refunds, webhooks)
+
+## Realtime & Media
+
+* WebSockets (chat)
+* Cloudinary (uploads)
+
+## Tooling
+
+* Swagger (`/api`)
+* Jest (testing)
+* Docker (deployment support)
+
+---
+
+# 📁 Project Structure
+
+```text
+src/
+├── main.ts
+├── app.module.ts
+├── app.setup.ts
+│
+├── common/
+├── config/
+├── database/
+│
+├── modules/
+│   ├── auth/
+│   ├── users/
+│   ├── jobs/
+│   ├── proposals/
+│   ├── contracts/      ← STATE ENGINE
+│   ├── payments/       ← SETTLEMENT ENGINE
+│   ├── wallet/         ← LEDGER (NOT source of truth)
+│   ├── disputes/
+│   ├── reviews/
+│   ├── notifications/
+│   ├── chat/
+│   └── admin/
+```
+
+---
+
+# ⚙️ Quick Start
+
+### Prerequisites
+
+* Node.js ≥ 18
+* PostgreSQL
+
+---
+
+### Install
+
+```bash
+npm install
+```
+
+---
+
+### Environment
+
+```env
+DATABASE_URL=
+JWT_SECRET=
+JWT_EXPIRES_IN=
+
+PAYSTACK_SECRET_KEY=
+APP_URL=
+
+PORT=3000
+NODE_ENV=development
+```
+
+---
+
+### Database
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+---
+
+### Run
+
+```bash
+npm run start:dev
+```
+
+---
+
+### API Docs
+
+```
+http://localhost:3000/api
+```
+
+---
+
+# 🔐 Request Lifecycle
+
+1. Request enters NestJS
+2. Middleware:
+
+   * logging
+   * rate limiting
+3. Guards:
+
+   * JWT auth
+   * role checks
+4. DTO validation
+5. Controller → Service
+6. Service → Prisma → DB
+7. Response returned
+
+---
+
+# 🔒 Contract Lifecycle
+
+```text
+PENDING_PAYMENT
+→ FUNDED
+→ IN_PROGRESS
+→ CLIENT_CONFIRMED
+→ READY_FOR_PAYOUT
+→ PAID_OUT | REFUNDED
+```
+
+---
+
+## ❗ Critical Rule
+
+> **Only `ContractsService` can change contract state.**
+
+---
+
+# 💸 Payment System
+
+## Principle
+
+> WorkSure does NOT hold funds — Paystack does.
+
+---
+
+## Flow Summary
+
+### Funding
+
+* Initialize payment
+* User completes checkout
+* Webhook confirms → contract becomes `FUNDED`
+
+---
+
+### Payout
+
+* Contract reaches `READY_FOR_PAYOUT`
+* Transfer initiated
+* Webhook confirms → `PAID_OUT`
+
+---
+
+### Refund
+
+* Dispute or cancellation
+* Refund requested
+* Webhook confirms → `REFUNDED`
+
+---
+
+## ⚠️ Webhook Requirements
+
+* Must verify signature
+* Must be idempotent
+* Must handle retries safely
+
+---
+
+# ⚖️ Wallet
+
+* Acts as a **ledger only**
+* Tracks transactions/history
+* NOT a balance authority
+
+---
+
+# ⚖️ Disputes
+
+* Opened by participants
+* Resolved by admin
+* Outcomes:
+
+  * refund client
+  * payout artisan
+
+> Disputes **decide**, payments **execute**
+
+---
+
+# ⭐ Reviews
+
+* Allowed only after:
+
+  * `PAID_OUT` (preferred)
+  * or `COMPLETED` (legacy)
+
+---
+
+# 🔁 Sequence Diagrams
+
+## Core Rule
+
+> Only `ContractsService` mutates contract state
+> Paystack confirms money via webhooks
+
+---
+
+## 1. Proposal → Contract
 
 ```mermaid
 sequenceDiagram
@@ -73,221 +329,80 @@ sequenceDiagram
 
     Client->>ProposalsController: Accept Proposal
     ProposalsController->>DB: update Proposal (ACCEPTED)
-    ProposalsController-->>Client: Proposal accepted
 
-    Client->>ContractsController: Create Contract from accepted proposal
-    ContractsController->>ContractsService: createContract(proposalId, userId)
+    Client->>ContractsController: Create Contract
+    ContractsController->>ContractsService: createContract()
     ContractsService->>DB: create Contract (PENDING_PAYMENT)
-    ContractsService-->>ContractsController: contract
-    ContractsController-->>Client: Contract created
 ```
 
-### 2. Contract Funding (Paystack Checkout + Webhook)
+---
+
+## 2. Funding Flow
 
 ```mermaid
 sequenceDiagram
     participant Client
-    participant PaymentsController
     participant PaymentsService
     participant Paystack
     participant ContractsService
-    participant DB
 
-    Client->>PaymentsController: Fund Contract
-    PaymentsController->>PaymentsService: initializeContractPayment(contractId)
-    PaymentsService->>DB: create Payment (PENDING)
-    PaymentsService->>Paystack: POST /transaction/initialize
-    Paystack-->>PaymentsService: authorization_url, access_code, reference
-    PaymentsService->>DB: update Payment + Contract payment reference data
-    PaymentsController-->>Client: checkout URL
-
+    Client->>PaymentsService: initializePayment
     Client->>Paystack: complete payment
-    Paystack->>PaymentsController: charge.success webhook
-    PaymentsController->>PaymentsService: processPaystackWebhook(payload)
-    PaymentsService->>Paystack: verify transaction reference
-    PaymentsService->>DB: mark Payment completed + create Transaction(PAYMENT)
-    PaymentsService->>ContractsService: markFunded(contractId)
-    ContractsService->>DB: update Contract (FUNDED)
+
+    Paystack->>PaymentsService: webhook (charge.success)
+    PaymentsService->>ContractsService: markFunded
 ```
 
-### 3. Work Progress -> Completion -> Ready For Payout
+---
+
+## 3. Completion → Ready for Payout
 
 ```mermaid
 sequenceDiagram
     participant Client
     participant Artisan
-    participant ContractsController
     participant ContractsService
-    participant DB
 
-    Client->>ContractsController: Confirm Completion
-    ContractsController->>ContractsService: confirmCompletion(contractId, isClient=true)
-    ContractsService->>DB: update Contract (CLIENT_CONFIRMED)
-    ContractsController-->>Client: Client confirmation recorded
-
-    Artisan->>ContractsController: Confirm Completion
-    ContractsController->>ContractsService: confirmCompletion(contractId, isClient=false)
-    ContractsService->>DB: update Contract (READY_FOR_PAYOUT)
-    ContractsController-->>Artisan: Contract ready for payout
+    Client->>ContractsService: confirmCompletion
+    Artisan->>ContractsService: confirmCompletion
+    ContractsService->>ContractsService: READY_FOR_PAYOUT
 ```
 
-### 4. Payout to Artisan (Transfer Flow)
+---
+
+## 4. Payout Flow
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant ContractsController
     participant PaymentsService
     participant Paystack
-    participant PaymentsController
     participant ContractsService
-    participant DB
 
-    Client->>ContractsController: Release Escrow
-    ContractsController->>PaymentsService: releaseEscrow(contractId, userId)
-    PaymentsService->>ContractsService: assertReadyForPayout(contractId)
-    PaymentsService->>Paystack: POST /transferrecipient (if needed)
-    PaymentsService->>Paystack: POST /transfer
-    PaymentsService->>DB: create Transaction (TRANSFER, PENDING)
-    ContractsController-->>Client: Payout initiated
-
-    Paystack->>PaymentsController: transfer.success webhook
-    PaymentsController->>PaymentsService: processPaystackWebhook(payload)
-    PaymentsService->>DB: mark transfer transaction completed
-    PaymentsService->>ContractsService: markPaidOut(contractId)
-    ContractsService->>DB: update Contract (PAID_OUT)
+    PaymentsService->>Paystack: transfer
+    Paystack->>PaymentsService: webhook (transfer.success)
+    PaymentsService->>ContractsService: markPaidOut
 ```
 
-### 5. Dispute -> Resolution (Refund or Admin Payout)
+---
+
+## 5. Dispute Flow
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant DisputesController
     participant DisputesService
-    participant Admin
     participant PaymentsService
-    participant Paystack
-    participant PaymentsController
     participant ContractsService
-    participant DB
 
-    User->>DisputesController: Open Dispute
-    DisputesController->>DisputesService: createDispute()
-    DisputesService->>DB: store dispute
-    DisputesService->>ContractsService: markDisputed(contractId)
-    ContractsService->>DB: update Contract (DISPUTED)
+    User->>DisputesService: open dispute
 
-    Admin->>DisputesController: Resolve Dispute
-    DisputesController->>DisputesService: updateDispute(...RESOLVED, decision)
-
-    alt Refund Client
-        DisputesService->>PaymentsService: refundContract(contractId, clientId, reason)
-        PaymentsService->>Paystack: POST /refund
-        PaymentsService->>DB: create Transaction (REFUND, PENDING)
-        Paystack->>PaymentsController: refund.processed webhook
-        PaymentsController->>PaymentsService: processPaystackWebhook(payload)
-        PaymentsService->>ContractsService: markRefunded(contractId)
-        ContractsService->>DB: update Contract (REFUNDED)
-    else Pay Artisan
-        DisputesService->>PaymentsService: releaseEscrowByAdmin(contractId, reason)
-        PaymentsService->>Paystack: POST /transfer
-        PaymentsService->>DB: create Transaction (TRANSFER, PENDING)
-        Paystack->>PaymentsController: transfer.success webhook
-        PaymentsController->>PaymentsService: processPaystackWebhook(payload)
-        PaymentsService->>ContractsService: markPaidOut(contractId)
-        ContractsService->>DB: update Contract (PAID_OUT)
-    end
-
-    DisputesService->>DB: update Dispute (RESOLVED)
+    DisputesService->>PaymentsService: refund OR payout
+    PaymentsService->>ContractsService: update final state
 ```
 
-### 6. Review Submission
+---
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant ReviewsController
-    participant DB
-
-    Client->>ReviewsController: Submit Review
-    ReviewsController->>DB: load Contract + participants
-    Note over ReviewsController: Contract must be COMPLETED or PAID_OUT
-    ReviewsController->>DB: store Review
-    ReviewsController-->>Client: success
-```
-
-### Key Observations
-
-1. Contract state is centralized.
-   `ContractsService` is the only service that changes contract status.
-
-2. Payments are asynchronous.
-   Funding, payout, and refund are only finalized after Paystack webhook confirmation.
-
-3. Disputes decide outcomes, but `PaymentsService` executes money movement.
-
-4. The current backend already models domain milestones clearly, but side effects are not yet driven by a dedicated event bus.
-
-### Mental Model
-
-```text
-Action -> Contracts or Disputes -> Payments (if needed) -> Paystack webhook -> Contracts final state
-```
-
-## Tech Stack
-
-- NestJS
-- TypeScript
-- PostgreSQL
-- Prisma
-- Jest
-- Swagger / OpenAPI
-- Docker
-
-## Local Setup
-
-Prerequisites:
-
-- Node.js 18+
-- PostgreSQL 15+
-
-Install:
-
-```bash
-npm install
-```
-
-Environment:
-
-```env
-DATABASE_URL="postgresql://username:password@localhost:5432/worksure_db"
-JWT_SECRET="your-super-secret-jwt-key"
-JWT_EXPIRES_IN="24h"
-PORT=3000
-NODE_ENV="development"
-ALLOWED_ORIGINS="http://localhost:3000"
-```
-
-Database:
-
-```bash
-npx prisma generate
-npx prisma migrate dev
-```
-
-Run:
-
-```bash
-npm run start:dev
-```
-
-Swagger:
-
-- `http://localhost:3000/api`
-- `http://localhost:3000/api/openapi.json`
-
-## Testing
+# 🧪 Testing
 
 ```bash
 npm run test
@@ -295,8 +410,64 @@ npm run test:e2e
 npm run test:cov
 ```
 
-Tests use isolated databases so development data is not reused. Coverage is strongest around auth and targeted workflow enforcement; broader marketplace lifecycle coverage is still being expanded.
+* Uses isolated DBs
+* Coverage strongest in auth and core flows
+* Full lifecycle tests still expanding
 
-## Deployment Note
+---
 
-Docker and production-oriented configuration files exist, but the project should still go through additional workflow verification before being treated as production-ready.
+# 🔐 Security Notes
+
+* Always verify Paystack webhooks
+* Never trust client payment status
+* Use Prisma transactions for atomic operations
+* Protect auth endpoints with rate limiting
+
+---
+
+# 🚧 Current Status
+
+### Implemented
+
+* Full module structure
+* Auth + session validation
+* Contracts + payments flow
+* Disputes and admin tools
+* Swagger + Docker support
+
+---
+
+### In Progress
+
+* Payment/contract flow consolidation
+* Lifecycle enforcement hardening
+* Expanded end-to-end testing
+
+---
+
+### Not Yet
+
+* Fully production-ready
+
+---
+
+# 🧭 Mental Model
+
+```text
+Action → Contracts → Payments → Paystack → Webhook → Contracts
+```
+
+---
+
+# 📌 Summary
+
+WorkSure is:
+
+> A **state-machine-driven marketplace backend** where contracts define lifecycle truth, payments orchestrate settlement via Paystack, and all modules operate around controlled state transitions.
+
+---
+
+If you want next, I can:
+
+* generate a **diagram image (PNG/SVG) for your portfolio**
+* or create a **system design doc you can use for interviews / presentations**

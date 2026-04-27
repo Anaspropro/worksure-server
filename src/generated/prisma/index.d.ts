@@ -93,6 +93,21 @@ export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
  * 
  */
 export type KycDocument = $Result.DefaultSelection<Prisma.$KycDocumentPayload>
+/**
+ * Model IdempotencyKey
+ * 
+ */
+export type IdempotencyKey = $Result.DefaultSelection<Prisma.$IdempotencyKeyPayload>
+/**
+ * Model LedgerAccount
+ * 
+ */
+export type LedgerAccount = $Result.DefaultSelection<Prisma.$LedgerAccountPayload>
+/**
+ * Model LedgerEntry
+ * 
+ */
+export type LedgerEntry = $Result.DefaultSelection<Prisma.$LedgerEntryPayload>
 
 /**
  * Enums
@@ -163,7 +178,9 @@ export const ContractStatus: {
   PAID_OUT: 'PAID_OUT',
   CANCELLED: 'CANCELLED',
   DISPUTED: 'DISPUTED',
-  REFUNDED: 'REFUNDED'
+  REFUNDED: 'REFUNDED',
+  PAYMENT_FAILED: 'PAYMENT_FAILED',
+  EXPIRED: 'EXPIRED'
 };
 
 export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus]
@@ -240,6 +257,16 @@ export const PaymentStatus: {
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
+
+export const LedgerAccountType: {
+  USER_WALLET: 'USER_WALLET',
+  SYSTEM_ESCROW: 'SYSTEM_ESCROW',
+  SYSTEM_FEE: 'SYSTEM_FEE',
+  EXTERNAL_BANK: 'EXTERNAL_BANK'
+};
+
+export type LedgerAccountType = (typeof LedgerAccountType)[keyof typeof LedgerAccountType]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -297,6 +324,10 @@ export const KycDocumentStatus: typeof $Enums.KycDocumentStatus
 export type PaymentStatus = $Enums.PaymentStatus
 
 export const PaymentStatus: typeof $Enums.PaymentStatus
+
+export type LedgerAccountType = $Enums.LedgerAccountType
+
+export const LedgerAccountType: typeof $Enums.LedgerAccountType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -578,6 +609,36 @@ export class PrismaClient<
     * ```
     */
   get kycDocument(): Prisma.KycDocumentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.idempotencyKey`: Exposes CRUD operations for the **IdempotencyKey** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more IdempotencyKeys
+    * const idempotencyKeys = await prisma.idempotencyKey.findMany()
+    * ```
+    */
+  get idempotencyKey(): Prisma.IdempotencyKeyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ledgerAccount`: Exposes CRUD operations for the **LedgerAccount** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LedgerAccounts
+    * const ledgerAccounts = await prisma.ledgerAccount.findMany()
+    * ```
+    */
+  get ledgerAccount(): Prisma.LedgerAccountDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ledgerEntry`: Exposes CRUD operations for the **LedgerEntry** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LedgerEntries
+    * const ledgerEntries = await prisma.ledgerEntry.findMany()
+    * ```
+    */
+  get ledgerEntry(): Prisma.LedgerEntryDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1027,7 +1088,10 @@ export namespace Prisma {
     Notification: 'Notification',
     AuditLog: 'AuditLog',
     Payment: 'Payment',
-    KycDocument: 'KycDocument'
+    KycDocument: 'KycDocument',
+    IdempotencyKey: 'IdempotencyKey',
+    LedgerAccount: 'LedgerAccount',
+    LedgerEntry: 'LedgerEntry'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1043,7 +1107,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "ledgerAccount" | "ledgerEntry"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2231,6 +2295,228 @@ export namespace Prisma {
           }
         }
       }
+      IdempotencyKey: {
+        payload: Prisma.$IdempotencyKeyPayload<ExtArgs>
+        fields: Prisma.IdempotencyKeyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.IdempotencyKeyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.IdempotencyKeyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>
+          }
+          findFirst: {
+            args: Prisma.IdempotencyKeyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.IdempotencyKeyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>
+          }
+          findMany: {
+            args: Prisma.IdempotencyKeyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>[]
+          }
+          create: {
+            args: Prisma.IdempotencyKeyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>
+          }
+          createMany: {
+            args: Prisma.IdempotencyKeyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.IdempotencyKeyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>[]
+          }
+          delete: {
+            args: Prisma.IdempotencyKeyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>
+          }
+          update: {
+            args: Prisma.IdempotencyKeyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>
+          }
+          deleteMany: {
+            args: Prisma.IdempotencyKeyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.IdempotencyKeyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.IdempotencyKeyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>[]
+          }
+          upsert: {
+            args: Prisma.IdempotencyKeyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IdempotencyKeyPayload>
+          }
+          aggregate: {
+            args: Prisma.IdempotencyKeyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateIdempotencyKey>
+          }
+          groupBy: {
+            args: Prisma.IdempotencyKeyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<IdempotencyKeyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.IdempotencyKeyCountArgs<ExtArgs>
+            result: $Utils.Optional<IdempotencyKeyCountAggregateOutputType> | number
+          }
+        }
+      }
+      LedgerAccount: {
+        payload: Prisma.$LedgerAccountPayload<ExtArgs>
+        fields: Prisma.LedgerAccountFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LedgerAccountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LedgerAccountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>
+          }
+          findFirst: {
+            args: Prisma.LedgerAccountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LedgerAccountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>
+          }
+          findMany: {
+            args: Prisma.LedgerAccountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>[]
+          }
+          create: {
+            args: Prisma.LedgerAccountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>
+          }
+          createMany: {
+            args: Prisma.LedgerAccountCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LedgerAccountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>[]
+          }
+          delete: {
+            args: Prisma.LedgerAccountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>
+          }
+          update: {
+            args: Prisma.LedgerAccountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>
+          }
+          deleteMany: {
+            args: Prisma.LedgerAccountDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LedgerAccountUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LedgerAccountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>[]
+          }
+          upsert: {
+            args: Prisma.LedgerAccountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerAccountPayload>
+          }
+          aggregate: {
+            args: Prisma.LedgerAccountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLedgerAccount>
+          }
+          groupBy: {
+            args: Prisma.LedgerAccountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LedgerAccountGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LedgerAccountCountArgs<ExtArgs>
+            result: $Utils.Optional<LedgerAccountCountAggregateOutputType> | number
+          }
+        }
+      }
+      LedgerEntry: {
+        payload: Prisma.$LedgerEntryPayload<ExtArgs>
+        fields: Prisma.LedgerEntryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LedgerEntryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LedgerEntryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>
+          }
+          findFirst: {
+            args: Prisma.LedgerEntryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LedgerEntryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>
+          }
+          findMany: {
+            args: Prisma.LedgerEntryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>[]
+          }
+          create: {
+            args: Prisma.LedgerEntryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>
+          }
+          createMany: {
+            args: Prisma.LedgerEntryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LedgerEntryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>[]
+          }
+          delete: {
+            args: Prisma.LedgerEntryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>
+          }
+          update: {
+            args: Prisma.LedgerEntryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>
+          }
+          deleteMany: {
+            args: Prisma.LedgerEntryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LedgerEntryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LedgerEntryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>[]
+          }
+          upsert: {
+            args: Prisma.LedgerEntryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LedgerEntryPayload>
+          }
+          aggregate: {
+            args: Prisma.LedgerEntryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLedgerEntry>
+          }
+          groupBy: {
+            args: Prisma.LedgerEntryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LedgerEntryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LedgerEntryCountArgs<ExtArgs>
+            result: $Utils.Optional<LedgerEntryCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2355,6 +2641,9 @@ export namespace Prisma {
     auditLog?: AuditLogOmit
     payment?: PaymentOmit
     kycDocument?: KycDocumentOmit
+    idempotencyKey?: IdempotencyKeyOmit
+    ledgerAccount?: LedgerAccountOmit
+    ledgerEntry?: LedgerEntryOmit
   }
 
   /* Types for Logging */
@@ -2637,10 +2926,12 @@ export namespace Prisma {
 
   export type ContractCountOutputType = {
     payments: number
+    ledgerEntries: number
   }
 
   export type ContractCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     payments?: boolean | ContractCountOutputTypeCountPaymentsArgs
+    ledgerEntries?: boolean | ContractCountOutputTypeCountLedgerEntriesArgs
   }
 
   // Custom InputTypes
@@ -2659,6 +2950,13 @@ export namespace Prisma {
    */
   export type ContractCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PaymentWhereInput
+  }
+
+  /**
+   * ContractCountOutputType without action
+   */
+  export type ContractCountOutputTypeCountLedgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LedgerEntryWhereInput
   }
 
 
@@ -2690,6 +2988,77 @@ export namespace Prisma {
    */
   export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+
+  /**
+   * Count Type PaymentCountOutputType
+   */
+
+  export type PaymentCountOutputType = {
+    ledgerEntries: number
+  }
+
+  export type PaymentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ledgerEntries?: boolean | PaymentCountOutputTypeCountLedgerEntriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PaymentCountOutputType without action
+   */
+  export type PaymentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentCountOutputType
+     */
+    select?: PaymentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PaymentCountOutputType without action
+   */
+  export type PaymentCountOutputTypeCountLedgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LedgerEntryWhereInput
+  }
+
+
+  /**
+   * Count Type LedgerAccountCountOutputType
+   */
+
+  export type LedgerAccountCountOutputType = {
+    debitEntries: number
+    creditEntries: number
+  }
+
+  export type LedgerAccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    debitEntries?: boolean | LedgerAccountCountOutputTypeCountDebitEntriesArgs
+    creditEntries?: boolean | LedgerAccountCountOutputTypeCountCreditEntriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * LedgerAccountCountOutputType without action
+   */
+  export type LedgerAccountCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccountCountOutputType
+     */
+    select?: LedgerAccountCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * LedgerAccountCountOutputType without action
+   */
+  export type LedgerAccountCountOutputTypeCountDebitEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LedgerEntryWhereInput
+  }
+
+  /**
+   * LedgerAccountCountOutputType without action
+   */
+  export type LedgerAccountCountOutputTypeCountCreditEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LedgerEntryWhereInput
   }
 
 
@@ -2972,6 +3341,7 @@ export namespace Prisma {
     transactions?: boolean | User$transactionsArgs<ExtArgs>
     payments?: boolean | User$paymentsArgs<ExtArgs>
     disputes?: boolean | User$disputesArgs<ExtArgs>
+    ledgerAccounts?: boolean | User$ledgerAccountsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3052,6 +3422,7 @@ export namespace Prisma {
     transactions?: boolean | User$transactionsArgs<ExtArgs>
     payments?: boolean | User$paymentsArgs<ExtArgs>
     disputes?: boolean | User$disputesArgs<ExtArgs>
+    ledgerAccounts?: boolean | User$ledgerAccountsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3075,6 +3446,7 @@ export namespace Prisma {
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
       payments: Prisma.$PaymentPayload<ExtArgs>[]
       disputes: Prisma.$DisputePayload<ExtArgs>[]
+      ledgerAccounts: Prisma.$LedgerAccountPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3503,6 +3875,7 @@ export namespace Prisma {
     transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends User$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     disputes<T extends User$disputesArgs<ExtArgs> = {}>(args?: Subset<T, User$disputesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    ledgerAccounts<T extends User$ledgerAccountsArgs<ExtArgs> = {}>(args?: Subset<T, User$ledgerAccountsArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4289,6 +4662,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
+  }
+
+  /**
+   * User.ledgerAccounts
+   */
+  export type User$ledgerAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    where?: LedgerAccountWhereInput
   }
 
   /**
@@ -11946,6 +12338,7 @@ export namespace Prisma {
     conversation?: boolean | Contract$conversationArgs<ExtArgs>
     review?: boolean | Contract$reviewArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
+    ledgerEntries?: boolean | Contract$ledgerEntriesArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
@@ -12068,6 +12461,7 @@ export namespace Prisma {
     conversation?: boolean | Contract$conversationArgs<ExtArgs>
     review?: boolean | Contract$reviewArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
+    ledgerEntries?: boolean | Contract$ledgerEntriesArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ContractIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12093,6 +12487,7 @@ export namespace Prisma {
       conversation: Prisma.$ConversationPayload<ExtArgs> | null
       review: Prisma.$ReviewPayload<ExtArgs> | null
       payments: Prisma.$PaymentPayload<ExtArgs>[]
+      ledgerEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12527,6 +12922,7 @@ export namespace Prisma {
     conversation<T extends Contract$conversationArgs<ExtArgs> = {}>(args?: Subset<T, Contract$conversationArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     review<T extends Contract$reviewArgs<ExtArgs> = {}>(args?: Subset<T, Contract$reviewArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payments<T extends Contract$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Contract$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    ledgerEntries<T extends Contract$ledgerEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Contract$ledgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13047,6 +13443,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PaymentScalarFieldEnum | PaymentScalarFieldEnum[]
+  }
+
+  /**
+   * Contract.ledgerEntries
+   */
+  export type Contract$ledgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    where?: LedgerEntryWhereInput
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    cursor?: LedgerEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
   }
 
   /**
@@ -20261,6 +20681,8 @@ export namespace Prisma {
     refundedAt?: boolean
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    ledgerEntries?: boolean | Payment$ledgerEntriesArgs<ExtArgs>
+    _count?: boolean | PaymentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["payment"]>
 
   export type PaymentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -20346,6 +20768,8 @@ export namespace Prisma {
   export type PaymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     contract?: boolean | ContractDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    ledgerEntries?: boolean | Payment$ledgerEntriesArgs<ExtArgs>
+    _count?: boolean | PaymentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PaymentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     contract?: boolean | ContractDefaultArgs<ExtArgs>
@@ -20361,6 +20785,7 @@ export namespace Prisma {
     objects: {
       contract: Prisma.$ContractPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      ledgerEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20781,6 +21206,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     contract<T extends ContractDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContractDefaultArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    ledgerEntries<T extends Payment$ledgerEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Payment$ledgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21230,6 +21656,30 @@ export namespace Prisma {
      * Limit how many Payments to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Payment.ledgerEntries
+   */
+  export type Payment$ledgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    where?: LedgerEntryWhereInput
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    cursor?: LedgerEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
   }
 
   /**
@@ -22380,6 +22830,3439 @@ export namespace Prisma {
 
 
   /**
+   * Model IdempotencyKey
+   */
+
+  export type AggregateIdempotencyKey = {
+    _count: IdempotencyKeyCountAggregateOutputType | null
+    _min: IdempotencyKeyMinAggregateOutputType | null
+    _max: IdempotencyKeyMaxAggregateOutputType | null
+  }
+
+  export type IdempotencyKeyMinAggregateOutputType = {
+    key: string | null
+    namespace: string | null
+    lockedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type IdempotencyKeyMaxAggregateOutputType = {
+    key: string | null
+    namespace: string | null
+    lockedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type IdempotencyKeyCountAggregateOutputType = {
+    key: number
+    namespace: number
+    lockedAt: number
+    completedAt: number
+    metadata: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type IdempotencyKeyMinAggregateInputType = {
+    key?: true
+    namespace?: true
+    lockedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type IdempotencyKeyMaxAggregateInputType = {
+    key?: true
+    namespace?: true
+    lockedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type IdempotencyKeyCountAggregateInputType = {
+    key?: true
+    namespace?: true
+    lockedAt?: true
+    completedAt?: true
+    metadata?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type IdempotencyKeyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IdempotencyKey to aggregate.
+     */
+    where?: IdempotencyKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IdempotencyKeys to fetch.
+     */
+    orderBy?: IdempotencyKeyOrderByWithRelationInput | IdempotencyKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: IdempotencyKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IdempotencyKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IdempotencyKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned IdempotencyKeys
+    **/
+    _count?: true | IdempotencyKeyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: IdempotencyKeyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: IdempotencyKeyMaxAggregateInputType
+  }
+
+  export type GetIdempotencyKeyAggregateType<T extends IdempotencyKeyAggregateArgs> = {
+        [P in keyof T & keyof AggregateIdempotencyKey]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateIdempotencyKey[P]>
+      : GetScalarType<T[P], AggregateIdempotencyKey[P]>
+  }
+
+
+
+
+  export type IdempotencyKeyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IdempotencyKeyWhereInput
+    orderBy?: IdempotencyKeyOrderByWithAggregationInput | IdempotencyKeyOrderByWithAggregationInput[]
+    by: IdempotencyKeyScalarFieldEnum[] | IdempotencyKeyScalarFieldEnum
+    having?: IdempotencyKeyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: IdempotencyKeyCountAggregateInputType | true
+    _min?: IdempotencyKeyMinAggregateInputType
+    _max?: IdempotencyKeyMaxAggregateInputType
+  }
+
+  export type IdempotencyKeyGroupByOutputType = {
+    key: string
+    namespace: string
+    lockedAt: Date | null
+    completedAt: Date | null
+    metadata: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: IdempotencyKeyCountAggregateOutputType | null
+    _min: IdempotencyKeyMinAggregateOutputType | null
+    _max: IdempotencyKeyMaxAggregateOutputType | null
+  }
+
+  type GetIdempotencyKeyGroupByPayload<T extends IdempotencyKeyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<IdempotencyKeyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof IdempotencyKeyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], IdempotencyKeyGroupByOutputType[P]>
+            : GetScalarType<T[P], IdempotencyKeyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type IdempotencyKeySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    namespace?: boolean
+    lockedAt?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["idempotencyKey"]>
+
+  export type IdempotencyKeySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    namespace?: boolean
+    lockedAt?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["idempotencyKey"]>
+
+  export type IdempotencyKeySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    namespace?: boolean
+    lockedAt?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["idempotencyKey"]>
+
+  export type IdempotencyKeySelectScalar = {
+    key?: boolean
+    namespace?: boolean
+    lockedAt?: boolean
+    completedAt?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type IdempotencyKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "namespace" | "lockedAt" | "completedAt" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["idempotencyKey"]>
+
+  export type $IdempotencyKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "IdempotencyKey"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      key: string
+      namespace: string
+      lockedAt: Date | null
+      completedAt: Date | null
+      metadata: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["idempotencyKey"]>
+    composites: {}
+  }
+
+  type IdempotencyKeyGetPayload<S extends boolean | null | undefined | IdempotencyKeyDefaultArgs> = $Result.GetResult<Prisma.$IdempotencyKeyPayload, S>
+
+  type IdempotencyKeyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<IdempotencyKeyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: IdempotencyKeyCountAggregateInputType | true
+    }
+
+  export interface IdempotencyKeyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['IdempotencyKey'], meta: { name: 'IdempotencyKey' } }
+    /**
+     * Find zero or one IdempotencyKey that matches the filter.
+     * @param {IdempotencyKeyFindUniqueArgs} args - Arguments to find a IdempotencyKey
+     * @example
+     * // Get one IdempotencyKey
+     * const idempotencyKey = await prisma.idempotencyKey.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends IdempotencyKeyFindUniqueArgs>(args: SelectSubset<T, IdempotencyKeyFindUniqueArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one IdempotencyKey that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {IdempotencyKeyFindUniqueOrThrowArgs} args - Arguments to find a IdempotencyKey
+     * @example
+     * // Get one IdempotencyKey
+     * const idempotencyKey = await prisma.idempotencyKey.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends IdempotencyKeyFindUniqueOrThrowArgs>(args: SelectSubset<T, IdempotencyKeyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IdempotencyKey that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IdempotencyKeyFindFirstArgs} args - Arguments to find a IdempotencyKey
+     * @example
+     * // Get one IdempotencyKey
+     * const idempotencyKey = await prisma.idempotencyKey.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends IdempotencyKeyFindFirstArgs>(args?: SelectSubset<T, IdempotencyKeyFindFirstArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IdempotencyKey that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IdempotencyKeyFindFirstOrThrowArgs} args - Arguments to find a IdempotencyKey
+     * @example
+     * // Get one IdempotencyKey
+     * const idempotencyKey = await prisma.idempotencyKey.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends IdempotencyKeyFindFirstOrThrowArgs>(args?: SelectSubset<T, IdempotencyKeyFindFirstOrThrowArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more IdempotencyKeys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IdempotencyKeyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all IdempotencyKeys
+     * const idempotencyKeys = await prisma.idempotencyKey.findMany()
+     * 
+     * // Get first 10 IdempotencyKeys
+     * const idempotencyKeys = await prisma.idempotencyKey.findMany({ take: 10 })
+     * 
+     * // Only select the `key`
+     * const idempotencyKeyWithKeyOnly = await prisma.idempotencyKey.findMany({ select: { key: true } })
+     * 
+     */
+    findMany<T extends IdempotencyKeyFindManyArgs>(args?: SelectSubset<T, IdempotencyKeyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a IdempotencyKey.
+     * @param {IdempotencyKeyCreateArgs} args - Arguments to create a IdempotencyKey.
+     * @example
+     * // Create one IdempotencyKey
+     * const IdempotencyKey = await prisma.idempotencyKey.create({
+     *   data: {
+     *     // ... data to create a IdempotencyKey
+     *   }
+     * })
+     * 
+     */
+    create<T extends IdempotencyKeyCreateArgs>(args: SelectSubset<T, IdempotencyKeyCreateArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many IdempotencyKeys.
+     * @param {IdempotencyKeyCreateManyArgs} args - Arguments to create many IdempotencyKeys.
+     * @example
+     * // Create many IdempotencyKeys
+     * const idempotencyKey = await prisma.idempotencyKey.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends IdempotencyKeyCreateManyArgs>(args?: SelectSubset<T, IdempotencyKeyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many IdempotencyKeys and returns the data saved in the database.
+     * @param {IdempotencyKeyCreateManyAndReturnArgs} args - Arguments to create many IdempotencyKeys.
+     * @example
+     * // Create many IdempotencyKeys
+     * const idempotencyKey = await prisma.idempotencyKey.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many IdempotencyKeys and only return the `key`
+     * const idempotencyKeyWithKeyOnly = await prisma.idempotencyKey.createManyAndReturn({
+     *   select: { key: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends IdempotencyKeyCreateManyAndReturnArgs>(args?: SelectSubset<T, IdempotencyKeyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a IdempotencyKey.
+     * @param {IdempotencyKeyDeleteArgs} args - Arguments to delete one IdempotencyKey.
+     * @example
+     * // Delete one IdempotencyKey
+     * const IdempotencyKey = await prisma.idempotencyKey.delete({
+     *   where: {
+     *     // ... filter to delete one IdempotencyKey
+     *   }
+     * })
+     * 
+     */
+    delete<T extends IdempotencyKeyDeleteArgs>(args: SelectSubset<T, IdempotencyKeyDeleteArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one IdempotencyKey.
+     * @param {IdempotencyKeyUpdateArgs} args - Arguments to update one IdempotencyKey.
+     * @example
+     * // Update one IdempotencyKey
+     * const idempotencyKey = await prisma.idempotencyKey.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends IdempotencyKeyUpdateArgs>(args: SelectSubset<T, IdempotencyKeyUpdateArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more IdempotencyKeys.
+     * @param {IdempotencyKeyDeleteManyArgs} args - Arguments to filter IdempotencyKeys to delete.
+     * @example
+     * // Delete a few IdempotencyKeys
+     * const { count } = await prisma.idempotencyKey.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends IdempotencyKeyDeleteManyArgs>(args?: SelectSubset<T, IdempotencyKeyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IdempotencyKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IdempotencyKeyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many IdempotencyKeys
+     * const idempotencyKey = await prisma.idempotencyKey.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends IdempotencyKeyUpdateManyArgs>(args: SelectSubset<T, IdempotencyKeyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IdempotencyKeys and returns the data updated in the database.
+     * @param {IdempotencyKeyUpdateManyAndReturnArgs} args - Arguments to update many IdempotencyKeys.
+     * @example
+     * // Update many IdempotencyKeys
+     * const idempotencyKey = await prisma.idempotencyKey.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more IdempotencyKeys and only return the `key`
+     * const idempotencyKeyWithKeyOnly = await prisma.idempotencyKey.updateManyAndReturn({
+     *   select: { key: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends IdempotencyKeyUpdateManyAndReturnArgs>(args: SelectSubset<T, IdempotencyKeyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one IdempotencyKey.
+     * @param {IdempotencyKeyUpsertArgs} args - Arguments to update or create a IdempotencyKey.
+     * @example
+     * // Update or create a IdempotencyKey
+     * const idempotencyKey = await prisma.idempotencyKey.upsert({
+     *   create: {
+     *     // ... data to create a IdempotencyKey
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the IdempotencyKey we want to update
+     *   }
+     * })
+     */
+    upsert<T extends IdempotencyKeyUpsertArgs>(args: SelectSubset<T, IdempotencyKeyUpsertArgs<ExtArgs>>): Prisma__IdempotencyKeyClient<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of IdempotencyKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IdempotencyKeyCountArgs} args - Arguments to filter IdempotencyKeys to count.
+     * @example
+     * // Count the number of IdempotencyKeys
+     * const count = await prisma.idempotencyKey.count({
+     *   where: {
+     *     // ... the filter for the IdempotencyKeys we want to count
+     *   }
+     * })
+    **/
+    count<T extends IdempotencyKeyCountArgs>(
+      args?: Subset<T, IdempotencyKeyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], IdempotencyKeyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a IdempotencyKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IdempotencyKeyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends IdempotencyKeyAggregateArgs>(args: Subset<T, IdempotencyKeyAggregateArgs>): Prisma.PrismaPromise<GetIdempotencyKeyAggregateType<T>>
+
+    /**
+     * Group by IdempotencyKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IdempotencyKeyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends IdempotencyKeyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: IdempotencyKeyGroupByArgs['orderBy'] }
+        : { orderBy?: IdempotencyKeyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, IdempotencyKeyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetIdempotencyKeyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the IdempotencyKey model
+   */
+  readonly fields: IdempotencyKeyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for IdempotencyKey.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__IdempotencyKeyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the IdempotencyKey model
+   */
+  interface IdempotencyKeyFieldRefs {
+    readonly key: FieldRef<"IdempotencyKey", 'String'>
+    readonly namespace: FieldRef<"IdempotencyKey", 'String'>
+    readonly lockedAt: FieldRef<"IdempotencyKey", 'DateTime'>
+    readonly completedAt: FieldRef<"IdempotencyKey", 'DateTime'>
+    readonly metadata: FieldRef<"IdempotencyKey", 'Json'>
+    readonly createdAt: FieldRef<"IdempotencyKey", 'DateTime'>
+    readonly updatedAt: FieldRef<"IdempotencyKey", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * IdempotencyKey findUnique
+   */
+  export type IdempotencyKeyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which IdempotencyKey to fetch.
+     */
+    where: IdempotencyKeyWhereUniqueInput
+  }
+
+  /**
+   * IdempotencyKey findUniqueOrThrow
+   */
+  export type IdempotencyKeyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which IdempotencyKey to fetch.
+     */
+    where: IdempotencyKeyWhereUniqueInput
+  }
+
+  /**
+   * IdempotencyKey findFirst
+   */
+  export type IdempotencyKeyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which IdempotencyKey to fetch.
+     */
+    where?: IdempotencyKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IdempotencyKeys to fetch.
+     */
+    orderBy?: IdempotencyKeyOrderByWithRelationInput | IdempotencyKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IdempotencyKeys.
+     */
+    cursor?: IdempotencyKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IdempotencyKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IdempotencyKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IdempotencyKeys.
+     */
+    distinct?: IdempotencyKeyScalarFieldEnum | IdempotencyKeyScalarFieldEnum[]
+  }
+
+  /**
+   * IdempotencyKey findFirstOrThrow
+   */
+  export type IdempotencyKeyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which IdempotencyKey to fetch.
+     */
+    where?: IdempotencyKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IdempotencyKeys to fetch.
+     */
+    orderBy?: IdempotencyKeyOrderByWithRelationInput | IdempotencyKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IdempotencyKeys.
+     */
+    cursor?: IdempotencyKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IdempotencyKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IdempotencyKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IdempotencyKeys.
+     */
+    distinct?: IdempotencyKeyScalarFieldEnum | IdempotencyKeyScalarFieldEnum[]
+  }
+
+  /**
+   * IdempotencyKey findMany
+   */
+  export type IdempotencyKeyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which IdempotencyKeys to fetch.
+     */
+    where?: IdempotencyKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IdempotencyKeys to fetch.
+     */
+    orderBy?: IdempotencyKeyOrderByWithRelationInput | IdempotencyKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing IdempotencyKeys.
+     */
+    cursor?: IdempotencyKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IdempotencyKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IdempotencyKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IdempotencyKeys.
+     */
+    distinct?: IdempotencyKeyScalarFieldEnum | IdempotencyKeyScalarFieldEnum[]
+  }
+
+  /**
+   * IdempotencyKey create
+   */
+  export type IdempotencyKeyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * The data needed to create a IdempotencyKey.
+     */
+    data: XOR<IdempotencyKeyCreateInput, IdempotencyKeyUncheckedCreateInput>
+  }
+
+  /**
+   * IdempotencyKey createMany
+   */
+  export type IdempotencyKeyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many IdempotencyKeys.
+     */
+    data: IdempotencyKeyCreateManyInput | IdempotencyKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * IdempotencyKey createManyAndReturn
+   */
+  export type IdempotencyKeyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * The data used to create many IdempotencyKeys.
+     */
+    data: IdempotencyKeyCreateManyInput | IdempotencyKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * IdempotencyKey update
+   */
+  export type IdempotencyKeyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * The data needed to update a IdempotencyKey.
+     */
+    data: XOR<IdempotencyKeyUpdateInput, IdempotencyKeyUncheckedUpdateInput>
+    /**
+     * Choose, which IdempotencyKey to update.
+     */
+    where: IdempotencyKeyWhereUniqueInput
+  }
+
+  /**
+   * IdempotencyKey updateMany
+   */
+  export type IdempotencyKeyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update IdempotencyKeys.
+     */
+    data: XOR<IdempotencyKeyUpdateManyMutationInput, IdempotencyKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which IdempotencyKeys to update
+     */
+    where?: IdempotencyKeyWhereInput
+    /**
+     * Limit how many IdempotencyKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * IdempotencyKey updateManyAndReturn
+   */
+  export type IdempotencyKeyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * The data used to update IdempotencyKeys.
+     */
+    data: XOR<IdempotencyKeyUpdateManyMutationInput, IdempotencyKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which IdempotencyKeys to update
+     */
+    where?: IdempotencyKeyWhereInput
+    /**
+     * Limit how many IdempotencyKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * IdempotencyKey upsert
+   */
+  export type IdempotencyKeyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * The filter to search for the IdempotencyKey to update in case it exists.
+     */
+    where: IdempotencyKeyWhereUniqueInput
+    /**
+     * In case the IdempotencyKey found by the `where` argument doesn't exist, create a new IdempotencyKey with this data.
+     */
+    create: XOR<IdempotencyKeyCreateInput, IdempotencyKeyUncheckedCreateInput>
+    /**
+     * In case the IdempotencyKey was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<IdempotencyKeyUpdateInput, IdempotencyKeyUncheckedUpdateInput>
+  }
+
+  /**
+   * IdempotencyKey delete
+   */
+  export type IdempotencyKeyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+    /**
+     * Filter which IdempotencyKey to delete.
+     */
+    where: IdempotencyKeyWhereUniqueInput
+  }
+
+  /**
+   * IdempotencyKey deleteMany
+   */
+  export type IdempotencyKeyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IdempotencyKeys to delete
+     */
+    where?: IdempotencyKeyWhereInput
+    /**
+     * Limit how many IdempotencyKeys to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * IdempotencyKey without action
+   */
+  export type IdempotencyKeyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IdempotencyKey
+     */
+    select?: IdempotencyKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IdempotencyKey
+     */
+    omit?: IdempotencyKeyOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LedgerAccount
+   */
+
+  export type AggregateLedgerAccount = {
+    _count: LedgerAccountCountAggregateOutputType | null
+    _avg: LedgerAccountAvgAggregateOutputType | null
+    _sum: LedgerAccountSumAggregateOutputType | null
+    _min: LedgerAccountMinAggregateOutputType | null
+    _max: LedgerAccountMaxAggregateOutputType | null
+  }
+
+  export type LedgerAccountAvgAggregateOutputType = {
+    balance: number | null
+  }
+
+  export type LedgerAccountSumAggregateOutputType = {
+    balance: number | null
+  }
+
+  export type LedgerAccountMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: $Enums.LedgerAccountType | null
+    userId: string | null
+    balance: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LedgerAccountMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    type: $Enums.LedgerAccountType | null
+    userId: string | null
+    balance: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LedgerAccountCountAggregateOutputType = {
+    id: number
+    name: number
+    type: number
+    userId: number
+    balance: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type LedgerAccountAvgAggregateInputType = {
+    balance?: true
+  }
+
+  export type LedgerAccountSumAggregateInputType = {
+    balance?: true
+  }
+
+  export type LedgerAccountMinAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    userId?: true
+    balance?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LedgerAccountMaxAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    userId?: true
+    balance?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LedgerAccountCountAggregateInputType = {
+    id?: true
+    name?: true
+    type?: true
+    userId?: true
+    balance?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type LedgerAccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LedgerAccount to aggregate.
+     */
+    where?: LedgerAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerAccounts to fetch.
+     */
+    orderBy?: LedgerAccountOrderByWithRelationInput | LedgerAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LedgerAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LedgerAccounts
+    **/
+    _count?: true | LedgerAccountCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LedgerAccountAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LedgerAccountSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LedgerAccountMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LedgerAccountMaxAggregateInputType
+  }
+
+  export type GetLedgerAccountAggregateType<T extends LedgerAccountAggregateArgs> = {
+        [P in keyof T & keyof AggregateLedgerAccount]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLedgerAccount[P]>
+      : GetScalarType<T[P], AggregateLedgerAccount[P]>
+  }
+
+
+
+
+  export type LedgerAccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LedgerAccountWhereInput
+    orderBy?: LedgerAccountOrderByWithAggregationInput | LedgerAccountOrderByWithAggregationInput[]
+    by: LedgerAccountScalarFieldEnum[] | LedgerAccountScalarFieldEnum
+    having?: LedgerAccountScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LedgerAccountCountAggregateInputType | true
+    _avg?: LedgerAccountAvgAggregateInputType
+    _sum?: LedgerAccountSumAggregateInputType
+    _min?: LedgerAccountMinAggregateInputType
+    _max?: LedgerAccountMaxAggregateInputType
+  }
+
+  export type LedgerAccountGroupByOutputType = {
+    id: string
+    name: string
+    type: $Enums.LedgerAccountType
+    userId: string | null
+    balance: number
+    createdAt: Date
+    updatedAt: Date
+    _count: LedgerAccountCountAggregateOutputType | null
+    _avg: LedgerAccountAvgAggregateOutputType | null
+    _sum: LedgerAccountSumAggregateOutputType | null
+    _min: LedgerAccountMinAggregateOutputType | null
+    _max: LedgerAccountMaxAggregateOutputType | null
+  }
+
+  type GetLedgerAccountGroupByPayload<T extends LedgerAccountGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LedgerAccountGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LedgerAccountGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LedgerAccountGroupByOutputType[P]>
+            : GetScalarType<T[P], LedgerAccountGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LedgerAccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    userId?: boolean
+    balance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | LedgerAccount$userArgs<ExtArgs>
+    debitEntries?: boolean | LedgerAccount$debitEntriesArgs<ExtArgs>
+    creditEntries?: boolean | LedgerAccount$creditEntriesArgs<ExtArgs>
+    _count?: boolean | LedgerAccountCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ledgerAccount"]>
+
+  export type LedgerAccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    userId?: boolean
+    balance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | LedgerAccount$userArgs<ExtArgs>
+  }, ExtArgs["result"]["ledgerAccount"]>
+
+  export type LedgerAccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    userId?: boolean
+    balance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | LedgerAccount$userArgs<ExtArgs>
+  }, ExtArgs["result"]["ledgerAccount"]>
+
+  export type LedgerAccountSelectScalar = {
+    id?: boolean
+    name?: boolean
+    type?: boolean
+    userId?: boolean
+    balance?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type LedgerAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "userId" | "balance" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
+  export type LedgerAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | LedgerAccount$userArgs<ExtArgs>
+    debitEntries?: boolean | LedgerAccount$debitEntriesArgs<ExtArgs>
+    creditEntries?: boolean | LedgerAccount$creditEntriesArgs<ExtArgs>
+    _count?: boolean | LedgerAccountCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type LedgerAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | LedgerAccount$userArgs<ExtArgs>
+  }
+  export type LedgerAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | LedgerAccount$userArgs<ExtArgs>
+  }
+
+  export type $LedgerAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LedgerAccount"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      debitEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
+      creditEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      type: $Enums.LedgerAccountType
+      userId: string | null
+      balance: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["ledgerAccount"]>
+    composites: {}
+  }
+
+  type LedgerAccountGetPayload<S extends boolean | null | undefined | LedgerAccountDefaultArgs> = $Result.GetResult<Prisma.$LedgerAccountPayload, S>
+
+  type LedgerAccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LedgerAccountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LedgerAccountCountAggregateInputType | true
+    }
+
+  export interface LedgerAccountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LedgerAccount'], meta: { name: 'LedgerAccount' } }
+    /**
+     * Find zero or one LedgerAccount that matches the filter.
+     * @param {LedgerAccountFindUniqueArgs} args - Arguments to find a LedgerAccount
+     * @example
+     * // Get one LedgerAccount
+     * const ledgerAccount = await prisma.ledgerAccount.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LedgerAccountFindUniqueArgs>(args: SelectSubset<T, LedgerAccountFindUniqueArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LedgerAccount that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LedgerAccountFindUniqueOrThrowArgs} args - Arguments to find a LedgerAccount
+     * @example
+     * // Get one LedgerAccount
+     * const ledgerAccount = await prisma.ledgerAccount.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LedgerAccountFindUniqueOrThrowArgs>(args: SelectSubset<T, LedgerAccountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LedgerAccount that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerAccountFindFirstArgs} args - Arguments to find a LedgerAccount
+     * @example
+     * // Get one LedgerAccount
+     * const ledgerAccount = await prisma.ledgerAccount.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LedgerAccountFindFirstArgs>(args?: SelectSubset<T, LedgerAccountFindFirstArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LedgerAccount that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerAccountFindFirstOrThrowArgs} args - Arguments to find a LedgerAccount
+     * @example
+     * // Get one LedgerAccount
+     * const ledgerAccount = await prisma.ledgerAccount.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LedgerAccountFindFirstOrThrowArgs>(args?: SelectSubset<T, LedgerAccountFindFirstOrThrowArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LedgerAccounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerAccountFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LedgerAccounts
+     * const ledgerAccounts = await prisma.ledgerAccount.findMany()
+     * 
+     * // Get first 10 LedgerAccounts
+     * const ledgerAccounts = await prisma.ledgerAccount.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ledgerAccountWithIdOnly = await prisma.ledgerAccount.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LedgerAccountFindManyArgs>(args?: SelectSubset<T, LedgerAccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LedgerAccount.
+     * @param {LedgerAccountCreateArgs} args - Arguments to create a LedgerAccount.
+     * @example
+     * // Create one LedgerAccount
+     * const LedgerAccount = await prisma.ledgerAccount.create({
+     *   data: {
+     *     // ... data to create a LedgerAccount
+     *   }
+     * })
+     * 
+     */
+    create<T extends LedgerAccountCreateArgs>(args: SelectSubset<T, LedgerAccountCreateArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LedgerAccounts.
+     * @param {LedgerAccountCreateManyArgs} args - Arguments to create many LedgerAccounts.
+     * @example
+     * // Create many LedgerAccounts
+     * const ledgerAccount = await prisma.ledgerAccount.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LedgerAccountCreateManyArgs>(args?: SelectSubset<T, LedgerAccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LedgerAccounts and returns the data saved in the database.
+     * @param {LedgerAccountCreateManyAndReturnArgs} args - Arguments to create many LedgerAccounts.
+     * @example
+     * // Create many LedgerAccounts
+     * const ledgerAccount = await prisma.ledgerAccount.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LedgerAccounts and only return the `id`
+     * const ledgerAccountWithIdOnly = await prisma.ledgerAccount.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LedgerAccountCreateManyAndReturnArgs>(args?: SelectSubset<T, LedgerAccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LedgerAccount.
+     * @param {LedgerAccountDeleteArgs} args - Arguments to delete one LedgerAccount.
+     * @example
+     * // Delete one LedgerAccount
+     * const LedgerAccount = await prisma.ledgerAccount.delete({
+     *   where: {
+     *     // ... filter to delete one LedgerAccount
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LedgerAccountDeleteArgs>(args: SelectSubset<T, LedgerAccountDeleteArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LedgerAccount.
+     * @param {LedgerAccountUpdateArgs} args - Arguments to update one LedgerAccount.
+     * @example
+     * // Update one LedgerAccount
+     * const ledgerAccount = await prisma.ledgerAccount.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LedgerAccountUpdateArgs>(args: SelectSubset<T, LedgerAccountUpdateArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LedgerAccounts.
+     * @param {LedgerAccountDeleteManyArgs} args - Arguments to filter LedgerAccounts to delete.
+     * @example
+     * // Delete a few LedgerAccounts
+     * const { count } = await prisma.ledgerAccount.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LedgerAccountDeleteManyArgs>(args?: SelectSubset<T, LedgerAccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LedgerAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerAccountUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LedgerAccounts
+     * const ledgerAccount = await prisma.ledgerAccount.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LedgerAccountUpdateManyArgs>(args: SelectSubset<T, LedgerAccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LedgerAccounts and returns the data updated in the database.
+     * @param {LedgerAccountUpdateManyAndReturnArgs} args - Arguments to update many LedgerAccounts.
+     * @example
+     * // Update many LedgerAccounts
+     * const ledgerAccount = await prisma.ledgerAccount.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LedgerAccounts and only return the `id`
+     * const ledgerAccountWithIdOnly = await prisma.ledgerAccount.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LedgerAccountUpdateManyAndReturnArgs>(args: SelectSubset<T, LedgerAccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LedgerAccount.
+     * @param {LedgerAccountUpsertArgs} args - Arguments to update or create a LedgerAccount.
+     * @example
+     * // Update or create a LedgerAccount
+     * const ledgerAccount = await prisma.ledgerAccount.upsert({
+     *   create: {
+     *     // ... data to create a LedgerAccount
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LedgerAccount we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LedgerAccountUpsertArgs>(args: SelectSubset<T, LedgerAccountUpsertArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LedgerAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerAccountCountArgs} args - Arguments to filter LedgerAccounts to count.
+     * @example
+     * // Count the number of LedgerAccounts
+     * const count = await prisma.ledgerAccount.count({
+     *   where: {
+     *     // ... the filter for the LedgerAccounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends LedgerAccountCountArgs>(
+      args?: Subset<T, LedgerAccountCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LedgerAccountCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LedgerAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerAccountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LedgerAccountAggregateArgs>(args: Subset<T, LedgerAccountAggregateArgs>): Prisma.PrismaPromise<GetLedgerAccountAggregateType<T>>
+
+    /**
+     * Group by LedgerAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerAccountGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LedgerAccountGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LedgerAccountGroupByArgs['orderBy'] }
+        : { orderBy?: LedgerAccountGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LedgerAccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLedgerAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LedgerAccount model
+   */
+  readonly fields: LedgerAccountFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LedgerAccount.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LedgerAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends LedgerAccount$userArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccount$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    debitEntries<T extends LedgerAccount$debitEntriesArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccount$debitEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    creditEntries<T extends LedgerAccount$creditEntriesArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccount$creditEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LedgerAccount model
+   */
+  interface LedgerAccountFieldRefs {
+    readonly id: FieldRef<"LedgerAccount", 'String'>
+    readonly name: FieldRef<"LedgerAccount", 'String'>
+    readonly type: FieldRef<"LedgerAccount", 'LedgerAccountType'>
+    readonly userId: FieldRef<"LedgerAccount", 'String'>
+    readonly balance: FieldRef<"LedgerAccount", 'Int'>
+    readonly createdAt: FieldRef<"LedgerAccount", 'DateTime'>
+    readonly updatedAt: FieldRef<"LedgerAccount", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LedgerAccount findUnique
+   */
+  export type LedgerAccountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerAccount to fetch.
+     */
+    where: LedgerAccountWhereUniqueInput
+  }
+
+  /**
+   * LedgerAccount findUniqueOrThrow
+   */
+  export type LedgerAccountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerAccount to fetch.
+     */
+    where: LedgerAccountWhereUniqueInput
+  }
+
+  /**
+   * LedgerAccount findFirst
+   */
+  export type LedgerAccountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerAccount to fetch.
+     */
+    where?: LedgerAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerAccounts to fetch.
+     */
+    orderBy?: LedgerAccountOrderByWithRelationInput | LedgerAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LedgerAccounts.
+     */
+    cursor?: LedgerAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerAccounts.
+     */
+    distinct?: LedgerAccountScalarFieldEnum | LedgerAccountScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerAccount findFirstOrThrow
+   */
+  export type LedgerAccountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerAccount to fetch.
+     */
+    where?: LedgerAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerAccounts to fetch.
+     */
+    orderBy?: LedgerAccountOrderByWithRelationInput | LedgerAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LedgerAccounts.
+     */
+    cursor?: LedgerAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerAccounts.
+     */
+    distinct?: LedgerAccountScalarFieldEnum | LedgerAccountScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerAccount findMany
+   */
+  export type LedgerAccountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerAccounts to fetch.
+     */
+    where?: LedgerAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerAccounts to fetch.
+     */
+    orderBy?: LedgerAccountOrderByWithRelationInput | LedgerAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LedgerAccounts.
+     */
+    cursor?: LedgerAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerAccounts.
+     */
+    distinct?: LedgerAccountScalarFieldEnum | LedgerAccountScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerAccount create
+   */
+  export type LedgerAccountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LedgerAccount.
+     */
+    data: XOR<LedgerAccountCreateInput, LedgerAccountUncheckedCreateInput>
+  }
+
+  /**
+   * LedgerAccount createMany
+   */
+  export type LedgerAccountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LedgerAccounts.
+     */
+    data: LedgerAccountCreateManyInput | LedgerAccountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LedgerAccount createManyAndReturn
+   */
+  export type LedgerAccountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * The data used to create many LedgerAccounts.
+     */
+    data: LedgerAccountCreateManyInput | LedgerAccountCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LedgerAccount update
+   */
+  export type LedgerAccountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LedgerAccount.
+     */
+    data: XOR<LedgerAccountUpdateInput, LedgerAccountUncheckedUpdateInput>
+    /**
+     * Choose, which LedgerAccount to update.
+     */
+    where: LedgerAccountWhereUniqueInput
+  }
+
+  /**
+   * LedgerAccount updateMany
+   */
+  export type LedgerAccountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LedgerAccounts.
+     */
+    data: XOR<LedgerAccountUpdateManyMutationInput, LedgerAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which LedgerAccounts to update
+     */
+    where?: LedgerAccountWhereInput
+    /**
+     * Limit how many LedgerAccounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LedgerAccount updateManyAndReturn
+   */
+  export type LedgerAccountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * The data used to update LedgerAccounts.
+     */
+    data: XOR<LedgerAccountUpdateManyMutationInput, LedgerAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which LedgerAccounts to update
+     */
+    where?: LedgerAccountWhereInput
+    /**
+     * Limit how many LedgerAccounts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LedgerAccount upsert
+   */
+  export type LedgerAccountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LedgerAccount to update in case it exists.
+     */
+    where: LedgerAccountWhereUniqueInput
+    /**
+     * In case the LedgerAccount found by the `where` argument doesn't exist, create a new LedgerAccount with this data.
+     */
+    create: XOR<LedgerAccountCreateInput, LedgerAccountUncheckedCreateInput>
+    /**
+     * In case the LedgerAccount was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LedgerAccountUpdateInput, LedgerAccountUncheckedUpdateInput>
+  }
+
+  /**
+   * LedgerAccount delete
+   */
+  export type LedgerAccountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+    /**
+     * Filter which LedgerAccount to delete.
+     */
+    where: LedgerAccountWhereUniqueInput
+  }
+
+  /**
+   * LedgerAccount deleteMany
+   */
+  export type LedgerAccountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LedgerAccounts to delete
+     */
+    where?: LedgerAccountWhereInput
+    /**
+     * Limit how many LedgerAccounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LedgerAccount.user
+   */
+  export type LedgerAccount$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * LedgerAccount.debitEntries
+   */
+  export type LedgerAccount$debitEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    where?: LedgerEntryWhereInput
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    cursor?: LedgerEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerAccount.creditEntries
+   */
+  export type LedgerAccount$creditEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    where?: LedgerEntryWhereInput
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    cursor?: LedgerEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerAccount without action
+   */
+  export type LedgerAccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerAccount
+     */
+    select?: LedgerAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerAccount
+     */
+    omit?: LedgerAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerAccountInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LedgerEntry
+   */
+
+  export type AggregateLedgerEntry = {
+    _count: LedgerEntryCountAggregateOutputType | null
+    _avg: LedgerEntryAvgAggregateOutputType | null
+    _sum: LedgerEntrySumAggregateOutputType | null
+    _min: LedgerEntryMinAggregateOutputType | null
+    _max: LedgerEntryMaxAggregateOutputType | null
+  }
+
+  export type LedgerEntryAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type LedgerEntrySumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type LedgerEntryMinAggregateOutputType = {
+    id: string | null
+    debitAccountId: string | null
+    creditAccountId: string | null
+    amount: number | null
+    contractId: string | null
+    paymentId: string | null
+    reference: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type LedgerEntryMaxAggregateOutputType = {
+    id: string | null
+    debitAccountId: string | null
+    creditAccountId: string | null
+    amount: number | null
+    contractId: string | null
+    paymentId: string | null
+    reference: string | null
+    description: string | null
+    createdAt: Date | null
+  }
+
+  export type LedgerEntryCountAggregateOutputType = {
+    id: number
+    debitAccountId: number
+    creditAccountId: number
+    amount: number
+    contractId: number
+    paymentId: number
+    reference: number
+    description: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LedgerEntryAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type LedgerEntrySumAggregateInputType = {
+    amount?: true
+  }
+
+  export type LedgerEntryMinAggregateInputType = {
+    id?: true
+    debitAccountId?: true
+    creditAccountId?: true
+    amount?: true
+    contractId?: true
+    paymentId?: true
+    reference?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type LedgerEntryMaxAggregateInputType = {
+    id?: true
+    debitAccountId?: true
+    creditAccountId?: true
+    amount?: true
+    contractId?: true
+    paymentId?: true
+    reference?: true
+    description?: true
+    createdAt?: true
+  }
+
+  export type LedgerEntryCountAggregateInputType = {
+    id?: true
+    debitAccountId?: true
+    creditAccountId?: true
+    amount?: true
+    contractId?: true
+    paymentId?: true
+    reference?: true
+    description?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LedgerEntryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LedgerEntry to aggregate.
+     */
+    where?: LedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerEntries to fetch.
+     */
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LedgerEntries
+    **/
+    _count?: true | LedgerEntryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LedgerEntryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LedgerEntrySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LedgerEntryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LedgerEntryMaxAggregateInputType
+  }
+
+  export type GetLedgerEntryAggregateType<T extends LedgerEntryAggregateArgs> = {
+        [P in keyof T & keyof AggregateLedgerEntry]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLedgerEntry[P]>
+      : GetScalarType<T[P], AggregateLedgerEntry[P]>
+  }
+
+
+
+
+  export type LedgerEntryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LedgerEntryWhereInput
+    orderBy?: LedgerEntryOrderByWithAggregationInput | LedgerEntryOrderByWithAggregationInput[]
+    by: LedgerEntryScalarFieldEnum[] | LedgerEntryScalarFieldEnum
+    having?: LedgerEntryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LedgerEntryCountAggregateInputType | true
+    _avg?: LedgerEntryAvgAggregateInputType
+    _sum?: LedgerEntrySumAggregateInputType
+    _min?: LedgerEntryMinAggregateInputType
+    _max?: LedgerEntryMaxAggregateInputType
+  }
+
+  export type LedgerEntryGroupByOutputType = {
+    id: string
+    debitAccountId: string
+    creditAccountId: string
+    amount: number
+    contractId: string | null
+    paymentId: string | null
+    reference: string
+    description: string | null
+    createdAt: Date
+    _count: LedgerEntryCountAggregateOutputType | null
+    _avg: LedgerEntryAvgAggregateOutputType | null
+    _sum: LedgerEntrySumAggregateOutputType | null
+    _min: LedgerEntryMinAggregateOutputType | null
+    _max: LedgerEntryMaxAggregateOutputType | null
+  }
+
+  type GetLedgerEntryGroupByPayload<T extends LedgerEntryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LedgerEntryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LedgerEntryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LedgerEntryGroupByOutputType[P]>
+            : GetScalarType<T[P], LedgerEntryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LedgerEntrySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    debitAccountId?: boolean
+    creditAccountId?: boolean
+    amount?: boolean
+    contractId?: boolean
+    paymentId?: boolean
+    reference?: boolean
+    description?: boolean
+    createdAt?: boolean
+    debitAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    creditAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    contract?: boolean | LedgerEntry$contractArgs<ExtArgs>
+    payment?: boolean | LedgerEntry$paymentArgs<ExtArgs>
+  }, ExtArgs["result"]["ledgerEntry"]>
+
+  export type LedgerEntrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    debitAccountId?: boolean
+    creditAccountId?: boolean
+    amount?: boolean
+    contractId?: boolean
+    paymentId?: boolean
+    reference?: boolean
+    description?: boolean
+    createdAt?: boolean
+    debitAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    creditAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    contract?: boolean | LedgerEntry$contractArgs<ExtArgs>
+    payment?: boolean | LedgerEntry$paymentArgs<ExtArgs>
+  }, ExtArgs["result"]["ledgerEntry"]>
+
+  export type LedgerEntrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    debitAccountId?: boolean
+    creditAccountId?: boolean
+    amount?: boolean
+    contractId?: boolean
+    paymentId?: boolean
+    reference?: boolean
+    description?: boolean
+    createdAt?: boolean
+    debitAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    creditAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    contract?: boolean | LedgerEntry$contractArgs<ExtArgs>
+    payment?: boolean | LedgerEntry$paymentArgs<ExtArgs>
+  }, ExtArgs["result"]["ledgerEntry"]>
+
+  export type LedgerEntrySelectScalar = {
+    id?: boolean
+    debitAccountId?: boolean
+    creditAccountId?: boolean
+    amount?: boolean
+    contractId?: boolean
+    paymentId?: boolean
+    reference?: boolean
+    description?: boolean
+    createdAt?: boolean
+  }
+
+  export type LedgerEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "debitAccountId" | "creditAccountId" | "amount" | "contractId" | "paymentId" | "reference" | "description" | "createdAt", ExtArgs["result"]["ledgerEntry"]>
+  export type LedgerEntryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    debitAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    creditAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    contract?: boolean | LedgerEntry$contractArgs<ExtArgs>
+    payment?: boolean | LedgerEntry$paymentArgs<ExtArgs>
+  }
+  export type LedgerEntryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    debitAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    creditAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    contract?: boolean | LedgerEntry$contractArgs<ExtArgs>
+    payment?: boolean | LedgerEntry$paymentArgs<ExtArgs>
+  }
+  export type LedgerEntryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    debitAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    creditAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+    contract?: boolean | LedgerEntry$contractArgs<ExtArgs>
+    payment?: boolean | LedgerEntry$paymentArgs<ExtArgs>
+  }
+
+  export type $LedgerEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LedgerEntry"
+    objects: {
+      debitAccount: Prisma.$LedgerAccountPayload<ExtArgs>
+      creditAccount: Prisma.$LedgerAccountPayload<ExtArgs>
+      contract: Prisma.$ContractPayload<ExtArgs> | null
+      payment: Prisma.$PaymentPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      debitAccountId: string
+      creditAccountId: string
+      amount: number
+      contractId: string | null
+      paymentId: string | null
+      reference: string
+      description: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["ledgerEntry"]>
+    composites: {}
+  }
+
+  type LedgerEntryGetPayload<S extends boolean | null | undefined | LedgerEntryDefaultArgs> = $Result.GetResult<Prisma.$LedgerEntryPayload, S>
+
+  type LedgerEntryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LedgerEntryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LedgerEntryCountAggregateInputType | true
+    }
+
+  export interface LedgerEntryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LedgerEntry'], meta: { name: 'LedgerEntry' } }
+    /**
+     * Find zero or one LedgerEntry that matches the filter.
+     * @param {LedgerEntryFindUniqueArgs} args - Arguments to find a LedgerEntry
+     * @example
+     * // Get one LedgerEntry
+     * const ledgerEntry = await prisma.ledgerEntry.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LedgerEntryFindUniqueArgs>(args: SelectSubset<T, LedgerEntryFindUniqueArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LedgerEntry that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LedgerEntryFindUniqueOrThrowArgs} args - Arguments to find a LedgerEntry
+     * @example
+     * // Get one LedgerEntry
+     * const ledgerEntry = await prisma.ledgerEntry.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LedgerEntryFindUniqueOrThrowArgs>(args: SelectSubset<T, LedgerEntryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LedgerEntry that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerEntryFindFirstArgs} args - Arguments to find a LedgerEntry
+     * @example
+     * // Get one LedgerEntry
+     * const ledgerEntry = await prisma.ledgerEntry.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LedgerEntryFindFirstArgs>(args?: SelectSubset<T, LedgerEntryFindFirstArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LedgerEntry that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerEntryFindFirstOrThrowArgs} args - Arguments to find a LedgerEntry
+     * @example
+     * // Get one LedgerEntry
+     * const ledgerEntry = await prisma.ledgerEntry.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LedgerEntryFindFirstOrThrowArgs>(args?: SelectSubset<T, LedgerEntryFindFirstOrThrowArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LedgerEntries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerEntryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LedgerEntries
+     * const ledgerEntries = await prisma.ledgerEntry.findMany()
+     * 
+     * // Get first 10 LedgerEntries
+     * const ledgerEntries = await prisma.ledgerEntry.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ledgerEntryWithIdOnly = await prisma.ledgerEntry.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LedgerEntryFindManyArgs>(args?: SelectSubset<T, LedgerEntryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LedgerEntry.
+     * @param {LedgerEntryCreateArgs} args - Arguments to create a LedgerEntry.
+     * @example
+     * // Create one LedgerEntry
+     * const LedgerEntry = await prisma.ledgerEntry.create({
+     *   data: {
+     *     // ... data to create a LedgerEntry
+     *   }
+     * })
+     * 
+     */
+    create<T extends LedgerEntryCreateArgs>(args: SelectSubset<T, LedgerEntryCreateArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LedgerEntries.
+     * @param {LedgerEntryCreateManyArgs} args - Arguments to create many LedgerEntries.
+     * @example
+     * // Create many LedgerEntries
+     * const ledgerEntry = await prisma.ledgerEntry.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LedgerEntryCreateManyArgs>(args?: SelectSubset<T, LedgerEntryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LedgerEntries and returns the data saved in the database.
+     * @param {LedgerEntryCreateManyAndReturnArgs} args - Arguments to create many LedgerEntries.
+     * @example
+     * // Create many LedgerEntries
+     * const ledgerEntry = await prisma.ledgerEntry.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LedgerEntries and only return the `id`
+     * const ledgerEntryWithIdOnly = await prisma.ledgerEntry.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LedgerEntryCreateManyAndReturnArgs>(args?: SelectSubset<T, LedgerEntryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LedgerEntry.
+     * @param {LedgerEntryDeleteArgs} args - Arguments to delete one LedgerEntry.
+     * @example
+     * // Delete one LedgerEntry
+     * const LedgerEntry = await prisma.ledgerEntry.delete({
+     *   where: {
+     *     // ... filter to delete one LedgerEntry
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LedgerEntryDeleteArgs>(args: SelectSubset<T, LedgerEntryDeleteArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LedgerEntry.
+     * @param {LedgerEntryUpdateArgs} args - Arguments to update one LedgerEntry.
+     * @example
+     * // Update one LedgerEntry
+     * const ledgerEntry = await prisma.ledgerEntry.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LedgerEntryUpdateArgs>(args: SelectSubset<T, LedgerEntryUpdateArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LedgerEntries.
+     * @param {LedgerEntryDeleteManyArgs} args - Arguments to filter LedgerEntries to delete.
+     * @example
+     * // Delete a few LedgerEntries
+     * const { count } = await prisma.ledgerEntry.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LedgerEntryDeleteManyArgs>(args?: SelectSubset<T, LedgerEntryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LedgerEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerEntryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LedgerEntries
+     * const ledgerEntry = await prisma.ledgerEntry.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LedgerEntryUpdateManyArgs>(args: SelectSubset<T, LedgerEntryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LedgerEntries and returns the data updated in the database.
+     * @param {LedgerEntryUpdateManyAndReturnArgs} args - Arguments to update many LedgerEntries.
+     * @example
+     * // Update many LedgerEntries
+     * const ledgerEntry = await prisma.ledgerEntry.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LedgerEntries and only return the `id`
+     * const ledgerEntryWithIdOnly = await prisma.ledgerEntry.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LedgerEntryUpdateManyAndReturnArgs>(args: SelectSubset<T, LedgerEntryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LedgerEntry.
+     * @param {LedgerEntryUpsertArgs} args - Arguments to update or create a LedgerEntry.
+     * @example
+     * // Update or create a LedgerEntry
+     * const ledgerEntry = await prisma.ledgerEntry.upsert({
+     *   create: {
+     *     // ... data to create a LedgerEntry
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LedgerEntry we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LedgerEntryUpsertArgs>(args: SelectSubset<T, LedgerEntryUpsertArgs<ExtArgs>>): Prisma__LedgerEntryClient<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LedgerEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerEntryCountArgs} args - Arguments to filter LedgerEntries to count.
+     * @example
+     * // Count the number of LedgerEntries
+     * const count = await prisma.ledgerEntry.count({
+     *   where: {
+     *     // ... the filter for the LedgerEntries we want to count
+     *   }
+     * })
+    **/
+    count<T extends LedgerEntryCountArgs>(
+      args?: Subset<T, LedgerEntryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LedgerEntryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LedgerEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerEntryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LedgerEntryAggregateArgs>(args: Subset<T, LedgerEntryAggregateArgs>): Prisma.PrismaPromise<GetLedgerEntryAggregateType<T>>
+
+    /**
+     * Group by LedgerEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LedgerEntryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LedgerEntryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LedgerEntryGroupByArgs['orderBy'] }
+        : { orderBy?: LedgerEntryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LedgerEntryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLedgerEntryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LedgerEntry model
+   */
+  readonly fields: LedgerEntryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LedgerEntry.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LedgerEntryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    debitAccount<T extends LedgerAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccountDefaultArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    creditAccount<T extends LedgerAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccountDefaultArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    contract<T extends LedgerEntry$contractArgs<ExtArgs> = {}>(args?: Subset<T, LedgerEntry$contractArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    payment<T extends LedgerEntry$paymentArgs<ExtArgs> = {}>(args?: Subset<T, LedgerEntry$paymentArgs<ExtArgs>>): Prisma__PaymentClient<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LedgerEntry model
+   */
+  interface LedgerEntryFieldRefs {
+    readonly id: FieldRef<"LedgerEntry", 'String'>
+    readonly debitAccountId: FieldRef<"LedgerEntry", 'String'>
+    readonly creditAccountId: FieldRef<"LedgerEntry", 'String'>
+    readonly amount: FieldRef<"LedgerEntry", 'Int'>
+    readonly contractId: FieldRef<"LedgerEntry", 'String'>
+    readonly paymentId: FieldRef<"LedgerEntry", 'String'>
+    readonly reference: FieldRef<"LedgerEntry", 'String'>
+    readonly description: FieldRef<"LedgerEntry", 'String'>
+    readonly createdAt: FieldRef<"LedgerEntry", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LedgerEntry findUnique
+   */
+  export type LedgerEntryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerEntry to fetch.
+     */
+    where: LedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * LedgerEntry findUniqueOrThrow
+   */
+  export type LedgerEntryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerEntry to fetch.
+     */
+    where: LedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * LedgerEntry findFirst
+   */
+  export type LedgerEntryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerEntry to fetch.
+     */
+    where?: LedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerEntries to fetch.
+     */
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LedgerEntries.
+     */
+    cursor?: LedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerEntries.
+     */
+    distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerEntry findFirstOrThrow
+   */
+  export type LedgerEntryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerEntry to fetch.
+     */
+    where?: LedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerEntries to fetch.
+     */
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LedgerEntries.
+     */
+    cursor?: LedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerEntries.
+     */
+    distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerEntry findMany
+   */
+  export type LedgerEntryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which LedgerEntries to fetch.
+     */
+    where?: LedgerEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LedgerEntries to fetch.
+     */
+    orderBy?: LedgerEntryOrderByWithRelationInput | LedgerEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LedgerEntries.
+     */
+    cursor?: LedgerEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LedgerEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LedgerEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LedgerEntries.
+     */
+    distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * LedgerEntry create
+   */
+  export type LedgerEntryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LedgerEntry.
+     */
+    data: XOR<LedgerEntryCreateInput, LedgerEntryUncheckedCreateInput>
+  }
+
+  /**
+   * LedgerEntry createMany
+   */
+  export type LedgerEntryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LedgerEntries.
+     */
+    data: LedgerEntryCreateManyInput | LedgerEntryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LedgerEntry createManyAndReturn
+   */
+  export type LedgerEntryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * The data used to create many LedgerEntries.
+     */
+    data: LedgerEntryCreateManyInput | LedgerEntryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LedgerEntry update
+   */
+  export type LedgerEntryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LedgerEntry.
+     */
+    data: XOR<LedgerEntryUpdateInput, LedgerEntryUncheckedUpdateInput>
+    /**
+     * Choose, which LedgerEntry to update.
+     */
+    where: LedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * LedgerEntry updateMany
+   */
+  export type LedgerEntryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LedgerEntries.
+     */
+    data: XOR<LedgerEntryUpdateManyMutationInput, LedgerEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which LedgerEntries to update
+     */
+    where?: LedgerEntryWhereInput
+    /**
+     * Limit how many LedgerEntries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LedgerEntry updateManyAndReturn
+   */
+  export type LedgerEntryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * The data used to update LedgerEntries.
+     */
+    data: XOR<LedgerEntryUpdateManyMutationInput, LedgerEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which LedgerEntries to update
+     */
+    where?: LedgerEntryWhereInput
+    /**
+     * Limit how many LedgerEntries to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LedgerEntry upsert
+   */
+  export type LedgerEntryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LedgerEntry to update in case it exists.
+     */
+    where: LedgerEntryWhereUniqueInput
+    /**
+     * In case the LedgerEntry found by the `where` argument doesn't exist, create a new LedgerEntry with this data.
+     */
+    create: XOR<LedgerEntryCreateInput, LedgerEntryUncheckedCreateInput>
+    /**
+     * In case the LedgerEntry was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LedgerEntryUpdateInput, LedgerEntryUncheckedUpdateInput>
+  }
+
+  /**
+   * LedgerEntry delete
+   */
+  export type LedgerEntryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+    /**
+     * Filter which LedgerEntry to delete.
+     */
+    where: LedgerEntryWhereUniqueInput
+  }
+
+  /**
+   * LedgerEntry deleteMany
+   */
+  export type LedgerEntryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LedgerEntries to delete
+     */
+    where?: LedgerEntryWhereInput
+    /**
+     * Limit how many LedgerEntries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LedgerEntry.contract
+   */
+  export type LedgerEntry$contractArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+  }
+
+  /**
+   * LedgerEntry.payment
+   */
+  export type LedgerEntry$paymentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Payment
+     */
+    select?: PaymentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Payment
+     */
+    omit?: PaymentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentInclude<ExtArgs> | null
+    where?: PaymentWhereInput
+  }
+
+  /**
+   * LedgerEntry without action
+   */
+  export type LedgerEntryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LedgerEntry
+     */
+    select?: LedgerEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LedgerEntry
+     */
+    omit?: LedgerEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LedgerEntryInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -22699,6 +26582,47 @@ export namespace Prisma {
   };
 
   export type KycDocumentScalarFieldEnum = (typeof KycDocumentScalarFieldEnum)[keyof typeof KycDocumentScalarFieldEnum]
+
+
+  export const IdempotencyKeyScalarFieldEnum: {
+    key: 'key',
+    namespace: 'namespace',
+    lockedAt: 'lockedAt',
+    completedAt: 'completedAt',
+    metadata: 'metadata',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type IdempotencyKeyScalarFieldEnum = (typeof IdempotencyKeyScalarFieldEnum)[keyof typeof IdempotencyKeyScalarFieldEnum]
+
+
+  export const LedgerAccountScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    type: 'type',
+    userId: 'userId',
+    balance: 'balance',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type LedgerAccountScalarFieldEnum = (typeof LedgerAccountScalarFieldEnum)[keyof typeof LedgerAccountScalarFieldEnum]
+
+
+  export const LedgerEntryScalarFieldEnum: {
+    id: 'id',
+    debitAccountId: 'debitAccountId',
+    creditAccountId: 'creditAccountId',
+    amount: 'amount',
+    contractId: 'contractId',
+    paymentId: 'paymentId',
+    reference: 'reference',
+    description: 'description',
+    createdAt: 'createdAt'
+  };
+
+  export type LedgerEntryScalarFieldEnum = (typeof LedgerEntryScalarFieldEnum)[keyof typeof LedgerEntryScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -23025,6 +26949,20 @@ export namespace Prisma {
    */
   export type ListEnumKycDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycDocumentStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'LedgerAccountType'
+   */
+  export type EnumLedgerAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerAccountType'>
+    
+
+
+  /**
+   * Reference to a field of type 'LedgerAccountType[]'
+   */
+  export type ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerAccountType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -23066,6 +27004,7 @@ export namespace Prisma {
     transactions?: TransactionListRelationFilter
     payments?: PaymentListRelationFilter
     disputes?: DisputeListRelationFilter
+    ledgerAccounts?: XOR<LedgerAccountNullableScalarRelationFilter, LedgerAccountWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -23101,6 +27040,7 @@ export namespace Prisma {
     transactions?: TransactionOrderByRelationAggregateInput
     payments?: PaymentOrderByRelationAggregateInput
     disputes?: DisputeOrderByRelationAggregateInput
+    ledgerAccounts?: LedgerAccountOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -23139,6 +27079,7 @@ export namespace Prisma {
     transactions?: TransactionListRelationFilter
     payments?: PaymentListRelationFilter
     disputes?: DisputeListRelationFilter
+    ledgerAccounts?: XOR<LedgerAccountNullableScalarRelationFilter, LedgerAccountWhereInput> | null
   }, "id" | "email" | "passwordResetTokenHash">
 
   export type UserOrderByWithAggregationInput = {
@@ -23801,6 +27742,7 @@ export namespace Prisma {
     conversation?: XOR<ConversationNullableScalarRelationFilter, ConversationWhereInput> | null
     review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
     payments?: PaymentListRelationFilter
+    ledgerEntries?: LedgerEntryListRelationFilter
   }
 
   export type ContractOrderByWithRelationInput = {
@@ -23842,6 +27784,7 @@ export namespace Prisma {
     conversation?: ConversationOrderByWithRelationInput
     review?: ReviewOrderByWithRelationInput
     payments?: PaymentOrderByRelationAggregateInput
+    ledgerEntries?: LedgerEntryOrderByRelationAggregateInput
   }
 
   export type ContractWhereUniqueInput = Prisma.AtLeast<{
@@ -23886,6 +27829,7 @@ export namespace Prisma {
     conversation?: XOR<ConversationNullableScalarRelationFilter, ConversationWhereInput> | null
     review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
     payments?: PaymentListRelationFilter
+    ledgerEntries?: LedgerEntryListRelationFilter
   }, "id" | "jobId" | "proposalId" | "paystackReference">
 
   export type ContractOrderByWithAggregationInput = {
@@ -24484,6 +28428,7 @@ export namespace Prisma {
     refundedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    ledgerEntries?: LedgerEntryListRelationFilter
   }
 
   export type PaymentOrderByWithRelationInput = {
@@ -24511,6 +28456,7 @@ export namespace Prisma {
     refundedAt?: SortOrderInput | SortOrder
     contract?: ContractOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    ledgerEntries?: LedgerEntryOrderByRelationAggregateInput
   }
 
   export type PaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -24541,6 +28487,7 @@ export namespace Prisma {
     refundedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
     contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    ledgerEntries?: LedgerEntryListRelationFilter
   }, "id">
 
   export type PaymentOrderByWithAggregationInput = {
@@ -24681,6 +28628,227 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"KycDocument"> | Date | string
   }
 
+  export type IdempotencyKeyWhereInput = {
+    AND?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
+    OR?: IdempotencyKeyWhereInput[]
+    NOT?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
+    key?: StringFilter<"IdempotencyKey"> | string
+    namespace?: StringFilter<"IdempotencyKey"> | string
+    lockedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
+    metadata?: JsonNullableFilter<"IdempotencyKey">
+    createdAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
+    updatedAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
+  }
+
+  export type IdempotencyKeyOrderByWithRelationInput = {
+    key?: SortOrder
+    namespace?: SortOrder
+    lockedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type IdempotencyKeyWhereUniqueInput = Prisma.AtLeast<{
+    key?: string
+    AND?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
+    OR?: IdempotencyKeyWhereInput[]
+    NOT?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
+    namespace?: StringFilter<"IdempotencyKey"> | string
+    lockedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
+    metadata?: JsonNullableFilter<"IdempotencyKey">
+    createdAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
+    updatedAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
+  }, "key">
+
+  export type IdempotencyKeyOrderByWithAggregationInput = {
+    key?: SortOrder
+    namespace?: SortOrder
+    lockedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: IdempotencyKeyCountOrderByAggregateInput
+    _max?: IdempotencyKeyMaxOrderByAggregateInput
+    _min?: IdempotencyKeyMinOrderByAggregateInput
+  }
+
+  export type IdempotencyKeyScalarWhereWithAggregatesInput = {
+    AND?: IdempotencyKeyScalarWhereWithAggregatesInput | IdempotencyKeyScalarWhereWithAggregatesInput[]
+    OR?: IdempotencyKeyScalarWhereWithAggregatesInput[]
+    NOT?: IdempotencyKeyScalarWhereWithAggregatesInput | IdempotencyKeyScalarWhereWithAggregatesInput[]
+    key?: StringWithAggregatesFilter<"IdempotencyKey"> | string
+    namespace?: StringWithAggregatesFilter<"IdempotencyKey"> | string
+    lockedAt?: DateTimeNullableWithAggregatesFilter<"IdempotencyKey"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"IdempotencyKey"> | Date | string | null
+    metadata?: JsonNullableWithAggregatesFilter<"IdempotencyKey">
+    createdAt?: DateTimeWithAggregatesFilter<"IdempotencyKey"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"IdempotencyKey"> | Date | string
+  }
+
+  export type LedgerAccountWhereInput = {
+    AND?: LedgerAccountWhereInput | LedgerAccountWhereInput[]
+    OR?: LedgerAccountWhereInput[]
+    NOT?: LedgerAccountWhereInput | LedgerAccountWhereInput[]
+    id?: StringFilter<"LedgerAccount"> | string
+    name?: StringFilter<"LedgerAccount"> | string
+    type?: EnumLedgerAccountTypeFilter<"LedgerAccount"> | $Enums.LedgerAccountType
+    userId?: StringNullableFilter<"LedgerAccount"> | string | null
+    balance?: IntFilter<"LedgerAccount"> | number
+    createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    debitEntries?: LedgerEntryListRelationFilter
+    creditEntries?: LedgerEntryListRelationFilter
+  }
+
+  export type LedgerAccountOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    balance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    debitEntries?: LedgerEntryOrderByRelationAggregateInput
+    creditEntries?: LedgerEntryOrderByRelationAggregateInput
+  }
+
+  export type LedgerAccountWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: LedgerAccountWhereInput | LedgerAccountWhereInput[]
+    OR?: LedgerAccountWhereInput[]
+    NOT?: LedgerAccountWhereInput | LedgerAccountWhereInput[]
+    name?: StringFilter<"LedgerAccount"> | string
+    type?: EnumLedgerAccountTypeFilter<"LedgerAccount"> | $Enums.LedgerAccountType
+    balance?: IntFilter<"LedgerAccount"> | number
+    createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    debitEntries?: LedgerEntryListRelationFilter
+    creditEntries?: LedgerEntryListRelationFilter
+  }, "id" | "userId">
+
+  export type LedgerAccountOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    balance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: LedgerAccountCountOrderByAggregateInput
+    _avg?: LedgerAccountAvgOrderByAggregateInput
+    _max?: LedgerAccountMaxOrderByAggregateInput
+    _min?: LedgerAccountMinOrderByAggregateInput
+    _sum?: LedgerAccountSumOrderByAggregateInput
+  }
+
+  export type LedgerAccountScalarWhereWithAggregatesInput = {
+    AND?: LedgerAccountScalarWhereWithAggregatesInput | LedgerAccountScalarWhereWithAggregatesInput[]
+    OR?: LedgerAccountScalarWhereWithAggregatesInput[]
+    NOT?: LedgerAccountScalarWhereWithAggregatesInput | LedgerAccountScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LedgerAccount"> | string
+    name?: StringWithAggregatesFilter<"LedgerAccount"> | string
+    type?: EnumLedgerAccountTypeWithAggregatesFilter<"LedgerAccount"> | $Enums.LedgerAccountType
+    userId?: StringNullableWithAggregatesFilter<"LedgerAccount"> | string | null
+    balance?: IntWithAggregatesFilter<"LedgerAccount"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
+  }
+
+  export type LedgerEntryWhereInput = {
+    AND?: LedgerEntryWhereInput | LedgerEntryWhereInput[]
+    OR?: LedgerEntryWhereInput[]
+    NOT?: LedgerEntryWhereInput | LedgerEntryWhereInput[]
+    id?: StringFilter<"LedgerEntry"> | string
+    debitAccountId?: StringFilter<"LedgerEntry"> | string
+    creditAccountId?: StringFilter<"LedgerEntry"> | string
+    amount?: IntFilter<"LedgerEntry"> | number
+    contractId?: StringNullableFilter<"LedgerEntry"> | string | null
+    paymentId?: StringNullableFilter<"LedgerEntry"> | string | null
+    reference?: StringFilter<"LedgerEntry"> | string
+    description?: StringNullableFilter<"LedgerEntry"> | string | null
+    createdAt?: DateTimeFilter<"LedgerEntry"> | Date | string
+    debitAccount?: XOR<LedgerAccountScalarRelationFilter, LedgerAccountWhereInput>
+    creditAccount?: XOR<LedgerAccountScalarRelationFilter, LedgerAccountWhereInput>
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    payment?: XOR<PaymentNullableScalarRelationFilter, PaymentWhereInput> | null
+  }
+
+  export type LedgerEntryOrderByWithRelationInput = {
+    id?: SortOrder
+    debitAccountId?: SortOrder
+    creditAccountId?: SortOrder
+    amount?: SortOrder
+    contractId?: SortOrderInput | SortOrder
+    paymentId?: SortOrderInput | SortOrder
+    reference?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    debitAccount?: LedgerAccountOrderByWithRelationInput
+    creditAccount?: LedgerAccountOrderByWithRelationInput
+    contract?: ContractOrderByWithRelationInput
+    payment?: PaymentOrderByWithRelationInput
+  }
+
+  export type LedgerEntryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LedgerEntryWhereInput | LedgerEntryWhereInput[]
+    OR?: LedgerEntryWhereInput[]
+    NOT?: LedgerEntryWhereInput | LedgerEntryWhereInput[]
+    debitAccountId?: StringFilter<"LedgerEntry"> | string
+    creditAccountId?: StringFilter<"LedgerEntry"> | string
+    amount?: IntFilter<"LedgerEntry"> | number
+    contractId?: StringNullableFilter<"LedgerEntry"> | string | null
+    paymentId?: StringNullableFilter<"LedgerEntry"> | string | null
+    reference?: StringFilter<"LedgerEntry"> | string
+    description?: StringNullableFilter<"LedgerEntry"> | string | null
+    createdAt?: DateTimeFilter<"LedgerEntry"> | Date | string
+    debitAccount?: XOR<LedgerAccountScalarRelationFilter, LedgerAccountWhereInput>
+    creditAccount?: XOR<LedgerAccountScalarRelationFilter, LedgerAccountWhereInput>
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    payment?: XOR<PaymentNullableScalarRelationFilter, PaymentWhereInput> | null
+  }, "id">
+
+  export type LedgerEntryOrderByWithAggregationInput = {
+    id?: SortOrder
+    debitAccountId?: SortOrder
+    creditAccountId?: SortOrder
+    amount?: SortOrder
+    contractId?: SortOrderInput | SortOrder
+    paymentId?: SortOrderInput | SortOrder
+    reference?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: LedgerEntryCountOrderByAggregateInput
+    _avg?: LedgerEntryAvgOrderByAggregateInput
+    _max?: LedgerEntryMaxOrderByAggregateInput
+    _min?: LedgerEntryMinOrderByAggregateInput
+    _sum?: LedgerEntrySumOrderByAggregateInput
+  }
+
+  export type LedgerEntryScalarWhereWithAggregatesInput = {
+    AND?: LedgerEntryScalarWhereWithAggregatesInput | LedgerEntryScalarWhereWithAggregatesInput[]
+    OR?: LedgerEntryScalarWhereWithAggregatesInput[]
+    NOT?: LedgerEntryScalarWhereWithAggregatesInput | LedgerEntryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LedgerEntry"> | string
+    debitAccountId?: StringWithAggregatesFilter<"LedgerEntry"> | string
+    creditAccountId?: StringWithAggregatesFilter<"LedgerEntry"> | string
+    amount?: IntWithAggregatesFilter<"LedgerEntry"> | number
+    contractId?: StringNullableWithAggregatesFilter<"LedgerEntry"> | string | null
+    paymentId?: StringNullableWithAggregatesFilter<"LedgerEntry"> | string | null
+    reference?: StringWithAggregatesFilter<"LedgerEntry"> | string
+    description?: StringNullableWithAggregatesFilter<"LedgerEntry"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"LedgerEntry"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     name: string
@@ -24714,6 +28882,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -24749,6 +28918,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -24784,6 +28954,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -24819,6 +28990,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -25553,6 +29725,7 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateInput = {
@@ -25590,6 +29763,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractUpdateInput = {
@@ -25627,6 +29801,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateInput = {
@@ -25664,6 +29839,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractCreateManyInput = {
@@ -26330,6 +30506,7 @@ export namespace Prisma {
     refundedAt?: Date | string | null
     contract: ContractCreateNestedOneWithoutPaymentsInput
     user: UserCreateNestedOneWithoutPaymentsInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutPaymentInput
   }
 
   export type PaymentUncheckedCreateInput = {
@@ -26355,6 +30532,7 @@ export namespace Prisma {
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
     refundedAt?: Date | string | null
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutPaymentInput
   }
 
   export type PaymentUpdateInput = {
@@ -26380,6 +30558,7 @@ export namespace Prisma {
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contract?: ContractUpdateOneRequiredWithoutPaymentsNestedInput
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutPaymentNestedInput
   }
 
   export type PaymentUncheckedUpdateInput = {
@@ -26405,6 +30584,7 @@ export namespace Prisma {
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutPaymentNestedInput
   }
 
   export type PaymentCreateManyInput = {
@@ -26570,6 +30750,233 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type IdempotencyKeyCreateInput = {
+    key: string
+    namespace?: string
+    lockedAt?: Date | string | null
+    completedAt?: Date | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type IdempotencyKeyUncheckedCreateInput = {
+    key: string
+    namespace?: string
+    lockedAt?: Date | string | null
+    completedAt?: Date | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type IdempotencyKeyUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    namespace?: StringFieldUpdateOperationsInput | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IdempotencyKeyUncheckedUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    namespace?: StringFieldUpdateOperationsInput | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IdempotencyKeyCreateManyInput = {
+    key: string
+    namespace?: string
+    lockedAt?: Date | string | null
+    completedAt?: Date | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type IdempotencyKeyUpdateManyMutationInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    namespace?: StringFieldUpdateOperationsInput | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IdempotencyKeyUncheckedUpdateManyInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    namespace?: StringFieldUpdateOperationsInput | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerAccountCreateInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutLedgerAccountsInput
+    debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
+    creditEntries?: LedgerEntryCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountUncheckedCreateInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    userId?: string | null
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
+    creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutLedgerAccountsNestedInput
+    debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
+    creditEntries?: LedgerEntryUpdateManyWithoutCreditAccountNestedInput
+  }
+
+  export type LedgerAccountUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
+    creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
+  }
+
+  export type LedgerAccountCreateManyInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    userId?: string | null
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LedgerAccountUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerAccountUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryCreateInput = {
+    id?: string
+    amount: number
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+    debitAccount: LedgerAccountCreateNestedOneWithoutDebitEntriesInput
+    creditAccount: LedgerAccountCreateNestedOneWithoutCreditEntriesInput
+    contract?: ContractCreateNestedOneWithoutLedgerEntriesInput
+    payment?: PaymentCreateNestedOneWithoutLedgerEntriesInput
+  }
+
+  export type LedgerEntryUncheckedCreateInput = {
+    id?: string
+    debitAccountId: string
+    creditAccountId: string
+    amount: number
+    contractId?: string | null
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitAccount?: LedgerAccountUpdateOneRequiredWithoutDebitEntriesNestedInput
+    creditAccount?: LedgerAccountUpdateOneRequiredWithoutCreditEntriesNestedInput
+    contract?: ContractUpdateOneWithoutLedgerEntriesNestedInput
+    payment?: PaymentUpdateOneWithoutLedgerEntriesNestedInput
+  }
+
+  export type LedgerEntryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryCreateManyInput = {
+    id?: string
+    debitAccountId: string
+    creditAccountId: string
+    amount: number
+    contractId?: string | null
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -26703,6 +31110,11 @@ export namespace Prisma {
     every?: DisputeWhereInput
     some?: DisputeWhereInput
     none?: DisputeWhereInput
+  }
+
+  export type LedgerAccountNullableScalarRelationFilter = {
+    is?: LedgerAccountWhereInput | null
+    isNot?: LedgerAccountWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -27541,6 +31953,16 @@ export namespace Prisma {
     isNot?: ReviewWhereInput | null
   }
 
+  export type LedgerEntryListRelationFilter = {
+    every?: LedgerEntryWhereInput
+    some?: LedgerEntryWhereInput
+    none?: LedgerEntryWhereInput
+  }
+
+  export type LedgerEntryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ContractCountOrderByAggregateInput = {
     id?: SortOrder
     jobId?: SortOrder
@@ -28148,6 +32570,143 @@ export namespace Prisma {
     _max?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
   }
 
+  export type IdempotencyKeyCountOrderByAggregateInput = {
+    key?: SortOrder
+    namespace?: SortOrder
+    lockedAt?: SortOrder
+    completedAt?: SortOrder
+    metadata?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type IdempotencyKeyMaxOrderByAggregateInput = {
+    key?: SortOrder
+    namespace?: SortOrder
+    lockedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type IdempotencyKeyMinOrderByAggregateInput = {
+    key?: SortOrder
+    namespace?: SortOrder
+    lockedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumLedgerAccountTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.LedgerAccountType | EnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumLedgerAccountTypeFilter<$PrismaModel> | $Enums.LedgerAccountType
+  }
+
+  export type LedgerAccountCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LedgerAccountAvgOrderByAggregateInput = {
+    balance?: SortOrder
+  }
+
+  export type LedgerAccountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LedgerAccountMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    userId?: SortOrder
+    balance?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LedgerAccountSumOrderByAggregateInput = {
+    balance?: SortOrder
+  }
+
+  export type EnumLedgerAccountTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LedgerAccountType | EnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumLedgerAccountTypeWithAggregatesFilter<$PrismaModel> | $Enums.LedgerAccountType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLedgerAccountTypeFilter<$PrismaModel>
+    _max?: NestedEnumLedgerAccountTypeFilter<$PrismaModel>
+  }
+
+  export type LedgerAccountScalarRelationFilter = {
+    is?: LedgerAccountWhereInput
+    isNot?: LedgerAccountWhereInput
+  }
+
+  export type PaymentNullableScalarRelationFilter = {
+    is?: PaymentWhereInput | null
+    isNot?: PaymentWhereInput | null
+  }
+
+  export type LedgerEntryCountOrderByAggregateInput = {
+    id?: SortOrder
+    debitAccountId?: SortOrder
+    creditAccountId?: SortOrder
+    amount?: SortOrder
+    contractId?: SortOrder
+    paymentId?: SortOrder
+    reference?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LedgerEntryAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type LedgerEntryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    debitAccountId?: SortOrder
+    creditAccountId?: SortOrder
+    amount?: SortOrder
+    contractId?: SortOrder
+    paymentId?: SortOrder
+    reference?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LedgerEntryMinOrderByAggregateInput = {
+    id?: SortOrder
+    debitAccountId?: SortOrder
+    creditAccountId?: SortOrder
+    amount?: SortOrder
+    contractId?: SortOrder
+    paymentId?: SortOrder
+    reference?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LedgerEntrySumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
   export type ArtisanProfileCreateNestedOneWithoutUserInput = {
     create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
@@ -28251,6 +32810,12 @@ export namespace Prisma {
     connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
   }
 
+  export type LedgerAccountCreateNestedOneWithoutUserInput = {
+    create?: XOR<LedgerAccountCreateWithoutUserInput, LedgerAccountUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutUserInput
+    connect?: LedgerAccountWhereUniqueInput
+  }
+
   export type ArtisanProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
@@ -28352,6 +32917,12 @@ export namespace Prisma {
     connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
     createMany?: DisputeCreateManyUserInputEnvelope
     connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type LedgerAccountUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<LedgerAccountCreateWithoutUserInput, LedgerAccountUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutUserInput
+    connect?: LedgerAccountWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -28584,6 +33155,16 @@ export namespace Prisma {
     deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
   }
 
+  export type LedgerAccountUpdateOneWithoutUserNestedInput = {
+    create?: XOR<LedgerAccountCreateWithoutUserInput, LedgerAccountUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutUserInput
+    upsert?: LedgerAccountUpsertWithoutUserInput
+    disconnect?: LedgerAccountWhereInput | boolean
+    delete?: LedgerAccountWhereInput | boolean
+    connect?: LedgerAccountWhereUniqueInput
+    update?: XOR<XOR<LedgerAccountUpdateToOneWithWhereWithoutUserInput, LedgerAccountUpdateWithoutUserInput>, LedgerAccountUncheckedUpdateWithoutUserInput>
+  }
+
   export type ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<ArtisanProfileCreateWithoutUserInput, ArtisanProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: ArtisanProfileCreateOrConnectWithoutUserInput
@@ -28784,6 +33365,16 @@ export namespace Prisma {
     update?: DisputeUpdateWithWhereUniqueWithoutUserInput | DisputeUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: DisputeUpdateManyWithWhereWithoutUserInput | DisputeUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type LedgerAccountUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<LedgerAccountCreateWithoutUserInput, LedgerAccountUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutUserInput
+    upsert?: LedgerAccountUpsertWithoutUserInput
+    disconnect?: LedgerAccountWhereInput | boolean
+    delete?: LedgerAccountWhereInput | boolean
+    connect?: LedgerAccountWhereUniqueInput
+    update?: XOR<XOR<LedgerAccountUpdateToOneWithWhereWithoutUserInput, LedgerAccountUpdateWithoutUserInput>, LedgerAccountUncheckedUpdateWithoutUserInput>
   }
 
   export type DisputeHistoryCreateNestedManyWithoutDisputeInput = {
@@ -29153,6 +33744,13 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
   }
 
+  export type LedgerEntryCreateNestedManyWithoutContractInput = {
+    create?: XOR<LedgerEntryCreateWithoutContractInput, LedgerEntryUncheckedCreateWithoutContractInput> | LedgerEntryCreateWithoutContractInput[] | LedgerEntryUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutContractInput | LedgerEntryCreateOrConnectWithoutContractInput[]
+    createMany?: LedgerEntryCreateManyContractInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
   export type ConversationUncheckedCreateNestedOneWithoutContractInput = {
     create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
     connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
@@ -29170,6 +33768,13 @@ export namespace Prisma {
     connectOrCreate?: PaymentCreateOrConnectWithoutContractInput | PaymentCreateOrConnectWithoutContractInput[]
     createMany?: PaymentCreateManyContractInputEnvelope
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  }
+
+  export type LedgerEntryUncheckedCreateNestedManyWithoutContractInput = {
+    create?: XOR<LedgerEntryCreateWithoutContractInput, LedgerEntryUncheckedCreateWithoutContractInput> | LedgerEntryCreateWithoutContractInput[] | LedgerEntryUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutContractInput | LedgerEntryCreateOrConnectWithoutContractInput[]
+    createMany?: LedgerEntryCreateManyContractInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
   }
 
   export type EnumContractStatusFieldUpdateOperationsInput = {
@@ -29242,6 +33847,20 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
+  export type LedgerEntryUpdateManyWithoutContractNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutContractInput, LedgerEntryUncheckedCreateWithoutContractInput> | LedgerEntryCreateWithoutContractInput[] | LedgerEntryUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutContractInput | LedgerEntryCreateOrConnectWithoutContractInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutContractInput | LedgerEntryUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: LedgerEntryCreateManyContractInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutContractInput | LedgerEntryUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutContractInput | LedgerEntryUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
   export type ConversationUncheckedUpdateOneWithoutContractNestedInput = {
     create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
     connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
@@ -29274,6 +33893,20 @@ export namespace Prisma {
     update?: PaymentUpdateWithWhereUniqueWithoutContractInput | PaymentUpdateWithWhereUniqueWithoutContractInput[]
     updateMany?: PaymentUpdateManyWithWhereWithoutContractInput | PaymentUpdateManyWithWhereWithoutContractInput[]
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutContractNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutContractInput, LedgerEntryUncheckedCreateWithoutContractInput> | LedgerEntryCreateWithoutContractInput[] | LedgerEntryUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutContractInput | LedgerEntryCreateOrConnectWithoutContractInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutContractInput | LedgerEntryUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: LedgerEntryCreateManyContractInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutContractInput | LedgerEntryUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutContractInput | LedgerEntryUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
   }
 
   export type ContractCreateNestedOneWithoutConversationInput = {
@@ -29436,6 +34069,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type LedgerEntryCreateNestedManyWithoutPaymentInput = {
+    create?: XOR<LedgerEntryCreateWithoutPaymentInput, LedgerEntryUncheckedCreateWithoutPaymentInput> | LedgerEntryCreateWithoutPaymentInput[] | LedgerEntryUncheckedCreateWithoutPaymentInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutPaymentInput | LedgerEntryCreateOrConnectWithoutPaymentInput[]
+    createMany?: LedgerEntryCreateManyPaymentInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
+  export type LedgerEntryUncheckedCreateNestedManyWithoutPaymentInput = {
+    create?: XOR<LedgerEntryCreateWithoutPaymentInput, LedgerEntryUncheckedCreateWithoutPaymentInput> | LedgerEntryCreateWithoutPaymentInput[] | LedgerEntryUncheckedCreateWithoutPaymentInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutPaymentInput | LedgerEntryCreateOrConnectWithoutPaymentInput[]
+    createMany?: LedgerEntryCreateManyPaymentInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
   export type EnumPaymentStatusFieldUpdateOperationsInput = {
     set?: $Enums.PaymentStatus
   }
@@ -29454,6 +34101,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutPaymentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPaymentsInput, UserUpdateWithoutPaymentsInput>, UserUncheckedUpdateWithoutPaymentsInput>
+  }
+
+  export type LedgerEntryUpdateManyWithoutPaymentNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutPaymentInput, LedgerEntryUncheckedCreateWithoutPaymentInput> | LedgerEntryCreateWithoutPaymentInput[] | LedgerEntryUncheckedCreateWithoutPaymentInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutPaymentInput | LedgerEntryCreateOrConnectWithoutPaymentInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutPaymentInput | LedgerEntryUpsertWithWhereUniqueWithoutPaymentInput[]
+    createMany?: LedgerEntryCreateManyPaymentInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutPaymentInput | LedgerEntryUpdateWithWhereUniqueWithoutPaymentInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutPaymentInput | LedgerEntryUpdateManyWithWhereWithoutPaymentInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutPaymentNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutPaymentInput, LedgerEntryUncheckedCreateWithoutPaymentInput> | LedgerEntryCreateWithoutPaymentInput[] | LedgerEntryUncheckedCreateWithoutPaymentInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutPaymentInput | LedgerEntryCreateOrConnectWithoutPaymentInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutPaymentInput | LedgerEntryUpsertWithWhereUniqueWithoutPaymentInput[]
+    createMany?: LedgerEntryCreateManyPaymentInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutPaymentInput | LedgerEntryUpdateWithWhereUniqueWithoutPaymentInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutPaymentInput | LedgerEntryUpdateManyWithWhereWithoutPaymentInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutKycDocumentsInput = {
@@ -29476,6 +34151,170 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutKycDocumentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutKycDocumentsInput, UserUpdateWithoutKycDocumentsInput>, UserUncheckedUpdateWithoutKycDocumentsInput>
+  }
+
+  export type UserCreateNestedOneWithoutLedgerAccountsInput = {
+    create?: XOR<UserCreateWithoutLedgerAccountsInput, UserUncheckedCreateWithoutLedgerAccountsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLedgerAccountsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type LedgerEntryCreateNestedManyWithoutDebitAccountInput = {
+    create?: XOR<LedgerEntryCreateWithoutDebitAccountInput, LedgerEntryUncheckedCreateWithoutDebitAccountInput> | LedgerEntryCreateWithoutDebitAccountInput[] | LedgerEntryUncheckedCreateWithoutDebitAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutDebitAccountInput | LedgerEntryCreateOrConnectWithoutDebitAccountInput[]
+    createMany?: LedgerEntryCreateManyDebitAccountInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
+  export type LedgerEntryCreateNestedManyWithoutCreditAccountInput = {
+    create?: XOR<LedgerEntryCreateWithoutCreditAccountInput, LedgerEntryUncheckedCreateWithoutCreditAccountInput> | LedgerEntryCreateWithoutCreditAccountInput[] | LedgerEntryUncheckedCreateWithoutCreditAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutCreditAccountInput | LedgerEntryCreateOrConnectWithoutCreditAccountInput[]
+    createMany?: LedgerEntryCreateManyCreditAccountInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
+  export type LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput = {
+    create?: XOR<LedgerEntryCreateWithoutDebitAccountInput, LedgerEntryUncheckedCreateWithoutDebitAccountInput> | LedgerEntryCreateWithoutDebitAccountInput[] | LedgerEntryUncheckedCreateWithoutDebitAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutDebitAccountInput | LedgerEntryCreateOrConnectWithoutDebitAccountInput[]
+    createMany?: LedgerEntryCreateManyDebitAccountInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
+  export type LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput = {
+    create?: XOR<LedgerEntryCreateWithoutCreditAccountInput, LedgerEntryUncheckedCreateWithoutCreditAccountInput> | LedgerEntryCreateWithoutCreditAccountInput[] | LedgerEntryUncheckedCreateWithoutCreditAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutCreditAccountInput | LedgerEntryCreateOrConnectWithoutCreditAccountInput[]
+    createMany?: LedgerEntryCreateManyCreditAccountInputEnvelope
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
+  export type EnumLedgerAccountTypeFieldUpdateOperationsInput = {
+    set?: $Enums.LedgerAccountType
+  }
+
+  export type UserUpdateOneWithoutLedgerAccountsNestedInput = {
+    create?: XOR<UserCreateWithoutLedgerAccountsInput, UserUncheckedCreateWithoutLedgerAccountsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLedgerAccountsInput
+    upsert?: UserUpsertWithoutLedgerAccountsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutLedgerAccountsInput, UserUpdateWithoutLedgerAccountsInput>, UserUncheckedUpdateWithoutLedgerAccountsInput>
+  }
+
+  export type LedgerEntryUpdateManyWithoutDebitAccountNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutDebitAccountInput, LedgerEntryUncheckedCreateWithoutDebitAccountInput> | LedgerEntryCreateWithoutDebitAccountInput[] | LedgerEntryUncheckedCreateWithoutDebitAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutDebitAccountInput | LedgerEntryCreateOrConnectWithoutDebitAccountInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutDebitAccountInput | LedgerEntryUpsertWithWhereUniqueWithoutDebitAccountInput[]
+    createMany?: LedgerEntryCreateManyDebitAccountInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutDebitAccountInput | LedgerEntryUpdateWithWhereUniqueWithoutDebitAccountInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutDebitAccountInput | LedgerEntryUpdateManyWithWhereWithoutDebitAccountInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
+  export type LedgerEntryUpdateManyWithoutCreditAccountNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutCreditAccountInput, LedgerEntryUncheckedCreateWithoutCreditAccountInput> | LedgerEntryCreateWithoutCreditAccountInput[] | LedgerEntryUncheckedCreateWithoutCreditAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutCreditAccountInput | LedgerEntryCreateOrConnectWithoutCreditAccountInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutCreditAccountInput | LedgerEntryUpsertWithWhereUniqueWithoutCreditAccountInput[]
+    createMany?: LedgerEntryCreateManyCreditAccountInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutCreditAccountInput | LedgerEntryUpdateWithWhereUniqueWithoutCreditAccountInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutCreditAccountInput | LedgerEntryUpdateManyWithWhereWithoutCreditAccountInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutDebitAccountInput, LedgerEntryUncheckedCreateWithoutDebitAccountInput> | LedgerEntryCreateWithoutDebitAccountInput[] | LedgerEntryUncheckedCreateWithoutDebitAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutDebitAccountInput | LedgerEntryCreateOrConnectWithoutDebitAccountInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutDebitAccountInput | LedgerEntryUpsertWithWhereUniqueWithoutDebitAccountInput[]
+    createMany?: LedgerEntryCreateManyDebitAccountInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutDebitAccountInput | LedgerEntryUpdateWithWhereUniqueWithoutDebitAccountInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutDebitAccountInput | LedgerEntryUpdateManyWithWhereWithoutDebitAccountInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput = {
+    create?: XOR<LedgerEntryCreateWithoutCreditAccountInput, LedgerEntryUncheckedCreateWithoutCreditAccountInput> | LedgerEntryCreateWithoutCreditAccountInput[] | LedgerEntryUncheckedCreateWithoutCreditAccountInput[]
+    connectOrCreate?: LedgerEntryCreateOrConnectWithoutCreditAccountInput | LedgerEntryCreateOrConnectWithoutCreditAccountInput[]
+    upsert?: LedgerEntryUpsertWithWhereUniqueWithoutCreditAccountInput | LedgerEntryUpsertWithWhereUniqueWithoutCreditAccountInput[]
+    createMany?: LedgerEntryCreateManyCreditAccountInputEnvelope
+    set?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    disconnect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    delete?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+    update?: LedgerEntryUpdateWithWhereUniqueWithoutCreditAccountInput | LedgerEntryUpdateWithWhereUniqueWithoutCreditAccountInput[]
+    updateMany?: LedgerEntryUpdateManyWithWhereWithoutCreditAccountInput | LedgerEntryUpdateManyWithWhereWithoutCreditAccountInput[]
+    deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
+  export type LedgerAccountCreateNestedOneWithoutDebitEntriesInput = {
+    create?: XOR<LedgerAccountCreateWithoutDebitEntriesInput, LedgerAccountUncheckedCreateWithoutDebitEntriesInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutDebitEntriesInput
+    connect?: LedgerAccountWhereUniqueInput
+  }
+
+  export type LedgerAccountCreateNestedOneWithoutCreditEntriesInput = {
+    create?: XOR<LedgerAccountCreateWithoutCreditEntriesInput, LedgerAccountUncheckedCreateWithoutCreditEntriesInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutCreditEntriesInput
+    connect?: LedgerAccountWhereUniqueInput
+  }
+
+  export type ContractCreateNestedOneWithoutLedgerEntriesInput = {
+    create?: XOR<ContractCreateWithoutLedgerEntriesInput, ContractUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutLedgerEntriesInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type PaymentCreateNestedOneWithoutLedgerEntriesInput = {
+    create?: XOR<PaymentCreateWithoutLedgerEntriesInput, PaymentUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: PaymentCreateOrConnectWithoutLedgerEntriesInput
+    connect?: PaymentWhereUniqueInput
+  }
+
+  export type LedgerAccountUpdateOneRequiredWithoutDebitEntriesNestedInput = {
+    create?: XOR<LedgerAccountCreateWithoutDebitEntriesInput, LedgerAccountUncheckedCreateWithoutDebitEntriesInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutDebitEntriesInput
+    upsert?: LedgerAccountUpsertWithoutDebitEntriesInput
+    connect?: LedgerAccountWhereUniqueInput
+    update?: XOR<XOR<LedgerAccountUpdateToOneWithWhereWithoutDebitEntriesInput, LedgerAccountUpdateWithoutDebitEntriesInput>, LedgerAccountUncheckedUpdateWithoutDebitEntriesInput>
+  }
+
+  export type LedgerAccountUpdateOneRequiredWithoutCreditEntriesNestedInput = {
+    create?: XOR<LedgerAccountCreateWithoutCreditEntriesInput, LedgerAccountUncheckedCreateWithoutCreditEntriesInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutCreditEntriesInput
+    upsert?: LedgerAccountUpsertWithoutCreditEntriesInput
+    connect?: LedgerAccountWhereUniqueInput
+    update?: XOR<XOR<LedgerAccountUpdateToOneWithWhereWithoutCreditEntriesInput, LedgerAccountUpdateWithoutCreditEntriesInput>, LedgerAccountUncheckedUpdateWithoutCreditEntriesInput>
+  }
+
+  export type ContractUpdateOneWithoutLedgerEntriesNestedInput = {
+    create?: XOR<ContractCreateWithoutLedgerEntriesInput, ContractUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutLedgerEntriesInput
+    upsert?: ContractUpsertWithoutLedgerEntriesInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutLedgerEntriesInput, ContractUpdateWithoutLedgerEntriesInput>, ContractUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type PaymentUpdateOneWithoutLedgerEntriesNestedInput = {
+    create?: XOR<PaymentCreateWithoutLedgerEntriesInput, PaymentUncheckedCreateWithoutLedgerEntriesInput>
+    connectOrCreate?: PaymentCreateOrConnectWithoutLedgerEntriesInput
+    upsert?: PaymentUpsertWithoutLedgerEntriesInput
+    disconnect?: PaymentWhereInput | boolean
+    delete?: PaymentWhereInput | boolean
+    connect?: PaymentWhereUniqueInput
+    update?: XOR<XOR<PaymentUpdateToOneWithWhereWithoutLedgerEntriesInput, PaymentUpdateWithoutLedgerEntriesInput>, PaymentUncheckedUpdateWithoutLedgerEntriesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -29979,6 +34818,23 @@ export namespace Prisma {
     _max?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumLedgerAccountTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.LedgerAccountType | EnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumLedgerAccountTypeFilter<$PrismaModel> | $Enums.LedgerAccountType
+  }
+
+  export type NestedEnumLedgerAccountTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LedgerAccountType | EnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumLedgerAccountTypeWithAggregatesFilter<$PrismaModel> | $Enums.LedgerAccountType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLedgerAccountTypeFilter<$PrismaModel>
+    _max?: NestedEnumLedgerAccountTypeFilter<$PrismaModel>
+  }
+
   export type ArtisanProfileCreateWithoutUserInput = {
     id: string
     bio?: string | null
@@ -30146,6 +35002,7 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutClientInput = {
@@ -30182,6 +35039,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutClientInput = {
@@ -30228,6 +35086,7 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutArtisanInput = {
@@ -30264,6 +35123,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutArtisanInput = {
@@ -30601,6 +35461,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     refundedAt?: Date | string | null
     contract: ContractCreateNestedOneWithoutPaymentsInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutPaymentInput
   }
 
   export type PaymentUncheckedCreateWithoutUserInput = {
@@ -30625,6 +35486,7 @@ export namespace Prisma {
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
     refundedAt?: Date | string | null
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutPaymentInput
   }
 
   export type PaymentCreateOrConnectWithoutUserInput = {
@@ -30683,6 +35545,33 @@ export namespace Prisma {
   export type DisputeCreateManyUserInputEnvelope = {
     data: DisputeCreateManyUserInput | DisputeCreateManyUserInput[]
     skipDuplicates?: boolean
+  }
+
+  export type LedgerAccountCreateWithoutUserInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
+    creditEntries?: LedgerEntryCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
+    creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountCreateOrConnectWithoutUserInput = {
+    where: LedgerAccountWhereUniqueInput
+    create: XOR<LedgerAccountCreateWithoutUserInput, LedgerAccountUncheckedCreateWithoutUserInput>
   }
 
   export type ArtisanProfileUpsertWithoutUserInput = {
@@ -31161,6 +36050,39 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Dispute"> | Date | string
   }
 
+  export type LedgerAccountUpsertWithoutUserInput = {
+    update: XOR<LedgerAccountUpdateWithoutUserInput, LedgerAccountUncheckedUpdateWithoutUserInput>
+    create: XOR<LedgerAccountCreateWithoutUserInput, LedgerAccountUncheckedCreateWithoutUserInput>
+    where?: LedgerAccountWhereInput
+  }
+
+  export type LedgerAccountUpdateToOneWithWhereWithoutUserInput = {
+    where?: LedgerAccountWhereInput
+    data: XOR<LedgerAccountUpdateWithoutUserInput, LedgerAccountUncheckedUpdateWithoutUserInput>
+  }
+
+  export type LedgerAccountUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
+    creditEntries?: LedgerEntryUpdateManyWithoutCreditAccountNestedInput
+  }
+
+  export type LedgerAccountUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
+    creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
+  }
+
   export type DisputeHistoryCreateWithoutDisputeInput = {
     id: string
     action: string
@@ -31219,6 +36141,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDisputesInput = {
@@ -31253,6 +36176,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDisputesInput = {
@@ -31331,6 +36255,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDisputesInput = {
@@ -31365,6 +36290,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type DisputeCreateWithoutHistoryInput = {
@@ -31491,6 +36417,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientJobsInput = {
@@ -31525,6 +36452,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientJobsInput = {
@@ -31564,6 +36492,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutArtisanJobsInput = {
@@ -31598,6 +36527,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutArtisanJobsInput = {
@@ -31639,6 +36569,7 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutJobInput = {
@@ -31675,6 +36606,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutJobInput = {
@@ -31759,6 +36691,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientJobsInput = {
@@ -31793,6 +36726,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutArtisanJobsInput = {
@@ -31838,6 +36772,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutArtisanJobsInput = {
@@ -31872,6 +36807,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ContractUpsertWithoutJobInput = {
@@ -31919,6 +36855,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutJobInput = {
@@ -31955,6 +36892,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ProposalUpsertWithWhereUniqueWithoutJobInput = {
@@ -32005,6 +36943,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -32039,6 +36978,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -32089,6 +37029,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -32123,6 +37064,7 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutArtisanProfileInput = {
@@ -32157,6 +37099,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutArtisanProfileInput = {
@@ -32191,6 +37134,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutArtisanProfileInput = {
@@ -32241,6 +37185,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutArtisanProfileInput = {
@@ -32275,6 +37220,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type JobCreateWithoutProposalsInput = {
@@ -32360,6 +37306,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentProposalsInput = {
@@ -32394,6 +37341,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentProposalsInput = {
@@ -32433,6 +37381,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedProposalsInput = {
@@ -32467,6 +37416,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedProposalsInput = {
@@ -32508,6 +37458,7 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutProposalInput = {
@@ -32544,6 +37495,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutProposalInput = {
@@ -32651,6 +37603,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentProposalsInput = {
@@ -32685,6 +37638,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutReceivedProposalsInput = {
@@ -32730,6 +37684,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedProposalsInput = {
@@ -32764,6 +37719,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ContractUpsertWithoutProposalInput = {
@@ -32811,6 +37767,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutProposalInput = {
@@ -32847,6 +37804,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type JobCreateWithoutContractInput = {
@@ -32961,6 +37919,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClientContractsInput = {
@@ -32995,6 +37954,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClientContractsInput = {
@@ -33034,6 +37994,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutArtisanContractsInput = {
@@ -33068,6 +38029,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutArtisanContractsInput = {
@@ -33159,6 +38121,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     refundedAt?: Date | string | null
     user: UserCreateNestedOneWithoutPaymentsInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutPaymentInput
   }
 
   export type PaymentUncheckedCreateWithoutContractInput = {
@@ -33183,6 +38146,7 @@ export namespace Prisma {
     verifiedAt?: Date | string | null
     completedAt?: Date | string | null
     refundedAt?: Date | string | null
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutPaymentInput
   }
 
   export type PaymentCreateOrConnectWithoutContractInput = {
@@ -33192,6 +38156,38 @@ export namespace Prisma {
 
   export type PaymentCreateManyContractInputEnvelope = {
     data: PaymentCreateManyContractInput | PaymentCreateManyContractInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LedgerEntryCreateWithoutContractInput = {
+    id?: string
+    amount: number
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+    debitAccount: LedgerAccountCreateNestedOneWithoutDebitEntriesInput
+    creditAccount: LedgerAccountCreateNestedOneWithoutCreditEntriesInput
+    payment?: PaymentCreateNestedOneWithoutLedgerEntriesInput
+  }
+
+  export type LedgerEntryUncheckedCreateWithoutContractInput = {
+    id?: string
+    debitAccountId: string
+    creditAccountId: string
+    amount: number
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryCreateOrConnectWithoutContractInput = {
+    where: LedgerEntryWhereUniqueInput
+    create: XOR<LedgerEntryCreateWithoutContractInput, LedgerEntryUncheckedCreateWithoutContractInput>
+  }
+
+  export type LedgerEntryCreateManyContractInputEnvelope = {
+    data: LedgerEntryCreateManyContractInput | LedgerEntryCreateManyContractInput[]
     skipDuplicates?: boolean
   }
 
@@ -33330,6 +38326,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClientContractsInput = {
@@ -33364,6 +38361,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutArtisanContractsInput = {
@@ -33409,6 +38407,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutArtisanContractsInput = {
@@ -33443,6 +38442,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ConversationUpsertWithoutContractInput = {
@@ -33535,6 +38535,37 @@ export namespace Prisma {
     data: XOR<PaymentUpdateManyMutationInput, PaymentUncheckedUpdateManyWithoutContractInput>
   }
 
+  export type LedgerEntryUpsertWithWhereUniqueWithoutContractInput = {
+    where: LedgerEntryWhereUniqueInput
+    update: XOR<LedgerEntryUpdateWithoutContractInput, LedgerEntryUncheckedUpdateWithoutContractInput>
+    create: XOR<LedgerEntryCreateWithoutContractInput, LedgerEntryUncheckedCreateWithoutContractInput>
+  }
+
+  export type LedgerEntryUpdateWithWhereUniqueWithoutContractInput = {
+    where: LedgerEntryWhereUniqueInput
+    data: XOR<LedgerEntryUpdateWithoutContractInput, LedgerEntryUncheckedUpdateWithoutContractInput>
+  }
+
+  export type LedgerEntryUpdateManyWithWhereWithoutContractInput = {
+    where: LedgerEntryScalarWhereInput
+    data: XOR<LedgerEntryUpdateManyMutationInput, LedgerEntryUncheckedUpdateManyWithoutContractInput>
+  }
+
+  export type LedgerEntryScalarWhereInput = {
+    AND?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+    OR?: LedgerEntryScalarWhereInput[]
+    NOT?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+    id?: StringFilter<"LedgerEntry"> | string
+    debitAccountId?: StringFilter<"LedgerEntry"> | string
+    creditAccountId?: StringFilter<"LedgerEntry"> | string
+    amount?: IntFilter<"LedgerEntry"> | number
+    contractId?: StringNullableFilter<"LedgerEntry"> | string | null
+    paymentId?: StringNullableFilter<"LedgerEntry"> | string | null
+    reference?: StringFilter<"LedgerEntry"> | string
+    description?: StringNullableFilter<"LedgerEntry"> | string | null
+    createdAt?: DateTimeFilter<"LedgerEntry"> | Date | string
+  }
+
   export type ContractCreateWithoutConversationInput = {
     id: string
     amount: number
@@ -33569,6 +38600,7 @@ export namespace Prisma {
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutConversationInput = {
@@ -33605,6 +38637,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutConversationInput = {
@@ -33691,6 +38724,7 @@ export namespace Prisma {
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutConversationInput = {
@@ -33727,6 +38761,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -33845,6 +38880,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWalletInput = {
@@ -33879,6 +38915,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWalletInput = {
@@ -33929,6 +38966,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWalletInput = {
@@ -33963,6 +39001,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ContractCreateWithoutReviewInput = {
@@ -33999,6 +39038,7 @@ export namespace Prisma {
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutReviewInput = {
@@ -34035,6 +39075,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutReviewInput = {
@@ -34074,6 +39115,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentReviewsInput = {
@@ -34108,6 +39150,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentReviewsInput = {
@@ -34147,6 +39190,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedReviewsInput = {
@@ -34181,6 +39225,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedReviewsInput = {
@@ -34233,6 +39278,7 @@ export namespace Prisma {
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutReviewInput = {
@@ -34269,6 +39315,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type UserUpsertWithoutSentReviewsInput = {
@@ -34314,6 +39361,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentReviewsInput = {
@@ -34348,6 +39396,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutReceivedReviewsInput = {
@@ -34393,6 +39442,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedReviewsInput = {
@@ -34427,6 +39477,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -34461,6 +39512,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -34495,6 +39547,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -34545,6 +39598,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -34579,6 +39633,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ContractCreateWithoutPaymentsInput = {
@@ -34615,6 +39670,7 @@ export namespace Prisma {
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutPaymentsInput = {
@@ -34651,6 +39707,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutPaymentsInput = {
@@ -34690,6 +39747,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPaymentsInput = {
@@ -34724,11 +39782,44 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPaymentsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutPaymentsInput, UserUncheckedCreateWithoutPaymentsInput>
+  }
+
+  export type LedgerEntryCreateWithoutPaymentInput = {
+    id?: string
+    amount: number
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+    debitAccount: LedgerAccountCreateNestedOneWithoutDebitEntriesInput
+    creditAccount: LedgerAccountCreateNestedOneWithoutCreditEntriesInput
+    contract?: ContractCreateNestedOneWithoutLedgerEntriesInput
+  }
+
+  export type LedgerEntryUncheckedCreateWithoutPaymentInput = {
+    id?: string
+    debitAccountId: string
+    creditAccountId: string
+    amount: number
+    contractId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryCreateOrConnectWithoutPaymentInput = {
+    where: LedgerEntryWhereUniqueInput
+    create: XOR<LedgerEntryCreateWithoutPaymentInput, LedgerEntryUncheckedCreateWithoutPaymentInput>
+  }
+
+  export type LedgerEntryCreateManyPaymentInputEnvelope = {
+    data: LedgerEntryCreateManyPaymentInput | LedgerEntryCreateManyPaymentInput[]
+    skipDuplicates?: boolean
   }
 
   export type ContractUpsertWithoutPaymentsInput = {
@@ -34776,6 +39867,7 @@ export namespace Prisma {
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutPaymentsInput = {
@@ -34812,6 +39904,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type UserUpsertWithoutPaymentsInput = {
@@ -34857,6 +39950,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPaymentsInput = {
@@ -34891,6 +39985,23 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type LedgerEntryUpsertWithWhereUniqueWithoutPaymentInput = {
+    where: LedgerEntryWhereUniqueInput
+    update: XOR<LedgerEntryUpdateWithoutPaymentInput, LedgerEntryUncheckedUpdateWithoutPaymentInput>
+    create: XOR<LedgerEntryCreateWithoutPaymentInput, LedgerEntryUncheckedCreateWithoutPaymentInput>
+  }
+
+  export type LedgerEntryUpdateWithWhereUniqueWithoutPaymentInput = {
+    where: LedgerEntryWhereUniqueInput
+    data: XOR<LedgerEntryUpdateWithoutPaymentInput, LedgerEntryUncheckedUpdateWithoutPaymentInput>
+  }
+
+  export type LedgerEntryUpdateManyWithWhereWithoutPaymentInput = {
+    where: LedgerEntryScalarWhereInput
+    data: XOR<LedgerEntryUpdateManyMutationInput, LedgerEntryUncheckedUpdateManyWithoutPaymentInput>
   }
 
   export type UserCreateWithoutKycDocumentsInput = {
@@ -34925,6 +40036,7 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
     disputes?: DisputeCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutKycDocumentsInput = {
@@ -34959,6 +40071,7 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutKycDocumentsInput = {
@@ -35009,6 +40122,7 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
     disputes?: DisputeUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutKycDocumentsInput = {
@@ -35043,6 +40157,659 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutLedgerAccountsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    disputes?: DisputeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutLedgerAccountsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutLedgerAccountsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutLedgerAccountsInput, UserUncheckedCreateWithoutLedgerAccountsInput>
+  }
+
+  export type LedgerEntryCreateWithoutDebitAccountInput = {
+    id?: string
+    amount: number
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+    creditAccount: LedgerAccountCreateNestedOneWithoutCreditEntriesInput
+    contract?: ContractCreateNestedOneWithoutLedgerEntriesInput
+    payment?: PaymentCreateNestedOneWithoutLedgerEntriesInput
+  }
+
+  export type LedgerEntryUncheckedCreateWithoutDebitAccountInput = {
+    id?: string
+    creditAccountId: string
+    amount: number
+    contractId?: string | null
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryCreateOrConnectWithoutDebitAccountInput = {
+    where: LedgerEntryWhereUniqueInput
+    create: XOR<LedgerEntryCreateWithoutDebitAccountInput, LedgerEntryUncheckedCreateWithoutDebitAccountInput>
+  }
+
+  export type LedgerEntryCreateManyDebitAccountInputEnvelope = {
+    data: LedgerEntryCreateManyDebitAccountInput | LedgerEntryCreateManyDebitAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LedgerEntryCreateWithoutCreditAccountInput = {
+    id?: string
+    amount: number
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+    debitAccount: LedgerAccountCreateNestedOneWithoutDebitEntriesInput
+    contract?: ContractCreateNestedOneWithoutLedgerEntriesInput
+    payment?: PaymentCreateNestedOneWithoutLedgerEntriesInput
+  }
+
+  export type LedgerEntryUncheckedCreateWithoutCreditAccountInput = {
+    id?: string
+    debitAccountId: string
+    amount: number
+    contractId?: string | null
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryCreateOrConnectWithoutCreditAccountInput = {
+    where: LedgerEntryWhereUniqueInput
+    create: XOR<LedgerEntryCreateWithoutCreditAccountInput, LedgerEntryUncheckedCreateWithoutCreditAccountInput>
+  }
+
+  export type LedgerEntryCreateManyCreditAccountInputEnvelope = {
+    data: LedgerEntryCreateManyCreditAccountInput | LedgerEntryCreateManyCreditAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutLedgerAccountsInput = {
+    update: XOR<UserUpdateWithoutLedgerAccountsInput, UserUncheckedUpdateWithoutLedgerAccountsInput>
+    create: XOR<UserCreateWithoutLedgerAccountsInput, UserUncheckedCreateWithoutLedgerAccountsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutLedgerAccountsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutLedgerAccountsInput, UserUncheckedUpdateWithoutLedgerAccountsInput>
+  }
+
+  export type UserUpdateWithoutLedgerAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutLedgerAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type LedgerEntryUpsertWithWhereUniqueWithoutDebitAccountInput = {
+    where: LedgerEntryWhereUniqueInput
+    update: XOR<LedgerEntryUpdateWithoutDebitAccountInput, LedgerEntryUncheckedUpdateWithoutDebitAccountInput>
+    create: XOR<LedgerEntryCreateWithoutDebitAccountInput, LedgerEntryUncheckedCreateWithoutDebitAccountInput>
+  }
+
+  export type LedgerEntryUpdateWithWhereUniqueWithoutDebitAccountInput = {
+    where: LedgerEntryWhereUniqueInput
+    data: XOR<LedgerEntryUpdateWithoutDebitAccountInput, LedgerEntryUncheckedUpdateWithoutDebitAccountInput>
+  }
+
+  export type LedgerEntryUpdateManyWithWhereWithoutDebitAccountInput = {
+    where: LedgerEntryScalarWhereInput
+    data: XOR<LedgerEntryUpdateManyMutationInput, LedgerEntryUncheckedUpdateManyWithoutDebitAccountInput>
+  }
+
+  export type LedgerEntryUpsertWithWhereUniqueWithoutCreditAccountInput = {
+    where: LedgerEntryWhereUniqueInput
+    update: XOR<LedgerEntryUpdateWithoutCreditAccountInput, LedgerEntryUncheckedUpdateWithoutCreditAccountInput>
+    create: XOR<LedgerEntryCreateWithoutCreditAccountInput, LedgerEntryUncheckedCreateWithoutCreditAccountInput>
+  }
+
+  export type LedgerEntryUpdateWithWhereUniqueWithoutCreditAccountInput = {
+    where: LedgerEntryWhereUniqueInput
+    data: XOR<LedgerEntryUpdateWithoutCreditAccountInput, LedgerEntryUncheckedUpdateWithoutCreditAccountInput>
+  }
+
+  export type LedgerEntryUpdateManyWithWhereWithoutCreditAccountInput = {
+    where: LedgerEntryScalarWhereInput
+    data: XOR<LedgerEntryUpdateManyMutationInput, LedgerEntryUncheckedUpdateManyWithoutCreditAccountInput>
+  }
+
+  export type LedgerAccountCreateWithoutDebitEntriesInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutLedgerAccountsInput
+    creditEntries?: LedgerEntryCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountUncheckedCreateWithoutDebitEntriesInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    userId?: string | null
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountCreateOrConnectWithoutDebitEntriesInput = {
+    where: LedgerAccountWhereUniqueInput
+    create: XOR<LedgerAccountCreateWithoutDebitEntriesInput, LedgerAccountUncheckedCreateWithoutDebitEntriesInput>
+  }
+
+  export type LedgerAccountCreateWithoutCreditEntriesInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutLedgerAccountsInput
+    debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
+  }
+
+  export type LedgerAccountUncheckedCreateWithoutCreditEntriesInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    userId?: string | null
+    balance?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
+  }
+
+  export type LedgerAccountCreateOrConnectWithoutCreditEntriesInput = {
+    where: LedgerAccountWhereUniqueInput
+    create: XOR<LedgerAccountCreateWithoutCreditEntriesInput, LedgerAccountUncheckedCreateWithoutCreditEntriesInput>
+  }
+
+  export type ContractCreateWithoutLedgerEntriesInput = {
+    id: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+    payments?: PaymentCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutLedgerEntriesInput = {
+    id: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutLedgerEntriesInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutLedgerEntriesInput, ContractUncheckedCreateWithoutLedgerEntriesInput>
+  }
+
+  export type PaymentCreateWithoutLedgerEntriesInput = {
+    id: string
+    amount: number
+    status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
+    paymentMethod?: string | null
+    paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
+    verificationCode?: string | null
+    isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    verifiedAt?: Date | string | null
+    completedAt?: Date | string | null
+    refundedAt?: Date | string | null
+    contract: ContractCreateNestedOneWithoutPaymentsInput
+    user: UserCreateNestedOneWithoutPaymentsInput
+  }
+
+  export type PaymentUncheckedCreateWithoutLedgerEntriesInput = {
+    id: string
+    contractId: string
+    userId: string
+    amount: number
+    status?: $Enums.PaymentStatus
+    currency?: string
+    gateway?: string | null
+    paymentMethod?: string | null
+    paymentReference?: string | null
+    paystackAccessCode?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackTransactionId?: string | null
+    recipientCode?: string | null
+    transferCode?: string | null
+    verificationCode?: string | null
+    isVerified?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: string | null
+    createdAt?: Date | string
+    verifiedAt?: Date | string | null
+    completedAt?: Date | string | null
+    refundedAt?: Date | string | null
+  }
+
+  export type PaymentCreateOrConnectWithoutLedgerEntriesInput = {
+    where: PaymentWhereUniqueInput
+    create: XOR<PaymentCreateWithoutLedgerEntriesInput, PaymentUncheckedCreateWithoutLedgerEntriesInput>
+  }
+
+  export type LedgerAccountUpsertWithoutDebitEntriesInput = {
+    update: XOR<LedgerAccountUpdateWithoutDebitEntriesInput, LedgerAccountUncheckedUpdateWithoutDebitEntriesInput>
+    create: XOR<LedgerAccountCreateWithoutDebitEntriesInput, LedgerAccountUncheckedCreateWithoutDebitEntriesInput>
+    where?: LedgerAccountWhereInput
+  }
+
+  export type LedgerAccountUpdateToOneWithWhereWithoutDebitEntriesInput = {
+    where?: LedgerAccountWhereInput
+    data: XOR<LedgerAccountUpdateWithoutDebitEntriesInput, LedgerAccountUncheckedUpdateWithoutDebitEntriesInput>
+  }
+
+  export type LedgerAccountUpdateWithoutDebitEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutLedgerAccountsNestedInput
+    creditEntries?: LedgerEntryUpdateManyWithoutCreditAccountNestedInput
+  }
+
+  export type LedgerAccountUncheckedUpdateWithoutDebitEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
+  }
+
+  export type LedgerAccountUpsertWithoutCreditEntriesInput = {
+    update: XOR<LedgerAccountUpdateWithoutCreditEntriesInput, LedgerAccountUncheckedUpdateWithoutCreditEntriesInput>
+    create: XOR<LedgerAccountCreateWithoutCreditEntriesInput, LedgerAccountUncheckedCreateWithoutCreditEntriesInput>
+    where?: LedgerAccountWhereInput
+  }
+
+  export type LedgerAccountUpdateToOneWithWhereWithoutCreditEntriesInput = {
+    where?: LedgerAccountWhereInput
+    data: XOR<LedgerAccountUpdateWithoutCreditEntriesInput, LedgerAccountUncheckedUpdateWithoutCreditEntriesInput>
+  }
+
+  export type LedgerAccountUpdateWithoutCreditEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutLedgerAccountsNestedInput
+    debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
+  }
+
+  export type LedgerAccountUncheckedUpdateWithoutCreditEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    balance?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
+  }
+
+  export type ContractUpsertWithoutLedgerEntriesInput = {
+    update: XOR<ContractUpdateWithoutLedgerEntriesInput, ContractUncheckedUpdateWithoutLedgerEntriesInput>
+    create: XOR<ContractCreateWithoutLedgerEntriesInput, ContractUncheckedCreateWithoutLedgerEntriesInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutLedgerEntriesInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutLedgerEntriesInput, ContractUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type ContractUpdateWithoutLedgerEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+    payments?: PaymentUpdateManyWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutLedgerEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+  }
+
+  export type PaymentUpsertWithoutLedgerEntriesInput = {
+    update: XOR<PaymentUpdateWithoutLedgerEntriesInput, PaymentUncheckedUpdateWithoutLedgerEntriesInput>
+    create: XOR<PaymentCreateWithoutLedgerEntriesInput, PaymentUncheckedCreateWithoutLedgerEntriesInput>
+    where?: PaymentWhereInput
+  }
+
+  export type PaymentUpdateToOneWithWhereWithoutLedgerEntriesInput = {
+    where?: PaymentWhereInput
+    data: XOR<PaymentUpdateWithoutLedgerEntriesInput, PaymentUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type PaymentUpdateWithoutLedgerEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract?: ContractUpdateOneRequiredWithoutPaymentsNestedInput
+    user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
+  }
+
+  export type PaymentUncheckedUpdateWithoutLedgerEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    gateway?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    transferCode?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type KycDocumentCreateManyUserInput = {
@@ -35433,6 +41200,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutClientInput = {
@@ -35469,6 +41237,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateManyWithoutClientInput = {
@@ -35538,6 +41307,7 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutArtisanInput = {
@@ -35574,6 +41344,7 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateManyWithoutArtisanInput = {
@@ -35957,6 +41728,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     contract?: ContractUpdateOneRequiredWithoutPaymentsNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutPaymentNestedInput
   }
 
   export type PaymentUncheckedUpdateWithoutUserInput = {
@@ -35981,6 +41753,7 @@ export namespace Prisma {
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutPaymentNestedInput
   }
 
   export type PaymentUncheckedUpdateManyWithoutUserInput = {
@@ -36165,6 +41938,17 @@ export namespace Prisma {
     refundedAt?: Date | string | null
   }
 
+  export type LedgerEntryCreateManyContractInput = {
+    id?: string
+    debitAccountId: string
+    creditAccountId: string
+    amount: number
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
   export type PaymentUpdateWithoutContractInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
@@ -36187,6 +41971,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutPaymentsNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutPaymentNestedInput
   }
 
   export type PaymentUncheckedUpdateWithoutContractInput = {
@@ -36211,6 +41996,7 @@ export namespace Prisma {
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutPaymentNestedInput
   }
 
   export type PaymentUncheckedUpdateManyWithoutContractInput = {
@@ -36235,6 +42021,39 @@ export namespace Prisma {
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type LedgerEntryUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitAccount?: LedgerAccountUpdateOneRequiredWithoutDebitEntriesNestedInput
+    creditAccount?: LedgerAccountUpdateOneRequiredWithoutCreditEntriesNestedInput
+    payment?: PaymentUpdateOneWithoutLedgerEntriesNestedInput
+  }
+
+  export type LedgerEntryUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyConversationInput = {
@@ -36282,6 +42101,138 @@ export namespace Prisma {
     fileType?: NullableStringFieldUpdateOperationsInput | string | null
     fileName?: NullableStringFieldUpdateOperationsInput | string | null
     fileSize?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryCreateManyPaymentInput = {
+    id?: string
+    debitAccountId: string
+    creditAccountId: string
+    amount: number
+    contractId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryUpdateWithoutPaymentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitAccount?: LedgerAccountUpdateOneRequiredWithoutDebitEntriesNestedInput
+    creditAccount?: LedgerAccountUpdateOneRequiredWithoutCreditEntriesNestedInput
+    contract?: ContractUpdateOneWithoutLedgerEntriesNestedInput
+  }
+
+  export type LedgerEntryUncheckedUpdateWithoutPaymentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutPaymentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryCreateManyDebitAccountInput = {
+    id?: string
+    creditAccountId: string
+    amount: number
+    contractId?: string | null
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryCreateManyCreditAccountInput = {
+    id?: string
+    debitAccountId: string
+    amount: number
+    contractId?: string | null
+    paymentId?: string | null
+    reference: string
+    description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type LedgerEntryUpdateWithoutDebitAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    creditAccount?: LedgerAccountUpdateOneRequiredWithoutCreditEntriesNestedInput
+    contract?: ContractUpdateOneWithoutLedgerEntriesNestedInput
+    payment?: PaymentUpdateOneWithoutLedgerEntriesNestedInput
+  }
+
+  export type LedgerEntryUncheckedUpdateWithoutDebitAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutDebitAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creditAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryUpdateWithoutCreditAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitAccount?: LedgerAccountUpdateOneRequiredWithoutDebitEntriesNestedInput
+    contract?: ContractUpdateOneWithoutLedgerEntriesNestedInput
+    payment?: PaymentUpdateOneWithoutLedgerEntriesNestedInput
+  }
+
+  export type LedgerEntryUncheckedUpdateWithoutCreditAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LedgerEntryUncheckedUpdateManyWithoutCreditAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    debitAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

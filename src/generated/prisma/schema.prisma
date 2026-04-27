@@ -55,6 +55,8 @@ enum ContractStatus {
   CANCELLED
   DISPUTED
   REFUNDED
+  PAYMENT_FAILED
+  EXPIRED
 }
 
 enum MessageType {
@@ -143,6 +145,7 @@ model User {
   transactions      Transaction[]
   payments          Payment[]       @relation("UserPayments")
   disputes          Dispute[]       @relation("UserDisputes")
+  ledgerAccounts    LedgerAccount?
 }
 
 model Dispute {
@@ -321,13 +324,14 @@ model Contract {
   updatedAt DateTime @updatedAt
 
   // Relations
-  job          Job           @relation(fields: [jobId], references: [id])
-  proposal     Proposal      @relation(fields: [proposalId], references: [id])
-  client       User          @relation("ClientContracts", fields: [clientId], references: [id])
-  artisan      User          @relation("ArtisanContracts", fields: [artisanId], references: [id])
-  conversation Conversation?
-  review       Review?
-  payments     Payment[]
+  job           Job           @relation(fields: [jobId], references: [id])
+  proposal      Proposal      @relation(fields: [proposalId], references: [id])
+  client        User          @relation("ClientContracts", fields: [clientId], references: [id])
+  artisan       User          @relation("ArtisanContracts", fields: [artisanId], references: [id])
+  conversation  Conversation?
+  review        Review?
+  payments      Payment[]
+  ledgerEntries LedgerEntry[]
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -397,7 +401,7 @@ model Review {
   evidence        Json?
   isPublic        Boolean  @default(true)
   createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt       DateTime @default(now()) @updatedAt
 
   // Relations
   contract Contract @relation(fields: [contractId], references: [id])
@@ -467,8 +471,9 @@ model Payment {
   refundedAt               DateTime?
 
   // Relations
-  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  user     User     @relation("UserPayments", fields: [userId], references: [id], onDelete: Restrict)
+  contract      Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  user          User          @relation("UserPayments", fields: [userId], references: [id], onDelete: Restrict)
+  ledgerEntries LedgerEntry[]
 
   @@index([contractId, status])
   @@index([userId, createdAt])
@@ -492,4 +497,63 @@ model KycDocument {
 
   @@index([userId, status])
   @@index([status, createdAt])
+}
+
+model IdempotencyKey {
+  key         String    @id
+  namespace   String    @default("default")
+  lockedAt    DateTime?
+  completedAt DateTime?
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([namespace, key])
+  @@index([createdAt])
+}
+
+enum LedgerAccountType {
+  USER_WALLET
+  SYSTEM_ESCROW
+  SYSTEM_FEE
+  EXTERNAL_BANK
+}
+
+model LedgerAccount {
+  id        String            @id @default(uuid())
+  name      String
+  type      LedgerAccountType
+  userId    String?           @unique
+  balance   Int               @default(0)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  debitEntries  LedgerEntry[] @relation("DebitAccount")
+  creditEntries LedgerEntry[] @relation("CreditAccount")
+
+  @@index([type])
+  @@index([userId])
+}
+
+model LedgerEntry {
+  id              String   @id @default(uuid())
+  debitAccountId  String
+  creditAccountId String
+  amount          Int
+  contractId      String?
+  paymentId       String?
+  reference       String
+  description     String?
+  createdAt       DateTime @default(now())
+
+  debitAccount  LedgerAccount @relation("DebitAccount", fields: [debitAccountId], references: [id], onDelete: Restrict)
+  creditAccount LedgerAccount @relation("CreditAccount", fields: [creditAccountId], references: [id], onDelete: Restrict)
+  contract      Contract?     @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  payment       Payment?      @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([reference])
+  @@index([debitAccountId])
+  @@index([creditAccountId])
+  @@index([contractId])
 }

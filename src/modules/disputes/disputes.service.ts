@@ -5,11 +5,7 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
-import {
-  ContractStatus,
-  DisputeDecision,
-  DisputeStatus,
-} from '../../generated/prisma';
+import { DisputeDecision, DisputeStatus } from '../../generated/prisma';
 import { ContractsService } from '../contracts/contracts.service';
 import { PaymentsService } from '../payments/payments.service';
 
@@ -133,30 +129,25 @@ export class DisputesService {
       throw new BadRequestException('Only open disputes can be resolved');
     }
 
+    // Process dispute resolution with proper decision handling
     if (dispute.contractId) {
       const contract = await this.prisma.contract.findUnique({
         where: { id: dispute.contractId },
+        include: { client: true, artisan: true },
       });
 
       if (!contract) {
         throw new NotFoundException('Linked contract not found');
       }
 
-      if (
-        decision === DisputeDecision.REFUND_CLIENT &&
-        contract.status !== ContractStatus.REFUNDED
-      ) {
+      // Execute decision based on admin resolution
+      if (decision === DisputeDecision.REFUND_CLIENT) {
         await this.paymentsService.refundContract(
           dispute.contractId,
-          dispute.clientId,
+          contract.clientId,
           resolutionNotes,
         );
-      }
-
-      if (
-        decision === DisputeDecision.PAY_ARTISAN &&
-        contract.status !== ContractStatus.PAID_OUT
-      ) {
+      } else if (decision === DisputeDecision.PAY_ARTISAN) {
         await this.paymentsService.releaseEscrowByAdmin(
           dispute.contractId,
           resolutionNotes,
@@ -164,6 +155,7 @@ export class DisputesService {
       }
     }
 
+    // Update dispute status
     const updatedDispute = await this.prisma.dispute.update({
       where: { id: disputeId },
       data: {
@@ -175,10 +167,7 @@ export class DisputesService {
       },
     });
 
-    return {
-      dispute: updatedDispute,
-      message: `Dispute resolved in favor of ${decision === DisputeDecision.REFUND_CLIENT ? 'client' : 'artisan'}`,
-    };
+    return updatedDispute;
   }
 
   async updateDispute(
@@ -196,11 +185,7 @@ export class DisputesService {
       throw new NotFoundException('Dispute not found');
     }
 
-    if (
-      status === DisputeStatus.RESOLVED &&
-      resolutionDecision &&
-      resolvedBy
-    ) {
+    if (status === DisputeStatus.RESOLVED && resolutionDecision && resolvedBy) {
       return this.resolveDispute(
         disputeId,
         resolutionDecision,
