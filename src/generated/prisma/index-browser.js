@@ -381,6 +381,7 @@ exports.Prisma.KycDocumentScalarFieldEnum = {
 };
 
 exports.Prisma.IdempotencyKeyScalarFieldEnum = {
+  id: 'id',
   key: 'key',
   namespace: 'namespace',
   lockedAt: 'lockedAt',
@@ -410,6 +411,27 @@ exports.Prisma.LedgerEntryScalarFieldEnum = {
   reference: 'reference',
   description: 'description',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  email: 'email',
+  role: 'role',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  loginTime: 'loginTime',
+  lastActivity: 'lastActivity',
+  expiresAt: 'expiresAt'
+};
+
+exports.Prisma.AccountLockoutScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  attempts: 'attempts',
+  lastAttemptAt: 'lastAttemptAt',
+  lockedUntil: 'lockedUntil',
+  expiresAt: 'expiresAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -570,7 +592,9 @@ exports.Prisma.ModelName = {
   KycDocument: 'KycDocument',
   IdempotencyKey: 'IdempotencyKey',
   LedgerAccount: 'LedgerAccount',
-  LedgerEntry: 'LedgerEntry'
+  LedgerEntry: 'LedgerEntry',
+  Session: 'Session',
+  AccountLockout: 'AccountLockout'
 };
 
 /**

@@ -7,10 +7,12 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ErrorCode } from '../interfaces/error-code.enum';
 
 type ExceptionResponseShape = {
   message?: string | string[];
   error?: string;
+  code?: ErrorCode;
   details?: unknown;
 };
 
@@ -25,6 +27,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal server error';
+    let code = ErrorCode.INTERNAL_ERROR;
     let details: any = null;
 
     if (exception instanceof HttpException) {
@@ -41,6 +44,37 @@ export class HttpExceptionFilter implements ExceptionFilter {
           message = responseObj.message;
         } else if (typeof responseObj.error === 'string') {
           message = responseObj.error;
+        }
+
+        if (responseObj.code) {
+          code = responseObj.code;
+        } else {
+          // Default mapping based on status
+          switch (status) {
+            case HttpStatus.BAD_REQUEST:
+              code = ErrorCode.VALIDATION_ERROR;
+              break;
+            case HttpStatus.UNAUTHORIZED:
+              code = ErrorCode.UNAUTHORIZED;
+              break;
+            case HttpStatus.FORBIDDEN:
+              code = ErrorCode.FORBIDDEN;
+              break;
+            case HttpStatus.NOT_FOUND:
+              code = ErrorCode.NOT_FOUND;
+              break;
+            case HttpStatus.CONFLICT:
+              code = ErrorCode.STATE_VIOLATION;
+              break;
+            case HttpStatus.PAYMENT_REQUIRED:
+              code = ErrorCode.INSUFFICIENT_FUNDS;
+              break;
+            default:
+              code =
+                status >= 500
+                  ? ErrorCode.INTERNAL_ERROR
+                  : ErrorCode.VALIDATION_ERROR;
+          }
         }
 
         details = responseObj.details ?? null;
@@ -61,6 +95,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
       method: request.method,
       message,
+      code,
       ...(details && { details }),
       ...(status >= 500 && {
         requestId:
@@ -74,27 +109,26 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }),
     };
 
-    // Log errors for monitoring
+    // Log errors for monitoring — redact sensitive data
     if (status >= 500) {
       this.logger.error(`${status} ${request.method} ${request.url}`, {
-        error: exception,
+        error: exception instanceof Error ? exception.message : 'Unknown error',
         request: {
-          headers: request.headers,
-          body: request.body,
-          query: request.query,
-          params: request.params,
+          method: request.method,
+          path: request.url,
+          requestId:
+            typeof request.headers['x-request-id'] === 'string'
+              ? request.headers['x-request-id']
+              : 'unknown',
+          correlationId:
+            typeof request.headers['x-correlation-id'] === 'string'
+              ? request.headers['x-correlation-id']
+              : 'unknown',
         },
       });
     } else if (status >= 400) {
       this.logger.warn(
         `${status} ${request.method} ${request.url}: ${message}`,
-        {
-          request: {
-            body: request.body,
-            query: request.query,
-            params: request.params,
-          },
-        },
       );
     }
 

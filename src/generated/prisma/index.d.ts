@@ -108,6 +108,16 @@ export type LedgerAccount = $Result.DefaultSelection<Prisma.$LedgerAccountPayloa
  * 
  */
 export type LedgerEntry = $Result.DefaultSelection<Prisma.$LedgerEntryPayload>
+/**
+ * Model Session
+ * 
+ */
+export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
+/**
+ * Model AccountLockout
+ * 
+ */
+export type AccountLockout = $Result.DefaultSelection<Prisma.$AccountLockoutPayload>
 
 /**
  * Enums
@@ -639,6 +649,26 @@ export class PrismaClient<
     * ```
     */
   get ledgerEntry(): Prisma.LedgerEntryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.session`: Exposes CRUD operations for the **Session** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sessions
+    * const sessions = await prisma.session.findMany()
+    * ```
+    */
+  get session(): Prisma.SessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.accountLockout`: Exposes CRUD operations for the **AccountLockout** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AccountLockouts
+    * const accountLockouts = await prisma.accountLockout.findMany()
+    * ```
+    */
+  get accountLockout(): Prisma.AccountLockoutDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1091,7 +1121,9 @@ export namespace Prisma {
     KycDocument: 'KycDocument',
     IdempotencyKey: 'IdempotencyKey',
     LedgerAccount: 'LedgerAccount',
-    LedgerEntry: 'LedgerEntry'
+    LedgerEntry: 'LedgerEntry',
+    Session: 'Session',
+    AccountLockout: 'AccountLockout'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1107,7 +1139,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "ledgerAccount" | "ledgerEntry"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "ledgerAccount" | "ledgerEntry" | "session" | "accountLockout"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2517,6 +2549,154 @@ export namespace Prisma {
           }
         }
       }
+      Session: {
+        payload: Prisma.$SessionPayload<ExtArgs>
+        fields: Prisma.SessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          findFirst: {
+            args: Prisma.SessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          findMany: {
+            args: Prisma.SessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          create: {
+            args: Prisma.SessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          createMany: {
+            args: Prisma.SessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          delete: {
+            args: Prisma.SessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          update: {
+            args: Prisma.SessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.SessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          upsert: {
+            args: Prisma.SessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          aggregate: {
+            args: Prisma.SessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSession>
+          }
+          groupBy: {
+            args: Prisma.SessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SessionCountArgs<ExtArgs>
+            result: $Utils.Optional<SessionCountAggregateOutputType> | number
+          }
+        }
+      }
+      AccountLockout: {
+        payload: Prisma.$AccountLockoutPayload<ExtArgs>
+        fields: Prisma.AccountLockoutFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AccountLockoutFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AccountLockoutFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>
+          }
+          findFirst: {
+            args: Prisma.AccountLockoutFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AccountLockoutFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>
+          }
+          findMany: {
+            args: Prisma.AccountLockoutFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>[]
+          }
+          create: {
+            args: Prisma.AccountLockoutCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>
+          }
+          createMany: {
+            args: Prisma.AccountLockoutCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AccountLockoutCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>[]
+          }
+          delete: {
+            args: Prisma.AccountLockoutDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>
+          }
+          update: {
+            args: Prisma.AccountLockoutUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>
+          }
+          deleteMany: {
+            args: Prisma.AccountLockoutDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AccountLockoutUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AccountLockoutUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>[]
+          }
+          upsert: {
+            args: Prisma.AccountLockoutUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountLockoutPayload>
+          }
+          aggregate: {
+            args: Prisma.AccountLockoutAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccountLockout>
+          }
+          groupBy: {
+            args: Prisma.AccountLockoutGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccountLockoutGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AccountLockoutCountArgs<ExtArgs>
+            result: $Utils.Optional<AccountLockoutCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2644,6 +2824,8 @@ export namespace Prisma {
     idempotencyKey?: IdempotencyKeyOmit
     ledgerAccount?: LedgerAccountOmit
     ledgerEntry?: LedgerEntryOmit
+    session?: SessionOmit
+    accountLockout?: AccountLockoutOmit
   }
 
   /* Types for Logging */
@@ -22840,6 +23022,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyMinAggregateOutputType = {
+    id: string | null
     key: string | null
     namespace: string | null
     lockedAt: Date | null
@@ -22849,6 +23032,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyMaxAggregateOutputType = {
+    id: string | null
     key: string | null
     namespace: string | null
     lockedAt: Date | null
@@ -22858,6 +23042,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyCountAggregateOutputType = {
+    id: number
     key: number
     namespace: number
     lockedAt: number
@@ -22870,6 +23055,7 @@ export namespace Prisma {
 
 
   export type IdempotencyKeyMinAggregateInputType = {
+    id?: true
     key?: true
     namespace?: true
     lockedAt?: true
@@ -22879,6 +23065,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyMaxAggregateInputType = {
+    id?: true
     key?: true
     namespace?: true
     lockedAt?: true
@@ -22888,6 +23075,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyCountAggregateInputType = {
+    id?: true
     key?: true
     namespace?: true
     lockedAt?: true
@@ -22971,6 +23159,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyGroupByOutputType = {
+    id: string
     key: string
     namespace: string
     lockedAt: Date | null
@@ -22998,6 +23187,7 @@ export namespace Prisma {
 
 
   export type IdempotencyKeySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
@@ -23008,6 +23198,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["idempotencyKey"]>
 
   export type IdempotencyKeySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
@@ -23018,6 +23209,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["idempotencyKey"]>
 
   export type IdempotencyKeySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
@@ -23028,6 +23220,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["idempotencyKey"]>
 
   export type IdempotencyKeySelectScalar = {
+    id?: boolean
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
@@ -23037,12 +23230,13 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type IdempotencyKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "namespace" | "lockedAt" | "completedAt" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["idempotencyKey"]>
+  export type IdempotencyKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "namespace" | "lockedAt" | "completedAt" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["idempotencyKey"]>
 
   export type $IdempotencyKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "IdempotencyKey"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
+      id: string
       key: string
       namespace: string
       lockedAt: Date | null
@@ -23133,8 +23327,8 @@ export namespace Prisma {
      * // Get first 10 IdempotencyKeys
      * const idempotencyKeys = await prisma.idempotencyKey.findMany({ take: 10 })
      * 
-     * // Only select the `key`
-     * const idempotencyKeyWithKeyOnly = await prisma.idempotencyKey.findMany({ select: { key: true } })
+     * // Only select the `id`
+     * const idempotencyKeyWithIdOnly = await prisma.idempotencyKey.findMany({ select: { id: true } })
      * 
      */
     findMany<T extends IdempotencyKeyFindManyArgs>(args?: SelectSubset<T, IdempotencyKeyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IdempotencyKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -23178,9 +23372,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Create many IdempotencyKeys and only return the `key`
-     * const idempotencyKeyWithKeyOnly = await prisma.idempotencyKey.createManyAndReturn({
-     *   select: { key: true },
+     * // Create many IdempotencyKeys and only return the `id`
+     * const idempotencyKeyWithIdOnly = await prisma.idempotencyKey.createManyAndReturn({
+     *   select: { id: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -23269,9 +23463,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more IdempotencyKeys and only return the `key`
-     * const idempotencyKeyWithKeyOnly = await prisma.idempotencyKey.updateManyAndReturn({
-     *   select: { key: true },
+     * // Update zero or more IdempotencyKeys and only return the `id`
+     * const idempotencyKeyWithIdOnly = await prisma.idempotencyKey.updateManyAndReturn({
+     *   select: { id: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -23473,6 +23667,7 @@ export namespace Prisma {
    * Fields of the IdempotencyKey model
    */
   interface IdempotencyKeyFieldRefs {
+    readonly id: FieldRef<"IdempotencyKey", 'String'>
     readonly key: FieldRef<"IdempotencyKey", 'String'>
     readonly namespace: FieldRef<"IdempotencyKey", 'String'>
     readonly lockedAt: FieldRef<"IdempotencyKey", 'DateTime'>
@@ -26263,6 +26458,2105 @@ export namespace Prisma {
 
 
   /**
+   * Model Session
+   */
+
+  export type AggregateSession = {
+    _count: SessionCountAggregateOutputType | null
+    _min: SessionMinAggregateOutputType | null
+    _max: SessionMaxAggregateOutputType | null
+  }
+
+  export type SessionMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    email: string | null
+    role: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    loginTime: Date | null
+    lastActivity: Date | null
+    expiresAt: Date | null
+  }
+
+  export type SessionMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    email: string | null
+    role: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    loginTime: Date | null
+    lastActivity: Date | null
+    expiresAt: Date | null
+  }
+
+  export type SessionCountAggregateOutputType = {
+    id: number
+    userId: number
+    email: number
+    role: number
+    ipAddress: number
+    userAgent: number
+    loginTime: number
+    lastActivity: number
+    expiresAt: number
+    _all: number
+  }
+
+
+  export type SessionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    email?: true
+    role?: true
+    ipAddress?: true
+    userAgent?: true
+    loginTime?: true
+    lastActivity?: true
+    expiresAt?: true
+  }
+
+  export type SessionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    email?: true
+    role?: true
+    ipAddress?: true
+    userAgent?: true
+    loginTime?: true
+    lastActivity?: true
+    expiresAt?: true
+  }
+
+  export type SessionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    email?: true
+    role?: true
+    ipAddress?: true
+    userAgent?: true
+    loginTime?: true
+    lastActivity?: true
+    expiresAt?: true
+    _all?: true
+  }
+
+  export type SessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Session to aggregate.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Sessions
+    **/
+    _count?: true | SessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SessionMaxAggregateInputType
+  }
+
+  export type GetSessionAggregateType<T extends SessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateSession]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSession[P]>
+      : GetScalarType<T[P], AggregateSession[P]>
+  }
+
+
+
+
+  export type SessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithAggregationInput | SessionOrderByWithAggregationInput[]
+    by: SessionScalarFieldEnum[] | SessionScalarFieldEnum
+    having?: SessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SessionCountAggregateInputType | true
+    _min?: SessionMinAggregateInputType
+    _max?: SessionMaxAggregateInputType
+  }
+
+  export type SessionGroupByOutputType = {
+    id: string
+    userId: string
+    email: string
+    role: string
+    ipAddress: string
+    userAgent: string
+    loginTime: Date
+    lastActivity: Date
+    expiresAt: Date
+    _count: SessionCountAggregateOutputType | null
+    _min: SessionMinAggregateOutputType | null
+    _max: SessionMaxAggregateOutputType | null
+  }
+
+  type GetSessionGroupByPayload<T extends SessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SessionGroupByOutputType[P]>
+            : GetScalarType<T[P], SessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    email?: boolean
+    role?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    loginTime?: boolean
+    lastActivity?: boolean
+    expiresAt?: boolean
+  }, ExtArgs["result"]["session"]>
+
+  export type SessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    email?: boolean
+    role?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    loginTime?: boolean
+    lastActivity?: boolean
+    expiresAt?: boolean
+  }, ExtArgs["result"]["session"]>
+
+  export type SessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    email?: boolean
+    role?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    loginTime?: boolean
+    lastActivity?: boolean
+    expiresAt?: boolean
+  }, ExtArgs["result"]["session"]>
+
+  export type SessionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    email?: boolean
+    role?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    loginTime?: boolean
+    lastActivity?: boolean
+    expiresAt?: boolean
+  }
+
+  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "email" | "role" | "ipAddress" | "userAgent" | "loginTime" | "lastActivity" | "expiresAt", ExtArgs["result"]["session"]>
+
+  export type $SessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Session"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      email: string
+      role: string
+      ipAddress: string
+      userAgent: string
+      loginTime: Date
+      lastActivity: Date
+      expiresAt: Date
+    }, ExtArgs["result"]["session"]>
+    composites: {}
+  }
+
+  type SessionGetPayload<S extends boolean | null | undefined | SessionDefaultArgs> = $Result.GetResult<Prisma.$SessionPayload, S>
+
+  type SessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SessionCountAggregateInputType | true
+    }
+
+  export interface SessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Session'], meta: { name: 'Session' } }
+    /**
+     * Find zero or one Session that matches the filter.
+     * @param {SessionFindUniqueArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SessionFindUniqueArgs>(args: SelectSubset<T, SessionFindUniqueArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Session that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SessionFindUniqueOrThrowArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SessionFindUniqueOrThrowArgs>(args: SelectSubset<T, SessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Session that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionFindFirstArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SessionFindFirstArgs>(args?: SelectSubset<T, SessionFindFirstArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Session that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionFindFirstOrThrowArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SessionFindFirstOrThrowArgs>(args?: SelectSubset<T, SessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Sessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sessions
+     * const sessions = await prisma.session.findMany()
+     * 
+     * // Get first 10 Sessions
+     * const sessions = await prisma.session.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sessionWithIdOnly = await prisma.session.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SessionFindManyArgs>(args?: SelectSubset<T, SessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Session.
+     * @param {SessionCreateArgs} args - Arguments to create a Session.
+     * @example
+     * // Create one Session
+     * const Session = await prisma.session.create({
+     *   data: {
+     *     // ... data to create a Session
+     *   }
+     * })
+     * 
+     */
+    create<T extends SessionCreateArgs>(args: SelectSubset<T, SessionCreateArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Sessions.
+     * @param {SessionCreateManyArgs} args - Arguments to create many Sessions.
+     * @example
+     * // Create many Sessions
+     * const session = await prisma.session.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SessionCreateManyArgs>(args?: SelectSubset<T, SessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Sessions and returns the data saved in the database.
+     * @param {SessionCreateManyAndReturnArgs} args - Arguments to create many Sessions.
+     * @example
+     * // Create many Sessions
+     * const session = await prisma.session.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Sessions and only return the `id`
+     * const sessionWithIdOnly = await prisma.session.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SessionCreateManyAndReturnArgs>(args?: SelectSubset<T, SessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Session.
+     * @param {SessionDeleteArgs} args - Arguments to delete one Session.
+     * @example
+     * // Delete one Session
+     * const Session = await prisma.session.delete({
+     *   where: {
+     *     // ... filter to delete one Session
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SessionDeleteArgs>(args: SelectSubset<T, SessionDeleteArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Session.
+     * @param {SessionUpdateArgs} args - Arguments to update one Session.
+     * @example
+     * // Update one Session
+     * const session = await prisma.session.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SessionUpdateArgs>(args: SelectSubset<T, SessionUpdateArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Sessions.
+     * @param {SessionDeleteManyArgs} args - Arguments to filter Sessions to delete.
+     * @example
+     * // Delete a few Sessions
+     * const { count } = await prisma.session.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SessionDeleteManyArgs>(args?: SelectSubset<T, SessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sessions
+     * const session = await prisma.session.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SessionUpdateManyArgs>(args: SelectSubset<T, SessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sessions and returns the data updated in the database.
+     * @param {SessionUpdateManyAndReturnArgs} args - Arguments to update many Sessions.
+     * @example
+     * // Update many Sessions
+     * const session = await prisma.session.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Sessions and only return the `id`
+     * const sessionWithIdOnly = await prisma.session.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SessionUpdateManyAndReturnArgs>(args: SelectSubset<T, SessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Session.
+     * @param {SessionUpsertArgs} args - Arguments to update or create a Session.
+     * @example
+     * // Update or create a Session
+     * const session = await prisma.session.upsert({
+     *   create: {
+     *     // ... data to create a Session
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Session we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SessionUpsertArgs>(args: SelectSubset<T, SessionUpsertArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionCountArgs} args - Arguments to filter Sessions to count.
+     * @example
+     * // Count the number of Sessions
+     * const count = await prisma.session.count({
+     *   where: {
+     *     // ... the filter for the Sessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends SessionCountArgs>(
+      args?: Subset<T, SessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Session.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SessionAggregateArgs>(args: Subset<T, SessionAggregateArgs>): Prisma.PrismaPromise<GetSessionAggregateType<T>>
+
+    /**
+     * Group by Session.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SessionGroupByArgs['orderBy'] }
+        : { orderBy?: SessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Session model
+   */
+  readonly fields: SessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Session.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Session model
+   */
+  interface SessionFieldRefs {
+    readonly id: FieldRef<"Session", 'String'>
+    readonly userId: FieldRef<"Session", 'String'>
+    readonly email: FieldRef<"Session", 'String'>
+    readonly role: FieldRef<"Session", 'String'>
+    readonly ipAddress: FieldRef<"Session", 'String'>
+    readonly userAgent: FieldRef<"Session", 'String'>
+    readonly loginTime: FieldRef<"Session", 'DateTime'>
+    readonly lastActivity: FieldRef<"Session", 'DateTime'>
+    readonly expiresAt: FieldRef<"Session", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Session findUnique
+   */
+  export type SessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session findUniqueOrThrow
+   */
+  export type SessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session findFirst
+   */
+  export type SessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sessions.
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * Session findFirstOrThrow
+   */
+  export type SessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sessions.
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * Session findMany
+   */
+  export type SessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Filter, which Sessions to fetch.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Sessions.
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * Session create
+   */
+  export type SessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Session.
+     */
+    data: XOR<SessionCreateInput, SessionUncheckedCreateInput>
+  }
+
+  /**
+   * Session createMany
+   */
+  export type SessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Sessions.
+     */
+    data: SessionCreateManyInput | SessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Session createManyAndReturn
+   */
+  export type SessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Sessions.
+     */
+    data: SessionCreateManyInput | SessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Session update
+   */
+  export type SessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Session.
+     */
+    data: XOR<SessionUpdateInput, SessionUncheckedUpdateInput>
+    /**
+     * Choose, which Session to update.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session updateMany
+   */
+  export type SessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Sessions.
+     */
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyInput>
+    /**
+     * Filter which Sessions to update
+     */
+    where?: SessionWhereInput
+    /**
+     * Limit how many Sessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Session updateManyAndReturn
+   */
+  export type SessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * The data used to update Sessions.
+     */
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyInput>
+    /**
+     * Filter which Sessions to update
+     */
+    where?: SessionWhereInput
+    /**
+     * Limit how many Sessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Session upsert
+   */
+  export type SessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Session to update in case it exists.
+     */
+    where: SessionWhereUniqueInput
+    /**
+     * In case the Session found by the `where` argument doesn't exist, create a new Session with this data.
+     */
+    create: XOR<SessionCreateInput, SessionUncheckedCreateInput>
+    /**
+     * In case the Session was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SessionUpdateInput, SessionUncheckedUpdateInput>
+  }
+
+  /**
+   * Session delete
+   */
+  export type SessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Filter which Session to delete.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session deleteMany
+   */
+  export type SessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Sessions to delete
+     */
+    where?: SessionWhereInput
+    /**
+     * Limit how many Sessions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Session without action
+   */
+  export type SessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AccountLockout
+   */
+
+  export type AggregateAccountLockout = {
+    _count: AccountLockoutCountAggregateOutputType | null
+    _avg: AccountLockoutAvgAggregateOutputType | null
+    _sum: AccountLockoutSumAggregateOutputType | null
+    _min: AccountLockoutMinAggregateOutputType | null
+    _max: AccountLockoutMaxAggregateOutputType | null
+  }
+
+  export type AccountLockoutAvgAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type AccountLockoutSumAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type AccountLockoutMinAggregateOutputType = {
+    id: string | null
+    identifier: string | null
+    attempts: number | null
+    lastAttemptAt: Date | null
+    lockedUntil: Date | null
+    expiresAt: Date | null
+  }
+
+  export type AccountLockoutMaxAggregateOutputType = {
+    id: string | null
+    identifier: string | null
+    attempts: number | null
+    lastAttemptAt: Date | null
+    lockedUntil: Date | null
+    expiresAt: Date | null
+  }
+
+  export type AccountLockoutCountAggregateOutputType = {
+    id: number
+    identifier: number
+    attempts: number
+    lastAttemptAt: number
+    lockedUntil: number
+    expiresAt: number
+    _all: number
+  }
+
+
+  export type AccountLockoutAvgAggregateInputType = {
+    attempts?: true
+  }
+
+  export type AccountLockoutSumAggregateInputType = {
+    attempts?: true
+  }
+
+  export type AccountLockoutMinAggregateInputType = {
+    id?: true
+    identifier?: true
+    attempts?: true
+    lastAttemptAt?: true
+    lockedUntil?: true
+    expiresAt?: true
+  }
+
+  export type AccountLockoutMaxAggregateInputType = {
+    id?: true
+    identifier?: true
+    attempts?: true
+    lastAttemptAt?: true
+    lockedUntil?: true
+    expiresAt?: true
+  }
+
+  export type AccountLockoutCountAggregateInputType = {
+    id?: true
+    identifier?: true
+    attempts?: true
+    lastAttemptAt?: true
+    lockedUntil?: true
+    expiresAt?: true
+    _all?: true
+  }
+
+  export type AccountLockoutAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccountLockout to aggregate.
+     */
+    where?: AccountLockoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountLockouts to fetch.
+     */
+    orderBy?: AccountLockoutOrderByWithRelationInput | AccountLockoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AccountLockoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountLockouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountLockouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AccountLockouts
+    **/
+    _count?: true | AccountLockoutCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AccountLockoutAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AccountLockoutSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccountLockoutMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccountLockoutMaxAggregateInputType
+  }
+
+  export type GetAccountLockoutAggregateType<T extends AccountLockoutAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccountLockout]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccountLockout[P]>
+      : GetScalarType<T[P], AggregateAccountLockout[P]>
+  }
+
+
+
+
+  export type AccountLockoutGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountLockoutWhereInput
+    orderBy?: AccountLockoutOrderByWithAggregationInput | AccountLockoutOrderByWithAggregationInput[]
+    by: AccountLockoutScalarFieldEnum[] | AccountLockoutScalarFieldEnum
+    having?: AccountLockoutScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccountLockoutCountAggregateInputType | true
+    _avg?: AccountLockoutAvgAggregateInputType
+    _sum?: AccountLockoutSumAggregateInputType
+    _min?: AccountLockoutMinAggregateInputType
+    _max?: AccountLockoutMaxAggregateInputType
+  }
+
+  export type AccountLockoutGroupByOutputType = {
+    id: string
+    identifier: string
+    attempts: number
+    lastAttemptAt: Date
+    lockedUntil: Date | null
+    expiresAt: Date
+    _count: AccountLockoutCountAggregateOutputType | null
+    _avg: AccountLockoutAvgAggregateOutputType | null
+    _sum: AccountLockoutSumAggregateOutputType | null
+    _min: AccountLockoutMinAggregateOutputType | null
+    _max: AccountLockoutMaxAggregateOutputType | null
+  }
+
+  type GetAccountLockoutGroupByPayload<T extends AccountLockoutGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AccountLockoutGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccountLockoutGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccountLockoutGroupByOutputType[P]>
+            : GetScalarType<T[P], AccountLockoutGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccountLockoutSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    identifier?: boolean
+    attempts?: boolean
+    lastAttemptAt?: boolean
+    lockedUntil?: boolean
+    expiresAt?: boolean
+  }, ExtArgs["result"]["accountLockout"]>
+
+  export type AccountLockoutSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    identifier?: boolean
+    attempts?: boolean
+    lastAttemptAt?: boolean
+    lockedUntil?: boolean
+    expiresAt?: boolean
+  }, ExtArgs["result"]["accountLockout"]>
+
+  export type AccountLockoutSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    identifier?: boolean
+    attempts?: boolean
+    lastAttemptAt?: boolean
+    lockedUntil?: boolean
+    expiresAt?: boolean
+  }, ExtArgs["result"]["accountLockout"]>
+
+  export type AccountLockoutSelectScalar = {
+    id?: boolean
+    identifier?: boolean
+    attempts?: boolean
+    lastAttemptAt?: boolean
+    lockedUntil?: boolean
+    expiresAt?: boolean
+  }
+
+  export type AccountLockoutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "identifier" | "attempts" | "lastAttemptAt" | "lockedUntil" | "expiresAt", ExtArgs["result"]["accountLockout"]>
+
+  export type $AccountLockoutPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AccountLockout"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      identifier: string
+      attempts: number
+      lastAttemptAt: Date
+      lockedUntil: Date | null
+      expiresAt: Date
+    }, ExtArgs["result"]["accountLockout"]>
+    composites: {}
+  }
+
+  type AccountLockoutGetPayload<S extends boolean | null | undefined | AccountLockoutDefaultArgs> = $Result.GetResult<Prisma.$AccountLockoutPayload, S>
+
+  type AccountLockoutCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccountLockoutFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccountLockoutCountAggregateInputType | true
+    }
+
+  export interface AccountLockoutDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AccountLockout'], meta: { name: 'AccountLockout' } }
+    /**
+     * Find zero or one AccountLockout that matches the filter.
+     * @param {AccountLockoutFindUniqueArgs} args - Arguments to find a AccountLockout
+     * @example
+     * // Get one AccountLockout
+     * const accountLockout = await prisma.accountLockout.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AccountLockoutFindUniqueArgs>(args: SelectSubset<T, AccountLockoutFindUniqueArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AccountLockout that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AccountLockoutFindUniqueOrThrowArgs} args - Arguments to find a AccountLockout
+     * @example
+     * // Get one AccountLockout
+     * const accountLockout = await prisma.accountLockout.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AccountLockoutFindUniqueOrThrowArgs>(args: SelectSubset<T, AccountLockoutFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccountLockout that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountLockoutFindFirstArgs} args - Arguments to find a AccountLockout
+     * @example
+     * // Get one AccountLockout
+     * const accountLockout = await prisma.accountLockout.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AccountLockoutFindFirstArgs>(args?: SelectSubset<T, AccountLockoutFindFirstArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccountLockout that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountLockoutFindFirstOrThrowArgs} args - Arguments to find a AccountLockout
+     * @example
+     * // Get one AccountLockout
+     * const accountLockout = await prisma.accountLockout.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AccountLockoutFindFirstOrThrowArgs>(args?: SelectSubset<T, AccountLockoutFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AccountLockouts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountLockoutFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccountLockouts
+     * const accountLockouts = await prisma.accountLockout.findMany()
+     * 
+     * // Get first 10 AccountLockouts
+     * const accountLockouts = await prisma.accountLockout.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const accountLockoutWithIdOnly = await prisma.accountLockout.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AccountLockoutFindManyArgs>(args?: SelectSubset<T, AccountLockoutFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AccountLockout.
+     * @param {AccountLockoutCreateArgs} args - Arguments to create a AccountLockout.
+     * @example
+     * // Create one AccountLockout
+     * const AccountLockout = await prisma.accountLockout.create({
+     *   data: {
+     *     // ... data to create a AccountLockout
+     *   }
+     * })
+     * 
+     */
+    create<T extends AccountLockoutCreateArgs>(args: SelectSubset<T, AccountLockoutCreateArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AccountLockouts.
+     * @param {AccountLockoutCreateManyArgs} args - Arguments to create many AccountLockouts.
+     * @example
+     * // Create many AccountLockouts
+     * const accountLockout = await prisma.accountLockout.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AccountLockoutCreateManyArgs>(args?: SelectSubset<T, AccountLockoutCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AccountLockouts and returns the data saved in the database.
+     * @param {AccountLockoutCreateManyAndReturnArgs} args - Arguments to create many AccountLockouts.
+     * @example
+     * // Create many AccountLockouts
+     * const accountLockout = await prisma.accountLockout.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AccountLockouts and only return the `id`
+     * const accountLockoutWithIdOnly = await prisma.accountLockout.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AccountLockoutCreateManyAndReturnArgs>(args?: SelectSubset<T, AccountLockoutCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AccountLockout.
+     * @param {AccountLockoutDeleteArgs} args - Arguments to delete one AccountLockout.
+     * @example
+     * // Delete one AccountLockout
+     * const AccountLockout = await prisma.accountLockout.delete({
+     *   where: {
+     *     // ... filter to delete one AccountLockout
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AccountLockoutDeleteArgs>(args: SelectSubset<T, AccountLockoutDeleteArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AccountLockout.
+     * @param {AccountLockoutUpdateArgs} args - Arguments to update one AccountLockout.
+     * @example
+     * // Update one AccountLockout
+     * const accountLockout = await prisma.accountLockout.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AccountLockoutUpdateArgs>(args: SelectSubset<T, AccountLockoutUpdateArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AccountLockouts.
+     * @param {AccountLockoutDeleteManyArgs} args - Arguments to filter AccountLockouts to delete.
+     * @example
+     * // Delete a few AccountLockouts
+     * const { count } = await prisma.accountLockout.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AccountLockoutDeleteManyArgs>(args?: SelectSubset<T, AccountLockoutDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountLockouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountLockoutUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccountLockouts
+     * const accountLockout = await prisma.accountLockout.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AccountLockoutUpdateManyArgs>(args: SelectSubset<T, AccountLockoutUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountLockouts and returns the data updated in the database.
+     * @param {AccountLockoutUpdateManyAndReturnArgs} args - Arguments to update many AccountLockouts.
+     * @example
+     * // Update many AccountLockouts
+     * const accountLockout = await prisma.accountLockout.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AccountLockouts and only return the `id`
+     * const accountLockoutWithIdOnly = await prisma.accountLockout.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AccountLockoutUpdateManyAndReturnArgs>(args: SelectSubset<T, AccountLockoutUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AccountLockout.
+     * @param {AccountLockoutUpsertArgs} args - Arguments to update or create a AccountLockout.
+     * @example
+     * // Update or create a AccountLockout
+     * const accountLockout = await prisma.accountLockout.upsert({
+     *   create: {
+     *     // ... data to create a AccountLockout
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccountLockout we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AccountLockoutUpsertArgs>(args: SelectSubset<T, AccountLockoutUpsertArgs<ExtArgs>>): Prisma__AccountLockoutClient<$Result.GetResult<Prisma.$AccountLockoutPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AccountLockouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountLockoutCountArgs} args - Arguments to filter AccountLockouts to count.
+     * @example
+     * // Count the number of AccountLockouts
+     * const count = await prisma.accountLockout.count({
+     *   where: {
+     *     // ... the filter for the AccountLockouts we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccountLockoutCountArgs>(
+      args?: Subset<T, AccountLockoutCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccountLockoutCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccountLockout.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountLockoutAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccountLockoutAggregateArgs>(args: Subset<T, AccountLockoutAggregateArgs>): Prisma.PrismaPromise<GetAccountLockoutAggregateType<T>>
+
+    /**
+     * Group by AccountLockout.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountLockoutGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccountLockoutGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccountLockoutGroupByArgs['orderBy'] }
+        : { orderBy?: AccountLockoutGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccountLockoutGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountLockoutGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AccountLockout model
+   */
+  readonly fields: AccountLockoutFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccountLockout.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AccountLockoutClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AccountLockout model
+   */
+  interface AccountLockoutFieldRefs {
+    readonly id: FieldRef<"AccountLockout", 'String'>
+    readonly identifier: FieldRef<"AccountLockout", 'String'>
+    readonly attempts: FieldRef<"AccountLockout", 'Int'>
+    readonly lastAttemptAt: FieldRef<"AccountLockout", 'DateTime'>
+    readonly lockedUntil: FieldRef<"AccountLockout", 'DateTime'>
+    readonly expiresAt: FieldRef<"AccountLockout", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AccountLockout findUnique
+   */
+  export type AccountLockoutFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountLockout to fetch.
+     */
+    where: AccountLockoutWhereUniqueInput
+  }
+
+  /**
+   * AccountLockout findUniqueOrThrow
+   */
+  export type AccountLockoutFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountLockout to fetch.
+     */
+    where: AccountLockoutWhereUniqueInput
+  }
+
+  /**
+   * AccountLockout findFirst
+   */
+  export type AccountLockoutFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountLockout to fetch.
+     */
+    where?: AccountLockoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountLockouts to fetch.
+     */
+    orderBy?: AccountLockoutOrderByWithRelationInput | AccountLockoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccountLockouts.
+     */
+    cursor?: AccountLockoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountLockouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountLockouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountLockouts.
+     */
+    distinct?: AccountLockoutScalarFieldEnum | AccountLockoutScalarFieldEnum[]
+  }
+
+  /**
+   * AccountLockout findFirstOrThrow
+   */
+  export type AccountLockoutFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountLockout to fetch.
+     */
+    where?: AccountLockoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountLockouts to fetch.
+     */
+    orderBy?: AccountLockoutOrderByWithRelationInput | AccountLockoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccountLockouts.
+     */
+    cursor?: AccountLockoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountLockouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountLockouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountLockouts.
+     */
+    distinct?: AccountLockoutScalarFieldEnum | AccountLockoutScalarFieldEnum[]
+  }
+
+  /**
+   * AccountLockout findMany
+   */
+  export type AccountLockoutFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountLockouts to fetch.
+     */
+    where?: AccountLockoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountLockouts to fetch.
+     */
+    orderBy?: AccountLockoutOrderByWithRelationInput | AccountLockoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AccountLockouts.
+     */
+    cursor?: AccountLockoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountLockouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountLockouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountLockouts.
+     */
+    distinct?: AccountLockoutScalarFieldEnum | AccountLockoutScalarFieldEnum[]
+  }
+
+  /**
+   * AccountLockout create
+   */
+  export type AccountLockoutCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AccountLockout.
+     */
+    data: XOR<AccountLockoutCreateInput, AccountLockoutUncheckedCreateInput>
+  }
+
+  /**
+   * AccountLockout createMany
+   */
+  export type AccountLockoutCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AccountLockouts.
+     */
+    data: AccountLockoutCreateManyInput | AccountLockoutCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccountLockout createManyAndReturn
+   */
+  export type AccountLockoutCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * The data used to create many AccountLockouts.
+     */
+    data: AccountLockoutCreateManyInput | AccountLockoutCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccountLockout update
+   */
+  export type AccountLockoutUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AccountLockout.
+     */
+    data: XOR<AccountLockoutUpdateInput, AccountLockoutUncheckedUpdateInput>
+    /**
+     * Choose, which AccountLockout to update.
+     */
+    where: AccountLockoutWhereUniqueInput
+  }
+
+  /**
+   * AccountLockout updateMany
+   */
+  export type AccountLockoutUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AccountLockouts.
+     */
+    data: XOR<AccountLockoutUpdateManyMutationInput, AccountLockoutUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountLockouts to update
+     */
+    where?: AccountLockoutWhereInput
+    /**
+     * Limit how many AccountLockouts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountLockout updateManyAndReturn
+   */
+  export type AccountLockoutUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * The data used to update AccountLockouts.
+     */
+    data: XOR<AccountLockoutUpdateManyMutationInput, AccountLockoutUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountLockouts to update
+     */
+    where?: AccountLockoutWhereInput
+    /**
+     * Limit how many AccountLockouts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountLockout upsert
+   */
+  export type AccountLockoutUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AccountLockout to update in case it exists.
+     */
+    where: AccountLockoutWhereUniqueInput
+    /**
+     * In case the AccountLockout found by the `where` argument doesn't exist, create a new AccountLockout with this data.
+     */
+    create: XOR<AccountLockoutCreateInput, AccountLockoutUncheckedCreateInput>
+    /**
+     * In case the AccountLockout was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AccountLockoutUpdateInput, AccountLockoutUncheckedUpdateInput>
+  }
+
+  /**
+   * AccountLockout delete
+   */
+  export type AccountLockoutDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+    /**
+     * Filter which AccountLockout to delete.
+     */
+    where: AccountLockoutWhereUniqueInput
+  }
+
+  /**
+   * AccountLockout deleteMany
+   */
+  export type AccountLockoutDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccountLockouts to delete
+     */
+    where?: AccountLockoutWhereInput
+    /**
+     * Limit how many AccountLockouts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountLockout without action
+   */
+  export type AccountLockoutDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountLockout
+     */
+    select?: AccountLockoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountLockout
+     */
+    omit?: AccountLockoutOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -26585,6 +28879,7 @@ export namespace Prisma {
 
 
   export const IdempotencyKeyScalarFieldEnum: {
+    id: 'id',
     key: 'key',
     namespace: 'namespace',
     lockedAt: 'lockedAt',
@@ -26623,6 +28918,33 @@ export namespace Prisma {
   };
 
   export type LedgerEntryScalarFieldEnum = (typeof LedgerEntryScalarFieldEnum)[keyof typeof LedgerEntryScalarFieldEnum]
+
+
+  export const SessionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    email: 'email',
+    role: 'role',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
+    loginTime: 'loginTime',
+    lastActivity: 'lastActivity',
+    expiresAt: 'expiresAt'
+  };
+
+  export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+  export const AccountLockoutScalarFieldEnum: {
+    id: 'id',
+    identifier: 'identifier',
+    attempts: 'attempts',
+    lastAttemptAt: 'lastAttemptAt',
+    lockedUntil: 'lockedUntil',
+    expiresAt: 'expiresAt'
+  };
+
+  export type AccountLockoutScalarFieldEnum = (typeof AccountLockoutScalarFieldEnum)[keyof typeof AccountLockoutScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -28632,6 +30954,7 @@ export namespace Prisma {
     AND?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
     OR?: IdempotencyKeyWhereInput[]
     NOT?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
+    id?: StringFilter<"IdempotencyKey"> | string
     key?: StringFilter<"IdempotencyKey"> | string
     namespace?: StringFilter<"IdempotencyKey"> | string
     lockedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
@@ -28642,6 +30965,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyOrderByWithRelationInput = {
+    id?: SortOrder
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrderInput | SortOrder
@@ -28652,6 +30976,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
     key?: string
     AND?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
     OR?: IdempotencyKeyWhereInput[]
@@ -28662,9 +30987,10 @@ export namespace Prisma {
     metadata?: JsonNullableFilter<"IdempotencyKey">
     createdAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
     updatedAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
-  }, "key">
+  }, "id" | "key">
 
   export type IdempotencyKeyOrderByWithAggregationInput = {
+    id?: SortOrder
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrderInput | SortOrder
@@ -28681,6 +31007,7 @@ export namespace Prisma {
     AND?: IdempotencyKeyScalarWhereWithAggregatesInput | IdempotencyKeyScalarWhereWithAggregatesInput[]
     OR?: IdempotencyKeyScalarWhereWithAggregatesInput[]
     NOT?: IdempotencyKeyScalarWhereWithAggregatesInput | IdempotencyKeyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"IdempotencyKey"> | string
     key?: StringWithAggregatesFilter<"IdempotencyKey"> | string
     namespace?: StringWithAggregatesFilter<"IdempotencyKey"> | string
     lockedAt?: DateTimeNullableWithAggregatesFilter<"IdempotencyKey"> | Date | string | null
@@ -28847,6 +31174,137 @@ export namespace Prisma {
     reference?: StringWithAggregatesFilter<"LedgerEntry"> | string
     description?: StringNullableWithAggregatesFilter<"LedgerEntry"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"LedgerEntry"> | Date | string
+  }
+
+  export type SessionWhereInput = {
+    AND?: SessionWhereInput | SessionWhereInput[]
+    OR?: SessionWhereInput[]
+    NOT?: SessionWhereInput | SessionWhereInput[]
+    id?: StringFilter<"Session"> | string
+    userId?: StringFilter<"Session"> | string
+    email?: StringFilter<"Session"> | string
+    role?: StringFilter<"Session"> | string
+    ipAddress?: StringFilter<"Session"> | string
+    userAgent?: StringFilter<"Session"> | string
+    loginTime?: DateTimeFilter<"Session"> | Date | string
+    lastActivity?: DateTimeFilter<"Session"> | Date | string
+    expiresAt?: DateTimeFilter<"Session"> | Date | string
+  }
+
+  export type SessionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    loginTime?: SortOrder
+    lastActivity?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type SessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SessionWhereInput | SessionWhereInput[]
+    OR?: SessionWhereInput[]
+    NOT?: SessionWhereInput | SessionWhereInput[]
+    userId?: StringFilter<"Session"> | string
+    email?: StringFilter<"Session"> | string
+    role?: StringFilter<"Session"> | string
+    ipAddress?: StringFilter<"Session"> | string
+    userAgent?: StringFilter<"Session"> | string
+    loginTime?: DateTimeFilter<"Session"> | Date | string
+    lastActivity?: DateTimeFilter<"Session"> | Date | string
+    expiresAt?: DateTimeFilter<"Session"> | Date | string
+  }, "id">
+
+  export type SessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    loginTime?: SortOrder
+    lastActivity?: SortOrder
+    expiresAt?: SortOrder
+    _count?: SessionCountOrderByAggregateInput
+    _max?: SessionMaxOrderByAggregateInput
+    _min?: SessionMinOrderByAggregateInput
+  }
+
+  export type SessionScalarWhereWithAggregatesInput = {
+    AND?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
+    OR?: SessionScalarWhereWithAggregatesInput[]
+    NOT?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Session"> | string
+    userId?: StringWithAggregatesFilter<"Session"> | string
+    email?: StringWithAggregatesFilter<"Session"> | string
+    role?: StringWithAggregatesFilter<"Session"> | string
+    ipAddress?: StringWithAggregatesFilter<"Session"> | string
+    userAgent?: StringWithAggregatesFilter<"Session"> | string
+    loginTime?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+    lastActivity?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+  }
+
+  export type AccountLockoutWhereInput = {
+    AND?: AccountLockoutWhereInput | AccountLockoutWhereInput[]
+    OR?: AccountLockoutWhereInput[]
+    NOT?: AccountLockoutWhereInput | AccountLockoutWhereInput[]
+    id?: StringFilter<"AccountLockout"> | string
+    identifier?: StringFilter<"AccountLockout"> | string
+    attempts?: IntFilter<"AccountLockout"> | number
+    lastAttemptAt?: DateTimeFilter<"AccountLockout"> | Date | string
+    lockedUntil?: DateTimeNullableFilter<"AccountLockout"> | Date | string | null
+    expiresAt?: DateTimeFilter<"AccountLockout"> | Date | string
+  }
+
+  export type AccountLockoutOrderByWithRelationInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    attempts?: SortOrder
+    lastAttemptAt?: SortOrder
+    lockedUntil?: SortOrderInput | SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type AccountLockoutWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    identifier?: string
+    AND?: AccountLockoutWhereInput | AccountLockoutWhereInput[]
+    OR?: AccountLockoutWhereInput[]
+    NOT?: AccountLockoutWhereInput | AccountLockoutWhereInput[]
+    attempts?: IntFilter<"AccountLockout"> | number
+    lastAttemptAt?: DateTimeFilter<"AccountLockout"> | Date | string
+    lockedUntil?: DateTimeNullableFilter<"AccountLockout"> | Date | string | null
+    expiresAt?: DateTimeFilter<"AccountLockout"> | Date | string
+  }, "id" | "identifier">
+
+  export type AccountLockoutOrderByWithAggregationInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    attempts?: SortOrder
+    lastAttemptAt?: SortOrder
+    lockedUntil?: SortOrderInput | SortOrder
+    expiresAt?: SortOrder
+    _count?: AccountLockoutCountOrderByAggregateInput
+    _avg?: AccountLockoutAvgOrderByAggregateInput
+    _max?: AccountLockoutMaxOrderByAggregateInput
+    _min?: AccountLockoutMinOrderByAggregateInput
+    _sum?: AccountLockoutSumOrderByAggregateInput
+  }
+
+  export type AccountLockoutScalarWhereWithAggregatesInput = {
+    AND?: AccountLockoutScalarWhereWithAggregatesInput | AccountLockoutScalarWhereWithAggregatesInput[]
+    OR?: AccountLockoutScalarWhereWithAggregatesInput[]
+    NOT?: AccountLockoutScalarWhereWithAggregatesInput | AccountLockoutScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AccountLockout"> | string
+    identifier?: StringWithAggregatesFilter<"AccountLockout"> | string
+    attempts?: IntWithAggregatesFilter<"AccountLockout"> | number
+    lastAttemptAt?: DateTimeWithAggregatesFilter<"AccountLockout"> | Date | string
+    lockedUntil?: DateTimeNullableWithAggregatesFilter<"AccountLockout"> | Date | string | null
+    expiresAt?: DateTimeWithAggregatesFilter<"AccountLockout"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -29252,7 +31710,7 @@ export namespace Prisma {
   }
 
   export type JobCreateInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -29276,7 +31734,7 @@ export namespace Prisma {
   }
 
   export type JobUncheckedCreateInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -29348,7 +31806,7 @@ export namespace Prisma {
   }
 
   export type JobCreateManyInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -29412,7 +31870,7 @@ export namespace Prisma {
   }
 
   export type TransactionCreateInput = {
-    id: string
+    id?: string
     type: $Enums.TransactionType
     amount: number
     status?: $Enums.TransactionStatus
@@ -29426,7 +31884,7 @@ export namespace Prisma {
   }
 
   export type TransactionUncheckedCreateInput = {
-    id: string
+    id?: string
     userId: string
     type: $Enums.TransactionType
     amount: number
@@ -29468,7 +31926,7 @@ export namespace Prisma {
   }
 
   export type TransactionCreateManyInput = {
-    id: string
+    id?: string
     userId: string
     type: $Enums.TransactionType
     amount: number
@@ -29509,7 +31967,7 @@ export namespace Prisma {
   }
 
   export type ArtisanProfileCreateInput = {
-    id: string
+    id?: string
     bio?: string | null
     skills?: JsonNullValueInput | InputJsonValue
     experience?: string | null
@@ -29523,7 +31981,7 @@ export namespace Prisma {
   }
 
   export type ArtisanProfileUncheckedCreateInput = {
-    id: string
+    id?: string
     userId: string
     bio?: string | null
     skills?: JsonNullValueInput | InputJsonValue
@@ -29565,7 +32023,7 @@ export namespace Prisma {
   }
 
   export type ArtisanProfileCreateManyInput = {
-    id: string
+    id?: string
     userId: string
     bio?: string | null
     skills?: JsonNullValueInput | InputJsonValue
@@ -29606,7 +32064,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateInput = {
-    id: string
+    id?: string
     amount: number
     message: string
     status?: $Enums.ProposalStatus
@@ -29619,7 +32077,7 @@ export namespace Prisma {
   }
 
   export type ProposalUncheckedCreateInput = {
-    id: string
+    id?: string
     jobId: string
     artisanId: string
     clientId: string
@@ -29658,7 +32116,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateManyInput = {
-    id: string
+    id?: string
     jobId: string
     artisanId: string
     clientId: string
@@ -29691,7 +32149,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -29729,7 +32187,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -29843,7 +32301,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateManyInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -29941,7 +32399,7 @@ export namespace Prisma {
   }
 
   export type ConversationCreateInput = {
-    id: string
+    id?: string
     clientId: string
     artisanId: string
     createdAt?: Date | string
@@ -29951,7 +32409,7 @@ export namespace Prisma {
   }
 
   export type ConversationUncheckedCreateInput = {
-    id: string
+    id?: string
     contractId: string
     clientId: string
     artisanId: string
@@ -29981,7 +32439,7 @@ export namespace Prisma {
   }
 
   export type ConversationCreateManyInput = {
-    id: string
+    id?: string
     contractId: string
     clientId: string
     artisanId: string
@@ -30007,7 +32465,7 @@ export namespace Prisma {
   }
 
   export type MessageCreateInput = {
-    id: string
+    id?: string
     senderId: string
     content?: string | null
     type?: $Enums.MessageType
@@ -30020,7 +32478,7 @@ export namespace Prisma {
   }
 
   export type MessageUncheckedCreateInput = {
-    id: string
+    id?: string
     conversationId: string
     senderId: string
     content?: string | null
@@ -30059,7 +32517,7 @@ export namespace Prisma {
   }
 
   export type MessageCreateManyInput = {
-    id: string
+    id?: string
     conversationId: string
     senderId: string
     content?: string | null
@@ -30097,7 +32555,7 @@ export namespace Prisma {
   }
 
   export type WalletCreateInput = {
-    id: string
+    id?: string
     balance?: number
     frozen?: number
     version?: number
@@ -30107,7 +32565,7 @@ export namespace Prisma {
   }
 
   export type WalletUncheckedCreateInput = {
-    id: string
+    id?: string
     userId: string
     balance?: number
     frozen?: number
@@ -30137,7 +32595,7 @@ export namespace Prisma {
   }
 
   export type WalletCreateManyInput = {
-    id: string
+    id?: string
     userId: string
     balance?: number
     frozen?: number
@@ -30166,7 +32624,7 @@ export namespace Prisma {
   }
 
   export type ReviewCreateInput = {
-    id: string
+    id?: string
     rating: number
     comment?: string | null
     categories?: NullableJsonNullValueInput | InputJsonValue
@@ -30184,7 +32642,7 @@ export namespace Prisma {
   }
 
   export type ReviewUncheckedCreateInput = {
-    id: string
+    id?: string
     contractId: string
     clientId: string
     artisanId: string
@@ -30238,7 +32696,7 @@ export namespace Prisma {
   }
 
   export type ReviewCreateManyInput = {
-    id: string
+    id?: string
     contractId: string
     clientId: string
     artisanId: string
@@ -30289,7 +32747,7 @@ export namespace Prisma {
   }
 
   export type NotificationCreateInput = {
-    id: string
+    id?: string
     type?: string
     title: string
     message: string
@@ -30307,7 +32765,7 @@ export namespace Prisma {
   }
 
   export type NotificationUncheckedCreateInput = {
-    id: string
+    id?: string
     userId: string
     type?: string
     title: string
@@ -30361,7 +32819,7 @@ export namespace Prisma {
   }
 
   export type NotificationCreateManyInput = {
-    id: string
+    id?: string
     userId: string
     type?: string
     title: string
@@ -30414,7 +32872,7 @@ export namespace Prisma {
   }
 
   export type AuditLogCreateInput = {
-    id: string
+    id?: string
     action: string
     entityType: $Enums.AuditEntityType
     entityId: string
@@ -30424,7 +32882,7 @@ export namespace Prisma {
   }
 
   export type AuditLogUncheckedCreateInput = {
-    id: string
+    id?: string
     action: string
     entityType: $Enums.AuditEntityType
     entityId: string
@@ -30454,7 +32912,7 @@ export namespace Prisma {
   }
 
   export type AuditLogCreateManyInput = {
-    id: string
+    id?: string
     action: string
     entityType: $Enums.AuditEntityType
     entityId: string
@@ -30484,7 +32942,7 @@ export namespace Prisma {
   }
 
   export type PaymentCreateInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.PaymentStatus
     currency?: string
@@ -30510,7 +32968,7 @@ export namespace Prisma {
   }
 
   export type PaymentUncheckedCreateInput = {
-    id: string
+    id?: string
     contractId: string
     userId: string
     amount: number
@@ -30588,7 +33046,7 @@ export namespace Prisma {
   }
 
   export type PaymentCreateManyInput = {
-    id: string
+    id?: string
     contractId: string
     userId: string
     amount: number
@@ -30661,7 +33119,7 @@ export namespace Prisma {
   }
 
   export type KycDocumentCreateInput = {
-    id: string
+    id?: string
     documentType: $Enums.KycDocumentType
     documentUrl: string
     status?: $Enums.KycDocumentStatus
@@ -30674,7 +33132,7 @@ export namespace Prisma {
   }
 
   export type KycDocumentUncheckedCreateInput = {
-    id: string
+    id?: string
     userId: string
     documentType: $Enums.KycDocumentType
     documentUrl: string
@@ -30713,7 +33171,7 @@ export namespace Prisma {
   }
 
   export type KycDocumentCreateManyInput = {
-    id: string
+    id?: string
     userId: string
     documentType: $Enums.KycDocumentType
     documentUrl: string
@@ -30751,6 +33209,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyCreateInput = {
+    id?: string
     key: string
     namespace?: string
     lockedAt?: Date | string | null
@@ -30761,6 +33220,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyUncheckedCreateInput = {
+    id?: string
     key: string
     namespace?: string
     lockedAt?: Date | string | null
@@ -30771,6 +33231,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30781,6 +33242,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30791,6 +33253,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyCreateManyInput = {
+    id?: string
     key: string
     namespace?: string
     lockedAt?: Date | string | null
@@ -30801,6 +33264,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30811,6 +33275,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30975,6 +33440,153 @@ export namespace Prisma {
     reference?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionCreateInput = {
+    id?: string
+    userId: string
+    email: string
+    role: string
+    ipAddress: string
+    userAgent: string
+    loginTime?: Date | string
+    lastActivity?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type SessionUncheckedCreateInput = {
+    id?: string
+    userId: string
+    email: string
+    role: string
+    ipAddress: string
+    userAgent: string
+    loginTime?: Date | string
+    lastActivity?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type SessionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    loginTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivity?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    loginTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivity?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionCreateManyInput = {
+    id?: string
+    userId: string
+    email: string
+    role: string
+    ipAddress: string
+    userAgent: string
+    loginTime?: Date | string
+    lastActivity?: Date | string
+    expiresAt: Date | string
+  }
+
+  export type SessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    loginTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivity?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    ipAddress?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    loginTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActivity?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountLockoutCreateInput = {
+    id?: string
+    identifier: string
+    attempts?: number
+    lastAttemptAt?: Date | string
+    lockedUntil?: Date | string | null
+    expiresAt: Date | string
+  }
+
+  export type AccountLockoutUncheckedCreateInput = {
+    id?: string
+    identifier: string
+    attempts?: number
+    lastAttemptAt?: Date | string
+    lockedUntil?: Date | string | null
+    expiresAt: Date | string
+  }
+
+  export type AccountLockoutUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountLockoutUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountLockoutCreateManyInput = {
+    id?: string
+    identifier: string
+    attempts?: number
+    lastAttemptAt?: Date | string
+    lockedUntil?: Date | string | null
+    expiresAt: Date | string
+  }
+
+  export type AccountLockoutUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountLockoutUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -32571,6 +35183,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyCountOrderByAggregateInput = {
+    id?: SortOrder
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrder
@@ -32581,6 +35194,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyMaxOrderByAggregateInput = {
+    id?: SortOrder
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrder
@@ -32590,6 +35204,7 @@ export namespace Prisma {
   }
 
   export type IdempotencyKeyMinOrderByAggregateInput = {
+    id?: SortOrder
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrder
@@ -32705,6 +35320,77 @@ export namespace Prisma {
 
   export type LedgerEntrySumOrderByAggregateInput = {
     amount?: SortOrder
+  }
+
+  export type SessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    loginTime?: SortOrder
+    lastActivity?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type SessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    loginTime?: SortOrder
+    lastActivity?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type SessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    email?: SortOrder
+    role?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    loginTime?: SortOrder
+    lastActivity?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type AccountLockoutCountOrderByAggregateInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    attempts?: SortOrder
+    lastAttemptAt?: SortOrder
+    lockedUntil?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type AccountLockoutAvgOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
+  export type AccountLockoutMaxOrderByAggregateInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    attempts?: SortOrder
+    lastAttemptAt?: SortOrder
+    lockedUntil?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type AccountLockoutMinOrderByAggregateInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    attempts?: SortOrder
+    lastAttemptAt?: SortOrder
+    lockedUntil?: SortOrder
+    expiresAt?: SortOrder
+  }
+
+  export type AccountLockoutSumOrderByAggregateInput = {
+    attempts?: SortOrder
   }
 
   export type ArtisanProfileCreateNestedOneWithoutUserInput = {
@@ -34836,7 +37522,7 @@ export namespace Prisma {
   }
 
   export type ArtisanProfileCreateWithoutUserInput = {
-    id: string
+    id?: string
     bio?: string | null
     skills?: JsonNullValueInput | InputJsonValue
     experience?: string | null
@@ -34849,7 +37535,7 @@ export namespace Prisma {
   }
 
   export type ArtisanProfileUncheckedCreateWithoutUserInput = {
-    id: string
+    id?: string
     bio?: string | null
     skills?: JsonNullValueInput | InputJsonValue
     experience?: string | null
@@ -34867,7 +37553,7 @@ export namespace Prisma {
   }
 
   export type KycDocumentCreateWithoutUserInput = {
-    id: string
+    id?: string
     documentType: $Enums.KycDocumentType
     documentUrl: string
     status?: $Enums.KycDocumentStatus
@@ -34879,7 +37565,7 @@ export namespace Prisma {
   }
 
   export type KycDocumentUncheckedCreateWithoutUserInput = {
-    id: string
+    id?: string
     documentType: $Enums.KycDocumentType
     documentUrl: string
     status?: $Enums.KycDocumentStatus
@@ -34901,7 +37587,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     amount: number
     message: string
     status?: $Enums.ProposalStatus
@@ -34913,7 +37599,7 @@ export namespace Prisma {
   }
 
   export type ProposalUncheckedCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     jobId: string
     clientId: string
     amount: number
@@ -34935,7 +37621,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateWithoutClientInput = {
-    id: string
+    id?: string
     amount: number
     message: string
     status?: $Enums.ProposalStatus
@@ -34947,7 +37633,7 @@ export namespace Prisma {
   }
 
   export type ProposalUncheckedCreateWithoutClientInput = {
-    id: string
+    id?: string
     jobId: string
     artisanId: string
     amount: number
@@ -34969,7 +37655,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutClientInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -35006,7 +37692,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutClientInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     artisanId: string
@@ -35053,7 +37739,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -35090,7 +37776,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -35137,7 +37823,7 @@ export namespace Prisma {
   }
 
   export type JobCreateWithoutClientInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -35160,7 +37846,7 @@ export namespace Prisma {
   }
 
   export type JobUncheckedCreateWithoutClientInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -35193,7 +37879,7 @@ export namespace Prisma {
   }
 
   export type JobCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -35216,7 +37902,7 @@ export namespace Prisma {
   }
 
   export type JobUncheckedCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -35249,7 +37935,7 @@ export namespace Prisma {
   }
 
   export type WalletCreateWithoutUserInput = {
-    id: string
+    id?: string
     balance?: number
     frozen?: number
     version?: number
@@ -35258,7 +37944,7 @@ export namespace Prisma {
   }
 
   export type WalletUncheckedCreateWithoutUserInput = {
-    id: string
+    id?: string
     balance?: number
     frozen?: number
     version?: number
@@ -35272,7 +37958,7 @@ export namespace Prisma {
   }
 
   export type ReviewCreateWithoutClientInput = {
-    id: string
+    id?: string
     rating: number
     comment?: string | null
     categories?: NullableJsonNullValueInput | InputJsonValue
@@ -35289,7 +37975,7 @@ export namespace Prisma {
   }
 
   export type ReviewUncheckedCreateWithoutClientInput = {
-    id: string
+    id?: string
     contractId: string
     artisanId: string
     rating: number
@@ -35316,7 +38002,7 @@ export namespace Prisma {
   }
 
   export type ReviewCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     rating: number
     comment?: string | null
     categories?: NullableJsonNullValueInput | InputJsonValue
@@ -35333,7 +38019,7 @@ export namespace Prisma {
   }
 
   export type ReviewUncheckedCreateWithoutArtisanInput = {
-    id: string
+    id?: string
     contractId: string
     clientId: string
     rating: number
@@ -35360,7 +38046,7 @@ export namespace Prisma {
   }
 
   export type NotificationCreateWithoutUserInput = {
-    id: string
+    id?: string
     type?: string
     title: string
     message: string
@@ -35377,7 +38063,7 @@ export namespace Prisma {
   }
 
   export type NotificationUncheckedCreateWithoutUserInput = {
-    id: string
+    id?: string
     type?: string
     title: string
     message: string
@@ -35404,7 +38090,7 @@ export namespace Prisma {
   }
 
   export type TransactionCreateWithoutUserInput = {
-    id: string
+    id?: string
     type: $Enums.TransactionType
     amount: number
     status?: $Enums.TransactionStatus
@@ -35417,7 +38103,7 @@ export namespace Prisma {
   }
 
   export type TransactionUncheckedCreateWithoutUserInput = {
-    id: string
+    id?: string
     type: $Enums.TransactionType
     amount: number
     status?: $Enums.TransactionStatus
@@ -35440,7 +38126,7 @@ export namespace Prisma {
   }
 
   export type PaymentCreateWithoutUserInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.PaymentStatus
     currency?: string
@@ -35465,7 +38151,7 @@ export namespace Prisma {
   }
 
   export type PaymentUncheckedCreateWithoutUserInput = {
-    id: string
+    id?: string
     contractId: string
     amount: number
     status?: $Enums.PaymentStatus
@@ -36536,7 +39222,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutJobInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -36573,7 +39259,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutJobInput = {
-    id: string
+    id?: string
     proposalId: string
     clientId: string
     artisanId: string
@@ -36615,7 +39301,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateWithoutJobInput = {
-    id: string
+    id?: string
     amount: number
     message: string
     status?: $Enums.ProposalStatus
@@ -36627,7 +39313,7 @@ export namespace Prisma {
   }
 
   export type ProposalUncheckedCreateWithoutJobInput = {
-    id: string
+    id?: string
     artisanId: string
     clientId: string
     amount: number
@@ -37224,7 +39910,7 @@ export namespace Prisma {
   }
 
   export type JobCreateWithoutProposalsInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -37247,7 +39933,7 @@ export namespace Prisma {
   }
 
   export type JobUncheckedCreateWithoutProposalsInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -37425,7 +40111,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutProposalInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -37462,7 +40148,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutProposalInput = {
-    id: string
+    id?: string
     jobId: string
     clientId: string
     artisanId: string
@@ -37808,7 +40494,7 @@ export namespace Prisma {
   }
 
   export type JobCreateWithoutContractInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -37831,7 +40517,7 @@ export namespace Prisma {
   }
 
   export type JobUncheckedCreateWithoutContractInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -37859,7 +40545,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateWithoutContractInput = {
-    id: string
+    id?: string
     amount: number
     message: string
     status?: $Enums.ProposalStatus
@@ -37871,7 +40557,7 @@ export namespace Prisma {
   }
 
   export type ProposalUncheckedCreateWithoutContractInput = {
-    id: string
+    id?: string
     jobId: string
     artisanId: string
     clientId: string
@@ -38038,7 +40724,7 @@ export namespace Prisma {
   }
 
   export type ConversationCreateWithoutContractInput = {
-    id: string
+    id?: string
     clientId: string
     artisanId: string
     createdAt?: Date | string
@@ -38047,7 +40733,7 @@ export namespace Prisma {
   }
 
   export type ConversationUncheckedCreateWithoutContractInput = {
-    id: string
+    id?: string
     clientId: string
     artisanId: string
     createdAt?: Date | string
@@ -38061,7 +40747,7 @@ export namespace Prisma {
   }
 
   export type ReviewCreateWithoutContractInput = {
-    id: string
+    id?: string
     rating: number
     comment?: string | null
     categories?: NullableJsonNullValueInput | InputJsonValue
@@ -38078,7 +40764,7 @@ export namespace Prisma {
   }
 
   export type ReviewUncheckedCreateWithoutContractInput = {
-    id: string
+    id?: string
     clientId: string
     artisanId: string
     rating: number
@@ -38100,7 +40786,7 @@ export namespace Prisma {
   }
 
   export type PaymentCreateWithoutContractInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.PaymentStatus
     currency?: string
@@ -38125,7 +40811,7 @@ export namespace Prisma {
   }
 
   export type PaymentUncheckedCreateWithoutContractInput = {
-    id: string
+    id?: string
     userId: string
     amount: number
     status?: $Enums.PaymentStatus
@@ -38567,7 +41253,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutConversationInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -38604,7 +41290,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutConversationInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -38646,7 +41332,7 @@ export namespace Prisma {
   }
 
   export type MessageCreateWithoutConversationInput = {
-    id: string
+    id?: string
     senderId: string
     content?: string | null
     type?: $Enums.MessageType
@@ -38658,7 +41344,7 @@ export namespace Prisma {
   }
 
   export type MessageUncheckedCreateWithoutConversationInput = {
-    id: string
+    id?: string
     senderId: string
     content?: string | null
     type?: $Enums.MessageType
@@ -38797,7 +41483,7 @@ export namespace Prisma {
   }
 
   export type ConversationCreateWithoutMessagesInput = {
-    id: string
+    id?: string
     clientId: string
     artisanId: string
     createdAt?: Date | string
@@ -38806,7 +41492,7 @@ export namespace Prisma {
   }
 
   export type ConversationUncheckedCreateWithoutMessagesInput = {
-    id: string
+    id?: string
     contractId: string
     clientId: string
     artisanId: string
@@ -39005,7 +41691,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutReviewInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -39042,7 +41728,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutReviewInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -39637,7 +42323,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutPaymentsInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -39674,7 +42360,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutPaymentsInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -40467,7 +43153,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateWithoutLedgerEntriesInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.ContractStatus
     currency?: string
@@ -40504,7 +43190,7 @@ export namespace Prisma {
   }
 
   export type ContractUncheckedCreateWithoutLedgerEntriesInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -40546,7 +43232,7 @@ export namespace Prisma {
   }
 
   export type PaymentCreateWithoutLedgerEntriesInput = {
-    id: string
+    id?: string
     amount: number
     status?: $Enums.PaymentStatus
     currency?: string
@@ -40571,7 +43257,7 @@ export namespace Prisma {
   }
 
   export type PaymentUncheckedCreateWithoutLedgerEntriesInput = {
-    id: string
+    id?: string
     contractId: string
     userId: string
     amount: number
@@ -40813,7 +43499,7 @@ export namespace Prisma {
   }
 
   export type KycDocumentCreateManyUserInput = {
-    id: string
+    id?: string
     documentType: $Enums.KycDocumentType
     documentUrl: string
     status?: $Enums.KycDocumentStatus
@@ -40825,7 +43511,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateManyArtisanInput = {
-    id: string
+    id?: string
     jobId: string
     clientId: string
     amount: number
@@ -40836,7 +43522,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateManyClientInput = {
-    id: string
+    id?: string
     jobId: string
     artisanId: string
     amount: number
@@ -40847,7 +43533,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateManyClientInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     artisanId: string
@@ -40880,7 +43566,7 @@ export namespace Prisma {
   }
 
   export type ContractCreateManyArtisanInput = {
-    id: string
+    id?: string
     jobId: string
     proposalId: string
     clientId: string
@@ -40913,7 +43599,7 @@ export namespace Prisma {
   }
 
   export type JobCreateManyClientInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -40934,7 +43620,7 @@ export namespace Prisma {
   }
 
   export type JobCreateManyArtisanInput = {
-    id: string
+    id?: string
     title: string
     description?: string | null
     budget?: number | null
@@ -40955,7 +43641,7 @@ export namespace Prisma {
   }
 
   export type ReviewCreateManyClientInput = {
-    id: string
+    id?: string
     contractId: string
     artisanId: string
     rating: number
@@ -40972,7 +43658,7 @@ export namespace Prisma {
   }
 
   export type ReviewCreateManyArtisanInput = {
-    id: string
+    id?: string
     contractId: string
     clientId: string
     rating: number
@@ -40989,7 +43675,7 @@ export namespace Prisma {
   }
 
   export type NotificationCreateManyUserInput = {
-    id: string
+    id?: string
     type?: string
     title: string
     message: string
@@ -41006,7 +43692,7 @@ export namespace Prisma {
   }
 
   export type TransactionCreateManyUserInput = {
-    id: string
+    id?: string
     type: $Enums.TransactionType
     amount: number
     status?: $Enums.TransactionStatus
@@ -41019,7 +43705,7 @@ export namespace Prisma {
   }
 
   export type PaymentCreateManyUserInput = {
-    id: string
+    id?: string
     contractId: string
     amount: number
     status?: $Enums.PaymentStatus
@@ -41869,7 +44555,7 @@ export namespace Prisma {
   }
 
   export type ProposalCreateManyJobInput = {
-    id: string
+    id?: string
     artisanId: string
     clientId: string
     amount: number
@@ -41915,7 +44601,7 @@ export namespace Prisma {
   }
 
   export type PaymentCreateManyContractInput = {
-    id: string
+    id?: string
     userId: string
     amount: number
     status?: $Enums.PaymentStatus
@@ -42057,7 +44743,7 @@ export namespace Prisma {
   }
 
   export type MessageCreateManyConversationInput = {
-    id: string
+    id?: string
     senderId: string
     content?: string | null
     type?: $Enums.MessageType

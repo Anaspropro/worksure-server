@@ -1,6 +1,8 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaService } from '../../database/prisma.service';
+import { AppConfigModule } from '../../config/app-config.module';
+import { AppConfigService } from '../../config/app-config.service';
 import { AuthModule } from '../auth/auth.module';
 import { ChatController } from './chat.controller';
 import { ChatGateway } from './chat.gateway';
@@ -11,8 +13,13 @@ import { UploadController } from './upload.controller';
 @Module({
   imports: [
     forwardRef(() => AuthModule),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'development-secret',
+    AppConfigModule,
+    JwtModule.registerAsync({
+      imports: [AppConfigModule],
+      inject: [AppConfigService],
+      useFactory: (appConfigService: AppConfigService) => ({
+        secret: appConfigService.jwtSecret,
+      }),
     }),
   ],
   controllers: [ChatController, UploadController],

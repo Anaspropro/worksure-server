@@ -1,5 +1,6 @@
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { randomUUID } from 'node:crypto';
 
 type TraceableHeaders = Request['headers'] & {
   'x-request-id'?: string | string[];
@@ -71,9 +72,6 @@ export class MonitoringMiddleware implements NestMiddleware {
   }
 
   private generateRequestId(): string {
-    return (
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15)
-    );
+    return randomUUID();
   }
 }

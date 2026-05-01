@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { v2 as cloudinary, type UploadApiResponse } from 'cloudinary';
 
@@ -15,15 +16,18 @@ export class MediaService {
     'application/pdf',
   ];
 
+  private readonly logger = new Logger(MediaService.name);
+
   constructor() {
     const cloudName = process.env.CLOUDINARY_NAME;
     const apiKey = process.env.CLOUDINARY_KEY;
     const apiSecret = process.env.CLOUDINARY_SECRET;
 
     if (!cloudName || !apiKey || !apiSecret) {
-      throw new InternalServerErrorException(
-        'Cloudinary credentials are not properly configured',
+      this.logger.warn(
+        'Cloudinary credentials are not properly configured. Media uploads will fail.',
       );
+      return;
     }
 
     cloudinary.config({

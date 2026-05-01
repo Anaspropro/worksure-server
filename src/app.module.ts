@@ -21,14 +21,18 @@ import { PrismaModule } from './database/prisma.module';
 import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { SanitizationService } from './common/services/sanitization.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot([{
-      name: 'default',
-      ttl: 60000,
-      limit: 10,
-    }]),
+    ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     AppConfigModule,
     PrismaModule,
     HealthModule,

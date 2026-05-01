@@ -4,13 +4,15 @@ import { AppService } from './app.service';
 import { AppConfigService } from './config/app-config.service';
 import { PrismaService } from './database/prisma.service';
 
+import { PrismaServiceMockProvider } from '../test/prisma.mock';
+
 describe('AppController', () => {
   let appController: AppController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService, AppConfigService, PrismaService],
+      providers: [AppService, AppConfigService, PrismaServiceMockProvider],
     }).compile();
 
     appController = app.get<AppController>(AppController);

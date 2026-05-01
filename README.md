@@ -1,4 +1,6 @@
+```
 This is already very strong—you’ve clearly done real architectural thinking. I’m not going to rewrite everything from scratch. Instead, I’ll give you a **clean, production-grade merged `README.md`** that:
+```
 
 * removes duplication
 * aligns everything with your actual implementation
@@ -143,7 +145,7 @@ src/
 
 # ⚙️ Quick Start
 
-### Prerequisites
+## Prerequisites
 
 * Node.js ≥ 18
 * PostgreSQL
@@ -174,7 +176,7 @@ NODE_ENV=development
 
 ---
 
-### Database
+## Database
 
 ```bash
 npx prisma generate
@@ -193,9 +195,7 @@ npm run start:dev
 
 ### API Docs
 
-```
-http://localhost:3000/api
-```
+<http://localhost:3000/api>
 
 ---
 

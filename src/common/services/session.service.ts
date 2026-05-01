@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'node:crypto';
+import { PrismaService } from '../../database/prisma.service';
 
 export interface SessionData {
   userId: string;
@@ -13,141 +14,151 @@ export interface SessionData {
   sessionId: string;
 }
 
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 @Injectable()
 export class SessionService {
-  private readonly sessions = new Map<string, SessionData>();
-  private readonly sessionTimeout = 24 * 60 * 60 * 1000; // 24 hours
-  private readonly cleanupInterval = 60 * 60 * 1000; // 1 hour
+  private readonly logger = new Logger(SessionService.name);
 
-  constructor(private readonly jwtService: JwtService) {
-    // Start cleanup interval
-    setInterval(() => this.cleanupExpiredSessions(), this.cleanupInterval);
-  }
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   /**
-   * Create a new session for authenticated user
+   * Create a new session for authenticated user.
+   * Session is stored in PostgreSQL with an expiresAt timestamp —
+   * expired rows are filtered out by every read query and reaped
+   * periodically by EphemeralCleanupService.
    */
-  createSession(
+  async createSession(
     userId: string,
     email: string,
     role: string,
     ipAddress: string,
     userAgent: string,
-  ): string {
-    const sessionId = this.generateSessionId();
-    const now = Date.now();
+  ): Promise<string> {
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + SESSION_TTL_MS);
 
-    const sessionData: SessionData = {
-      userId,
-      email,
-      role,
-      loginTime: now,
-      lastActivity: now,
-      ipAddress,
-      userAgent: this.sanitizeUserAgent(userAgent),
-      sessionId,
-    };
+    const session = await this.prisma.session.create({
+      data: {
+        id: randomUUID(),
+        userId,
+        email,
+        role,
+        ipAddress,
+        userAgent: this.sanitizeUserAgent(userAgent),
+        loginTime: now,
+        lastActivity: now,
+        expiresAt,
+      },
+    });
 
-    this.sessions.set(sessionId, sessionData);
-    return sessionId;
+    return session.id;
   }
 
   /**
-   * Validate and get session data
+   * Validate and get session data.
+   * Returns null for expired or missing sessions.
+   * Slides the expiry window on every successful validation.
    */
-  validateSession(sessionId: string): SessionData | null {
-    const session = this.sessions.get(sessionId);
+  async validateSession(sessionId: string): Promise<SessionData | null> {
+    const now = new Date();
+
+    const session = await this.prisma.session.findFirst({
+      where: {
+        id: sessionId,
+        expiresAt: { gt: now },
+      },
+    });
 
     if (!session) {
       return null;
     }
 
-    // Check if session has expired
-    if (Date.now() - session.lastActivity > this.sessionTimeout) {
-      this.sessions.delete(sessionId);
-      return null;
-    }
+    // Slide the expiry window — renew TTL on activity
+    const newExpiresAt = new Date(now.getTime() + SESSION_TTL_MS);
+    await this.prisma.session.update({
+      where: { id: sessionId },
+      data: {
+        lastActivity: now,
+        expiresAt: newExpiresAt,
+      },
+    });
 
-    // Update last activity
-    session.lastActivity = Date.now();
-    return session;
+    return this.toSessionData(session);
   }
 
   /**
-   * Invalidate a specific session
+   * Invalidate a specific session (logout)
    */
-  invalidateSession(sessionId: string): boolean {
-    return this.sessions.delete(sessionId);
+  async invalidateSession(sessionId: string): Promise<boolean> {
+    const result = await this.prisma.session.deleteMany({
+      where: { id: sessionId },
+    });
+    return result.count > 0;
   }
 
   /**
-   * Invalidate all sessions for a user
+   * Invalidate all sessions for a user (password reset, force-logout)
    */
-  invalidateUserSessions(userId: string): number {
-    let count = 0;
-    for (const [sessionId, session] of this.sessions.entries()) {
-      if (session.userId === userId) {
-        this.sessions.delete(sessionId);
-        count++;
-      }
-    }
-    return count;
+  async invalidateUserSessions(userId: string): Promise<number> {
+    const result = await this.prisma.session.deleteMany({
+      where: { userId },
+    });
+    return result.count;
   }
 
   /**
-   * Get all active sessions for a user
+   * Get all active (non-expired) sessions for a user
    */
-  getUserSessions(userId: string): SessionData[] {
-    const userSessions: SessionData[] = [];
-    const now = Date.now();
+  async getUserSessions(userId: string): Promise<SessionData[]> {
+    const sessions = await this.prisma.session.findMany({
+      where: {
+        userId,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { lastActivity: 'desc' },
+    });
 
-    for (const session of this.sessions.values()) {
-      if (
-        session.userId === userId &&
-        now - session.lastActivity <= this.sessionTimeout
-      ) {
-        userSessions.push(session);
-      }
-    }
-
-    return userSessions;
+    return sessions.map((s) => this.toSessionData(s));
   }
 
   /**
    * Get session statistics
    */
-  getSessionStats(): {
+  async getSessionStats(): Promise<{
     totalSessions: number;
     activeSessions: number;
     expiredSessions: number;
-  } {
-    const now = Date.now();
-    let activeSessions = 0;
-    let expiredSessions = 0;
+  }> {
+    const now = new Date();
 
-    for (const session of this.sessions.values()) {
-      if (now - session.lastActivity <= this.sessionTimeout) {
-        activeSessions++;
-      } else {
-        expiredSessions++;
-      }
-    }
+    const [active, expired] = await Promise.all([
+      this.prisma.session.count({
+        where: { expiresAt: { gt: now } },
+      }),
+      this.prisma.session.count({
+        where: { expiresAt: { lte: now } },
+      }),
+    ]);
 
     return {
-      totalSessions: this.sessions.size,
-      activeSessions,
-      expiredSessions,
+      totalSessions: active + expired,
+      activeSessions: active,
+      expiredSessions: expired,
     };
   }
 
   /**
    * Check for suspicious activity
    */
-  detectSuspiciousActivity(userId: string): {
+  async detectSuspiciousActivity(userId: string): Promise<{
     isSuspicious: boolean;
     reasons: string[];
-  } {
-    const userSessions = this.getUserSessions(userId);
+  }> {
+    const userSessions = await this.getUserSessions(userId);
     const reasons: string[] = [];
 
     // Multiple concurrent sessions from different IPs
@@ -164,9 +175,8 @@ export class SessionService {
     }
 
     // Rapid session creation
-    const recentSessions = userSessions.filter(
-      (s) => Date.now() - s.loginTime < 5 * 60 * 1000,
-    );
+    const fiveMinAgo = Date.now() - 5 * 60 * 1000;
+    const recentSessions = userSessions.filter((s) => s.loginTime > fiveMinAgo);
     if (recentSessions.length > 3) {
       reasons.push('Rapid session creation detected');
     }
@@ -212,34 +222,43 @@ export class SessionService {
   }
 
   /**
-   * Cleanup expired sessions
+   * Delete all expired sessions. Called by EphemeralCleanupService.
    */
-  private cleanupExpiredSessions(): void {
-    const now = Date.now();
-    let cleanedCount = 0;
-
-    for (const [sessionId, session] of this.sessions.entries()) {
-      if (now - session.lastActivity > this.sessionTimeout) {
-        this.sessions.delete(sessionId);
-        cleanedCount++;
-      }
-    }
-
-    if (cleanedCount > 0) {
-      console.log(`Cleaned up ${cleanedCount} expired sessions`);
-    }
+  async purgeExpired(): Promise<number> {
+    const result = await this.prisma.session.deleteMany({
+      where: { expiresAt: { lte: new Date() } },
+    });
+    return result.count;
   }
 
-  /**
-   * Generate secure session ID
-   */
+  // ─── Private helpers ───────────────────────────────────────
+
+  private toSessionData(session: {
+    id: string;
+    userId: string;
+    email: string;
+    role: string;
+    ipAddress: string;
+    userAgent: string;
+    loginTime: Date;
+    lastActivity: Date;
+  }): SessionData {
+    return {
+      sessionId: session.id,
+      userId: session.userId,
+      email: session.email,
+      role: session.role,
+      ipAddress: session.ipAddress,
+      userAgent: session.userAgent,
+      loginTime: session.loginTime.getTime(),
+      lastActivity: session.lastActivity.getTime(),
+    };
+  }
+
   private generateSessionId(): string {
     return randomUUID();
   }
 
-  /**
-   * Sanitize user agent for storage
-   */
   private sanitizeUserAgent(userAgent: string): string {
     if (!userAgent) {
       return 'Unknown';
@@ -251,9 +270,6 @@ export class SessionService {
       .trim();
   }
 
-  /**
-   * Get IP range for geographic checking (simplified)
-   */
   private getIPRange(ip: string): string {
     if (!ip) {
       return 'unknown';

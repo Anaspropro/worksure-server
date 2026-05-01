@@ -189,7 +189,7 @@ model DisputeHistory {
 }
 
 model Job {
-  id               String    @id
+  id               String    @id @default(uuid())
   title            String
   description      String?
   budget           Int?
@@ -222,7 +222,7 @@ model Job {
 }
 
 model Transaction {
-  id            String            @id
+  id            String            @id @default(uuid())
   userId        String
   type          TransactionType
   amount        Int
@@ -243,7 +243,7 @@ model Transaction {
 }
 
 model ArtisanProfile {
-  id          String   @id
+  id          String   @id @default(uuid())
   userId      String   @unique
   bio         String?
   skills      Json     @default("[]")
@@ -262,7 +262,7 @@ model ArtisanProfile {
 }
 
 model Proposal {
-  id        String         @id
+  id        String         @id @default(uuid())
   jobId     String
   artisanId String
   clientId  String
@@ -284,7 +284,7 @@ model Proposal {
 }
 
 model Contract {
-  id                       String         @id
+  id                       String         @id @default(uuid())
   jobId                    String         @unique
   proposalId               String         @unique
   clientId                 String
@@ -339,7 +339,7 @@ model Contract {
 }
 
 model Conversation {
-  id         String   @id
+  id         String   @id @default(uuid())
   contractId String   @unique
   clientId   String
   artisanId  String
@@ -354,7 +354,7 @@ model Conversation {
 }
 
 model Message {
-  id             String      @id
+  id             String      @id @default(uuid())
   conversationId String
   senderId       String
   content        String?
@@ -372,7 +372,7 @@ model Message {
 }
 
 model Wallet {
-  id        String   @id
+  id        String   @id @default(uuid())
   userId    String   @unique
   balance   Int      @default(0)
   frozen    Int      @default(0)
@@ -387,7 +387,7 @@ model Wallet {
 }
 
 model Review {
-  id              String   @id
+  id              String   @id @default(uuid())
   contractId      String   @unique
   clientId        String
   artisanId       String
@@ -413,7 +413,7 @@ model Review {
 }
 
 model Notification {
-  id         String    @id
+  id         String    @id @default(uuid())
   userId     String
   type       String    @default("system_update")
   title      String
@@ -435,7 +435,7 @@ model Notification {
 }
 
 model AuditLog {
-  id          String          @id
+  id          String          @id @default(uuid())
   action      String
   entityType  AuditEntityType
   entityId    String
@@ -447,7 +447,7 @@ model AuditLog {
 }
 
 model Payment {
-  id                       String        @id
+  id                       String        @id @default(uuid())
   contractId               String
   userId                   String
   amount                   Int
@@ -481,7 +481,7 @@ model Payment {
 }
 
 model KycDocument {
-  id              String            @id
+  id              String            @id @default(uuid())
   userId          String
   documentType    KycDocumentType
   documentUrl     String
@@ -500,7 +500,8 @@ model KycDocument {
 }
 
 model IdempotencyKey {
-  key         String    @id
+  id          String    @id @default(uuid())
+  key         String    @unique
   namespace   String    @default("default")
   lockedAt    DateTime?
   completedAt DateTime?
@@ -556,4 +557,31 @@ model LedgerEntry {
   @@index([debitAccountId])
   @@index([creditAccountId])
   @@index([contractId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  email        String
+  role         String
+  ipAddress    String
+  userAgent    String   @db.VarChar(500)
+  loginTime    DateTime @default(now())
+  lastActivity DateTime @default(now())
+  expiresAt    DateTime
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+model AccountLockout {
+  id            String    @id @default(uuid())
+  identifier    String    @unique
+  attempts      Int       @default(0)
+  lastAttemptAt DateTime  @default(now())
+  lockedUntil   DateTime?
+  expiresAt     DateTime
+
+  @@index([identifier, expiresAt])
+  @@index([expiresAt])
 }

@@ -175,7 +175,7 @@ export class PaymentsService {
     };
   }
 
-  async verifyPaystackPayment(reference: string) {
+  async verifyPaystackPayment(reference: string, userId?: string) {
     if (!reference) {
       throw new BadRequestException(
         'Reference is required for Paystack verification',
@@ -194,6 +194,12 @@ export class PaymentsService {
 
     if (!payment) {
       throw new NotFoundException('Payment record not found for reference');
+    }
+
+    if (userId && payment.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to verify this payment',
+      );
     }
 
     if (payment.isVerified && payment.status === PaymentStatus.COMPLETED) {
@@ -330,13 +336,23 @@ export class PaymentsService {
     };
   }
 
-  async verifyPayment(paymentId: string, verificationCode: string) {
+  async verifyPayment(
+    userId: string,
+    paymentId: string,
+    verificationCode: string,
+  ) {
     const payment = await this.prisma.payment.findUnique({
       where: { id: paymentId },
     });
 
     if (!payment) {
       throw new NotFoundException('Payment not found');
+    }
+
+    if (payment.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to verify this payment',
+      );
     }
 
     if (payment.verificationCode !== verificationCode) {
