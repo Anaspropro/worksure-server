@@ -97,16 +97,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message,
       code,
       ...(details && { details }),
-      ...(status >= 500 && {
-        requestId:
-          typeof request.headers['x-request-id'] === 'string'
+      requestId:
+        typeof (request as unknown as { requestId?: unknown }).requestId ===
+        'string'
+          ? (request as unknown as { requestId: string }).requestId
+          : typeof request.headers['x-request-id'] === 'string'
             ? request.headers['x-request-id']
             : 'unknown',
-        correlationId:
-          typeof request.headers['x-correlation-id'] === 'string'
+      correlationId:
+        typeof (request as unknown as { correlationId?: unknown })
+          .correlationId === 'string'
+          ? (request as unknown as { correlationId: string }).correlationId
+          : typeof request.headers['x-correlation-id'] === 'string'
             ? request.headers['x-correlation-id']
             : 'unknown',
-      }),
     };
 
     // Log errors for monitoring — redact sensitive data

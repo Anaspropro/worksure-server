@@ -15,6 +15,7 @@ import {
 @Injectable()
 export class ContractsService {
   constructor(private readonly prisma: PrismaService) {}
+  private readonly contractTransitionNamespace = 'contract_transition';
 
   private buildTransitionKey(
     action: string,
@@ -41,18 +42,28 @@ export class ContractsService {
     }
   }
 
-  private async completeOperationLock(key: string) {
+  private async completeOperationLock(key: string, namespace: string) {
     await this.prisma.idempotencyKey.update({
-      where: { key },
+      where: {
+        namespace_key: {
+          namespace,
+          key,
+        },
+      },
       data: {
         completedAt: new Date(),
       },
     });
   }
 
-  private async releaseOperationLock(key: string) {
+  private async releaseOperationLock(key: string, namespace: string) {
     await this.prisma.idempotencyKey.delete({
-      where: { key },
+      where: {
+        namespace_key: {
+          namespace,
+          key,
+        },
+      },
     });
   }
 
@@ -73,7 +84,7 @@ export class ContractsService {
       data: {
         id: randomUUID(),
         action: context?.action ?? 'CONTRACT_STATUS_TRANSITION',
-        entityType: AuditEntityType.JOB,
+        entityType: AuditEntityType.CONTRACT,
         entityId: contractId,
         performedBy: context?.actorId ?? 'system',
         performedAt: new Date(),
@@ -151,7 +162,8 @@ export class ContractsService {
     }
   }
 
-  private async transitionContractStatus(
+  private async transitionContractStatusWithClient(
+    prismaClient: Prisma.TransactionClient | PrismaService,
     contractId: string,
     newStatus: ContractStatus,
     data?: Prisma.ContractUpdateInput,
@@ -163,7 +175,7 @@ export class ContractsService {
       externalReference?: string;
     },
   ) {
-    const contract = await this.prisma.contract.findUnique({
+    const contract = await prismaClient.contract.findUnique({
       where: { id: contractId },
       select: { status: true, paystackReference: true },
     });
@@ -174,7 +186,7 @@ export class ContractsService {
 
     this.validateStateTransition(contract.status, newStatus);
 
-    const updatedContract = await this.prisma.contract.update({
+    const updatedContract = await prismaClient.contract.update({
       where: { id: contractId },
       data: {
         status: newStatus,
@@ -195,6 +207,27 @@ export class ContractsService {
     });
 
     return updatedContract;
+  }
+
+  private async transitionContractStatus(
+    contractId: string,
+    newStatus: ContractStatus,
+    data?: Prisma.ContractUpdateInput,
+    context?: {
+      actorId?: string;
+      action?: string;
+      reason?: string;
+      source?: string;
+      externalReference?: string;
+    },
+  ) {
+    return this.transitionContractStatusWithClient(
+      this.prisma,
+      contractId,
+      newStatus,
+      data,
+      context,
+    );
   }
 
   private readonly contractInclude = {
@@ -344,10 +377,16 @@ export class ContractsService {
           source: 'contracts.activate',
         },
       );
-      await this.completeOperationLock(operationKey);
+      await this.completeOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       return updatedContract;
     } catch (error) {
-      await this.releaseOperationLock(operationKey);
+      await this.releaseOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       throw error;
     }
   }
@@ -391,10 +430,16 @@ export class ContractsService {
           externalReference: paystackReference || paymentId,
         },
       );
-      await this.completeOperationLock(operationKey);
+      await this.completeOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       return updatedContract;
     } catch (error) {
-      await this.releaseOperationLock(operationKey);
+      await this.releaseOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       throw error;
     }
   }
@@ -487,30 +532,37 @@ export class ContractsService {
         ? contract.artisanConfirmedCompletion
         : contract.clientConfirmedCompletion;
 
-      return tx.contract.update({
-        where: { id: contractId },
-        data: {
+      const nextStatus = bothConfirmed
+        ? ContractStatus.READY_FOR_PAYOUT
+        : isClient
+          ? ContractStatus.CLIENT_CONFIRMED
+          : ContractStatus.IN_PROGRESS;
+
+      return this.transitionContractStatusWithClient(
+        tx,
+        contractId,
+        nextStatus,
+        {
           clientConfirmedCompletion: isClient ? true : undefined,
           clientConfirmedAt: isClient ? new Date() : undefined,
           artisanConfirmedCompletion: isClient ? undefined : true,
           artisanConfirmedAt: isClient ? undefined : new Date(),
-          status: bothConfirmed
-            ? ContractStatus.READY_FOR_PAYOUT
-            : isClient
-              ? ContractStatus.CLIENT_CONFIRMED
-              : ContractStatus.IN_PROGRESS,
         },
-        include: this.contractInclude,
-      });
+        {
+          actorId: userId,
+          action: bothConfirmed
+            ? 'CONTRACT_READY_FOR_PAYOUT'
+            : isClient
+              ? 'CLIENT_CONFIRMED_COMPLETION'
+              : 'ARTISAN_CONFIRMED_COMPLETION',
+          source: 'contracts.confirmCompletion',
+        },
+      );
     });
   }
 
-  async assertReadyForPayout(contractId: string, userId: string) {
+  async assertReadyForPayout(contractId: string) {
     const contract = await this.getContractOrThrow(contractId);
-
-    if (contract.clientId !== userId) {
-      throw new ForbiddenException('Only the client can trigger payout');
-    }
 
     if (contract.status !== ContractStatus.READY_FOR_PAYOUT) {
       throw new BadRequestException(
@@ -566,10 +618,16 @@ export class ContractsService {
           source: 'payments.webhook',
         },
       );
-      await this.completeOperationLock(operationKey);
+      await this.completeOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       return updatedContract;
     } catch (error) {
-      await this.releaseOperationLock(operationKey);
+      await this.releaseOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       throw error;
     }
   }
@@ -591,15 +649,23 @@ export class ContractsService {
     });
   }
 
-  async refundContract(contractId: string, userId: string, reason?: string) {
+  async refundContract(
+    contractId: string,
+    userId: string,
+    isAdmin: boolean,
+    reason?: string,
+  ) {
     const contract = await this.getContractOrThrow(contractId);
 
     const canRefund =
-      contract.clientId === userId ||
-      contract.status === ContractStatus.DISPUTED;
+      isAdmin ||
+      (contract.clientId === userId &&
+        contract.status !== ContractStatus.DISPUTED);
 
     if (!canRefund) {
-      throw new ForbiddenException('Only the client can request a refund');
+      throw new ForbiddenException(
+        'Only the admin or client can request a refund',
+      );
     }
 
     const finalStatuses = new Set<ContractStatus>([
@@ -648,10 +714,16 @@ export class ContractsService {
           reason,
         },
       );
-      await this.completeOperationLock(operationKey);
+      await this.completeOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       return this.getContractOrThrow(contractId);
     } catch (error) {
-      await this.releaseOperationLock(operationKey);
+      await this.releaseOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       throw error;
     }
   }
@@ -677,10 +749,16 @@ export class ContractsService {
           source: 'disputes.create',
         },
       );
-      await this.completeOperationLock(operationKey);
+      await this.completeOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       return this.getContractOrThrow(contractId);
     } catch (error) {
-      await this.releaseOperationLock(operationKey);
+      await this.releaseOperationLock(
+        operationKey,
+        this.contractTransitionNamespace,
+      );
       throw error;
     }
   }
@@ -712,6 +790,7 @@ export class ContractsService {
       orderBy: {
         createdAt: 'desc',
       },
+      take: 50,
     });
   }
 }

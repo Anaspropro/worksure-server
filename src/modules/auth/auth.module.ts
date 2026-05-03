@@ -35,6 +35,6 @@ import { EphemeralCleanupService } from '../../common/services/ephemeral-cleanup
     SessionService,
     EphemeralCleanupService,
   ],
-  exports: [AuthService, JwtAuthGuard, SessionService],
+  exports: [AuthService, JwtAuthGuard, SessionService, JwtModule],
 })
 export class AuthModule {}

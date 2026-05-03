@@ -23,7 +23,9 @@ export class NightlyReconciliationService {
         0,
       );
 
-      this.logger.log(`Internal System Escrow Balance: ${internalEscrowBalance}`);
+      this.logger.log(
+        `Internal System Escrow Balance: ${internalEscrowBalance}`,
+      );
 
       // 2. Mock: Fetch the actual balance from the payment gateway (Paystack)
       // In a real scenario, this would call the Paystack API via a dedicated client.

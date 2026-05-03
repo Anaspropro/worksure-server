@@ -7,6 +7,7 @@ import {
 import { AuthService } from '../auth/auth.service';
 import {
   AuditEntityType,
+  ContractStatus,
   DisputeDecision,
   DisputeStatus,
   JobStatus,
@@ -64,6 +65,7 @@ export class AdminService {
     const [data, active, banned] = await this.prisma.$transaction([
       this.prisma.user.findMany({
         orderBy: { createdAt: 'asc' },
+        take: 50,
       }),
       this.prisma.user.count({ where: { status: UserStatus.ACTIVE } }),
       this.prisma.user.count({ where: { status: UserStatus.BANNED } }),
@@ -317,18 +319,27 @@ export class AdminService {
     const [disputes, active, resolved] = await this.prisma.$transaction([
       this.prisma.dispute.findMany({
         include: {
+          client: { select: { name: true } },
+          artisan: { select: { name: true } },
+          contract: { include: { job: { select: { title: true } } } },
           history: {
             orderBy: { at: 'asc' },
           },
         },
         orderBy: { createdAt: 'desc' },
+        take: 50,
       }),
       this.prisma.dispute.count({ where: { status: DisputeStatus.OPEN } }),
       this.prisma.dispute.count({ where: { status: DisputeStatus.RESOLVED } }),
     ]);
 
     return {
-      data: disputes.map((dispute) => this.mapDispute(dispute)),
+      data: disputes.map((dispute: any) => ({
+        ...this.mapDispute(dispute),
+        clientName: dispute.client.name,
+        artisanName: dispute.artisan.name,
+        contractTitle: dispute.contract?.job.title ?? 'Untitled Contract',
+      })),
       meta: {
         total: disputes.length,
         active,
@@ -487,6 +498,7 @@ export class AdminService {
       this.prisma.job.findMany({
         where,
         orderBy: { createdAt: 'desc' },
+        take: 50,
       }),
       this.prisma.job.count({
         where: {
@@ -564,6 +576,7 @@ export class AdminService {
     const data = await this.prisma.transaction.findMany({
       where,
       orderBy: { createdAt: 'desc' },
+      take: 50,
     });
 
     return {
@@ -699,6 +712,7 @@ export class AdminService {
   async getAuditLogs() {
     const data = await this.prisma.auditLog.findMany({
       orderBy: { performedAt: 'desc' },
+      take: 50,
     });
 
     return {
@@ -706,6 +720,95 @@ export class AdminService {
       meta: {
         total: data.length,
       },
+    };
+  }
+
+  async getAllContracts(status?: string) {
+    const normalizedStatus = status?.toUpperCase();
+    if (
+      normalizedStatus &&
+      !Object.values(ContractStatus).includes(
+        normalizedStatus as ContractStatus,
+      )
+    ) {
+      throw new BadRequestException(
+        `Unsupported contract status filter: ${status}.`,
+      );
+    }
+
+    const where = normalizedStatus
+      ? { status: normalizedStatus as ContractStatus }
+      : undefined;
+
+    const contracts = await this.prisma.contract.findMany({
+      where,
+      include: {
+        client: { select: { name: true, email: true } },
+        artisan: { select: { name: true, email: true } },
+        job: { select: { title: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    return {
+      data: contracts.map((c) => ({
+        ...c,
+        clientName: c.client.name,
+        artisanName: c.artisan.name,
+        jobTitle: c.job.title,
+      })),
+      meta: {
+        total: contracts.length,
+      },
+    };
+  }
+
+  async getContractStats() {
+    const contracts = await this.prisma.contract.findMany();
+
+    const statusDistribution = contracts.reduce(
+      (acc, c) => {
+        acc[c.status] = (acc[c.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    const totalVolume = contracts.reduce((sum, c) => sum + (c.amount || 0), 0);
+
+    const escrowStatuses: ContractStatus[] = [
+      ContractStatus.FUNDED,
+      ContractStatus.ACTIVE,
+      ContractStatus.IN_PROGRESS,
+      ContractStatus.CLIENT_CONFIRMED,
+      ContractStatus.READY_FOR_PAYOUT,
+      ContractStatus.DISPUTED,
+    ];
+
+    const escrowVolume = contracts
+      .filter((c) => escrowStatuses.includes(c.status))
+      .reduce((sum, c) => sum + (c.amount || 0), 0);
+
+    const payoutVolume = contracts
+      .filter((c) => c.status === ContractStatus.PAID_OUT)
+      .reduce((sum, c) => sum + (c.amount || 0), 0);
+
+    const refundVolume = contracts
+      .filter((c) => c.status === ContractStatus.REFUNDED)
+      .reduce((sum, c) => sum + (c.amount || 0), 0);
+
+    return {
+      totalCount: contracts.length,
+      statusDistribution,
+      totalVolume,
+      escrowVolume,
+      payoutVolume,
+      refundVolume,
+      averageValue: contracts.length > 0 ? totalVolume / contracts.length : 0,
+      activeContractCount: contracts.filter((c) =>
+        escrowStatuses.includes(c.status),
+      ).length,
     };
   }
 
@@ -805,6 +908,7 @@ export class AdminService {
       role: user.role,
       status: user.status,
       artisanVerified: user.artisanVerified,
+      phone: user.phone,
       createdAt: user.createdAt.toISOString(),
     };
   }
@@ -818,6 +922,7 @@ export class AdminService {
       artisanId: dispute.artisanId,
       amount: dispute.amount,
       status: dispute.status,
+      createdAt: dispute.createdAt.toISOString(),
       evidence: {
         images: this.jsonStringArray(dispute.evidenceImages),
         videos: this.jsonStringArray(dispute.evidenceVideos),

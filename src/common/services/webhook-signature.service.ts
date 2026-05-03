@@ -4,6 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
 export class WebhookSignatureService {
+  private readonly namespace = 'paystack_webhook';
   /**
    * Verify Paystack webhook signature
    * @param payload - Raw request body as string
@@ -65,7 +66,12 @@ export class WebhookSignatureService {
    */
   async isEventProcessed(eventId: string): Promise<boolean> {
     const existing = await this.prisma.idempotencyKey.findUnique({
-      where: { key: eventId },
+      where: {
+        namespace_key: {
+          namespace: this.namespace,
+          key: eventId,
+        },
+      },
     });
 
     if (existing) {
@@ -90,7 +96,7 @@ export class WebhookSignatureService {
       await this.prisma.idempotencyKey.create({
         data: {
           key: eventId,
-          namespace: 'paystack_webhook',
+          namespace: this.namespace,
           lockedAt: new Date(),
         },
       });
@@ -107,13 +113,18 @@ export class WebhookSignatureService {
    */
   async markEventProcessed(eventId: string): Promise<void> {
     await this.prisma.idempotencyKey.upsert({
-      where: { key: eventId },
+      where: {
+        namespace_key: {
+          namespace: this.namespace,
+          key: eventId,
+        },
+      },
       update: {
         completedAt: new Date(),
       },
       create: {
         key: eventId,
-        namespace: 'paystack_webhook',
+        namespace: this.namespace,
         lockedAt: new Date(),
         completedAt: new Date(),
       },

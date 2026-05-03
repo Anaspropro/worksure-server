@@ -174,6 +174,7 @@ export class ReviewsService {
         },
       },
       orderBy: { createdAt: 'desc' },
+      take: 50,
     });
   }
 

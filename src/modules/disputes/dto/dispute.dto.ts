@@ -9,6 +9,7 @@ import {
   IsArray,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { DisputeStatus, DisputeDecision } from '../../../generated/prisma';
 
 export class CreateDisputeDto {
@@ -160,6 +161,7 @@ export class DisputeListQueryDto {
 
   @ApiPropertyOptional({ description: 'Page number (default: 1)' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   page?: number = 1;
@@ -168,6 +170,7 @@ export class DisputeListQueryDto {
     description: 'Items per page (default: 10, max: 100)',
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(100)

@@ -1,5 +1,6 @@
 import { IsString, IsOptional, IsNumber, IsEnum } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { ProposalStatus } from '../../../generated/prisma';
 
 export class CreateProposalDto {
@@ -102,6 +103,7 @@ export class ProposalListQueryDto {
 
   @ApiPropertyOptional({ description: 'Page number (default: 1)' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   page?: number = 1;
 
@@ -109,6 +111,7 @@ export class ProposalListQueryDto {
     description: 'Items per page (default: 10, max: 100)',
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   limit?: number = 10;
 }

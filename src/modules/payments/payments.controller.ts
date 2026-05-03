@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Body,
   Controller,
   Get,
@@ -33,6 +34,8 @@ import {
   PaystackInitDto,
   PaystackVerifyDto,
   VerifyPaymentDto,
+  ReleasePaymentDto,
+  RefundPaymentDto,
 } from './dto/payment.dto';
 
 @ApiTags('payments')
@@ -233,6 +236,46 @@ export class PaymentsController {
 
     return {
       message: 'Completion recorded successfully',
+      data: result,
+    };
+  }
+
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Admin manual release of escrow (for disputes)' })
+  @ApiOkResponse({ description: 'Escrow released successfully.' })
+  @Post('release/admin')
+  async releaseEscrowAdmin(
+    @CurrentUser() user: { id: string; role: string },
+    @Body() dto: ReleasePaymentDto,
+  ) {
+    if (user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only admin can manually release escrow');
+    }
+    await this.paymentsService.releaseEscrowByAdmin(dto.contractId, dto.reason);
+
+    return {
+      message: 'Escrow release initiated successfully',
+    };
+  }
+
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Refund a contract' })
+  @ApiOkResponse({ description: 'Refund requested successfully.' })
+  @Post('refund')
+  async refundContract(
+    @CurrentUser() user: { id: string; role: string },
+    @Body() dto: RefundPaymentDto,
+  ) {
+    const isAdmin = user.role === 'ADMIN';
+    const result = await this.paymentsService.refundContract(
+      dto.contractId,
+      user.id,
+      isAdmin,
+      dto.reason,
+    );
+
+    return {
+      message: 'Refund requested successfully',
       data: result,
     };
   }

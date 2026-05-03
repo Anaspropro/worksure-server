@@ -81,8 +81,8 @@ export class JobsService {
       category,
       search,
     } = query;
-    const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
 
     const where: any = {};
     if (status) where.status = status;
@@ -112,14 +112,17 @@ export class JobsService {
       this.prisma.job.count({ where }),
     ]);
 
+    const items = jobs.map((job) => this.formatJobResponse(job));
+
     return {
-      jobs: jobs.map((job) => this.formatJobResponse(job)),
+      data: items,
+      jobs: items,
       pagination: {
         page,
-        limit,
+        limit: take,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
+        totalPages: Math.ceil(total / take),
+        hasNext: page * take < total,
         hasPrev: page > 1,
       },
     };

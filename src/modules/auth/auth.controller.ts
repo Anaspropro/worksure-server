@@ -8,6 +8,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -19,12 +20,14 @@ import { AuthService, AuthenticatedUser } from './auth.service';
 
 @ApiTags('auth')
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: 'Register a new user account' })
   @ApiCreatedResponse({ description: 'User registered successfully.' })
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('register')
   register(@Body() dto: RegisterDto, @Req() request: Request) {
     return this.authService.register(
@@ -38,6 +41,7 @@ export class AuthController {
   @ApiCreatedResponse({ description: 'Login successful.' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('login')
   login(@Body() dto: LoginDto, @Req() request: Request) {
     return this.authService.login(
@@ -50,6 +54,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Request a password reset token' })
   @ApiCreatedResponse({ description: 'Reset request accepted.' })
   @Public()
+  @Throttle({ default: { limit: 3, ttl: 60_000 } })
   @Post('forgot-password')
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.authService.requestPasswordReset(dto.email);
@@ -58,6 +63,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Reset password with a valid reset token' })
   @ApiCreatedResponse({ description: 'Password reset successful.' })
   @Public()
+  @Throttle({ default: { limit: 3, ttl: 60_000 } })
   @Post('reset-password')
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto.token, dto.newPassword);

@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -101,12 +102,9 @@ export class ContractsController {
   @ApiResponse({ status: 200, description: 'Escrow released successfully' })
   async releaseEscrow(
     @Param('id') contractId: string,
-    @CurrentUser() user: AuthenticatedUser,
+    @CurrentUser() _user: AuthenticatedUser,
   ) {
-    const result = await this.paymentsService.releaseEscrow(
-      contractId,
-      user.id,
-    );
+    const result = await this.paymentsService.releaseEscrow(contractId);
 
     return result;
   }
@@ -123,6 +121,7 @@ export class ContractsController {
     const result = await this.paymentsService.refundContract(
       contractId,
       user.id,
+      user.role === 'ADMIN',
       refundDto.reason,
     );
 
@@ -150,7 +149,7 @@ export class ContractsController {
     // Verify role matches user type
     const isClient = contract.clientId === user.id;
     if (confirmDto.isClient !== isClient) {
-      throw new Error('Role does not match user type');
+      throw new BadRequestException('Role does not match user type');
     }
 
     // Confirm completion using centralized state management

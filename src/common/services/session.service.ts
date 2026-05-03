@@ -15,10 +15,50 @@ export interface SessionData {
 }
 
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const SESSION_DB_SYNC_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+class SimpleLRUCache<K, V> {
+  private cache = new Map<K, V>();
+  constructor(private readonly maxKeys: number) {}
+
+  get(key: K): V | undefined {
+    const item = this.cache.get(key);
+    if (item) {
+      this.cache.delete(key);
+      this.cache.set(key, item);
+    }
+    return item;
+  }
+
+  set(key: K, val: V) {
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.maxKeys) {
+      this.cache.delete(this.cache.keys().next().value);
+    }
+    this.cache.set(key, val);
+  }
+
+  delete(key: K) {
+    this.cache.delete(key);
+  }
+
+  clear() {
+    this.cache.clear();
+  }
+
+  values() {
+    return Array.from(this.cache.values());
+  }
+}
 
 @Injectable()
 export class SessionService {
   private readonly logger = new Logger(SessionService.name);
+  private readonly sessionCache = new SimpleLRUCache<
+    string,
+    { data: SessionData; lastDbSync: number }
+  >(5000);
 
   constructor(
     private readonly jwtService: JwtService,
@@ -55,6 +95,11 @@ export class SessionService {
       },
     });
 
+    this.sessionCache.set(session.id, {
+      data: this.toSessionData(session),
+      lastDbSync: now.getTime(),
+    });
+
     return session.id;
   }
 
@@ -65,35 +110,65 @@ export class SessionService {
    */
   async validateSession(sessionId: string): Promise<SessionData | null> {
     const now = new Date();
+    const nowMs = now.getTime();
 
-    const session = await this.prisma.session.findFirst({
-      where: {
-        id: sessionId,
-        expiresAt: { gt: now },
-      },
-    });
+    let cached = this.sessionCache.get(sessionId);
 
-    if (!session) {
-      return null;
+    // If cached, check if it has expired in memory
+    if (cached) {
+      if (nowMs >= cached.data.lastActivity + SESSION_TTL_MS) {
+        this.sessionCache.delete(sessionId);
+        cached = undefined;
+      }
     }
 
-    // Slide the expiry window — renew TTL on activity
-    const newExpiresAt = new Date(now.getTime() + SESSION_TTL_MS);
-    await this.prisma.session.update({
-      where: { id: sessionId },
-      data: {
-        lastActivity: now,
-        expiresAt: newExpiresAt,
-      },
-    });
+    if (!cached) {
+      const session = await this.prisma.session.findFirst({
+        where: {
+          id: sessionId,
+          expiresAt: { gt: now },
+        },
+      });
 
-    return this.toSessionData(session);
+      if (!session) {
+        return null;
+      }
+
+      cached = {
+        data: this.toSessionData(session),
+        lastDbSync: session.lastActivity.getTime(),
+      };
+      this.sessionCache.set(sessionId, cached);
+    }
+
+    cached.data.lastActivity = nowMs;
+
+    // Throttle DB updates to avoid writing on every request
+    if (nowMs - cached.lastDbSync > SESSION_DB_SYNC_INTERVAL_MS) {
+      cached.lastDbSync = nowMs;
+      const newExpiresAt = new Date(nowMs + SESSION_TTL_MS);
+
+      this.prisma.session
+        .update({
+          where: { id: sessionId },
+          data: {
+            lastActivity: now,
+            expiresAt: newExpiresAt,
+          },
+        })
+        .catch((e) =>
+          this.logger.error(`Failed to slide session expiry: ${e.message}`),
+        );
+    }
+
+    return cached.data;
   }
 
   /**
    * Invalidate a specific session (logout)
    */
   async invalidateSession(sessionId: string): Promise<boolean> {
+    this.sessionCache.delete(sessionId);
     const result = await this.prisma.session.deleteMany({
       where: { id: sessionId },
     });
@@ -104,6 +179,14 @@ export class SessionService {
    * Invalidate all sessions for a user (password reset, force-logout)
    */
   async invalidateUserSessions(userId: string): Promise<number> {
+    // Remove all cached sessions for this user
+    const entries = this.sessionCache.values();
+    for (const entry of entries) {
+      if (entry.data.userId === userId) {
+        this.sessionCache.delete(entry.data.sessionId);
+      }
+    }
+
     const result = await this.prisma.session.deleteMany({
       where: { userId },
     });

@@ -14,7 +14,11 @@ import { NightlyReconciliationService } from './reconciliation.service';
     forwardRef(() => ContractsModule),
   ],
   controllers: [PaymentsController],
-  providers: [PaymentsService, WebhookSignatureService, NightlyReconciliationService],
+  providers: [
+    PaymentsService,
+    WebhookSignatureService,
+    NightlyReconciliationService,
+  ],
   exports: [PaymentsService],
 })
 export class PaymentsModule {}

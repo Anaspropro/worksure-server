@@ -99,4 +99,23 @@ export class MediaService {
         .end(file.buffer);
     });
   }
+
+  async getSignedUploadParams(folder = 'worksure/chat') {
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const signature = cloudinary.utils.api_sign_request(
+      {
+        timestamp,
+        folder,
+      },
+      process.env.CLOUDINARY_SECRET!,
+    );
+
+    return {
+      signature,
+      timestamp,
+      cloudName: process.env.CLOUDINARY_NAME,
+      apiKey: process.env.CLOUDINARY_KEY,
+      folder,
+    };
+  }
 }

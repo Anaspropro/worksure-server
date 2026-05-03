@@ -191,8 +191,8 @@ export class ReviewsController {
     void _categories;
     void _isPublic;
 
-    const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
 
     const where: any = {};
 
@@ -250,16 +250,19 @@ export class ReviewsController {
       this.prisma.review.count({ where }),
     ]);
 
+    const items = reviews.map((review) =>
+      this.formatReviewResponse(review, review.contract),
+    );
+
     return {
-      reviews: reviews.map((review) =>
-        this.formatReviewResponse(review, review.contract),
-      ),
+      data: items,
+      reviews: items,
       pagination: {
         page,
-        limit,
+        limit: take,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
+        totalPages: Math.ceil(total / take),
+        hasNext: page * take < total,
         hasPrev: page > 1,
       },
     };
@@ -304,11 +307,16 @@ export class ReviewsController {
         },
       },
       orderBy: { createdAt: 'desc' },
+      take: 50,
     });
 
-    return reviews.map((review) =>
+    const items = reviews.map((review) =>
       this.formatReviewResponse(review, review.contract),
     );
+
+    return {
+      data: items,
+    };
   }
 
   @ApiBearerAuth('bearer')

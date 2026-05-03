@@ -99,6 +99,11 @@ export type KycDocument = $Result.DefaultSelection<Prisma.$KycDocumentPayload>
  */
 export type IdempotencyKey = $Result.DefaultSelection<Prisma.$IdempotencyKeyPayload>
 /**
+ * Model FinancialEvent
+ * 
+ */
+export type FinancialEvent = $Result.DefaultSelection<Prisma.$FinancialEventPayload>
+/**
  * Model LedgerAccount
  * 
  */
@@ -235,10 +240,23 @@ export const AuditEntityType: {
   USER: 'USER',
   DISPUTE: 'DISPUTE',
   JOB: 'JOB',
+  CONTRACT: 'CONTRACT',
   REPORT: 'REPORT'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
+
+
+export const FinancialEventType: {
+  FUND_REQUESTED: 'FUND_REQUESTED',
+  FUND_CONFIRMED: 'FUND_CONFIRMED',
+  RELEASE_REQUESTED: 'RELEASE_REQUESTED',
+  RELEASE_CONFIRMED: 'RELEASE_CONFIRMED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_CONFIRMED: 'REFUND_CONFIRMED'
+};
+
+export type FinancialEventType = (typeof FinancialEventType)[keyof typeof FinancialEventType]
 
 
 export const KycDocumentType: {
@@ -266,6 +284,16 @@ export const PaymentStatus: {
 };
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const KycVerificationStatus: {
+  UNVERIFIED: 'UNVERIFIED',
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+};
+
+export type KycVerificationStatus = (typeof KycVerificationStatus)[keyof typeof KycVerificationStatus]
 
 
 export const LedgerAccountType: {
@@ -323,6 +351,10 @@ export type AuditEntityType = $Enums.AuditEntityType
 
 export const AuditEntityType: typeof $Enums.AuditEntityType
 
+export type FinancialEventType = $Enums.FinancialEventType
+
+export const FinancialEventType: typeof $Enums.FinancialEventType
+
 export type KycDocumentType = $Enums.KycDocumentType
 
 export const KycDocumentType: typeof $Enums.KycDocumentType
@@ -334,6 +366,10 @@ export const KycDocumentStatus: typeof $Enums.KycDocumentStatus
 export type PaymentStatus = $Enums.PaymentStatus
 
 export const PaymentStatus: typeof $Enums.PaymentStatus
+
+export type KycVerificationStatus = $Enums.KycVerificationStatus
+
+export const KycVerificationStatus: typeof $Enums.KycVerificationStatus
 
 export type LedgerAccountType = $Enums.LedgerAccountType
 
@@ -629,6 +665,16 @@ export class PrismaClient<
     * ```
     */
   get idempotencyKey(): Prisma.IdempotencyKeyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.financialEvent`: Exposes CRUD operations for the **FinancialEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FinancialEvents
+    * const financialEvents = await prisma.financialEvent.findMany()
+    * ```
+    */
+  get financialEvent(): Prisma.FinancialEventDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.ledgerAccount`: Exposes CRUD operations for the **LedgerAccount** model.
@@ -1120,6 +1166,7 @@ export namespace Prisma {
     Payment: 'Payment',
     KycDocument: 'KycDocument',
     IdempotencyKey: 'IdempotencyKey',
+    FinancialEvent: 'FinancialEvent',
     LedgerAccount: 'LedgerAccount',
     LedgerEntry: 'LedgerEntry',
     Session: 'Session',
@@ -1139,7 +1186,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "ledgerAccount" | "ledgerEntry" | "session" | "accountLockout"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "session" | "accountLockout"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2401,6 +2448,80 @@ export namespace Prisma {
           }
         }
       }
+      FinancialEvent: {
+        payload: Prisma.$FinancialEventPayload<ExtArgs>
+        fields: Prisma.FinancialEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FinancialEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FinancialEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>
+          }
+          findFirst: {
+            args: Prisma.FinancialEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FinancialEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>
+          }
+          findMany: {
+            args: Prisma.FinancialEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>[]
+          }
+          create: {
+            args: Prisma.FinancialEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>
+          }
+          createMany: {
+            args: Prisma.FinancialEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FinancialEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>[]
+          }
+          delete: {
+            args: Prisma.FinancialEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>
+          }
+          update: {
+            args: Prisma.FinancialEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.FinancialEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FinancialEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FinancialEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.FinancialEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialEventPayload>
+          }
+          aggregate: {
+            args: Prisma.FinancialEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFinancialEvent>
+          }
+          groupBy: {
+            args: Prisma.FinancialEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FinancialEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FinancialEventCountArgs<ExtArgs>
+            result: $Utils.Optional<FinancialEventCountAggregateOutputType> | number
+          }
+        }
+      }
       LedgerAccount: {
         payload: Prisma.$LedgerAccountPayload<ExtArgs>
         fields: Prisma.LedgerAccountFieldRefs
@@ -2822,6 +2943,7 @@ export namespace Prisma {
     payment?: PaymentOmit
     kycDocument?: KycDocumentOmit
     idempotencyKey?: IdempotencyKeyOmit
+    financialEvent?: FinancialEventOmit
     ledgerAccount?: LedgerAccountOmit
     ledgerEntry?: LedgerEntryOmit
     session?: SessionOmit
@@ -2918,7 +3040,8 @@ export namespace Prisma {
     notifications: number
     transactions: number
     payments: number
-    disputes: number
+    clientDisputes: number
+    artisanDisputes: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2934,7 +3057,8 @@ export namespace Prisma {
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
     payments?: boolean | UserCountOutputTypeCountPaymentsArgs
-    disputes?: boolean | UserCountOutputTypeCountDisputesArgs
+    clientDisputes?: boolean | UserCountOutputTypeCountClientDisputesArgs
+    artisanDisputes?: boolean | UserCountOutputTypeCountArtisanDisputesArgs
   }
 
   // Custom InputTypes
@@ -3035,7 +3159,14 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountClientDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DisputeWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountArtisanDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DisputeWhereInput
   }
 
@@ -3109,11 +3240,15 @@ export namespace Prisma {
   export type ContractCountOutputType = {
     payments: number
     ledgerEntries: number
+    financialEvents: number
+    disputes: number
   }
 
   export type ContractCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     payments?: boolean | ContractCountOutputTypeCountPaymentsArgs
     ledgerEntries?: boolean | ContractCountOutputTypeCountLedgerEntriesArgs
+    financialEvents?: boolean | ContractCountOutputTypeCountFinancialEventsArgs
+    disputes?: boolean | ContractCountOutputTypeCountDisputesArgs
   }
 
   // Custom InputTypes
@@ -3139,6 +3274,20 @@ export namespace Prisma {
    */
   export type ContractCountOutputTypeCountLedgerEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LedgerEntryWhereInput
+  }
+
+  /**
+   * ContractCountOutputType without action
+   */
+  export type ContractCountOutputTypeCountFinancialEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinancialEventWhereInput
+  }
+
+  /**
+   * ContractCountOutputType without action
+   */
+  export type ContractCountOutputTypeCountDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DisputeWhereInput
   }
 
 
@@ -3269,10 +3418,13 @@ export namespace Prisma {
     role: $Enums.UserRole | null
     status: $Enums.UserStatus | null
     artisanVerified: boolean | null
+    kycVerified: boolean | null
+    kycStatus: $Enums.KycVerificationStatus | null
     paystackRecipientCode: string | null
     payoutBankCode: string | null
     payoutAccountNumber: string | null
     payoutAccountName: string | null
+    phone: string | null
     createdAt: Date | null
     lastLoginAt: Date | null
     updatedAt: Date | null
@@ -3289,10 +3441,13 @@ export namespace Prisma {
     role: $Enums.UserRole | null
     status: $Enums.UserStatus | null
     artisanVerified: boolean | null
+    kycVerified: boolean | null
+    kycStatus: $Enums.KycVerificationStatus | null
     paystackRecipientCode: string | null
     payoutBankCode: string | null
     payoutAccountNumber: string | null
     payoutAccountName: string | null
+    phone: string | null
     createdAt: Date | null
     lastLoginAt: Date | null
     updatedAt: Date | null
@@ -3309,10 +3464,13 @@ export namespace Prisma {
     role: number
     status: number
     artisanVerified: number
+    kycVerified: number
+    kycStatus: number
     paystackRecipientCode: number
     payoutBankCode: number
     payoutAccountNumber: number
     payoutAccountName: number
+    phone: number
     createdAt: number
     lastLoginAt: number
     updatedAt: number
@@ -3331,10 +3489,13 @@ export namespace Prisma {
     role?: true
     status?: true
     artisanVerified?: true
+    kycVerified?: true
+    kycStatus?: true
     paystackRecipientCode?: true
     payoutBankCode?: true
     payoutAccountNumber?: true
     payoutAccountName?: true
+    phone?: true
     createdAt?: true
     lastLoginAt?: true
     updatedAt?: true
@@ -3351,10 +3512,13 @@ export namespace Prisma {
     role?: true
     status?: true
     artisanVerified?: true
+    kycVerified?: true
+    kycStatus?: true
     paystackRecipientCode?: true
     payoutBankCode?: true
     payoutAccountNumber?: true
     payoutAccountName?: true
+    phone?: true
     createdAt?: true
     lastLoginAt?: true
     updatedAt?: true
@@ -3371,10 +3535,13 @@ export namespace Prisma {
     role?: true
     status?: true
     artisanVerified?: true
+    kycVerified?: true
+    kycStatus?: true
     paystackRecipientCode?: true
     payoutBankCode?: true
     payoutAccountNumber?: true
     payoutAccountName?: true
+    phone?: true
     createdAt?: true
     lastLoginAt?: true
     updatedAt?: true
@@ -3464,10 +3631,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified: boolean
+    kycVerified: boolean
+    kycStatus: $Enums.KycVerificationStatus
     paystackRecipientCode: string | null
     payoutBankCode: string | null
     payoutAccountNumber: string | null
     payoutAccountName: string | null
+    phone: string | null
     createdAt: Date
     lastLoginAt: Date | null
     updatedAt: Date
@@ -3501,10 +3671,13 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: boolean
     paystackRecipientCode?: boolean
     payoutBankCode?: boolean
     payoutAccountNumber?: boolean
     payoutAccountName?: boolean
+    phone?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
@@ -3522,7 +3695,8 @@ export namespace Prisma {
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
     payments?: boolean | User$paymentsArgs<ExtArgs>
-    disputes?: boolean | User$disputesArgs<ExtArgs>
+    clientDisputes?: boolean | User$clientDisputesArgs<ExtArgs>
+    artisanDisputes?: boolean | User$artisanDisputesArgs<ExtArgs>
     ledgerAccounts?: boolean | User$ledgerAccountsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -3538,10 +3712,13 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: boolean
     paystackRecipientCode?: boolean
     payoutBankCode?: boolean
     payoutAccountNumber?: boolean
     payoutAccountName?: boolean
+    phone?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
@@ -3558,10 +3735,13 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: boolean
     paystackRecipientCode?: boolean
     payoutBankCode?: boolean
     payoutAccountNumber?: boolean
     payoutAccountName?: boolean
+    phone?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
@@ -3578,16 +3758,19 @@ export namespace Prisma {
     role?: boolean
     status?: boolean
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: boolean
     paystackRecipientCode?: boolean
     payoutBankCode?: boolean
     payoutAccountNumber?: boolean
     payoutAccountName?: boolean
+    phone?: boolean
     createdAt?: boolean
     lastLoginAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt" | "role" | "status" | "artisanVerified" | "paystackRecipientCode" | "payoutBankCode" | "payoutAccountNumber" | "payoutAccountName" | "createdAt" | "lastLoginAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "passwordHash" | "passwordResetTokenHash" | "passwordResetTokenExpiresAt" | "passwordResetRequestedAt" | "role" | "status" | "artisanVerified" | "kycVerified" | "kycStatus" | "paystackRecipientCode" | "payoutBankCode" | "payoutAccountNumber" | "payoutAccountName" | "phone" | "createdAt" | "lastLoginAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     artisanProfile?: boolean | User$artisanProfileArgs<ExtArgs>
     kycDocuments?: boolean | User$kycDocumentsArgs<ExtArgs>
@@ -3603,7 +3786,8 @@ export namespace Prisma {
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
     payments?: boolean | User$paymentsArgs<ExtArgs>
-    disputes?: boolean | User$disputesArgs<ExtArgs>
+    clientDisputes?: boolean | User$clientDisputesArgs<ExtArgs>
+    artisanDisputes?: boolean | User$artisanDisputesArgs<ExtArgs>
     ledgerAccounts?: boolean | User$ledgerAccountsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3627,7 +3811,8 @@ export namespace Prisma {
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
       payments: Prisma.$PaymentPayload<ExtArgs>[]
-      disputes: Prisma.$DisputePayload<ExtArgs>[]
+      clientDisputes: Prisma.$DisputePayload<ExtArgs>[]
+      artisanDisputes: Prisma.$DisputePayload<ExtArgs>[]
       ledgerAccounts: Prisma.$LedgerAccountPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3641,10 +3826,13 @@ export namespace Prisma {
       role: $Enums.UserRole
       status: $Enums.UserStatus
       artisanVerified: boolean
+      kycVerified: boolean
+      kycStatus: $Enums.KycVerificationStatus
       paystackRecipientCode: string | null
       payoutBankCode: string | null
       payoutAccountNumber: string | null
       payoutAccountName: string | null
+      phone: string | null
       createdAt: Date
       lastLoginAt: Date | null
       updatedAt: Date
@@ -4056,7 +4244,8 @@ export namespace Prisma {
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends User$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    disputes<T extends User$disputesArgs<ExtArgs> = {}>(args?: Subset<T, User$disputesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clientDisputes<T extends User$clientDisputesArgs<ExtArgs> = {}>(args?: Subset<T, User$clientDisputesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    artisanDisputes<T extends User$artisanDisputesArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanDisputesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ledgerAccounts<T extends User$ledgerAccountsArgs<ExtArgs> = {}>(args?: Subset<T, User$ledgerAccountsArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4097,10 +4286,13 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'UserRole'>
     readonly status: FieldRef<"User", 'UserStatus'>
     readonly artisanVerified: FieldRef<"User", 'Boolean'>
+    readonly kycVerified: FieldRef<"User", 'Boolean'>
+    readonly kycStatus: FieldRef<"User", 'KycVerificationStatus'>
     readonly paystackRecipientCode: FieldRef<"User", 'String'>
     readonly payoutBankCode: FieldRef<"User", 'String'>
     readonly payoutAccountNumber: FieldRef<"User", 'String'>
     readonly payoutAccountName: FieldRef<"User", 'String'>
+    readonly phone: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -4823,9 +5015,33 @@ export namespace Prisma {
   }
 
   /**
-   * User.disputes
+   * User.clientDisputes
    */
-  export type User$disputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$clientDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    cursor?: DisputeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
+  }
+
+  /**
+   * User.artisanDisputes
+   */
+  export type User$artisanDisputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Dispute
      */
@@ -5159,7 +5375,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     history?: boolean | Dispute$historyArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Dispute$contractArgs<ExtArgs>
     _count?: boolean | DisputeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dispute"]>
 
@@ -5180,7 +5398,9 @@ export namespace Prisma {
     resolutionNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Dispute$contractArgs<ExtArgs>
   }, ExtArgs["result"]["dispute"]>
 
   export type DisputeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5200,7 +5420,9 @@ export namespace Prisma {
     resolutionNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Dispute$contractArgs<ExtArgs>
   }, ExtArgs["result"]["dispute"]>
 
   export type DisputeSelectScalar = {
@@ -5225,21 +5447,29 @@ export namespace Prisma {
   export type DisputeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "jobId" | "clientId" | "artisanId" | "amount" | "status" | "evidenceImages" | "evidenceVideos" | "evidenceMessages" | "resolutionDecision" | "resolvedAt" | "resolvedBy" | "resolutionNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["dispute"]>
   export type DisputeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     history?: boolean | Dispute$historyArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Dispute$contractArgs<ExtArgs>
     _count?: boolean | DisputeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DisputeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Dispute$contractArgs<ExtArgs>
   }
   export type DisputeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    client?: boolean | UserDefaultArgs<ExtArgs>
+    artisan?: boolean | UserDefaultArgs<ExtArgs>
+    contract?: boolean | Dispute$contractArgs<ExtArgs>
   }
 
   export type $DisputePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Dispute"
     objects: {
       history: Prisma.$DisputeHistoryPayload<ExtArgs>[]
-      user: Prisma.$UserPayload<ExtArgs>
+      client: Prisma.$UserPayload<ExtArgs>
+      artisan: Prisma.$UserPayload<ExtArgs>
+      contract: Prisma.$ContractPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5653,7 +5883,9 @@ export namespace Prisma {
   export interface Prisma__DisputeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     history<T extends Dispute$historyArgs<ExtArgs> = {}>(args?: Subset<T, Dispute$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputeHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    contract<T extends Dispute$contractArgs<ExtArgs> = {}>(args?: Subset<T, Dispute$contractArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6121,6 +6353,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DisputeHistoryScalarFieldEnum | DisputeHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Dispute.contract
+   */
+  export type Dispute$contractArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
   }
 
   /**
@@ -12521,6 +12772,8 @@ export namespace Prisma {
     review?: boolean | Contract$reviewArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
     ledgerEntries?: boolean | Contract$ledgerEntriesArgs<ExtArgs>
+    financialEvents?: boolean | Contract$financialEventsArgs<ExtArgs>
+    disputes?: boolean | Contract$disputesArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
@@ -12644,6 +12897,8 @@ export namespace Prisma {
     review?: boolean | Contract$reviewArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
     ledgerEntries?: boolean | Contract$ledgerEntriesArgs<ExtArgs>
+    financialEvents?: boolean | Contract$financialEventsArgs<ExtArgs>
+    disputes?: boolean | Contract$disputesArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ContractIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12670,6 +12925,8 @@ export namespace Prisma {
       review: Prisma.$ReviewPayload<ExtArgs> | null
       payments: Prisma.$PaymentPayload<ExtArgs>[]
       ledgerEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
+      financialEvents: Prisma.$FinancialEventPayload<ExtArgs>[]
+      disputes: Prisma.$DisputePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -13105,6 +13362,8 @@ export namespace Prisma {
     review<T extends Contract$reviewArgs<ExtArgs> = {}>(args?: Subset<T, Contract$reviewArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payments<T extends Contract$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Contract$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ledgerEntries<T extends Contract$ledgerEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Contract$ledgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    financialEvents<T extends Contract$financialEventsArgs<ExtArgs> = {}>(args?: Subset<T, Contract$financialEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    disputes<T extends Contract$disputesArgs<ExtArgs> = {}>(args?: Subset<T, Contract$disputesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13649,6 +13908,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: LedgerEntryScalarFieldEnum | LedgerEntryScalarFieldEnum[]
+  }
+
+  /**
+   * Contract.financialEvents
+   */
+  export type Contract$financialEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    where?: FinancialEventWhereInput
+    orderBy?: FinancialEventOrderByWithRelationInput | FinancialEventOrderByWithRelationInput[]
+    cursor?: FinancialEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FinancialEventScalarFieldEnum | FinancialEventScalarFieldEnum[]
+  }
+
+  /**
+   * Contract.disputes
+   */
+  export type Contract$disputesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+    orderBy?: DisputeOrderByWithRelationInput | DisputeOrderByWithRelationInput[]
+    cursor?: DisputeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DisputeScalarFieldEnum | DisputeScalarFieldEnum[]
   }
 
   /**
@@ -24047,6 +24354,1125 @@ export namespace Prisma {
 
 
   /**
+   * Model FinancialEvent
+   */
+
+  export type AggregateFinancialEvent = {
+    _count: FinancialEventCountAggregateOutputType | null
+    _avg: FinancialEventAvgAggregateOutputType | null
+    _sum: FinancialEventSumAggregateOutputType | null
+    _min: FinancialEventMinAggregateOutputType | null
+    _max: FinancialEventMaxAggregateOutputType | null
+  }
+
+  export type FinancialEventAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type FinancialEventSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type FinancialEventMinAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    type: $Enums.FinancialEventType | null
+    amount: number | null
+    actorId: string | null
+    createdAt: Date | null
+  }
+
+  export type FinancialEventMaxAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    type: $Enums.FinancialEventType | null
+    amount: number | null
+    actorId: string | null
+    createdAt: Date | null
+  }
+
+  export type FinancialEventCountAggregateOutputType = {
+    id: number
+    contractId: number
+    type: number
+    amount: number
+    actorId: number
+    metadata: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FinancialEventAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type FinancialEventSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type FinancialEventMinAggregateInputType = {
+    id?: true
+    contractId?: true
+    type?: true
+    amount?: true
+    actorId?: true
+    createdAt?: true
+  }
+
+  export type FinancialEventMaxAggregateInputType = {
+    id?: true
+    contractId?: true
+    type?: true
+    amount?: true
+    actorId?: true
+    createdAt?: true
+  }
+
+  export type FinancialEventCountAggregateInputType = {
+    id?: true
+    contractId?: true
+    type?: true
+    amount?: true
+    actorId?: true
+    metadata?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FinancialEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinancialEvent to aggregate.
+     */
+    where?: FinancialEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialEvents to fetch.
+     */
+    orderBy?: FinancialEventOrderByWithRelationInput | FinancialEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FinancialEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FinancialEvents
+    **/
+    _count?: true | FinancialEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FinancialEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FinancialEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FinancialEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FinancialEventMaxAggregateInputType
+  }
+
+  export type GetFinancialEventAggregateType<T extends FinancialEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateFinancialEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFinancialEvent[P]>
+      : GetScalarType<T[P], AggregateFinancialEvent[P]>
+  }
+
+
+
+
+  export type FinancialEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinancialEventWhereInput
+    orderBy?: FinancialEventOrderByWithAggregationInput | FinancialEventOrderByWithAggregationInput[]
+    by: FinancialEventScalarFieldEnum[] | FinancialEventScalarFieldEnum
+    having?: FinancialEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FinancialEventCountAggregateInputType | true
+    _avg?: FinancialEventAvgAggregateInputType
+    _sum?: FinancialEventSumAggregateInputType
+    _min?: FinancialEventMinAggregateInputType
+    _max?: FinancialEventMaxAggregateInputType
+  }
+
+  export type FinancialEventGroupByOutputType = {
+    id: string
+    contractId: string
+    type: $Enums.FinancialEventType
+    amount: number
+    actorId: string | null
+    metadata: JsonValue | null
+    createdAt: Date
+    _count: FinancialEventCountAggregateOutputType | null
+    _avg: FinancialEventAvgAggregateOutputType | null
+    _sum: FinancialEventSumAggregateOutputType | null
+    _min: FinancialEventMinAggregateOutputType | null
+    _max: FinancialEventMaxAggregateOutputType | null
+  }
+
+  type GetFinancialEventGroupByPayload<T extends FinancialEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FinancialEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FinancialEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FinancialEventGroupByOutputType[P]>
+            : GetScalarType<T[P], FinancialEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FinancialEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    type?: boolean
+    amount?: boolean
+    actorId?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financialEvent"]>
+
+  export type FinancialEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    type?: boolean
+    amount?: boolean
+    actorId?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financialEvent"]>
+
+  export type FinancialEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    type?: boolean
+    amount?: boolean
+    actorId?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financialEvent"]>
+
+  export type FinancialEventSelectScalar = {
+    id?: boolean
+    contractId?: boolean
+    type?: boolean
+    amount?: boolean
+    actorId?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+  }
+
+  export type FinancialEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "type" | "amount" | "actorId" | "metadata" | "createdAt", ExtArgs["result"]["financialEvent"]>
+  export type FinancialEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }
+  export type FinancialEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }
+  export type FinancialEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+  }
+
+  export type $FinancialEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FinancialEvent"
+    objects: {
+      contract: Prisma.$ContractPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contractId: string
+      type: $Enums.FinancialEventType
+      amount: number
+      actorId: string | null
+      metadata: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["financialEvent"]>
+    composites: {}
+  }
+
+  type FinancialEventGetPayload<S extends boolean | null | undefined | FinancialEventDefaultArgs> = $Result.GetResult<Prisma.$FinancialEventPayload, S>
+
+  type FinancialEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FinancialEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FinancialEventCountAggregateInputType | true
+    }
+
+  export interface FinancialEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FinancialEvent'], meta: { name: 'FinancialEvent' } }
+    /**
+     * Find zero or one FinancialEvent that matches the filter.
+     * @param {FinancialEventFindUniqueArgs} args - Arguments to find a FinancialEvent
+     * @example
+     * // Get one FinancialEvent
+     * const financialEvent = await prisma.financialEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FinancialEventFindUniqueArgs>(args: SelectSubset<T, FinancialEventFindUniqueArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FinancialEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FinancialEventFindUniqueOrThrowArgs} args - Arguments to find a FinancialEvent
+     * @example
+     * // Get one FinancialEvent
+     * const financialEvent = await prisma.financialEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FinancialEventFindUniqueOrThrowArgs>(args: SelectSubset<T, FinancialEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinancialEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialEventFindFirstArgs} args - Arguments to find a FinancialEvent
+     * @example
+     * // Get one FinancialEvent
+     * const financialEvent = await prisma.financialEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FinancialEventFindFirstArgs>(args?: SelectSubset<T, FinancialEventFindFirstArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinancialEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialEventFindFirstOrThrowArgs} args - Arguments to find a FinancialEvent
+     * @example
+     * // Get one FinancialEvent
+     * const financialEvent = await prisma.financialEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FinancialEventFindFirstOrThrowArgs>(args?: SelectSubset<T, FinancialEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FinancialEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FinancialEvents
+     * const financialEvents = await prisma.financialEvent.findMany()
+     * 
+     * // Get first 10 FinancialEvents
+     * const financialEvents = await prisma.financialEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const financialEventWithIdOnly = await prisma.financialEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FinancialEventFindManyArgs>(args?: SelectSubset<T, FinancialEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FinancialEvent.
+     * @param {FinancialEventCreateArgs} args - Arguments to create a FinancialEvent.
+     * @example
+     * // Create one FinancialEvent
+     * const FinancialEvent = await prisma.financialEvent.create({
+     *   data: {
+     *     // ... data to create a FinancialEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends FinancialEventCreateArgs>(args: SelectSubset<T, FinancialEventCreateArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FinancialEvents.
+     * @param {FinancialEventCreateManyArgs} args - Arguments to create many FinancialEvents.
+     * @example
+     * // Create many FinancialEvents
+     * const financialEvent = await prisma.financialEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FinancialEventCreateManyArgs>(args?: SelectSubset<T, FinancialEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FinancialEvents and returns the data saved in the database.
+     * @param {FinancialEventCreateManyAndReturnArgs} args - Arguments to create many FinancialEvents.
+     * @example
+     * // Create many FinancialEvents
+     * const financialEvent = await prisma.financialEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FinancialEvents and only return the `id`
+     * const financialEventWithIdOnly = await prisma.financialEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FinancialEventCreateManyAndReturnArgs>(args?: SelectSubset<T, FinancialEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FinancialEvent.
+     * @param {FinancialEventDeleteArgs} args - Arguments to delete one FinancialEvent.
+     * @example
+     * // Delete one FinancialEvent
+     * const FinancialEvent = await prisma.financialEvent.delete({
+     *   where: {
+     *     // ... filter to delete one FinancialEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FinancialEventDeleteArgs>(args: SelectSubset<T, FinancialEventDeleteArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FinancialEvent.
+     * @param {FinancialEventUpdateArgs} args - Arguments to update one FinancialEvent.
+     * @example
+     * // Update one FinancialEvent
+     * const financialEvent = await prisma.financialEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FinancialEventUpdateArgs>(args: SelectSubset<T, FinancialEventUpdateArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FinancialEvents.
+     * @param {FinancialEventDeleteManyArgs} args - Arguments to filter FinancialEvents to delete.
+     * @example
+     * // Delete a few FinancialEvents
+     * const { count } = await prisma.financialEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FinancialEventDeleteManyArgs>(args?: SelectSubset<T, FinancialEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinancialEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FinancialEvents
+     * const financialEvent = await prisma.financialEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FinancialEventUpdateManyArgs>(args: SelectSubset<T, FinancialEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinancialEvents and returns the data updated in the database.
+     * @param {FinancialEventUpdateManyAndReturnArgs} args - Arguments to update many FinancialEvents.
+     * @example
+     * // Update many FinancialEvents
+     * const financialEvent = await prisma.financialEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FinancialEvents and only return the `id`
+     * const financialEventWithIdOnly = await prisma.financialEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FinancialEventUpdateManyAndReturnArgs>(args: SelectSubset<T, FinancialEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FinancialEvent.
+     * @param {FinancialEventUpsertArgs} args - Arguments to update or create a FinancialEvent.
+     * @example
+     * // Update or create a FinancialEvent
+     * const financialEvent = await prisma.financialEvent.upsert({
+     *   create: {
+     *     // ... data to create a FinancialEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FinancialEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FinancialEventUpsertArgs>(args: SelectSubset<T, FinancialEventUpsertArgs<ExtArgs>>): Prisma__FinancialEventClient<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FinancialEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialEventCountArgs} args - Arguments to filter FinancialEvents to count.
+     * @example
+     * // Count the number of FinancialEvents
+     * const count = await prisma.financialEvent.count({
+     *   where: {
+     *     // ... the filter for the FinancialEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends FinancialEventCountArgs>(
+      args?: Subset<T, FinancialEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FinancialEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FinancialEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FinancialEventAggregateArgs>(args: Subset<T, FinancialEventAggregateArgs>): Prisma.PrismaPromise<GetFinancialEventAggregateType<T>>
+
+    /**
+     * Group by FinancialEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FinancialEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FinancialEventGroupByArgs['orderBy'] }
+        : { orderBy?: FinancialEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FinancialEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFinancialEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FinancialEvent model
+   */
+  readonly fields: FinancialEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FinancialEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FinancialEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contract<T extends ContractDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContractDefaultArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FinancialEvent model
+   */
+  interface FinancialEventFieldRefs {
+    readonly id: FieldRef<"FinancialEvent", 'String'>
+    readonly contractId: FieldRef<"FinancialEvent", 'String'>
+    readonly type: FieldRef<"FinancialEvent", 'FinancialEventType'>
+    readonly amount: FieldRef<"FinancialEvent", 'Int'>
+    readonly actorId: FieldRef<"FinancialEvent", 'String'>
+    readonly metadata: FieldRef<"FinancialEvent", 'Json'>
+    readonly createdAt: FieldRef<"FinancialEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FinancialEvent findUnique
+   */
+  export type FinancialEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialEvent to fetch.
+     */
+    where: FinancialEventWhereUniqueInput
+  }
+
+  /**
+   * FinancialEvent findUniqueOrThrow
+   */
+  export type FinancialEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialEvent to fetch.
+     */
+    where: FinancialEventWhereUniqueInput
+  }
+
+  /**
+   * FinancialEvent findFirst
+   */
+  export type FinancialEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialEvent to fetch.
+     */
+    where?: FinancialEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialEvents to fetch.
+     */
+    orderBy?: FinancialEventOrderByWithRelationInput | FinancialEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinancialEvents.
+     */
+    cursor?: FinancialEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinancialEvents.
+     */
+    distinct?: FinancialEventScalarFieldEnum | FinancialEventScalarFieldEnum[]
+  }
+
+  /**
+   * FinancialEvent findFirstOrThrow
+   */
+  export type FinancialEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialEvent to fetch.
+     */
+    where?: FinancialEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialEvents to fetch.
+     */
+    orderBy?: FinancialEventOrderByWithRelationInput | FinancialEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinancialEvents.
+     */
+    cursor?: FinancialEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinancialEvents.
+     */
+    distinct?: FinancialEventScalarFieldEnum | FinancialEventScalarFieldEnum[]
+  }
+
+  /**
+   * FinancialEvent findMany
+   */
+  export type FinancialEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialEvents to fetch.
+     */
+    where?: FinancialEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialEvents to fetch.
+     */
+    orderBy?: FinancialEventOrderByWithRelationInput | FinancialEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FinancialEvents.
+     */
+    cursor?: FinancialEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinancialEvents.
+     */
+    distinct?: FinancialEventScalarFieldEnum | FinancialEventScalarFieldEnum[]
+  }
+
+  /**
+   * FinancialEvent create
+   */
+  export type FinancialEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FinancialEvent.
+     */
+    data: XOR<FinancialEventCreateInput, FinancialEventUncheckedCreateInput>
+  }
+
+  /**
+   * FinancialEvent createMany
+   */
+  export type FinancialEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FinancialEvents.
+     */
+    data: FinancialEventCreateManyInput | FinancialEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FinancialEvent createManyAndReturn
+   */
+  export type FinancialEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many FinancialEvents.
+     */
+    data: FinancialEventCreateManyInput | FinancialEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FinancialEvent update
+   */
+  export type FinancialEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FinancialEvent.
+     */
+    data: XOR<FinancialEventUpdateInput, FinancialEventUncheckedUpdateInput>
+    /**
+     * Choose, which FinancialEvent to update.
+     */
+    where: FinancialEventWhereUniqueInput
+  }
+
+  /**
+   * FinancialEvent updateMany
+   */
+  export type FinancialEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FinancialEvents.
+     */
+    data: XOR<FinancialEventUpdateManyMutationInput, FinancialEventUncheckedUpdateManyInput>
+    /**
+     * Filter which FinancialEvents to update
+     */
+    where?: FinancialEventWhereInput
+    /**
+     * Limit how many FinancialEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinancialEvent updateManyAndReturn
+   */
+  export type FinancialEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * The data used to update FinancialEvents.
+     */
+    data: XOR<FinancialEventUpdateManyMutationInput, FinancialEventUncheckedUpdateManyInput>
+    /**
+     * Filter which FinancialEvents to update
+     */
+    where?: FinancialEventWhereInput
+    /**
+     * Limit how many FinancialEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FinancialEvent upsert
+   */
+  export type FinancialEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FinancialEvent to update in case it exists.
+     */
+    where: FinancialEventWhereUniqueInput
+    /**
+     * In case the FinancialEvent found by the `where` argument doesn't exist, create a new FinancialEvent with this data.
+     */
+    create: XOR<FinancialEventCreateInput, FinancialEventUncheckedCreateInput>
+    /**
+     * In case the FinancialEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FinancialEventUpdateInput, FinancialEventUncheckedUpdateInput>
+  }
+
+  /**
+   * FinancialEvent delete
+   */
+  export type FinancialEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+    /**
+     * Filter which FinancialEvent to delete.
+     */
+    where: FinancialEventWhereUniqueInput
+  }
+
+  /**
+   * FinancialEvent deleteMany
+   */
+  export type FinancialEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinancialEvents to delete
+     */
+    where?: FinancialEventWhereInput
+    /**
+     * Limit how many FinancialEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinancialEvent without action
+   */
+  export type FinancialEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialEvent
+     */
+    select?: FinancialEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialEvent
+     */
+    omit?: FinancialEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialEventInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model LedgerAccount
    */
 
@@ -28581,10 +30007,13 @@ export namespace Prisma {
     role: 'role',
     status: 'status',
     artisanVerified: 'artisanVerified',
+    kycVerified: 'kycVerified',
+    kycStatus: 'kycStatus',
     paystackRecipientCode: 'paystackRecipientCode',
     payoutBankCode: 'payoutBankCode',
     payoutAccountNumber: 'payoutAccountNumber',
     payoutAccountName: 'payoutAccountName',
+    phone: 'phone',
     createdAt: 'createdAt',
     lastLoginAt: 'lastLoginAt',
     updatedAt: 'updatedAt'
@@ -28892,6 +30321,19 @@ export namespace Prisma {
   export type IdempotencyKeyScalarFieldEnum = (typeof IdempotencyKeyScalarFieldEnum)[keyof typeof IdempotencyKeyScalarFieldEnum]
 
 
+  export const FinancialEventScalarFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    type: 'type',
+    amount: 'amount',
+    actorId: 'actorId',
+    metadata: 'metadata',
+    createdAt: 'createdAt'
+  };
+
+  export type FinancialEventScalarFieldEnum = (typeof FinancialEventScalarFieldEnum)[keyof typeof FinancialEventScalarFieldEnum]
+
+
   export const LedgerAccountScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -29060,6 +30502,20 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'KycVerificationStatus'
+   */
+  export type EnumKycVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycVerificationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'KycVerificationStatus[]'
+   */
+  export type ListEnumKycVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycVerificationStatus[]'>
     
 
 
@@ -29274,6 +30730,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'FinancialEventType'
+   */
+  export type EnumFinancialEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinancialEventType'>
+    
+
+
+  /**
+   * Reference to a field of type 'FinancialEventType[]'
+   */
+  export type ListEnumFinancialEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinancialEventType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'LedgerAccountType'
    */
   export type EnumLedgerAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerAccountType'>
@@ -29304,10 +30774,13 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     artisanVerified?: BoolFilter<"User"> | boolean
+    kycVerified?: BoolFilter<"User"> | boolean
+    kycStatus?: EnumKycVerificationStatusFilter<"User"> | $Enums.KycVerificationStatus
     paystackRecipientCode?: StringNullableFilter<"User"> | string | null
     payoutBankCode?: StringNullableFilter<"User"> | string | null
     payoutAccountNumber?: StringNullableFilter<"User"> | string | null
     payoutAccountName?: StringNullableFilter<"User"> | string | null
+    phone?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -29325,7 +30798,8 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     transactions?: TransactionListRelationFilter
     payments?: PaymentListRelationFilter
-    disputes?: DisputeListRelationFilter
+    clientDisputes?: DisputeListRelationFilter
+    artisanDisputes?: DisputeListRelationFilter
     ledgerAccounts?: XOR<LedgerAccountNullableScalarRelationFilter, LedgerAccountWhereInput> | null
   }
 
@@ -29340,10 +30814,13 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    kycVerified?: SortOrder
+    kycStatus?: SortOrder
     paystackRecipientCode?: SortOrderInput | SortOrder
     payoutBankCode?: SortOrderInput | SortOrder
     payoutAccountNumber?: SortOrderInput | SortOrder
     payoutAccountName?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
@@ -29361,7 +30838,8 @@ export namespace Prisma {
     notifications?: NotificationOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
     payments?: PaymentOrderByRelationAggregateInput
-    disputes?: DisputeOrderByRelationAggregateInput
+    clientDisputes?: DisputeOrderByRelationAggregateInput
+    artisanDisputes?: DisputeOrderByRelationAggregateInput
     ledgerAccounts?: LedgerAccountOrderByWithRelationInput
   }
 
@@ -29379,10 +30857,13 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     artisanVerified?: BoolFilter<"User"> | boolean
+    kycVerified?: BoolFilter<"User"> | boolean
+    kycStatus?: EnumKycVerificationStatusFilter<"User"> | $Enums.KycVerificationStatus
     paystackRecipientCode?: StringNullableFilter<"User"> | string | null
     payoutBankCode?: StringNullableFilter<"User"> | string | null
     payoutAccountNumber?: StringNullableFilter<"User"> | string | null
     payoutAccountName?: StringNullableFilter<"User"> | string | null
+    phone?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -29400,7 +30881,8 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     transactions?: TransactionListRelationFilter
     payments?: PaymentListRelationFilter
-    disputes?: DisputeListRelationFilter
+    clientDisputes?: DisputeListRelationFilter
+    artisanDisputes?: DisputeListRelationFilter
     ledgerAccounts?: XOR<LedgerAccountNullableScalarRelationFilter, LedgerAccountWhereInput> | null
   }, "id" | "email" | "passwordResetTokenHash">
 
@@ -29415,10 +30897,13 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    kycVerified?: SortOrder
+    kycStatus?: SortOrder
     paystackRecipientCode?: SortOrderInput | SortOrder
     payoutBankCode?: SortOrderInput | SortOrder
     payoutAccountNumber?: SortOrderInput | SortOrder
     payoutAccountName?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
@@ -29441,10 +30926,13 @@ export namespace Prisma {
     role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
     status?: EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
     artisanVerified?: BoolWithAggregatesFilter<"User"> | boolean
+    kycVerified?: BoolWithAggregatesFilter<"User"> | boolean
+    kycStatus?: EnumKycVerificationStatusWithAggregatesFilter<"User"> | $Enums.KycVerificationStatus
     paystackRecipientCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     payoutBankCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     payoutAccountNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     payoutAccountName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -29471,7 +30959,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Dispute"> | Date | string
     updatedAt?: DateTimeFilter<"Dispute"> | Date | string
     history?: DisputeHistoryListRelationFilter
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
   }
 
   export type DisputeOrderByWithRelationInput = {
@@ -29492,7 +30982,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     history?: DisputeHistoryOrderByRelationAggregateInput
-    user?: UserOrderByWithRelationInput
+    client?: UserOrderByWithRelationInput
+    artisan?: UserOrderByWithRelationInput
+    contract?: ContractOrderByWithRelationInput
   }
 
   export type DisputeWhereUniqueInput = Prisma.AtLeast<{
@@ -29516,7 +31008,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Dispute"> | Date | string
     updatedAt?: DateTimeFilter<"Dispute"> | Date | string
     history?: DisputeHistoryListRelationFilter
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
+    contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
   }, "id">
 
   export type DisputeOrderByWithAggregationInput = {
@@ -29796,6 +31290,7 @@ export namespace Prisma {
 
   export type TransactionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    reference?: string
     AND?: TransactionWhereInput | TransactionWhereInput[]
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
@@ -29803,14 +31298,13 @@ export namespace Prisma {
     type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
     amount?: IntFilter<"Transaction"> | number
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
-    reference?: StringFilter<"Transaction"> | string
     metadata?: JsonNullableFilter<"Transaction">
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     completedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
     failedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
     failureReason?: StringNullableFilter<"Transaction"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "id" | "reference">
 
   export type TransactionOrderByWithAggregationInput = {
     id?: SortOrder
@@ -30065,6 +31559,8 @@ export namespace Prisma {
     review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
     payments?: PaymentListRelationFilter
     ledgerEntries?: LedgerEntryListRelationFilter
+    financialEvents?: FinancialEventListRelationFilter
+    disputes?: DisputeListRelationFilter
   }
 
   export type ContractOrderByWithRelationInput = {
@@ -30107,6 +31603,8 @@ export namespace Prisma {
     review?: ReviewOrderByWithRelationInput
     payments?: PaymentOrderByRelationAggregateInput
     ledgerEntries?: LedgerEntryOrderByRelationAggregateInput
+    financialEvents?: FinancialEventOrderByRelationAggregateInput
+    disputes?: DisputeOrderByRelationAggregateInput
   }
 
   export type ContractWhereUniqueInput = Prisma.AtLeast<{
@@ -30152,6 +31650,8 @@ export namespace Prisma {
     review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
     payments?: PaymentListRelationFilter
     ledgerEntries?: LedgerEntryListRelationFilter
+    financialEvents?: FinancialEventListRelationFilter
+    disputes?: DisputeListRelationFilter
   }, "id" | "jobId" | "proposalId" | "paystackReference">
 
   export type ContractOrderByWithAggregationInput = {
@@ -30977,17 +32477,18 @@ export namespace Prisma {
 
   export type IdempotencyKeyWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    key?: string
+    namespace_key?: IdempotencyKeyNamespaceKeyCompoundUniqueInput
     AND?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
     OR?: IdempotencyKeyWhereInput[]
     NOT?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
+    key?: StringFilter<"IdempotencyKey"> | string
     namespace?: StringFilter<"IdempotencyKey"> | string
     lockedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
     metadata?: JsonNullableFilter<"IdempotencyKey">
     createdAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
     updatedAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
-  }, "id" | "key">
+  }, "id" | "namespace_key">
 
   export type IdempotencyKeyOrderByWithAggregationInput = {
     id?: SortOrder
@@ -31015,6 +32516,73 @@ export namespace Prisma {
     metadata?: JsonNullableWithAggregatesFilter<"IdempotencyKey">
     createdAt?: DateTimeWithAggregatesFilter<"IdempotencyKey"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"IdempotencyKey"> | Date | string
+  }
+
+  export type FinancialEventWhereInput = {
+    AND?: FinancialEventWhereInput | FinancialEventWhereInput[]
+    OR?: FinancialEventWhereInput[]
+    NOT?: FinancialEventWhereInput | FinancialEventWhereInput[]
+    id?: StringFilter<"FinancialEvent"> | string
+    contractId?: StringFilter<"FinancialEvent"> | string
+    type?: EnumFinancialEventTypeFilter<"FinancialEvent"> | $Enums.FinancialEventType
+    amount?: IntFilter<"FinancialEvent"> | number
+    actorId?: StringNullableFilter<"FinancialEvent"> | string | null
+    metadata?: JsonNullableFilter<"FinancialEvent">
+    createdAt?: DateTimeFilter<"FinancialEvent"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+  }
+
+  export type FinancialEventOrderByWithRelationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    actorId?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    contract?: ContractOrderByWithRelationInput
+  }
+
+  export type FinancialEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FinancialEventWhereInput | FinancialEventWhereInput[]
+    OR?: FinancialEventWhereInput[]
+    NOT?: FinancialEventWhereInput | FinancialEventWhereInput[]
+    contractId?: StringFilter<"FinancialEvent"> | string
+    type?: EnumFinancialEventTypeFilter<"FinancialEvent"> | $Enums.FinancialEventType
+    amount?: IntFilter<"FinancialEvent"> | number
+    actorId?: StringNullableFilter<"FinancialEvent"> | string | null
+    metadata?: JsonNullableFilter<"FinancialEvent">
+    createdAt?: DateTimeFilter<"FinancialEvent"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+  }, "id">
+
+  export type FinancialEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    actorId?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: FinancialEventCountOrderByAggregateInput
+    _avg?: FinancialEventAvgOrderByAggregateInput
+    _max?: FinancialEventMaxOrderByAggregateInput
+    _min?: FinancialEventMinOrderByAggregateInput
+    _sum?: FinancialEventSumOrderByAggregateInput
+  }
+
+  export type FinancialEventScalarWhereWithAggregatesInput = {
+    AND?: FinancialEventScalarWhereWithAggregatesInput | FinancialEventScalarWhereWithAggregatesInput[]
+    OR?: FinancialEventScalarWhereWithAggregatesInput[]
+    NOT?: FinancialEventScalarWhereWithAggregatesInput | FinancialEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FinancialEvent"> | string
+    contractId?: StringWithAggregatesFilter<"FinancialEvent"> | string
+    type?: EnumFinancialEventTypeWithAggregatesFilter<"FinancialEvent"> | $Enums.FinancialEventType
+    amount?: IntWithAggregatesFilter<"FinancialEvent"> | number
+    actorId?: StringNullableWithAggregatesFilter<"FinancialEvent"> | string | null
+    metadata?: JsonNullableWithAggregatesFilter<"FinancialEvent">
+    createdAt?: DateTimeWithAggregatesFilter<"FinancialEvent"> | Date | string
   }
 
   export type LedgerAccountWhereInput = {
@@ -31318,10 +32886,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -31339,7 +32910,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -31354,10 +32926,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -31375,7 +32950,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -31390,10 +32966,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31411,7 +32990,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -31426,10 +33006,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31447,7 +33030,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -31462,10 +33046,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -31482,10 +33069,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31502,10 +33092,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31513,9 +33106,7 @@ export namespace Prisma {
 
   export type DisputeCreateInput = {
     id: string
-    contractId?: string | null
     jobId?: string | null
-    artisanId: string
     amount: number
     status: $Enums.DisputeStatus
     evidenceImages: JsonNullValueInput | InputJsonValue
@@ -31528,7 +33119,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     history?: DisputeHistoryCreateNestedManyWithoutDisputeInput
-    user: UserCreateNestedOneWithoutDisputesInput
+    client: UserCreateNestedOneWithoutClientDisputesInput
+    artisan: UserCreateNestedOneWithoutArtisanDisputesInput
+    contract?: ContractCreateNestedOneWithoutDisputesInput
   }
 
   export type DisputeUncheckedCreateInput = {
@@ -31553,9 +33146,7 @@ export namespace Prisma {
 
   export type DisputeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: NullableStringFieldUpdateOperationsInput | string | null
     jobId?: NullableStringFieldUpdateOperationsInput | string | null
-    artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
     evidenceImages?: JsonNullValueInput | InputJsonValue
@@ -31568,7 +33159,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     history?: DisputeHistoryUpdateManyWithoutDisputeNestedInput
-    user?: UserUpdateOneRequiredWithoutDisputesNestedInput
+    client?: UserUpdateOneRequiredWithoutClientDisputesNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanDisputesNestedInput
+    contract?: ContractUpdateOneWithoutDisputesNestedInput
   }
 
   export type DisputeUncheckedUpdateInput = {
@@ -31612,9 +33205,7 @@ export namespace Prisma {
 
   export type DisputeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: NullableStringFieldUpdateOperationsInput | string | null
     jobId?: NullableStringFieldUpdateOperationsInput | string | null
-    artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
     evidenceImages?: JsonNullValueInput | InputJsonValue
@@ -32184,6 +33775,8 @@ export namespace Prisma {
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateInput = {
@@ -32222,6 +33815,8 @@ export namespace Prisma {
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractUpdateInput = {
@@ -32260,6 +33855,8 @@ export namespace Prisma {
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateInput = {
@@ -32298,6 +33895,8 @@ export namespace Prisma {
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractCreateManyInput = {
@@ -33285,6 +34884,75 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FinancialEventCreateInput = {
+    id?: string
+    type: $Enums.FinancialEventType
+    amount: number
+    actorId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    contract: ContractCreateNestedOneWithoutFinancialEventsInput
+  }
+
+  export type FinancialEventUncheckedCreateInput = {
+    id?: string
+    contractId: string
+    type: $Enums.FinancialEventType
+    amount: number
+    actorId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FinancialEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumFinancialEventTypeFieldUpdateOperationsInput | $Enums.FinancialEventType
+    amount?: IntFieldUpdateOperationsInput | number
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutFinancialEventsNestedInput
+  }
+
+  export type FinancialEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFinancialEventTypeFieldUpdateOperationsInput | $Enums.FinancialEventType
+    amount?: IntFieldUpdateOperationsInput | number
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialEventCreateManyInput = {
+    id?: string
+    contractId: string
+    type: $Enums.FinancialEventType
+    amount: number
+    actorId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FinancialEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumFinancialEventTypeFieldUpdateOperationsInput | $Enums.FinancialEventType
+    amount?: IntFieldUpdateOperationsInput | number
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    type?: EnumFinancialEventTypeFieldUpdateOperationsInput | $Enums.FinancialEventType
+    amount?: IntFieldUpdateOperationsInput | number
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LedgerAccountCreateInput = {
     id?: string
     name: string
@@ -33649,6 +35317,13 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type EnumKycVerificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycVerificationStatus | EnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycVerificationStatusFilter<$PrismaModel> | $Enums.KycVerificationStatus
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -33781,10 +35456,13 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    kycVerified?: SortOrder
+    kycStatus?: SortOrder
     paystackRecipientCode?: SortOrder
     payoutBankCode?: SortOrder
     payoutAccountNumber?: SortOrder
     payoutAccountName?: SortOrder
+    phone?: SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrder
     updatedAt?: SortOrder
@@ -33801,10 +35479,13 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    kycVerified?: SortOrder
+    kycStatus?: SortOrder
     paystackRecipientCode?: SortOrder
     payoutBankCode?: SortOrder
     payoutAccountNumber?: SortOrder
     payoutAccountName?: SortOrder
+    phone?: SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrder
     updatedAt?: SortOrder
@@ -33821,10 +35502,13 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     artisanVerified?: SortOrder
+    kycVerified?: SortOrder
+    kycStatus?: SortOrder
     paystackRecipientCode?: SortOrder
     payoutBankCode?: SortOrder
     payoutAccountNumber?: SortOrder
     payoutAccountName?: SortOrder
+    phone?: SortOrder
     createdAt?: SortOrder
     lastLoginAt?: SortOrder
     updatedAt?: SortOrder
@@ -33908,6 +35592,16 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type EnumKycVerificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycVerificationStatus | EnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycVerificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.KycVerificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKycVerificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumKycVerificationStatusFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -33979,6 +35673,11 @@ export namespace Prisma {
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type ContractNullableScalarRelationFilter = {
+    is?: ContractWhereInput | null
+    isNot?: ContractWhereInput | null
   }
 
   export type DisputeHistoryOrderByRelationAggregateInput = {
@@ -34182,11 +35881,6 @@ export namespace Prisma {
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
-  }
-
-  export type ContractNullableScalarRelationFilter = {
-    is?: ContractWhereInput | null
-    isNot?: ContractWhereInput | null
   }
 
   export type JobCountOrderByAggregateInput = {
@@ -34571,7 +36265,17 @@ export namespace Prisma {
     none?: LedgerEntryWhereInput
   }
 
+  export type FinancialEventListRelationFilter = {
+    every?: FinancialEventWhereInput
+    some?: FinancialEventWhereInput
+    none?: FinancialEventWhereInput
+  }
+
   export type LedgerEntryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FinancialEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -35182,6 +36886,11 @@ export namespace Prisma {
     _max?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
   }
 
+  export type IdempotencyKeyNamespaceKeyCompoundUniqueInput = {
+    namespace: string
+    key: string
+  }
+
   export type IdempotencyKeyCountOrderByAggregateInput = {
     id?: SortOrder
     key?: SortOrder
@@ -35211,6 +36920,59 @@ export namespace Prisma {
     completedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumFinancialEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinancialEventType | EnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinancialEventTypeFilter<$PrismaModel> | $Enums.FinancialEventType
+  }
+
+  export type FinancialEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    actorId?: SortOrder
+    metadata?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FinancialEventAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type FinancialEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    actorId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FinancialEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    actorId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FinancialEventSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumFinancialEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinancialEventType | EnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinancialEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.FinancialEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinancialEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumFinancialEventTypeFilter<$PrismaModel>
   }
 
   export type EnumLedgerAccountTypeFilter<$PrismaModel = never> = {
@@ -35489,10 +37251,17 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
   }
 
-  export type DisputeCreateNestedManyWithoutUserInput = {
-    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
-    createMany?: DisputeCreateManyUserInputEnvelope
+  export type DisputeCreateNestedManyWithoutClientInput = {
+    create?: XOR<DisputeCreateWithoutClientInput, DisputeUncheckedCreateWithoutClientInput> | DisputeCreateWithoutClientInput[] | DisputeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutClientInput | DisputeCreateOrConnectWithoutClientInput[]
+    createMany?: DisputeCreateManyClientInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type DisputeCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<DisputeCreateWithoutArtisanInput, DisputeUncheckedCreateWithoutArtisanInput> | DisputeCreateWithoutArtisanInput[] | DisputeUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutArtisanInput | DisputeCreateOrConnectWithoutArtisanInput[]
+    createMany?: DisputeCreateManyArtisanInputEnvelope
     connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
   }
 
@@ -35598,10 +37367,17 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
   }
 
-  export type DisputeUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
-    createMany?: DisputeCreateManyUserInputEnvelope
+  export type DisputeUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<DisputeCreateWithoutClientInput, DisputeUncheckedCreateWithoutClientInput> | DisputeCreateWithoutClientInput[] | DisputeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutClientInput | DisputeCreateOrConnectWithoutClientInput[]
+    createMany?: DisputeCreateManyClientInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
+  export type DisputeUncheckedCreateNestedManyWithoutArtisanInput = {
+    create?: XOR<DisputeCreateWithoutArtisanInput, DisputeUncheckedCreateWithoutArtisanInput> | DisputeCreateWithoutArtisanInput[] | DisputeUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutArtisanInput | DisputeCreateOrConnectWithoutArtisanInput[]
+    createMany?: DisputeCreateManyArtisanInputEnvelope
     connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
   }
 
@@ -35633,6 +37409,10 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type EnumKycVerificationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.KycVerificationStatus
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -35827,17 +37607,31 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
-  export type DisputeUpdateManyWithoutUserNestedInput = {
-    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
-    upsert?: DisputeUpsertWithWhereUniqueWithoutUserInput | DisputeUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: DisputeCreateManyUserInputEnvelope
+  export type DisputeUpdateManyWithoutClientNestedInput = {
+    create?: XOR<DisputeCreateWithoutClientInput, DisputeUncheckedCreateWithoutClientInput> | DisputeCreateWithoutClientInput[] | DisputeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutClientInput | DisputeCreateOrConnectWithoutClientInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutClientInput | DisputeUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: DisputeCreateManyClientInputEnvelope
     set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
     disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
     delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
     connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
-    update?: DisputeUpdateWithWhereUniqueWithoutUserInput | DisputeUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: DisputeUpdateManyWithWhereWithoutUserInput | DisputeUpdateManyWithWhereWithoutUserInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutClientInput | DisputeUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutClientInput | DisputeUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type DisputeUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<DisputeCreateWithoutArtisanInput, DisputeUncheckedCreateWithoutArtisanInput> | DisputeCreateWithoutArtisanInput[] | DisputeUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutArtisanInput | DisputeCreateOrConnectWithoutArtisanInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutArtisanInput | DisputeUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: DisputeCreateManyArtisanInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutArtisanInput | DisputeUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutArtisanInput | DisputeUpdateManyWithWhereWithoutArtisanInput[]
     deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
   }
 
@@ -36039,17 +37833,31 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
-  export type DisputeUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput> | DisputeCreateWithoutUserInput[] | DisputeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DisputeCreateOrConnectWithoutUserInput | DisputeCreateOrConnectWithoutUserInput[]
-    upsert?: DisputeUpsertWithWhereUniqueWithoutUserInput | DisputeUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: DisputeCreateManyUserInputEnvelope
+  export type DisputeUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<DisputeCreateWithoutClientInput, DisputeUncheckedCreateWithoutClientInput> | DisputeCreateWithoutClientInput[] | DisputeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutClientInput | DisputeCreateOrConnectWithoutClientInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutClientInput | DisputeUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: DisputeCreateManyClientInputEnvelope
     set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
     disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
     delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
     connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
-    update?: DisputeUpdateWithWhereUniqueWithoutUserInput | DisputeUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: DisputeUpdateManyWithWhereWithoutUserInput | DisputeUpdateManyWithWhereWithoutUserInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutClientInput | DisputeUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutClientInput | DisputeUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutArtisanNestedInput = {
+    create?: XOR<DisputeCreateWithoutArtisanInput, DisputeUncheckedCreateWithoutArtisanInput> | DisputeCreateWithoutArtisanInput[] | DisputeUncheckedCreateWithoutArtisanInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutArtisanInput | DisputeCreateOrConnectWithoutArtisanInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutArtisanInput | DisputeUpsertWithWhereUniqueWithoutArtisanInput[]
+    createMany?: DisputeCreateManyArtisanInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutArtisanInput | DisputeUpdateWithWhereUniqueWithoutArtisanInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutArtisanInput | DisputeUpdateManyWithWhereWithoutArtisanInput[]
     deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
   }
 
@@ -36070,10 +37878,22 @@ export namespace Prisma {
     connect?: DisputeHistoryWhereUniqueInput | DisputeHistoryWhereUniqueInput[]
   }
 
-  export type UserCreateNestedOneWithoutDisputesInput = {
-    create?: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDisputesInput
+  export type UserCreateNestedOneWithoutClientDisputesInput = {
+    create?: XOR<UserCreateWithoutClientDisputesInput, UserUncheckedCreateWithoutClientDisputesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientDisputesInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutArtisanDisputesInput = {
+    create?: XOR<UserCreateWithoutArtisanDisputesInput, UserUncheckedCreateWithoutArtisanDisputesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanDisputesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ContractCreateNestedOneWithoutDisputesInput = {
+    create?: XOR<ContractCreateWithoutDisputesInput, ContractUncheckedCreateWithoutDisputesInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutDisputesInput
+    connect?: ContractWhereUniqueInput
   }
 
   export type DisputeHistoryUncheckedCreateNestedManyWithoutDisputeInput = {
@@ -36113,12 +37933,30 @@ export namespace Prisma {
     deleteMany?: DisputeHistoryScalarWhereInput | DisputeHistoryScalarWhereInput[]
   }
 
-  export type UserUpdateOneRequiredWithoutDisputesNestedInput = {
-    create?: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDisputesInput
-    upsert?: UserUpsertWithoutDisputesInput
+  export type UserUpdateOneRequiredWithoutClientDisputesNestedInput = {
+    create?: XOR<UserCreateWithoutClientDisputesInput, UserUncheckedCreateWithoutClientDisputesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientDisputesInput
+    upsert?: UserUpsertWithoutClientDisputesInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDisputesInput, UserUpdateWithoutDisputesInput>, UserUncheckedUpdateWithoutDisputesInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClientDisputesInput, UserUpdateWithoutClientDisputesInput>, UserUncheckedUpdateWithoutClientDisputesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutArtisanDisputesNestedInput = {
+    create?: XOR<UserCreateWithoutArtisanDisputesInput, UserUncheckedCreateWithoutArtisanDisputesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutArtisanDisputesInput
+    upsert?: UserUpsertWithoutArtisanDisputesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutArtisanDisputesInput, UserUpdateWithoutArtisanDisputesInput>, UserUncheckedUpdateWithoutArtisanDisputesInput>
+  }
+
+  export type ContractUpdateOneWithoutDisputesNestedInput = {
+    create?: XOR<ContractCreateWithoutDisputesInput, ContractUncheckedCreateWithoutDisputesInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutDisputesInput
+    upsert?: ContractUpsertWithoutDisputesInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutDisputesInput, ContractUpdateWithoutDisputesInput>, ContractUncheckedUpdateWithoutDisputesInput>
   }
 
   export type DisputeHistoryUncheckedUpdateManyWithoutDisputeNestedInput = {
@@ -36437,6 +38275,20 @@ export namespace Prisma {
     connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
   }
 
+  export type FinancialEventCreateNestedManyWithoutContractInput = {
+    create?: XOR<FinancialEventCreateWithoutContractInput, FinancialEventUncheckedCreateWithoutContractInput> | FinancialEventCreateWithoutContractInput[] | FinancialEventUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: FinancialEventCreateOrConnectWithoutContractInput | FinancialEventCreateOrConnectWithoutContractInput[]
+    createMany?: FinancialEventCreateManyContractInputEnvelope
+    connect?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+  }
+
+  export type DisputeCreateNestedManyWithoutContractInput = {
+    create?: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput> | DisputeCreateWithoutContractInput[] | DisputeUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutContractInput | DisputeCreateOrConnectWithoutContractInput[]
+    createMany?: DisputeCreateManyContractInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+  }
+
   export type ConversationUncheckedCreateNestedOneWithoutContractInput = {
     create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
     connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
@@ -36461,6 +38313,20 @@ export namespace Prisma {
     connectOrCreate?: LedgerEntryCreateOrConnectWithoutContractInput | LedgerEntryCreateOrConnectWithoutContractInput[]
     createMany?: LedgerEntryCreateManyContractInputEnvelope
     connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
+  }
+
+  export type FinancialEventUncheckedCreateNestedManyWithoutContractInput = {
+    create?: XOR<FinancialEventCreateWithoutContractInput, FinancialEventUncheckedCreateWithoutContractInput> | FinancialEventCreateWithoutContractInput[] | FinancialEventUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: FinancialEventCreateOrConnectWithoutContractInput | FinancialEventCreateOrConnectWithoutContractInput[]
+    createMany?: FinancialEventCreateManyContractInputEnvelope
+    connect?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+  }
+
+  export type DisputeUncheckedCreateNestedManyWithoutContractInput = {
+    create?: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput> | DisputeCreateWithoutContractInput[] | DisputeUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutContractInput | DisputeCreateOrConnectWithoutContractInput[]
+    createMany?: DisputeCreateManyContractInputEnvelope
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
   }
 
   export type EnumContractStatusFieldUpdateOperationsInput = {
@@ -36547,6 +38413,34 @@ export namespace Prisma {
     deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
   }
 
+  export type FinancialEventUpdateManyWithoutContractNestedInput = {
+    create?: XOR<FinancialEventCreateWithoutContractInput, FinancialEventUncheckedCreateWithoutContractInput> | FinancialEventCreateWithoutContractInput[] | FinancialEventUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: FinancialEventCreateOrConnectWithoutContractInput | FinancialEventCreateOrConnectWithoutContractInput[]
+    upsert?: FinancialEventUpsertWithWhereUniqueWithoutContractInput | FinancialEventUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: FinancialEventCreateManyContractInputEnvelope
+    set?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    disconnect?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    delete?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    connect?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    update?: FinancialEventUpdateWithWhereUniqueWithoutContractInput | FinancialEventUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: FinancialEventUpdateManyWithWhereWithoutContractInput | FinancialEventUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: FinancialEventScalarWhereInput | FinancialEventScalarWhereInput[]
+  }
+
+  export type DisputeUpdateManyWithoutContractNestedInput = {
+    create?: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput> | DisputeCreateWithoutContractInput[] | DisputeUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutContractInput | DisputeCreateOrConnectWithoutContractInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutContractInput | DisputeUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: DisputeCreateManyContractInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutContractInput | DisputeUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutContractInput | DisputeUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
+  }
+
   export type ConversationUncheckedUpdateOneWithoutContractNestedInput = {
     create?: XOR<ConversationCreateWithoutContractInput, ConversationUncheckedCreateWithoutContractInput>
     connectOrCreate?: ConversationCreateOrConnectWithoutContractInput
@@ -36593,6 +38487,34 @@ export namespace Prisma {
     update?: LedgerEntryUpdateWithWhereUniqueWithoutContractInput | LedgerEntryUpdateWithWhereUniqueWithoutContractInput[]
     updateMany?: LedgerEntryUpdateManyWithWhereWithoutContractInput | LedgerEntryUpdateManyWithWhereWithoutContractInput[]
     deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
+  export type FinancialEventUncheckedUpdateManyWithoutContractNestedInput = {
+    create?: XOR<FinancialEventCreateWithoutContractInput, FinancialEventUncheckedCreateWithoutContractInput> | FinancialEventCreateWithoutContractInput[] | FinancialEventUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: FinancialEventCreateOrConnectWithoutContractInput | FinancialEventCreateOrConnectWithoutContractInput[]
+    upsert?: FinancialEventUpsertWithWhereUniqueWithoutContractInput | FinancialEventUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: FinancialEventCreateManyContractInputEnvelope
+    set?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    disconnect?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    delete?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    connect?: FinancialEventWhereUniqueInput | FinancialEventWhereUniqueInput[]
+    update?: FinancialEventUpdateWithWhereUniqueWithoutContractInput | FinancialEventUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: FinancialEventUpdateManyWithWhereWithoutContractInput | FinancialEventUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: FinancialEventScalarWhereInput | FinancialEventScalarWhereInput[]
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutContractNestedInput = {
+    create?: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput> | DisputeCreateWithoutContractInput[] | DisputeUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: DisputeCreateOrConnectWithoutContractInput | DisputeCreateOrConnectWithoutContractInput[]
+    upsert?: DisputeUpsertWithWhereUniqueWithoutContractInput | DisputeUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: DisputeCreateManyContractInputEnvelope
+    set?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    disconnect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    delete?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    connect?: DisputeWhereUniqueInput | DisputeWhereUniqueInput[]
+    update?: DisputeUpdateWithWhereUniqueWithoutContractInput | DisputeUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: DisputeUpdateManyWithWhereWithoutContractInput | DisputeUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: DisputeScalarWhereInput | DisputeScalarWhereInput[]
   }
 
   export type ContractCreateNestedOneWithoutConversationInput = {
@@ -36839,6 +38761,24 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutKycDocumentsInput, UserUpdateWithoutKycDocumentsInput>, UserUncheckedUpdateWithoutKycDocumentsInput>
   }
 
+  export type ContractCreateNestedOneWithoutFinancialEventsInput = {
+    create?: XOR<ContractCreateWithoutFinancialEventsInput, ContractUncheckedCreateWithoutFinancialEventsInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutFinancialEventsInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type EnumFinancialEventTypeFieldUpdateOperationsInput = {
+    set?: $Enums.FinancialEventType
+  }
+
+  export type ContractUpdateOneRequiredWithoutFinancialEventsNestedInput = {
+    create?: XOR<ContractCreateWithoutFinancialEventsInput, ContractUncheckedCreateWithoutFinancialEventsInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutFinancialEventsInput
+    upsert?: ContractUpsertWithoutFinancialEventsInput
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutFinancialEventsInput, ContractUpdateWithoutFinancialEventsInput>, ContractUncheckedUpdateWithoutFinancialEventsInput>
+  }
+
   export type UserCreateNestedOneWithoutLedgerAccountsInput = {
     create?: XOR<UserCreateWithoutLedgerAccountsInput, UserUncheckedCreateWithoutLedgerAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutLedgerAccountsInput
@@ -37061,6 +39001,13 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedEnumKycVerificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycVerificationStatus | EnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycVerificationStatusFilter<$PrismaModel> | $Enums.KycVerificationStatus
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -37168,6 +39115,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumKycVerificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KycVerificationStatus | EnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.KycVerificationStatus[] | ListEnumKycVerificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumKycVerificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.KycVerificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumKycVerificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumKycVerificationStatusFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -37504,6 +39461,23 @@ export namespace Prisma {
     _max?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumFinancialEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinancialEventType | EnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinancialEventTypeFilter<$PrismaModel> | $Enums.FinancialEventType
+  }
+
+  export type NestedEnumFinancialEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinancialEventType | EnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinancialEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.FinancialEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinancialEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumFinancialEventTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumLedgerAccountTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.LedgerAccountType | EnumLedgerAccountTypeFieldRefInput<$PrismaModel>
     in?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
@@ -37689,6 +39663,8 @@ export namespace Prisma {
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutClientInput = {
@@ -37726,6 +39702,8 @@ export namespace Prisma {
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutClientInput = {
@@ -37773,6 +39751,8 @@ export namespace Prisma {
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutArtisanInput = {
@@ -37810,6 +39790,8 @@ export namespace Prisma {
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutArtisanInput = {
@@ -38185,11 +40167,9 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type DisputeCreateWithoutUserInput = {
+  export type DisputeCreateWithoutClientInput = {
     id: string
-    contractId?: string | null
     jobId?: string | null
-    artisanId: string
     amount: number
     status: $Enums.DisputeStatus
     evidenceImages: JsonNullValueInput | InputJsonValue
@@ -38202,9 +40182,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     history?: DisputeHistoryCreateNestedManyWithoutDisputeInput
+    artisan: UserCreateNestedOneWithoutArtisanDisputesInput
+    contract?: ContractCreateNestedOneWithoutDisputesInput
   }
 
-  export type DisputeUncheckedCreateWithoutUserInput = {
+  export type DisputeUncheckedCreateWithoutClientInput = {
     id: string
     contractId?: string | null
     jobId?: string | null
@@ -38223,13 +40205,61 @@ export namespace Prisma {
     history?: DisputeHistoryUncheckedCreateNestedManyWithoutDisputeInput
   }
 
-  export type DisputeCreateOrConnectWithoutUserInput = {
+  export type DisputeCreateOrConnectWithoutClientInput = {
     where: DisputeWhereUniqueInput
-    create: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput>
+    create: XOR<DisputeCreateWithoutClientInput, DisputeUncheckedCreateWithoutClientInput>
   }
 
-  export type DisputeCreateManyUserInputEnvelope = {
-    data: DisputeCreateManyUserInput | DisputeCreateManyUserInput[]
+  export type DisputeCreateManyClientInputEnvelope = {
+    data: DisputeCreateManyClientInput | DisputeCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DisputeCreateWithoutArtisanInput = {
+    id: string
+    jobId?: string | null
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    history?: DisputeHistoryCreateNestedManyWithoutDisputeInput
+    client: UserCreateNestedOneWithoutClientDisputesInput
+    contract?: ContractCreateNestedOneWithoutDisputesInput
+  }
+
+  export type DisputeUncheckedCreateWithoutArtisanInput = {
+    id: string
+    contractId?: string | null
+    jobId?: string | null
+    clientId: string
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    history?: DisputeHistoryUncheckedCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeCreateOrConnectWithoutArtisanInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutArtisanInput, DisputeUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type DisputeCreateManyArtisanInputEnvelope = {
+    data: DisputeCreateManyArtisanInput | DisputeCreateManyArtisanInput[]
     skipDuplicates?: boolean
   }
 
@@ -38698,20 +40728,20 @@ export namespace Prisma {
     refundedAt?: DateTimeNullableFilter<"Payment"> | Date | string | null
   }
 
-  export type DisputeUpsertWithWhereUniqueWithoutUserInput = {
+  export type DisputeUpsertWithWhereUniqueWithoutClientInput = {
     where: DisputeWhereUniqueInput
-    update: XOR<DisputeUpdateWithoutUserInput, DisputeUncheckedUpdateWithoutUserInput>
-    create: XOR<DisputeCreateWithoutUserInput, DisputeUncheckedCreateWithoutUserInput>
+    update: XOR<DisputeUpdateWithoutClientInput, DisputeUncheckedUpdateWithoutClientInput>
+    create: XOR<DisputeCreateWithoutClientInput, DisputeUncheckedCreateWithoutClientInput>
   }
 
-  export type DisputeUpdateWithWhereUniqueWithoutUserInput = {
+  export type DisputeUpdateWithWhereUniqueWithoutClientInput = {
     where: DisputeWhereUniqueInput
-    data: XOR<DisputeUpdateWithoutUserInput, DisputeUncheckedUpdateWithoutUserInput>
+    data: XOR<DisputeUpdateWithoutClientInput, DisputeUncheckedUpdateWithoutClientInput>
   }
 
-  export type DisputeUpdateManyWithWhereWithoutUserInput = {
+  export type DisputeUpdateManyWithWhereWithoutClientInput = {
     where: DisputeScalarWhereInput
-    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutUserInput>
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutClientInput>
   }
 
   export type DisputeScalarWhereInput = {
@@ -38734,6 +40764,22 @@ export namespace Prisma {
     resolutionNotes?: StringNullableFilter<"Dispute"> | string | null
     createdAt?: DateTimeFilter<"Dispute"> | Date | string
     updatedAt?: DateTimeFilter<"Dispute"> | Date | string
+  }
+
+  export type DisputeUpsertWithWhereUniqueWithoutArtisanInput = {
+    where: DisputeWhereUniqueInput
+    update: XOR<DisputeUpdateWithoutArtisanInput, DisputeUncheckedUpdateWithoutArtisanInput>
+    create: XOR<DisputeCreateWithoutArtisanInput, DisputeUncheckedCreateWithoutArtisanInput>
+  }
+
+  export type DisputeUpdateWithWhereUniqueWithoutArtisanInput = {
+    where: DisputeWhereUniqueInput
+    data: XOR<DisputeUpdateWithoutArtisanInput, DisputeUncheckedUpdateWithoutArtisanInput>
+  }
+
+  export type DisputeUpdateManyWithWhereWithoutArtisanInput = {
+    where: DisputeScalarWhereInput
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutArtisanInput>
   }
 
   export type LedgerAccountUpsertWithoutUserInput = {
@@ -38795,7 +40841,7 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserCreateWithoutDisputesInput = {
+  export type UserCreateWithoutClientDisputesInput = {
     id: string
     name: string
     email: string
@@ -38806,10 +40852,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -38827,10 +40876,11 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutDisputesInput = {
+  export type UserUncheckedCreateWithoutClientDisputesInput = {
     id: string
     name: string
     email: string
@@ -38841,10 +40891,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -38862,12 +40915,179 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutDisputesInput = {
+  export type UserCreateOrConnectWithoutClientDisputesInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
+    create: XOR<UserCreateWithoutClientDisputesInput, UserUncheckedCreateWithoutClientDisputesInput>
+  }
+
+  export type UserCreateWithoutArtisanDisputesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutArtisanDisputesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutArtisanDisputesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutArtisanDisputesInput, UserUncheckedCreateWithoutArtisanDisputesInput>
+  }
+
+  export type ContractCreateWithoutDisputesInput = {
+    id?: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+    payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutDisputesInput = {
+    id?: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutDisputesInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutDisputesInput, ContractUncheckedCreateWithoutDisputesInput>
   }
 
   export type DisputeHistoryUpsertWithWhereUniqueWithoutDisputeInput = {
@@ -38898,18 +41118,18 @@ export namespace Prisma {
     notes?: StringNullableFilter<"DisputeHistory"> | string | null
   }
 
-  export type UserUpsertWithoutDisputesInput = {
-    update: XOR<UserUpdateWithoutDisputesInput, UserUncheckedUpdateWithoutDisputesInput>
-    create: XOR<UserCreateWithoutDisputesInput, UserUncheckedCreateWithoutDisputesInput>
+  export type UserUpsertWithoutClientDisputesInput = {
+    update: XOR<UserUpdateWithoutClientDisputesInput, UserUncheckedUpdateWithoutClientDisputesInput>
+    create: XOR<UserCreateWithoutClientDisputesInput, UserUncheckedCreateWithoutClientDisputesInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutDisputesInput = {
+  export type UserUpdateToOneWithWhereWithoutClientDisputesInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutDisputesInput, UserUncheckedUpdateWithoutDisputesInput>
+    data: XOR<UserUpdateWithoutClientDisputesInput, UserUncheckedUpdateWithoutClientDisputesInput>
   }
 
-  export type UserUpdateWithoutDisputesInput = {
+  export type UserUpdateWithoutClientDisputesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -38920,10 +41140,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38941,10 +41164,11 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutDisputesInput = {
+  export type UserUncheckedUpdateWithoutClientDisputesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -38955,10 +41179,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38976,14 +41203,191 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutArtisanDisputesInput = {
+    update: XOR<UserUpdateWithoutArtisanDisputesInput, UserUncheckedUpdateWithoutArtisanDisputesInput>
+    create: XOR<UserCreateWithoutArtisanDisputesInput, UserUncheckedCreateWithoutArtisanDisputesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutArtisanDisputesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutArtisanDisputesInput, UserUncheckedUpdateWithoutArtisanDisputesInput>
+  }
+
+  export type UserUpdateWithoutArtisanDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutArtisanDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type ContractUpsertWithoutDisputesInput = {
+    update: XOR<ContractUpdateWithoutDisputesInput, ContractUncheckedUpdateWithoutDisputesInput>
+    create: XOR<ContractCreateWithoutDisputesInput, ContractUncheckedCreateWithoutDisputesInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutDisputesInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutDisputesInput, ContractUncheckedUpdateWithoutDisputesInput>
+  }
+
+  export type ContractUpdateWithoutDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+    payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutDisputesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type DisputeCreateWithoutHistoryInput = {
     id: string
-    contractId?: string | null
     jobId?: string | null
-    artisanId: string
     amount: number
     status: $Enums.DisputeStatus
     evidenceImages: JsonNullValueInput | InputJsonValue
@@ -38995,7 +41399,9 @@ export namespace Prisma {
     resolutionNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutDisputesInput
+    client: UserCreateNestedOneWithoutClientDisputesInput
+    artisan: UserCreateNestedOneWithoutArtisanDisputesInput
+    contract?: ContractCreateNestedOneWithoutDisputesInput
   }
 
   export type DisputeUncheckedCreateWithoutHistoryInput = {
@@ -39035,9 +41441,7 @@ export namespace Prisma {
 
   export type DisputeUpdateWithoutHistoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: NullableStringFieldUpdateOperationsInput | string | null
     jobId?: NullableStringFieldUpdateOperationsInput | string | null
-    artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
     evidenceImages?: JsonNullValueInput | InputJsonValue
@@ -39049,7 +41453,9 @@ export namespace Prisma {
     resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutDisputesNestedInput
+    client?: UserUpdateOneRequiredWithoutClientDisputesNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanDisputesNestedInput
+    contract?: ContractUpdateOneWithoutDisputesNestedInput
   }
 
   export type DisputeUncheckedUpdateWithoutHistoryInput = {
@@ -39082,10 +41488,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39102,7 +41511,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -39117,10 +41527,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39137,7 +41550,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -39157,10 +41571,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39177,7 +41594,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -39192,10 +41610,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39212,7 +41633,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -39256,6 +41678,8 @@ export namespace Prisma {
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutJobInput = {
@@ -39293,6 +41717,8 @@ export namespace Prisma {
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutJobInput = {
@@ -39356,10 +41782,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39376,7 +41805,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -39391,10 +41821,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39411,7 +41844,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -39437,10 +41871,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39457,7 +41894,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -39472,10 +41910,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39492,7 +41933,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -39542,6 +41984,8 @@ export namespace Prisma {
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutJobInput = {
@@ -39579,6 +42023,8 @@ export namespace Prisma {
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ProposalUpsertWithWhereUniqueWithoutJobInput = {
@@ -39608,10 +42054,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39628,7 +42077,8 @@ export namespace Prisma {
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -39643,10 +42093,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39663,7 +42116,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -39694,10 +42148,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39714,7 +42171,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -39729,10 +42187,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39749,7 +42210,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -39764,10 +42226,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39784,7 +42249,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -39799,10 +42265,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39819,7 +42288,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -39850,10 +42320,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39870,7 +42343,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -39885,10 +42359,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39905,7 +42382,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -39971,10 +42449,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -39991,7 +42472,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -40006,10 +42488,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -40026,7 +42511,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -40046,10 +42532,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -40066,7 +42555,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -40081,10 +42571,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -40101,7 +42594,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -40145,6 +42639,8 @@ export namespace Prisma {
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutProposalInput = {
@@ -40182,6 +42678,8 @@ export namespace Prisma {
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutProposalInput = {
@@ -40268,10 +42766,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40288,7 +42789,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -40303,10 +42805,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40323,7 +42828,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -40349,10 +42855,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40369,7 +42878,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -40384,10 +42894,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40404,7 +42917,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -40454,6 +42968,8 @@ export namespace Prisma {
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutProposalInput = {
@@ -40491,6 +43007,8 @@ export namespace Prisma {
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type JobCreateWithoutContractInput = {
@@ -40584,10 +43102,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -40604,7 +43125,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -40619,10 +43141,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -40639,7 +43164,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -40659,10 +43185,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -40679,7 +43208,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -40694,10 +43224,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -40714,7 +43247,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -40877,6 +43411,82 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FinancialEventCreateWithoutContractInput = {
+    id?: string
+    type: $Enums.FinancialEventType
+    amount: number
+    actorId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FinancialEventUncheckedCreateWithoutContractInput = {
+    id?: string
+    type: $Enums.FinancialEventType
+    amount: number
+    actorId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type FinancialEventCreateOrConnectWithoutContractInput = {
+    where: FinancialEventWhereUniqueInput
+    create: XOR<FinancialEventCreateWithoutContractInput, FinancialEventUncheckedCreateWithoutContractInput>
+  }
+
+  export type FinancialEventCreateManyContractInputEnvelope = {
+    data: FinancialEventCreateManyContractInput | FinancialEventCreateManyContractInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DisputeCreateWithoutContractInput = {
+    id: string
+    jobId?: string | null
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    history?: DisputeHistoryCreateNestedManyWithoutDisputeInput
+    client: UserCreateNestedOneWithoutClientDisputesInput
+    artisan: UserCreateNestedOneWithoutArtisanDisputesInput
+  }
+
+  export type DisputeUncheckedCreateWithoutContractInput = {
+    id: string
+    jobId?: string | null
+    clientId: string
+    artisanId: string
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    history?: DisputeHistoryUncheckedCreateNestedManyWithoutDisputeInput
+  }
+
+  export type DisputeCreateOrConnectWithoutContractInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput>
+  }
+
+  export type DisputeCreateManyContractInputEnvelope = {
+    data: DisputeCreateManyContractInput | DisputeCreateManyContractInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobUpsertWithoutContractInput = {
     update: XOR<JobUpdateWithoutContractInput, JobUncheckedUpdateWithoutContractInput>
     create: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
@@ -40991,10 +43601,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41011,7 +43624,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -41026,10 +43640,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41046,7 +43663,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -41072,10 +43690,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41092,7 +43713,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -41107,10 +43729,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41127,7 +43752,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -41252,6 +43878,51 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"LedgerEntry"> | Date | string
   }
 
+  export type FinancialEventUpsertWithWhereUniqueWithoutContractInput = {
+    where: FinancialEventWhereUniqueInput
+    update: XOR<FinancialEventUpdateWithoutContractInput, FinancialEventUncheckedUpdateWithoutContractInput>
+    create: XOR<FinancialEventCreateWithoutContractInput, FinancialEventUncheckedCreateWithoutContractInput>
+  }
+
+  export type FinancialEventUpdateWithWhereUniqueWithoutContractInput = {
+    where: FinancialEventWhereUniqueInput
+    data: XOR<FinancialEventUpdateWithoutContractInput, FinancialEventUncheckedUpdateWithoutContractInput>
+  }
+
+  export type FinancialEventUpdateManyWithWhereWithoutContractInput = {
+    where: FinancialEventScalarWhereInput
+    data: XOR<FinancialEventUpdateManyMutationInput, FinancialEventUncheckedUpdateManyWithoutContractInput>
+  }
+
+  export type FinancialEventScalarWhereInput = {
+    AND?: FinancialEventScalarWhereInput | FinancialEventScalarWhereInput[]
+    OR?: FinancialEventScalarWhereInput[]
+    NOT?: FinancialEventScalarWhereInput | FinancialEventScalarWhereInput[]
+    id?: StringFilter<"FinancialEvent"> | string
+    contractId?: StringFilter<"FinancialEvent"> | string
+    type?: EnumFinancialEventTypeFilter<"FinancialEvent"> | $Enums.FinancialEventType
+    amount?: IntFilter<"FinancialEvent"> | number
+    actorId?: StringNullableFilter<"FinancialEvent"> | string | null
+    metadata?: JsonNullableFilter<"FinancialEvent">
+    createdAt?: DateTimeFilter<"FinancialEvent"> | Date | string
+  }
+
+  export type DisputeUpsertWithWhereUniqueWithoutContractInput = {
+    where: DisputeWhereUniqueInput
+    update: XOR<DisputeUpdateWithoutContractInput, DisputeUncheckedUpdateWithoutContractInput>
+    create: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput>
+  }
+
+  export type DisputeUpdateWithWhereUniqueWithoutContractInput = {
+    where: DisputeWhereUniqueInput
+    data: XOR<DisputeUpdateWithoutContractInput, DisputeUncheckedUpdateWithoutContractInput>
+  }
+
+  export type DisputeUpdateManyWithWhereWithoutContractInput = {
+    where: DisputeScalarWhereInput
+    data: XOR<DisputeUpdateManyMutationInput, DisputeUncheckedUpdateManyWithoutContractInput>
+  }
+
   export type ContractCreateWithoutConversationInput = {
     id?: string
     amount: number
@@ -41287,6 +43958,8 @@ export namespace Prisma {
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutConversationInput = {
@@ -41324,6 +43997,8 @@ export namespace Prisma {
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutConversationInput = {
@@ -41411,6 +44086,8 @@ export namespace Prisma {
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutConversationInput = {
@@ -41448,6 +44125,8 @@ export namespace Prisma {
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
@@ -41545,10 +44224,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -41565,7 +44247,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -41580,10 +44263,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -41600,7 +44286,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -41631,10 +44318,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41651,7 +44341,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -41666,10 +44357,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41686,7 +44380,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -41725,6 +44420,8 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutReviewInput = {
@@ -41762,6 +44459,8 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutReviewInput = {
@@ -41780,10 +44479,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -41800,7 +44502,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -41815,10 +44518,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -41835,7 +44541,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -41855,10 +44562,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -41875,7 +44585,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -41890,10 +44601,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -41910,7 +44624,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -41965,6 +44680,8 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutReviewInput = {
@@ -42002,6 +44719,8 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type UserUpsertWithoutSentReviewsInput = {
@@ -42026,10 +44745,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42046,7 +44768,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -42061,10 +44784,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42081,7 +44807,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -42107,10 +44834,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42127,7 +44857,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -42142,10 +44873,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42162,7 +44896,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -42177,10 +44912,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42197,7 +44935,8 @@ export namespace Prisma {
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -42212,10 +44951,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42232,7 +44974,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -42263,10 +45006,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42283,7 +45029,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -42298,10 +45045,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42318,7 +45068,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -42357,6 +45108,8 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutPaymentsInput = {
@@ -42394,6 +45147,8 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutPaymentsInput = {
@@ -42412,10 +45167,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42432,7 +45190,8 @@ export namespace Prisma {
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -42447,10 +45206,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42467,7 +45229,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -42554,6 +45317,8 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutPaymentsInput = {
@@ -42591,6 +45356,8 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type UserUpsertWithoutPaymentsInput = {
@@ -42615,10 +45382,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42635,7 +45405,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -42650,10 +45421,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42670,7 +45444,8 @@ export namespace Prisma {
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -42701,10 +45476,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42721,7 +45499,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
   }
 
@@ -42736,10 +45515,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42756,7 +45538,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
     ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -42787,10 +45570,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42807,7 +45593,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
   }
 
@@ -42822,10 +45609,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42842,8 +45632,181 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type ContractCreateWithoutFinancialEventsInput = {
+    id?: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
+    review?: ReviewCreateNestedOneWithoutContractInput
+    payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutFinancialEventsInput = {
+    id?: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
+    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutFinancialEventsInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutFinancialEventsInput, ContractUncheckedCreateWithoutFinancialEventsInput>
+  }
+
+  export type ContractUpsertWithoutFinancialEventsInput = {
+    update: XOR<ContractUpdateWithoutFinancialEventsInput, ContractUncheckedUpdateWithoutFinancialEventsInput>
+    create: XOR<ContractCreateWithoutFinancialEventsInput, ContractUncheckedCreateWithoutFinancialEventsInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutFinancialEventsInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutFinancialEventsInput, ContractUncheckedUpdateWithoutFinancialEventsInput>
+  }
+
+  export type ContractUpdateWithoutFinancialEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
+    review?: ReviewUpdateOneWithoutContractNestedInput
+    payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutFinancialEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
+    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type UserCreateWithoutLedgerAccountsInput = {
@@ -42857,10 +45820,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42878,7 +45844,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
-    disputes?: DisputeCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
   }
 
   export type UserUncheckedCreateWithoutLedgerAccountsInput = {
@@ -42892,10 +45859,13 @@ export namespace Prisma {
     role: $Enums.UserRole
     status: $Enums.UserStatus
     artisanVerified?: boolean
+    kycVerified?: boolean
+    kycStatus?: $Enums.KycVerificationStatus
     paystackRecipientCode?: string | null
     payoutBankCode?: string | null
     payoutAccountNumber?: string | null
     payoutAccountName?: string | null
+    phone?: string | null
     createdAt: Date | string
     lastLoginAt?: Date | string | null
     updatedAt?: Date | string
@@ -42913,7 +45883,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
   }
 
   export type UserCreateOrConnectWithoutLedgerAccountsInput = {
@@ -43007,10 +45978,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43028,7 +46002,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLedgerAccountsInput = {
@@ -43042,10 +46017,13 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycVerified?: BoolFieldUpdateOperationsInput | boolean
+    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
     paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
     payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43063,7 +46041,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
   }
 
   export type LedgerEntryUpsertWithWhereUniqueWithoutDebitAccountInput = {
@@ -43187,6 +46166,8 @@ export namespace Prisma {
     conversation?: ConversationCreateNestedOneWithoutContractInput
     review?: ReviewCreateNestedOneWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutLedgerEntriesInput = {
@@ -43224,6 +46205,8 @@ export namespace Prisma {
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
     review?: ReviewUncheckedCreateNestedOneWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutLedgerEntriesInput = {
@@ -43398,6 +46381,8 @@ export namespace Prisma {
     conversation?: ConversationUpdateOneWithoutContractNestedInput
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutLedgerEntriesInput = {
@@ -43435,6 +46420,8 @@ export namespace Prisma {
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type PaymentUpsertWithoutLedgerEntriesInput = {
@@ -43728,11 +46715,29 @@ export namespace Prisma {
     refundedAt?: Date | string | null
   }
 
-  export type DisputeCreateManyUserInput = {
+  export type DisputeCreateManyClientInput = {
     id: string
     contractId?: string | null
     jobId?: string | null
     artisanId: string
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DisputeCreateManyArtisanInput = {
+    id: string
+    contractId?: string | null
+    jobId?: string | null
+    clientId: string
     amount: number
     status: $Enums.DisputeStatus
     evidenceImages: JsonNullValueInput | InputJsonValue
@@ -43887,6 +46892,8 @@ export namespace Prisma {
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutClientInput = {
@@ -43924,6 +46931,8 @@ export namespace Prisma {
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateManyWithoutClientInput = {
@@ -43994,6 +47003,8 @@ export namespace Prisma {
     review?: ReviewUpdateOneWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutArtisanInput = {
@@ -44031,6 +47042,8 @@ export namespace Prisma {
     review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateManyWithoutArtisanInput = {
@@ -44466,11 +47479,9 @@ export namespace Prisma {
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type DisputeUpdateWithoutUserInput = {
+  export type DisputeUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contractId?: NullableStringFieldUpdateOperationsInput | string | null
     jobId?: NullableStringFieldUpdateOperationsInput | string | null
-    artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
     evidenceImages?: JsonNullValueInput | InputJsonValue
@@ -44483,9 +47494,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     history?: DisputeHistoryUpdateManyWithoutDisputeNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanDisputesNestedInput
+    contract?: ContractUpdateOneWithoutDisputesNestedInput
   }
 
-  export type DisputeUncheckedUpdateWithoutUserInput = {
+  export type DisputeUncheckedUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     jobId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44504,11 +47517,67 @@ export namespace Prisma {
     history?: DisputeHistoryUncheckedUpdateManyWithoutDisputeNestedInput
   }
 
-  export type DisputeUncheckedUpdateManyWithoutUserInput = {
+  export type DisputeUncheckedUpdateManyWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: NullableStringFieldUpdateOperationsInput | string | null
     jobId?: NullableStringFieldUpdateOperationsInput | string | null
     artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DisputeUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    history?: DisputeHistoryUpdateManyWithoutDisputeNestedInput
+    client?: UserUpdateOneRequiredWithoutClientDisputesNestedInput
+    contract?: ContractUpdateOneWithoutDisputesNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    history?: DisputeHistoryUncheckedUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutArtisanInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
     evidenceImages?: JsonNullValueInput | InputJsonValue
@@ -44635,6 +47704,33 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type FinancialEventCreateManyContractInput = {
+    id?: string
+    type: $Enums.FinancialEventType
+    amount: number
+    actorId?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type DisputeCreateManyContractInput = {
+    id: string
+    jobId?: string | null
+    clientId: string
+    artisanId: string
+    amount: number
+    status: $Enums.DisputeStatus
+    evidenceImages: JsonNullValueInput | InputJsonValue
+    evidenceVideos: JsonNullValueInput | InputJsonValue
+    evidenceMessages: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: $Enums.DisputeDecision | null
+    resolvedAt?: Date | string | null
+    resolvedBy?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type PaymentUpdateWithoutContractInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
@@ -44740,6 +47836,89 @@ export namespace Prisma {
     reference?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialEventUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumFinancialEventTypeFieldUpdateOperationsInput | $Enums.FinancialEventType
+    amount?: IntFieldUpdateOperationsInput | number
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialEventUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumFinancialEventTypeFieldUpdateOperationsInput | $Enums.FinancialEventType
+    amount?: IntFieldUpdateOperationsInput | number
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialEventUncheckedUpdateManyWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumFinancialEventTypeFieldUpdateOperationsInput | $Enums.FinancialEventType
+    amount?: IntFieldUpdateOperationsInput | number
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DisputeUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    history?: DisputeHistoryUpdateManyWithoutDisputeNestedInput
+    client?: UserUpdateOneRequiredWithoutClientDisputesNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanDisputesNestedInput
+  }
+
+  export type DisputeUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    history?: DisputeHistoryUncheckedUpdateManyWithoutDisputeNestedInput
+  }
+
+  export type DisputeUncheckedUpdateManyWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumDisputeStatusFieldUpdateOperationsInput | $Enums.DisputeStatus
+    evidenceImages?: JsonNullValueInput | InputJsonValue
+    evidenceVideos?: JsonNullValueInput | InputJsonValue
+    evidenceMessages?: JsonNullValueInput | InputJsonValue
+    resolutionDecision?: NullableEnumDisputeDecisionFieldUpdateOperationsInput | $Enums.DisputeDecision | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyConversationInput = {

@@ -131,10 +131,13 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   status: 'status',
   artisanVerified: 'artisanVerified',
+  kycVerified: 'kycVerified',
+  kycStatus: 'kycStatus',
   paystackRecipientCode: 'paystackRecipientCode',
   payoutBankCode: 'payoutBankCode',
   payoutAccountNumber: 'payoutAccountNumber',
   payoutAccountName: 'payoutAccountName',
+  phone: 'phone',
   createdAt: 'createdAt',
   lastLoginAt: 'lastLoginAt',
   updatedAt: 'updatedAt'
@@ -391,6 +394,16 @@ exports.Prisma.IdempotencyKeyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FinancialEventScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  type: 'type',
+  amount: 'amount',
+  actorId: 'actorId',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.LedgerAccountScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -474,6 +487,13 @@ exports.UserStatus = exports.$Enums.UserStatus = {
   BANNED: 'BANNED'
 };
 
+exports.KycVerificationStatus = exports.$Enums.KycVerificationStatus = {
+  UNVERIFIED: 'UNVERIFIED',
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+};
+
 exports.DisputeStatus = exports.$Enums.DisputeStatus = {
   OPEN: 'OPEN',
   RESOLVED: 'RESOLVED'
@@ -545,6 +565,7 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   USER: 'USER',
   DISPUTE: 'DISPUTE',
   JOB: 'JOB',
+  CONTRACT: 'CONTRACT',
   REPORT: 'REPORT'
 };
 
@@ -564,6 +585,15 @@ exports.KycDocumentStatus = exports.$Enums.KycDocumentStatus = {
   PENDING: 'PENDING',
   VERIFIED: 'VERIFIED',
   REJECTED: 'REJECTED'
+};
+
+exports.FinancialEventType = exports.$Enums.FinancialEventType = {
+  FUND_REQUESTED: 'FUND_REQUESTED',
+  FUND_CONFIRMED: 'FUND_CONFIRMED',
+  RELEASE_REQUESTED: 'RELEASE_REQUESTED',
+  RELEASE_CONFIRMED: 'RELEASE_CONFIRMED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_CONFIRMED: 'REFUND_CONFIRMED'
 };
 
 exports.LedgerAccountType = exports.$Enums.LedgerAccountType = {
@@ -591,6 +621,7 @@ exports.Prisma.ModelName = {
   Payment: 'Payment',
   KycDocument: 'KycDocument',
   IdempotencyKey: 'IdempotencyKey',
+  FinancialEvent: 'FinancialEvent',
   LedgerAccount: 'LedgerAccount',
   LedgerEntry: 'LedgerEntry',
   Session: 'Session',

@@ -174,6 +174,18 @@ PORT=3000
 NODE_ENV=development
 ```
 
+Required secrets:
+
+* `DATABASE_URL`, `JWT_SECRET`, and `PAYSTACK_SECRET_KEY` must be present or the backend should not boot successfully.
+* Never commit `.env` files. Rotate credentials immediately if a secret is exposed or shared accidentally.
+* Rate limiting uses NestJS in-memory throttling, so limits are per-instance until a shared store is introduced.
+
+Local secret scan:
+
+```bash
+npx gitleaks dir .
+```
+
 ---
 
 ## Database
@@ -466,8 +478,3 @@ WorkSure is:
 > A **state-machine-driven marketplace backend** where contracts define lifecycle truth, payments orchestrate settlement via Paystack, and all modules operate around controlled state transitions.
 
 ---
-
-If you want next, I can:
-
-* generate a **diagram image (PNG/SVG) for your portfolio**
-* or create a **system design doc you can use for interviews / presentations**

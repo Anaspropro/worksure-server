@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
+import { NotificationsGateway } from './notifications.gateway';
 import {
   CreateNotificationDto,
   MarkNotificationsDto,
@@ -17,7 +18,10 @@ import {
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsGateway: NotificationsGateway,
+  ) {}
 
   private async ensureUserExists(userId: string) {
     const user = await this.prisma.user.findUnique({
@@ -74,7 +78,10 @@ export class NotificationsService {
       },
     });
 
-    return this.toResponse(notification);
+    const response = this.toResponse(notification);
+    this.notificationsGateway.emitToUser(dto.userId, 'newNotification', response);
+
+    return response;
   }
 
   async listNotifications(
@@ -114,8 +121,8 @@ export class NotificationsService {
       };
     }
 
-    const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
 
     const [notifications, total] = await Promise.all([
       this.prisma.notification.findMany({
@@ -127,16 +134,19 @@ export class NotificationsService {
       this.prisma.notification.count({ where }),
     ]);
 
+    const items = notifications.map((notification) =>
+      this.toResponse(notification),
+    );
+
     return {
-      notifications: notifications.map((notification) =>
-        this.toResponse(notification),
-      ),
+      data: items,
+      notifications: items,
       pagination: {
         page,
-        limit,
+        limit: take,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
+        totalPages: Math.ceil(total / take),
+        hasNext: page * take < total,
         hasPrev: page > 1,
       },
     };
