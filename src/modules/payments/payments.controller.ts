@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Body,
   Controller,
   Get,
@@ -33,6 +34,8 @@ import {
   PaystackInitDto,
   PaystackVerifyDto,
   VerifyPaymentDto,
+  ReleasePaymentDto,
+  RefundPaymentDto,
 } from './dto/payment.dto';
 
 @ApiTags('payments')
@@ -116,9 +119,13 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Verify Paystack payment after redirect' })
   @ApiOkResponse({ description: 'Paystack payment verified successfully.' })
   @Post('paystack/verify')
-  async verifyPaystack(@Body() dto: PaystackVerifyDto) {
+  async verifyPaystack(
+    @CurrentUser() user: { id: string },
+    @Body() dto: PaystackVerifyDto,
+  ) {
     const result = await this.paymentsService.verifyPaystackPayment(
       dto.reference,
+      user.id,
     );
 
     return {
@@ -163,7 +170,9 @@ export class PaymentsController {
       };
     }
 
-    const result = await this.paymentsService.processPaystackWebhook(request.body);
+    const result = await this.paymentsService.processPaystackWebhook(
+      request.body,
+    );
     await this.webhookSignatureService.markEventProcessed(eventKey);
 
     return {
@@ -176,8 +185,12 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Manually verify a payment record' })
   @ApiOkResponse({ description: 'Payment verified successfully.' })
   @Post('verify')
-  async verifyPayment(@Body() dto: VerifyPaymentDto) {
+  async verifyPayment(
+    @CurrentUser() user: { id: string },
+    @Body() dto: VerifyPaymentDto,
+  ) {
     const result = await this.paymentsService.verifyPayment(
+      user.id,
       dto.paymentId,
       dto.verificationCode,
     );
@@ -228,6 +241,46 @@ export class PaymentsController {
   }
 
   @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Admin manual release of escrow (for disputes)' })
+  @ApiOkResponse({ description: 'Escrow released successfully.' })
+  @Post('release/admin')
+  async releaseEscrowAdmin(
+    @CurrentUser() user: { id: string; role: string },
+    @Body() dto: ReleasePaymentDto,
+  ) {
+    if (user.role !== 'ADMIN') {
+      throw new ForbiddenException('Only admin can manually release escrow');
+    }
+    await this.paymentsService.releaseEscrowByAdmin(dto.contractId, dto.reason);
+
+    return {
+      message: 'Escrow release initiated successfully',
+    };
+  }
+
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Refund a contract' })
+  @ApiOkResponse({ description: 'Refund requested successfully.' })
+  @Post('refund')
+  async refundContract(
+    @CurrentUser() user: { id: string; role: string },
+    @Body() dto: RefundPaymentDto,
+  ) {
+    const isAdmin = user.role === 'ADMIN';
+    const result = await this.paymentsService.refundContract(
+      dto.contractId,
+      user.id,
+      isAdmin,
+      dto.reason,
+    );
+
+    return {
+      message: 'Refund requested successfully',
+      data: result,
+    };
+  }
+
+  @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'List payments related to the current user' })
   @ApiOkResponse({ description: 'Payments retrieved successfully.' })
   @Get()
@@ -236,14 +289,5 @@ export class PaymentsController {
     @Query() query: PaymentListQueryDto,
   ) {
     return this.paymentsService.listPayments(user.id, query);
-  }
-
-  @Public()
-  @Post('webhook')
-  async handlePaystackWebhook(
-    @Req() req: any,
-    @Headers('x-paystack-signature') signature: string,
-  ) {
-    return this.paystackWebhook(req, signature);
   }
 }

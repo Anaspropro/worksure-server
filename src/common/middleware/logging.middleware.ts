@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 export interface RequestWithLog extends Request {
   startTime: number;
   requestId: string;
+  correlationId: string;
 }
 
 type ResponseEnd = (
@@ -17,15 +18,23 @@ export class LoggingMiddleware implements NestMiddleware {
   private readonly logger = new Logger('HTTP');
 
   use(req: RequestWithLog, res: Response, next: NextFunction) {
-    const requestId = this.generateRequestId();
+    const headerRequestId = req.get('x-request-id');
+    const headerCorrelationId = req.get('x-correlation-id');
+    const requestId = headerRequestId || this.generateRequestId();
+    const correlationId = headerCorrelationId || this.generateRequestId();
     const startTime = Date.now();
 
     // Attach to request for later use
     req.requestId = requestId;
+    req.correlationId = correlationId;
     req.startTime = startTime;
 
+    // Propagate tracing identifiers to clients for correlation
+    res.setHeader('X-Request-Id', requestId);
+    res.setHeader('X-Correlation-Id', correlationId);
+
     // Log request
-    this.logRequest(req, requestId);
+    this.logRequest(req, requestId, correlationId);
 
     // Override res.end to log response
     const originalEnd = res.end.bind(res) as ResponseEnd;
@@ -42,7 +51,7 @@ export class LoggingMiddleware implements NestMiddleware {
       );
 
       // Log security events
-      this.logSecurityEvents(req, res, requestId, duration);
+      this.logSecurityEvents(req, res, requestId, correlationId, duration);
 
       return originalEnd(chunk, encoding, cb);
     }) as Response['end'];
@@ -50,7 +59,11 @@ export class LoggingMiddleware implements NestMiddleware {
     next();
   }
 
-  private logRequest(req: RequestWithLog, requestId: string) {
+  private logRequest(
+    req: RequestWithLog,
+    requestId: string,
+    correlationId: string,
+  ) {
     const userAgent = req.get('User-Agent') || 'Unknown';
     const contentLength = req.get('Content-Length') || '0';
 
@@ -58,7 +71,7 @@ export class LoggingMiddleware implements NestMiddleware {
     const sanitizedUrl = this.sanitizeLogData(req.originalUrl);
 
     this.logger.log(
-      `Incoming Request: ${req.method} ${sanitizedUrl} - IP: ${req.ip} - UA: ${userAgent} - Content-Length: ${contentLength} - ID: ${requestId}`,
+      `Incoming Request: ${req.method} ${sanitizedUrl} - IP: ${req.ip} - UA: ${userAgent} - Content-Length: ${contentLength} - ID: ${requestId} - Correlation: ${correlationId}`,
     );
 
     // Log suspicious patterns
@@ -69,6 +82,7 @@ export class LoggingMiddleware implements NestMiddleware {
     req: RequestWithLog,
     res: Response,
     requestId: string,
+    correlationId: string,
     duration: number,
   ) {
     const statusCode = res.statusCode;
@@ -77,6 +91,7 @@ export class LoggingMiddleware implements NestMiddleware {
     if (req.originalUrl.includes('/auth/') && statusCode >= 400) {
       this.logger.warn(
         `Authentication failure: ${req.method} ${req.originalUrl} - IP: ${req.ip} - ID: ${requestId}`,
+        `Correlation: ${correlationId}`,
       );
     }
 
@@ -84,6 +99,7 @@ export class LoggingMiddleware implements NestMiddleware {
     if (statusCode === 429) {
       this.logger.warn(
         `Rate limit exceeded: ${req.method} ${req.originalUrl} - IP: ${req.ip} - ID: ${requestId}`,
+        `Correlation: ${correlationId}`,
       );
     }
 
@@ -91,6 +107,7 @@ export class LoggingMiddleware implements NestMiddleware {
     if (duration > 5000) {
       this.logger.warn(
         `Slow request detected: ${req.method} ${req.originalUrl} - ${duration}ms - IP: ${req.ip} - ID: ${requestId}`,
+        `Correlation: ${correlationId}`,
       );
     }
 
@@ -98,6 +115,7 @@ export class LoggingMiddleware implements NestMiddleware {
     if (req.originalUrl.includes('/admin/')) {
       this.logger.log(
         `Admin access: ${req.method} ${req.originalUrl} - IP: ${req.ip} - ID: ${requestId}`,
+        `Correlation: ${correlationId}`,
       );
     }
   }

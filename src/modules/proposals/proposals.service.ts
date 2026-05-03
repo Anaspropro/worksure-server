@@ -149,8 +149,8 @@ export class ProposalsService {
       artisanId,
       search,
     } = query;
-    const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
 
     const where: any = {};
     if (status) where.status = status;
@@ -187,16 +187,19 @@ export class ProposalsService {
       this.prisma.proposal.count({ where }),
     ]);
 
+    const items = proposals.map((proposal) =>
+      this.formatProposalResponse(proposal),
+    );
+
     return {
-      proposals: proposals.map((proposal) =>
-        this.formatProposalResponse(proposal),
-      ),
+      data: items,
+      proposals: items,
       pagination: {
         page,
-        limit,
+        limit: take,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
+        totalPages: Math.ceil(total / take),
+        hasNext: page * take < total,
         hasPrev: page > 1,
       },
     };

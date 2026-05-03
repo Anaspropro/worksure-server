@@ -241,6 +241,16 @@ export class WalletService {
       throw new BadRequestException('Amount must be positive');
     }
 
+    if (reference) {
+      const existingTransaction = await this.prisma.transaction.findUnique({
+        where: { reference },
+      });
+
+      if (existingTransaction) {
+        throw new BadRequestException('Transaction reference already used');
+      }
+    }
+
     const result = await this.prisma.$transaction(async (tx) => {
       const wallet =
         (await tx.wallet.findUnique({
@@ -378,7 +388,7 @@ export class WalletService {
       const availableBalance = wallet.balance - wallet.frozen;
       if (availableBalance < amount) {
         throw new BadRequestException(
-          'Insufficient available balance to freeze',
+          'Insufficient balance',
         );
       }
 

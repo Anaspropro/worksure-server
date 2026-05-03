@@ -15,22 +15,6 @@ export class SanitizationService {
       input
         // Remove potentially dangerous characters
         .replace(/[<>]/g, '')
-        // Remove JavaScript event handlers
-        .replace(/on\w+\s*=/gi, '')
-        // Remove javascript: protocol
-        .replace(/javascript:/gi, '')
-        // Remove data: protocol (except for safe data URIs)
-        .replace(/data:(?!image\/)/gi, '')
-        // Remove vbscript: protocol
-        .replace(/vbscript:/gi, '')
-        // Remove file: protocol
-        .replace(/file:/gi, '')
-        // Remove potential SQL injection patterns
-        .replace(/union\s+select/gi, '')
-        .replace(/drop\s+table/gi, '')
-        .replace(/insert\s+into/gi, '')
-        .replace(/update\s+set/gi, '')
-        .replace(/delete\s+from/gi, '')
         // Remove path traversal
         .replace(/\.\./g, '')
         // Remove null bytes
@@ -58,12 +42,6 @@ export class SanitizationService {
         .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
         // Remove embed tags
         .replace(/<embed\b[^>]*>/gi, '')
-        // Remove form tags
-        .replace(/<form\b[^<]*(?:(?!<\/form>)<[^<]*)*<\/form>/gi, '')
-        // Remove input tags
-        .replace(/<input\b[^>]*>/gi, '')
-        // Remove on* event handlers
-        .replace(/\son\w+\s*=/gi, '')
         // Remove javascript: protocol
         .replace(/javascript:/gi, '')
         // Remove vbscript: protocol

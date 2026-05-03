@@ -9,7 +9,6 @@ import {
   UseGuards,
   NotFoundException,
   ForbiddenException,
-  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -118,8 +117,8 @@ export class DisputesController {
       dateTo,
     } = query;
 
-    const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
 
     const where: any = {};
 
@@ -145,7 +144,14 @@ export class DisputesController {
         skip,
         take,
         include: {
-          user: {
+          client: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          artisan: {
             select: {
               id: true,
               name: true,
@@ -158,14 +164,19 @@ export class DisputesController {
       this.prisma.dispute.count({ where }),
     ]);
 
+    const items = disputes.map((dispute) =>
+      this.formatDisputeResponse(dispute),
+    );
+
     return {
-      disputes: disputes.map((dispute) => this.formatDisputeResponse(dispute)),
+      data: items,
+      disputes: items,
       pagination: {
         page,
-        limit,
+        limit: take,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
+        totalPages: Math.ceil(total / take),
+        hasNext: page * take < total,
         hasPrev: page > 1,
       },
     };
@@ -181,8 +192,13 @@ export class DisputesController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
   ) {
     const disputes = await this.disputesService.getDisputesByUser(user.id);
+    const items = disputes.map((dispute) =>
+      this.formatDisputeResponse(dispute),
+    );
 
-    return disputes.map((dispute) => this.formatDisputeResponse(dispute));
+    return {
+      data: items,
+    };
   }
 
   @ApiBearerAuth('bearer')

@@ -89,7 +89,17 @@ enum AuditEntityType {
   USER
   DISPUTE
   JOB
+  CONTRACT
   REPORT
+}
+
+enum FinancialEventType {
+  FUND_REQUESTED
+  FUND_CONFIRMED
+  RELEASE_REQUESTED
+  RELEASE_CONFIRMED
+  REFUND_REQUESTED
+  REFUND_CONFIRMED
 }
 
 enum KycDocumentType {
@@ -110,24 +120,34 @@ enum PaymentStatus {
   FAILED
 }
 
+enum KycVerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 model User {
-  id                          String     @id
+  id                          String                @id
   name                        String
-  email                       String     @unique
+  email                       String                @unique
   passwordHash                String
-  passwordResetTokenHash      String?    @unique
+  passwordResetTokenHash      String?               @unique
   passwordResetTokenExpiresAt DateTime?
   passwordResetRequestedAt    DateTime?
   role                        UserRole
   status                      UserStatus
-  artisanVerified             Boolean    @default(false)
+  artisanVerified             Boolean               @default(false)
+  kycVerified                 Boolean               @default(false)
+  kycStatus                   KycVerificationStatus @default(UNVERIFIED)
   paystackRecipientCode       String?
   payoutBankCode              String?
   payoutAccountNumber         String?
   payoutAccountName           String?
+  phone                       String?
   createdAt                   DateTime
   lastLoginAt                 DateTime?
-  updatedAt                   DateTime   @updatedAt
+  updatedAt                   DateTime              @updatedAt
 
   // Relations
   artisanProfile    ArtisanProfile?
@@ -144,7 +164,8 @@ model User {
   notifications     Notification[]
   transactions      Transaction[]
   payments          Payment[]       @relation("UserPayments")
-  disputes          Dispute[]       @relation("UserDisputes")
+  clientDisputes    Dispute[]       @relation("ClientDisputes")
+  artisanDisputes   Dispute[]       @relation("ArtisanDisputes")
   ledgerAccounts    LedgerAccount?
 }
 
@@ -168,7 +189,9 @@ model Dispute {
   history            DisputeHistory[]
 
   // Relations
-  user User @relation("UserDisputes", fields: [clientId], references: [id])
+  client   User      @relation("ClientDisputes", fields: [clientId], references: [id])
+  artisan  User      @relation("ArtisanDisputes", fields: [artisanId], references: [id])
+  contract Contract? @relation(fields: [contractId], references: [id])
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -189,7 +212,7 @@ model DisputeHistory {
 }
 
 model Job {
-  id               String    @id
+  id               String    @id @default(uuid())
   title            String
   description      String?
   budget           Int?
@@ -222,12 +245,12 @@ model Job {
 }
 
 model Transaction {
-  id            String            @id
+  id            String            @id @default(uuid())
   userId        String
   type          TransactionType
   amount        Int
   status        TransactionStatus @default(PENDING)
-  reference     String
+  reference     String            @unique
   metadata      Json?
   createdAt     DateTime          @default(now())
   completedAt   DateTime?
@@ -243,7 +266,7 @@ model Transaction {
 }
 
 model ArtisanProfile {
-  id          String   @id
+  id          String   @id @default(uuid())
   userId      String   @unique
   bio         String?
   skills      Json     @default("[]")
@@ -262,7 +285,7 @@ model ArtisanProfile {
 }
 
 model Proposal {
-  id        String         @id
+  id        String         @id @default(uuid())
   jobId     String
   artisanId String
   clientId  String
@@ -284,7 +307,7 @@ model Proposal {
 }
 
 model Contract {
-  id                       String         @id
+  id                       String         @id @default(uuid())
   jobId                    String         @unique
   proposalId               String         @unique
   clientId                 String
@@ -324,14 +347,16 @@ model Contract {
   updatedAt DateTime @updatedAt
 
   // Relations
-  job           Job           @relation(fields: [jobId], references: [id])
-  proposal      Proposal      @relation(fields: [proposalId], references: [id])
-  client        User          @relation("ClientContracts", fields: [clientId], references: [id])
-  artisan       User          @relation("ArtisanContracts", fields: [artisanId], references: [id])
-  conversation  Conversation?
-  review        Review?
-  payments      Payment[]
-  ledgerEntries LedgerEntry[]
+  job             Job              @relation(fields: [jobId], references: [id])
+  proposal        Proposal         @relation(fields: [proposalId], references: [id])
+  client          User             @relation("ClientContracts", fields: [clientId], references: [id])
+  artisan         User             @relation("ArtisanContracts", fields: [artisanId], references: [id])
+  conversation    Conversation?
+  review          Review?
+  payments        Payment[]
+  ledgerEntries   LedgerEntry[]
+  financialEvents FinancialEvent[]
+  disputes        Dispute[]
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -339,7 +364,7 @@ model Contract {
 }
 
 model Conversation {
-  id         String   @id
+  id         String   @id @default(uuid())
   contractId String   @unique
   clientId   String
   artisanId  String
@@ -354,7 +379,7 @@ model Conversation {
 }
 
 model Message {
-  id             String      @id
+  id             String      @id @default(uuid())
   conversationId String
   senderId       String
   content        String?
@@ -372,7 +397,7 @@ model Message {
 }
 
 model Wallet {
-  id        String   @id
+  id        String   @id @default(uuid())
   userId    String   @unique
   balance   Int      @default(0)
   frozen    Int      @default(0)
@@ -387,7 +412,7 @@ model Wallet {
 }
 
 model Review {
-  id              String   @id
+  id              String   @id @default(uuid())
   contractId      String   @unique
   clientId        String
   artisanId       String
@@ -413,7 +438,7 @@ model Review {
 }
 
 model Notification {
-  id         String    @id
+  id         String    @id @default(uuid())
   userId     String
   type       String    @default("system_update")
   title      String
@@ -435,7 +460,7 @@ model Notification {
 }
 
 model AuditLog {
-  id          String          @id
+  id          String          @id @default(uuid())
   action      String
   entityType  AuditEntityType
   entityId    String
@@ -447,7 +472,7 @@ model AuditLog {
 }
 
 model Payment {
-  id                       String        @id
+  id                       String        @id @default(uuid())
   contractId               String
   userId                   String
   amount                   Int
@@ -481,7 +506,7 @@ model Payment {
 }
 
 model KycDocument {
-  id              String            @id
+  id              String            @id @default(uuid())
   userId          String
   documentType    KycDocumentType
   documentUrl     String
@@ -500,7 +525,8 @@ model KycDocument {
 }
 
 model IdempotencyKey {
-  key         String    @id
+  id          String    @id @default(uuid())
+  key         String
   namespace   String    @default("default")
   lockedAt    DateTime?
   completedAt DateTime?
@@ -508,8 +534,23 @@ model IdempotencyKey {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@index([namespace, key])
+  @@unique([namespace, key])
   @@index([createdAt])
+}
+
+model FinancialEvent {
+  id         String             @id @default(uuid())
+  contractId String
+  type       FinancialEventType
+  amount     Int
+  actorId    String?
+  metadata   Json?
+  createdAt  DateTime           @default(now())
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId, createdAt])
+  @@index([type, createdAt])
 }
 
 enum LedgerAccountType {
@@ -556,4 +597,31 @@ model LedgerEntry {
   @@index([debitAccountId])
   @@index([creditAccountId])
   @@index([contractId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  email        String
+  role         String
+  ipAddress    String
+  userAgent    String   @db.VarChar(500)
+  loginTime    DateTime @default(now())
+  lastActivity DateTime @default(now())
+  expiresAt    DateTime
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+model AccountLockout {
+  id            String    @id @default(uuid())
+  identifier    String    @unique
+  attempts      Int       @default(0)
+  lastAttemptAt DateTime  @default(now())
+  lockedUntil   DateTime?
+  expiresAt     DateTime
+
+  @@index([identifier, expiresAt])
+  @@index([expiresAt])
 }

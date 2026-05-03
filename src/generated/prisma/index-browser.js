@@ -131,10 +131,13 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   status: 'status',
   artisanVerified: 'artisanVerified',
+  kycVerified: 'kycVerified',
+  kycStatus: 'kycStatus',
   paystackRecipientCode: 'paystackRecipientCode',
   payoutBankCode: 'payoutBankCode',
   payoutAccountNumber: 'payoutAccountNumber',
   payoutAccountName: 'payoutAccountName',
+  phone: 'phone',
   createdAt: 'createdAt',
   lastLoginAt: 'lastLoginAt',
   updatedAt: 'updatedAt'
@@ -381,6 +384,7 @@ exports.Prisma.KycDocumentScalarFieldEnum = {
 };
 
 exports.Prisma.IdempotencyKeyScalarFieldEnum = {
+  id: 'id',
   key: 'key',
   namespace: 'namespace',
   lockedAt: 'lockedAt',
@@ -388,6 +392,16 @@ exports.Prisma.IdempotencyKeyScalarFieldEnum = {
   metadata: 'metadata',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FinancialEventScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  type: 'type',
+  amount: 'amount',
+  actorId: 'actorId',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.LedgerAccountScalarFieldEnum = {
@@ -410,6 +424,27 @@ exports.Prisma.LedgerEntryScalarFieldEnum = {
   reference: 'reference',
   description: 'description',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  email: 'email',
+  role: 'role',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  loginTime: 'loginTime',
+  lastActivity: 'lastActivity',
+  expiresAt: 'expiresAt'
+};
+
+exports.Prisma.AccountLockoutScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  attempts: 'attempts',
+  lastAttemptAt: 'lastAttemptAt',
+  lockedUntil: 'lockedUntil',
+  expiresAt: 'expiresAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -450,6 +485,13 @@ exports.UserRole = exports.$Enums.UserRole = {
 exports.UserStatus = exports.$Enums.UserStatus = {
   ACTIVE: 'ACTIVE',
   BANNED: 'BANNED'
+};
+
+exports.KycVerificationStatus = exports.$Enums.KycVerificationStatus = {
+  UNVERIFIED: 'UNVERIFIED',
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
 };
 
 exports.DisputeStatus = exports.$Enums.DisputeStatus = {
@@ -523,6 +565,7 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   USER: 'USER',
   DISPUTE: 'DISPUTE',
   JOB: 'JOB',
+  CONTRACT: 'CONTRACT',
   REPORT: 'REPORT'
 };
 
@@ -542,6 +585,15 @@ exports.KycDocumentStatus = exports.$Enums.KycDocumentStatus = {
   PENDING: 'PENDING',
   VERIFIED: 'VERIFIED',
   REJECTED: 'REJECTED'
+};
+
+exports.FinancialEventType = exports.$Enums.FinancialEventType = {
+  FUND_REQUESTED: 'FUND_REQUESTED',
+  FUND_CONFIRMED: 'FUND_CONFIRMED',
+  RELEASE_REQUESTED: 'RELEASE_REQUESTED',
+  RELEASE_CONFIRMED: 'RELEASE_CONFIRMED',
+  REFUND_REQUESTED: 'REFUND_REQUESTED',
+  REFUND_CONFIRMED: 'REFUND_CONFIRMED'
 };
 
 exports.LedgerAccountType = exports.$Enums.LedgerAccountType = {
@@ -569,8 +621,11 @@ exports.Prisma.ModelName = {
   Payment: 'Payment',
   KycDocument: 'KycDocument',
   IdempotencyKey: 'IdempotencyKey',
+  FinancialEvent: 'FinancialEvent',
   LedgerAccount: 'LedgerAccount',
-  LedgerEntry: 'LedgerEntry'
+  LedgerEntry: 'LedgerEntry',
+  Session: 'Session',
+  AccountLockout: 'AccountLockout'
 };
 
 /**

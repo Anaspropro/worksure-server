@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -24,6 +25,8 @@ export type AuthenticatedUser = {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -49,7 +52,7 @@ export class AuthService {
       role: dto.role,
     });
 
-    const sessionId = this.sessionService.createSession(
+    const sessionId = await this.sessionService.createSession(
       user.id,
       user.email,
       user.role,
@@ -76,11 +79,10 @@ export class AuthService {
 
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     // Check if account is locked
-    const lockoutStatus = this.accountLockoutService.isLocked(dto.email);
+    const lockoutStatus = await this.accountLockoutService.isLocked(dto.email);
     if (lockoutStatus.locked) {
-      const remainingTime = this.accountLockoutService.getLockoutRemainingTime(
-        dto.email,
-      );
+      const remainingTime =
+        await this.accountLockoutService.getLockoutRemainingTime(dto.email);
       throw new UnauthorizedException(
         `Account is temporarily locked. Try again in ${remainingTime} seconds.`,
       );
@@ -89,7 +91,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) {
       // Record failed attempt for non-existent email to prevent enumeration
-      this.accountLockoutService.recordFailedAttempt(dto.email);
+      await this.accountLockoutService.recordFailedAttempt(dto.email);
       throw new UnauthorizedException('Invalid email or password.');
     }
 
@@ -98,9 +100,8 @@ export class AuthService {
       user.passwordHash,
     );
     if (!passwordValid) {
-      const attemptResult = this.accountLockoutService.recordFailedAttempt(
-        dto.email,
-      );
+      const attemptResult =
+        await this.accountLockoutService.recordFailedAttempt(dto.email);
       if (attemptResult.locked) {
         const remainingTime = Math.ceil(
           (attemptResult.lockoutExpires! - Date.now()) / 1000,
@@ -117,10 +118,10 @@ export class AuthService {
     }
 
     // Record successful attempt and clear failed attempts
-    this.accountLockoutService.recordSuccessfulAttempt(dto.email);
+    await this.accountLockoutService.recordSuccessfulAttempt(dto.email);
 
     // Create session
-    const sessionId = this.sessionService.createSession(
+    const sessionId = await this.sessionService.createSession(
       user.id,
       user.email,
       user.role,
@@ -129,14 +130,12 @@ export class AuthService {
     );
 
     // Check for suspicious activity
-    const suspiciousActivity = this.sessionService.detectSuspiciousActivity(
-      user.id,
-    );
+    const suspiciousActivity =
+      await this.sessionService.detectSuspiciousActivity(user.id);
     if (suspiciousActivity.isSuspicious) {
       // Log suspicious activity but don't block login
-      console.warn(
-        `Suspicious activity detected for user ${user.id}:`,
-        suspiciousActivity.reasons,
+      this.logger.warn(
+        `Suspicious activity detected for user ${user.id}: ${suspiciousActivity.reasons.join(', ')}`,
       );
     }
 
@@ -180,7 +179,9 @@ export class AuthService {
         throw new UnauthorizedException('Session is invalid.');
       }
 
-      const session = this.sessionService.validateSession(payload.sessionId);
+      const session = await this.sessionService.validateSession(
+        payload.sessionId,
+      );
       if (!session || session.userId !== payload.sub) {
         throw new UnauthorizedException('Session is invalid.');
       }
@@ -272,15 +273,15 @@ export class AuthService {
 
     const passwordHash: string = await hash(newPassword, 10);
     await this.usersService.updatePassword(user.id, passwordHash);
-    this.sessionService.invalidateUserSessions(user.id);
+    await this.sessionService.invalidateUserSessions(user.id);
 
     return {
       message: 'Password reset successful.',
     };
   }
 
-  logout(user: AuthenticatedUser) {
-    this.sessionService.invalidateSession(user.sessionId);
+  async logout(user: AuthenticatedUser) {
+    await this.sessionService.invalidateSession(user.sessionId);
 
     return {
       message: 'Logout successful.',

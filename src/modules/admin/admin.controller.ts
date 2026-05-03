@@ -180,6 +180,23 @@ export class AdminController {
     return this.adminService.getAuditLogs();
   }
 
+  @ApiOperation({ summary: 'List all system contracts' })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Contract status filter',
+  })
+  @Get('contracts')
+  getAllContracts(@Query('status') status?: string) {
+    return this.adminService.getAllContracts(status);
+  }
+
+  @ApiOperation({ summary: 'Get system contract statistics' })
+  @Get('contracts/stats')
+  getContractStats() {
+    return this.adminService.getContractStats();
+  }
+
   private getActor(adminUser: AuthenticatedUser) {
     return {
       id: adminUser.id,

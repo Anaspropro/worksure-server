@@ -8,6 +8,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export enum NotificationType {
   PROPOSAL_RECEIVED = 'proposal_received',
@@ -184,6 +185,7 @@ export class NotificationListQueryDto {
 
   @ApiPropertyOptional({ description: 'Page number (default: 1)' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   page?: number = 1;
@@ -192,6 +194,7 @@ export class NotificationListQueryDto {
     description: 'Items per page (default: 20, max: 100)',
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(100)

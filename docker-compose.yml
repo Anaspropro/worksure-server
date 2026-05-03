@@ -7,26 +7,14 @@ services:
     container_name: worksure-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: worksure_db
-      POSTGRES_USER: worksure_user
-      POSTGRES_PASSWORD: worksure_password
+      POSTGRES_DB: ${POSTGRES_DB:-worksure_db}
+      POSTGRES_USER: ${POSTGRES_USER:-worksure_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./prisma/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - worksure-network
-
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    container_name: worksure-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
     networks:
       - worksure-network
 
@@ -39,22 +27,20 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://worksure_user:worksure_password@postgres:5432/worksure_db
-      REDIS_URL: redis://redis:6379
-      JWT_SECRET: your-super-secret-jwt-key-change-in-production
-      JWT_EXPIRES_IN: 24h
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
       PORT: 3000
     ports:
       - "3000:3000"
     depends_on:
       - postgres
-      - redis
     volumes:
       - ./uploads:/app/uploads
     networks:
       - worksure-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ["CMD", "node", "healthcheck.js"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -78,8 +64,6 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
-  redis_data:
     driver: local
 
 networks:

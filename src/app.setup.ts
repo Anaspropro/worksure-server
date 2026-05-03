@@ -4,8 +4,27 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import helmet from 'helmet';
 import { SanitizationService } from './common/services/sanitization.service';
 import { SanitizationPipe } from './common/pipes/sanitization.pipe';
+import * as express from 'express';
 
 export function configureApp(app: INestApplication) {
+  const trustProxyRaw = process.env.TRUST_PROXY;
+  const httpAdapter = app.getHttpAdapter();
+  const httpInstance = httpAdapter?.getInstance?.() as
+    | { set?: (key: string, value: unknown) => void }
+    | undefined;
+
+  if (trustProxyRaw) {
+    const trustProxy =
+      trustProxyRaw === 'true'
+        ? true
+        : Number.isFinite(Number(trustProxyRaw))
+          ? Number(trustProxyRaw)
+          : true;
+    httpInstance?.set?.('trust proxy', trustProxy);
+  } else if (process.env.NODE_ENV === 'production') {
+    httpInstance?.set?.('trust proxy', 1);
+  }
+
   // Apply security headers with Helmet
   app.use(
     helmet({
@@ -58,6 +77,10 @@ export function configureApp(app: INestApplication) {
     maxAge: 86400, // 24 hours
   });
 
+  // Enforce request body size limits
+  app.use(express.json({ limit: '3mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '3mb' }));
+
   // Global validation pipe with sanitization
   app.useGlobalPipes(
     new ValidationPipe({
@@ -65,7 +88,7 @@ export function configureApp(app: INestApplication) {
       transform: true,
       forbidNonWhitelisted: true,
       transformOptions: {
-        enableImplicitConversion: true,
+        enableImplicitConversion: false,
       },
     }),
   );
@@ -78,10 +101,12 @@ export function configureApp(app: INestApplication) {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('WorkSure API')
-    .setDescription(
-      `## WorkSure - Escrow-based Artisan Marketplace API
+  // Only expose Swagger documentation in non-production environments
+  if (process.env.NODE_ENV !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('WorkSure API')
+      .setDescription(
+        `## WorkSure - Escrow-based Artisan Marketplace API
 
 ### Overview
 WorkSure is a comprehensive escrow-based marketplace connecting clients with skilled artisans. The API provides full functionality for job posting, proposals, contracts, payments, reviews, and dispute resolution.
@@ -134,41 +159,42 @@ API endpoints are rate-limited to prevent abuse. Check response headers for rate
 
 ### Support
 For API support and questions, contact the development team.`,
-    )
-    .setVersion('1.0.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        description: 'Paste a valid JWT access token.',
-      },
-      'bearer',
-    )
-    .addTag('Authentication', 'User authentication and authorization')
-    .addTag('Users', 'User management and profiles')
-    .addTag('Jobs', 'Job postings and management')
-    .addTag('Proposals', 'Proposal submissions and management')
-    .addTag('Contracts', 'Contract creation and management')
-    .addTag('Payments', 'Payment processing and wallet management')
-    .addTag('Reviews', 'Review and rating system')
-    .addTag('Disputes', 'Dispute creation and resolution')
-    .addTag('Notifications', 'User notifications')
-    .addTag('Admin', 'Administrative functions')
-    .addTag('Artisans', 'Artisan-specific features')
-    .addTag('Wallets', 'Digital wallet management')
-    .build();
+      )
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Paste a valid JWT access token.',
+        },
+        'bearer',
+      )
+      .addTag('Authentication', 'User authentication and authorization')
+      .addTag('Users', 'User management and profiles')
+      .addTag('Jobs', 'Job postings and management')
+      .addTag('Proposals', 'Proposal submissions and management')
+      .addTag('Contracts', 'Contract creation and management')
+      .addTag('Payments', 'Payment processing and wallet management')
+      .addTag('Reviews', 'Review and rating system')
+      .addTag('Disputes', 'Dispute creation and resolution')
+      .addTag('Notifications', 'User notifications')
+      .addTag('Admin', 'Administrative functions')
+      .addTag('Artisans', 'Artisan-specific features')
+      .addTag('Wallets', 'Digital wallet management')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document, {
-    jsonDocumentUrl: 'api/openapi.json',
-    customSiteTitle: 'WorkSure API Documentation',
-    customCss: `
-      .topbar-wrapper img { content: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzQyODVGNCIvPgo8cGF0aCBkPSJNOCAxNkgxNlY4SDhWMTZaTTE2IDE2SDI0VjhIMTZWMTZaTTggMjRIMTZWMTZIOFYyNFpNMTYgMjRIMjRWMTZIMTZWMjRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K'); }
-      .swagger-ui .topbar { background-color: #4285F4; }
-      .swagger-ui .topbar-wrapper .link { color: white; }
-    `,
-  });
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api', app, document, {
+      jsonDocumentUrl: 'api/openapi.json',
+      customSiteTitle: 'WorkSure API Documentation',
+      customCss: `
+        .topbar-wrapper img { content: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzQyODVGNCIvPgo8cGF0aCBkPSJNOCAxNkgxNlY4SDhWMTZaTTE2IDE2SDI0VjhIMTZWMTZaTTggMjRIMTZWMTZIOFYyNFpNMTYgMjRIMjRWMTZIMTZWMjRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K'); }
+        .swagger-ui .topbar { background-color: #4285F4; }
+        .swagger-ui .topbar-wrapper .link { color: white; }
+      `,
+    });
+  }
 
   return app;
 }
