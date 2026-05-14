@@ -5,45 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { KycVerificationStatus } from '../../generated/prisma';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
 
 @Injectable()
 export class KycService {
-  constructor(private readonly prisma: PrismaService) {}
-
-  private getPaystackSecretKey(): string {
-    const key = process.env.PAYSTACK_SECRET_KEY;
-    if (!key) {
-      throw new Error(
-        'PAYSTACK_SECRET_KEY is required in environment variables',
-      );
-    }
-    return key;
-  }
-
-  private async callPaystack<T>(path: string, init: RequestInit): Promise<T> {
-    const response = await fetch(`https://api.paystack.co${path}`, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${this.getPaystackSecretKey()}`,
-        'Content-Type': 'application/json',
-        ...init.headers,
-      },
-    });
-
-    const payload = (await response.json().catch(() => null)) as {
-      status?: boolean;
-      message?: string;
-      data?: T;
-    } | null;
-
-    if (!response.ok || !payload?.status) {
-      throw new BadRequestException(
-        payload?.message || 'Paystack verification failed',
-      );
-    }
-
-    return payload.data as T;
-  }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paystackClient: PaystackClientService,
+  ) {}
 
   async verifyBvn(userId: string, bvn: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
@@ -55,9 +24,7 @@ export class KycService {
 
     // Call Paystack Resolve BVN
     // Note: This is a premium service.
-    const bvnData = await this.callPaystack<any>(`/bank/resolve_bvn/${bvn}`, {
-      method: 'GET',
-    });
+    const bvnData = await this.paystackClient.get<any>(`/bank/resolve_bvn/${bvn}`);
 
     // Simple name matching logic (can be more sophisticated)
     const fullName = user.name.toLowerCase();

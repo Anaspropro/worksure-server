@@ -23333,6 +23333,7 @@ export namespace Prisma {
     key: string | null
     namespace: string | null
     lockedAt: Date | null
+    expiresAt: Date | null
     completedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -23343,6 +23344,7 @@ export namespace Prisma {
     key: string | null
     namespace: string | null
     lockedAt: Date | null
+    expiresAt: Date | null
     completedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -23353,6 +23355,7 @@ export namespace Prisma {
     key: number
     namespace: number
     lockedAt: number
+    expiresAt: number
     completedAt: number
     metadata: number
     createdAt: number
@@ -23366,6 +23369,7 @@ export namespace Prisma {
     key?: true
     namespace?: true
     lockedAt?: true
+    expiresAt?: true
     completedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -23376,6 +23380,7 @@ export namespace Prisma {
     key?: true
     namespace?: true
     lockedAt?: true
+    expiresAt?: true
     completedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -23386,6 +23391,7 @@ export namespace Prisma {
     key?: true
     namespace?: true
     lockedAt?: true
+    expiresAt?: true
     completedAt?: true
     metadata?: true
     createdAt?: true
@@ -23470,6 +23476,7 @@ export namespace Prisma {
     key: string
     namespace: string
     lockedAt: Date | null
+    expiresAt: Date | null
     completedAt: Date | null
     metadata: JsonValue | null
     createdAt: Date
@@ -23498,6 +23505,7 @@ export namespace Prisma {
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
+    expiresAt?: boolean
     completedAt?: boolean
     metadata?: boolean
     createdAt?: boolean
@@ -23509,6 +23517,7 @@ export namespace Prisma {
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
+    expiresAt?: boolean
     completedAt?: boolean
     metadata?: boolean
     createdAt?: boolean
@@ -23520,6 +23529,7 @@ export namespace Prisma {
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
+    expiresAt?: boolean
     completedAt?: boolean
     metadata?: boolean
     createdAt?: boolean
@@ -23531,13 +23541,14 @@ export namespace Prisma {
     key?: boolean
     namespace?: boolean
     lockedAt?: boolean
+    expiresAt?: boolean
     completedAt?: boolean
     metadata?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type IdempotencyKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "namespace" | "lockedAt" | "completedAt" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["idempotencyKey"]>
+  export type IdempotencyKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "namespace" | "lockedAt" | "expiresAt" | "completedAt" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["idempotencyKey"]>
 
   export type $IdempotencyKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "IdempotencyKey"
@@ -23547,6 +23558,7 @@ export namespace Prisma {
       key: string
       namespace: string
       lockedAt: Date | null
+      expiresAt: Date | null
       completedAt: Date | null
       metadata: Prisma.JsonValue | null
       createdAt: Date
@@ -23978,6 +23990,7 @@ export namespace Prisma {
     readonly key: FieldRef<"IdempotencyKey", 'String'>
     readonly namespace: FieldRef<"IdempotencyKey", 'String'>
     readonly lockedAt: FieldRef<"IdempotencyKey", 'DateTime'>
+    readonly expiresAt: FieldRef<"IdempotencyKey", 'DateTime'>
     readonly completedAt: FieldRef<"IdempotencyKey", 'DateTime'>
     readonly metadata: FieldRef<"IdempotencyKey", 'Json'>
     readonly createdAt: FieldRef<"IdempotencyKey", 'DateTime'>
@@ -30312,6 +30325,7 @@ export namespace Prisma {
     key: 'key',
     namespace: 'namespace',
     lockedAt: 'lockedAt',
+    expiresAt: 'expiresAt',
     completedAt: 'completedAt',
     metadata: 'metadata',
     createdAt: 'createdAt',
@@ -32458,6 +32472,7 @@ export namespace Prisma {
     key?: StringFilter<"IdempotencyKey"> | string
     namespace?: StringFilter<"IdempotencyKey"> | string
     lockedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
     metadata?: JsonNullableFilter<"IdempotencyKey">
     createdAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
@@ -32469,6 +32484,7 @@ export namespace Prisma {
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -32484,6 +32500,7 @@ export namespace Prisma {
     key?: StringFilter<"IdempotencyKey"> | string
     namespace?: StringFilter<"IdempotencyKey"> | string
     lockedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
     metadata?: JsonNullableFilter<"IdempotencyKey">
     createdAt?: DateTimeFilter<"IdempotencyKey"> | Date | string
@@ -32495,6 +32512,7 @@ export namespace Prisma {
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -32512,6 +32530,7 @@ export namespace Prisma {
     key?: StringWithAggregatesFilter<"IdempotencyKey"> | string
     namespace?: StringWithAggregatesFilter<"IdempotencyKey"> | string
     lockedAt?: DateTimeNullableWithAggregatesFilter<"IdempotencyKey"> | Date | string | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"IdempotencyKey"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"IdempotencyKey"> | Date | string | null
     metadata?: JsonNullableWithAggregatesFilter<"IdempotencyKey">
     createdAt?: DateTimeWithAggregatesFilter<"IdempotencyKey"> | Date | string
@@ -34812,6 +34831,7 @@ export namespace Prisma {
     key: string
     namespace?: string
     lockedAt?: Date | string | null
+    expiresAt?: Date | string | null
     completedAt?: Date | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -34823,6 +34843,7 @@ export namespace Prisma {
     key: string
     namespace?: string
     lockedAt?: Date | string | null
+    expiresAt?: Date | string | null
     completedAt?: Date | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -34834,6 +34855,7 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34845,6 +34867,7 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34856,6 +34879,7 @@ export namespace Prisma {
     key: string
     namespace?: string
     lockedAt?: Date | string | null
+    expiresAt?: Date | string | null
     completedAt?: Date | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -34867,6 +34891,7 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34878,6 +34903,7 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     namespace?: StringFieldUpdateOperationsInput | string
     lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36896,6 +36922,7 @@ export namespace Prisma {
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrder
+    expiresAt?: SortOrder
     completedAt?: SortOrder
     metadata?: SortOrder
     createdAt?: SortOrder
@@ -36907,6 +36934,7 @@ export namespace Prisma {
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrder
+    expiresAt?: SortOrder
     completedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -36917,6 +36945,7 @@ export namespace Prisma {
     key?: SortOrder
     namespace?: SortOrder
     lockedAt?: SortOrder
+    expiresAt?: SortOrder
     completedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder

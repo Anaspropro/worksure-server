@@ -310,32 +310,43 @@ export class NotificationsService {
   }
 
   async getNotificationStats(userId: string): Promise<NotificationStatsDto> {
-    const notifications = await this.prisma.notification.findMany({
-      where: { userId },
-    });
+    const [total, unread, archived, typeGroups, priorityGroups] =
+      await Promise.all([
+        this.prisma.notification.count({ where: { userId } }),
+        this.prisma.notification.count({ where: { userId, read: false } }),
+        this.prisma.notification.count({
+          where: { userId, isArchived: true },
+        }),
+        this.prisma.notification.groupBy({
+          by: ['type'],
+          where: { userId },
+          _count: { id: true },
+        }),
+        this.prisma.notification.groupBy({
+          by: ['priority'],
+          where: { userId },
+          _count: { id: true },
+        }),
+      ]);
 
     const byType = Object.fromEntries(
       Object.values(NotificationType).map((type) => [
         type,
-        notifications.filter((notification) => notification.type === type)
-          .length,
+        typeGroups.find((g) => g.type === type)?._count.id ?? 0,
       ]),
     ) as Record<NotificationType, number>;
 
     const byPriority = Object.fromEntries(
       Object.values(NotificationPriority).map((priority) => [
         priority,
-        notifications.filter(
-          (notification) => notification.priority === priority,
-        ).length,
+        priorityGroups.find((g) => g.priority === priority)?._count.id ?? 0,
       ]),
     ) as Record<NotificationPriority, number>;
 
     return {
-      total: notifications.length,
-      unread: notifications.filter((notification) => !notification.read).length,
-      archived: notifications.filter((notification) => notification.isArchived)
-        .length,
+      total,
+      unread,
+      archived,
       byType,
       byPriority,
     };

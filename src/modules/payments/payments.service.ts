@@ -16,6 +16,8 @@ import {
   TransactionType,
 } from '../../generated/prisma';
 import { ContractsService } from '../contracts/contracts.service';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
+import { IdempotencyService } from '../../common/services/idempotency.service';
 
 @Injectable()
 export class PaymentsService {
@@ -25,60 +27,9 @@ export class PaymentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly contractsService: ContractsService,
+    private readonly paystackClient: PaystackClientService,
+    private readonly idempotency: IdempotencyService,
   ) {}
-
-  private getPaystackSecretKey(): string {
-    const key = process.env.PAYSTACK_SECRET_KEY;
-    if (!key) {
-      throw new Error(
-        'PAYSTACK_SECRET_KEY is required in environment variables',
-      );
-    }
-
-    return key;
-  }
-
-  private getPaystackHeaders(extraHeaders?: Record<string, string>) {
-    return {
-      Authorization: `Bearer ${this.getPaystackSecretKey()}`,
-      'Content-Type': 'application/json',
-      ...extraHeaders,
-    };
-  }
-
-  private getPlatformFeePercent() {
-    const raw = Number(process.env.PLATFORM_FEE_PERCENT ?? 10);
-    return Number.isFinite(raw) && raw >= 0 ? raw : 10;
-  }
-
-  private getPaystackBaseUrl() {
-    return 'https://api.paystack.co';
-  }
-
-  private async callPaystack<T>(
-    path: string,
-    init: RequestInit,
-    extraHeaders?: Record<string, string>,
-  ): Promise<T> {
-    const response = await fetch(`${this.getPaystackBaseUrl()}${path}`, {
-      ...init,
-      headers: this.getPaystackHeaders(extraHeaders),
-    });
-
-    const payload = (await response.json().catch(() => null)) as {
-      status?: boolean;
-      message?: string;
-      data?: T;
-    } | null;
-
-    if (!response.ok || !payload?.status) {
-      throw new BadRequestException(
-        payload?.message || 'Paystack request failed',
-      );
-    }
-
-    return payload.data as T;
-  }
 
   private buildTransferReference(contractId: string) {
     return `ws_transfer_${contractId}_${Date.now()}`;
@@ -88,44 +39,9 @@ export class PaymentsService {
     return `ws_refund_${contractId}_${Date.now()}`;
   }
 
-  private async tryAcquireOperationLock(namespace: string, key: string) {
-    try {
-      await this.prisma.idempotencyKey.create({
-        data: {
-          namespace,
-          key,
-          lockedAt: new Date(),
-        },
-      });
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  private async completeOperationLock(namespace: string, key: string) {
-    await this.prisma.idempotencyKey.update({
-      where: {
-        namespace_key: {
-          namespace,
-          key,
-        },
-      },
-      data: {
-        completedAt: new Date(),
-      },
-    });
-  }
-
-  private async releaseOperationLock(namespace: string, key: string) {
-    await this.prisma.idempotencyKey.delete({
-      where: {
-        namespace_key: {
-          namespace,
-          key,
-        },
-      },
-    });
+  private getPlatformFeePercent() {
+    const raw = Number(process.env.PLATFORM_FEE_PERCENT ?? 10);
+    return Number.isFinite(raw) && raw >= 0 ? raw : 10;
   }
 
   private async createFinancialEvent(
@@ -242,7 +158,7 @@ export class PaymentsService {
       return createdPayment;
     });
 
-    const paystackData = await this.callPaystack<{
+    const paystackData = await this.paystackClient.call<{
       authorization_url: string;
       access_code: string;
       reference: string;
@@ -323,7 +239,7 @@ export class PaymentsService {
       };
     }
 
-    const paystackData = await this.callPaystack<{
+    const paystackData = await this.paystackClient.call<{
       id: number;
       status: string;
       amount: number;
@@ -415,9 +331,7 @@ export class PaymentsService {
           where: { type: 'SYSTEM_ESCROW' },
         });
         if (!systemEscrow) {
-          systemEscrow = await tx.ledgerAccount.create({
-            data: { name: 'WorkSure Escrow', type: 'SYSTEM_ESCROW' },
-          });
+          throw new NotFoundException('System escrow account not configured. Please run seeds.');
         }
 
         await tx.ledgerEntry.create({
@@ -526,11 +440,18 @@ export class PaymentsService {
     );
 
     if (updatedContract.status === ContractStatus.READY_FOR_PAYOUT) {
-      // Trigger release asynchronously
-      this.releaseEscrow(contractId).catch((error) => {
-        // Log the error in production
-        console.error('Automatic escrow release failed:', error);
-      });
+      try {
+        await this.releaseEscrow(contractId);
+      } catch (error) {
+        import('@nestjs/common').then(({ Logger }) => {
+          Logger.error(
+            `Automatic escrow release failed for contract ${contractId}: ${error instanceof Error ? error.message : String(error)}`,
+            error instanceof Error ? error.stack : undefined,
+            'PaymentsService'
+          );
+        });
+        throw new BadRequestException('Contract completed, but automatic payout failed. Admin has been notified.');
+      }
     }
 
     return updatedContract;
@@ -563,7 +484,7 @@ export class PaymentsService {
       );
     }
 
-    const recipient = await this.callPaystack<{ recipient_code: string }>(
+    const recipient = await this.paystackClient.call<{ recipient_code: string }>(
       '/transferrecipient',
       {
         method: 'POST',
@@ -594,9 +515,9 @@ export class PaymentsService {
     artisanId: string;
   }) {
     const lockKey = `contract:${contract.id}:release`;
-    const acquired = await this.tryAcquireOperationLock(
-      this.payoutNamespace,
+    const acquired = await this.idempotency.tryAcquire(
       lockKey,
+      this.payoutNamespace,
     );
     if (!acquired) {
       throw new BadRequestException(
@@ -618,7 +539,7 @@ export class PaymentsService {
 
     const reference = this.buildTransferReference(contract.id);
     try {
-      const transferData = await this.callPaystack<{
+      const transferData = await this.paystackClient.call<{
         transfer_code: string;
         reference?: string;
         status?: string;
@@ -703,7 +624,7 @@ export class PaymentsService {
         }
       });
 
-      await this.completeOperationLock(this.payoutNamespace, lockKey);
+      await this.idempotency.complete(lockKey, this.payoutNamespace);
       await this.contractsService.markPayoutInitiated(contract.id);
 
       return {
@@ -715,7 +636,7 @@ export class PaymentsService {
         platformFee,
       };
     } catch (error) {
-      await this.releaseOperationLock(this.payoutNamespace, lockKey);
+      await this.idempotency.release(lockKey, this.payoutNamespace);
       throw error;
     }
   }
@@ -831,9 +752,9 @@ export class PaymentsService {
 
     const reference = this.buildRefundReference(contractId);
     const lockKey = `contract:${contractId}:refund`;
-    const acquired = await this.tryAcquireOperationLock(
-      this.refundNamespace,
+    const acquired = await this.idempotency.tryAcquire(
       lockKey,
+      this.refundNamespace,
     );
     if (!acquired) {
       throw new BadRequestException(
@@ -849,7 +770,7 @@ export class PaymentsService {
         reason,
       );
 
-      await this.callPaystack<{
+      await this.paystackClient.call<{
         status?: string;
       }>('/refund', {
         method: 'POST',
@@ -903,9 +824,9 @@ export class PaymentsService {
         });
       });
 
-      await this.completeOperationLock(this.refundNamespace, lockKey);
+      await this.idempotency.complete(lockKey, this.refundNamespace);
     } catch (error) {
-      await this.releaseOperationLock(this.refundNamespace, lockKey);
+      await this.idempotency.release(lockKey, this.refundNamespace);
       throw error;
     }
 

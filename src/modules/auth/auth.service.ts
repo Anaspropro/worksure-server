@@ -179,14 +179,15 @@ export class AuthService {
         throw new UnauthorizedException('Session is invalid.');
       }
 
-      const session = await this.sessionService.validateSession(
-        payload.sessionId,
-      );
+      // Run session validation and user lookup in parallel to halve latency
+      const [session, user] = await Promise.all([
+        this.sessionService.validateSession(payload.sessionId),
+        this.usersService.findById(payload.sub),
+      ]);
+
       if (!session || session.userId !== payload.sub) {
         throw new UnauthorizedException('Session is invalid.');
       }
-
-      const user = await this.usersService.findById(payload.sub);
 
       if (!user || user.status === UserStatus.BANNED) {
         throw new UnauthorizedException(
@@ -215,6 +216,9 @@ export class AuthService {
   }
 
   async me(user: AuthenticatedUser) {
+    // The auth guard's verifyAccessToken already validated user existence,
+    // so we can use the cached auth data for basic fields. Only hit DB
+    // if we need fresh data (like artisanVerified which can change).
     const account = await this.usersService.findById(user.id);
     if (!account) {
       throw new UnauthorizedException('User account no longer exists.');

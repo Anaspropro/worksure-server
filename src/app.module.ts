@@ -30,6 +30,16 @@ import { ScheduleModule } from '@nestjs/schedule';
       {
         name: 'default',
         ttl: 60000,
+        limit: 60,
+      },
+      {
+        name: 'auth',
+        ttl: 60000,
+        limit: 5,
+      },
+      {
+        name: 'financial',
+        ttl: 60000,
         limit: 10,
       },
     ]),
