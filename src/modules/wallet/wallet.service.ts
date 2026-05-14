@@ -7,26 +7,22 @@ import {
 import { PrismaService } from '../../database/prisma.service';
 import { TransactionType, TransactionStatus } from '../../generated/prisma';
 import { randomUUID } from 'node:crypto';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
 
 @Injectable()
 export class WalletService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paystackClient: PaystackClientService,
+  ) {}
 
-  private getPaystackSecretKey() {
-    return process.env.PAYSTACK_SECRET_KEY ?? null;
-  }
-
-  private getPaystackHeaders() {
-    const secretKey = this.getPaystackSecretKey();
-    if (!secretKey) {
-      return null;
-    }
-
-    return {
-      Authorization: `Bearer ${secretKey}`,
-      'Content-Type': 'application/json',
-    };
-  }
+  // In-memory cache for Paystack dedicated account data
+  // Avoids external API calls on every balance check
+  private readonly dedicatedAccountCache = new Map<
+    string,
+    { data: any; expiresAt: number }
+  >();
+  private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   private async getWalletOwner(userId: string) {
     return this.prisma.user.findUnique({
@@ -56,30 +52,20 @@ export class WalletService {
   }
 
   private async getExistingDedicatedAccount(email: string) {
-    const headers = this.getPaystackHeaders();
-    if (!headers) {
+    if (!this.paystackClient.isConfigured()) {
       return null;
     }
 
-    const response = await fetch(
-      `https://api.paystack.co/customer/${encodeURIComponent(email)}`,
-      {
-        method: 'GET',
-        headers,
-      },
+    const data = await this.paystackClient.get<any>(
+      `/customer/${encodeURIComponent(email)}`,
+      { graceful: true },
     );
 
-    if (!response.ok) {
-      return null;
-    }
-
-    const payload = await response.json();
-    return this.mapDedicatedAccount(payload?.data?.dedicated_account);
+    return this.mapDedicatedAccount(data?.dedicated_account);
   }
 
   private async ensureDedicatedAccount(userId: string) {
-    const headers = this.getPaystackHeaders();
-    if (!headers) {
+    if (!this.paystackClient.isConfigured()) {
       return null;
     }
 
@@ -95,40 +81,35 @@ export class WalletService {
 
     const { firstName, lastName } = this.splitName(user.name);
 
-    await fetch('https://api.paystack.co/customer', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
+    await this.paystackClient.post(
+      '/customer',
+      {
         email: user.email,
         first_name: firstName,
         last_name: lastName,
-      }),
-    }).catch(() => null);
-
-    const assignResponse = await fetch(
-      'https://api.paystack.co/dedicated_account/assign',
-      {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          email: user.email,
-          first_name: firstName,
-          last_name: lastName,
-          preferred_bank: 'wema-bank',
-          country: 'NG',
-        }),
       },
+      { graceful: true },
     );
 
-    const assignPayload = await assignResponse.json().catch(() => null);
+    const assignData = await this.paystackClient.post<any>(
+      '/dedicated_account/assign',
+      {
+        email: user.email,
+        first_name: firstName,
+        last_name: lastName,
+        preferred_bank: 'wema-bank',
+        country: 'NG',
+      },
+      { graceful: true },
+    );
 
     return (
-      this.mapDedicatedAccount(assignPayload?.data?.dedicated_account) ??
-      this.mapDedicatedAccount(assignPayload?.data) ?? {
+      this.mapDedicatedAccount(assignData?.dedicated_account) ??
+      this.mapDedicatedAccount(assignData) ?? {
         accountNumber: null,
         accountName: user.name,
         bankName: 'Paystack',
-        status: assignResponse.ok ? 'provisioning' : 'unavailable',
+        status: assignData ? 'provisioning' : 'unavailable',
       }
     );
   }
@@ -157,7 +138,19 @@ export class WalletService {
     const wallet = await this.prisma.wallet.findUnique({
       where: { userId },
     });
-    const virtualAccount = await this.ensureDedicatedAccount(userId);
+
+    // Use cached dedicated account data when available
+    const cached = this.dedicatedAccountCache.get(userId);
+    let virtualAccount: any;
+    if (cached && cached.expiresAt > Date.now()) {
+      virtualAccount = cached.data;
+    } else {
+      virtualAccount = await this.ensureDedicatedAccount(userId);
+      this.dedicatedAccountCache.set(userId, {
+        data: virtualAccount,
+        expiresAt: Date.now() + this.CACHE_TTL_MS,
+      });
+    }
 
     return {
       exists: Boolean(wallet),
@@ -239,6 +232,16 @@ export class WalletService {
   ) {
     if (amount <= 0) {
       throw new BadRequestException('Amount must be positive');
+    }
+
+    if (reference) {
+      const existingTransaction = await this.prisma.transaction.findUnique({
+        where: { reference },
+      });
+
+      if (existingTransaction) {
+        throw new BadRequestException('Transaction reference already used');
+      }
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
@@ -378,7 +381,7 @@ export class WalletService {
       const availableBalance = wallet.balance - wallet.frozen;
       if (availableBalance < amount) {
         throw new BadRequestException(
-          'Insufficient available balance to freeze',
+          'Insufficient balance',
         );
       }
 

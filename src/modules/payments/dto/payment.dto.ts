@@ -10,6 +10,7 @@ import {
   Min,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class PaymentFundContractDto {
   @ApiProperty({ description: 'Contract ID to fund' })
@@ -80,6 +81,28 @@ export class CompleteContractDto {
 
 export class PaymentConfirmCompletionDto extends CompleteContractDto {}
 
+export class ReleasePaymentDto {
+  @ApiProperty({ description: 'Contract ID to release funds for' })
+  @IsUUID()
+  contractId: string;
+
+  @ApiPropertyOptional({ description: 'Reason for manual release (admin)' })
+  @IsOptional()
+  @IsString()
+  reason?: string;
+}
+
+export class RefundPaymentDto {
+  @ApiProperty({ description: 'Contract ID to refund' })
+  @IsUUID()
+  contractId: string;
+
+  @ApiPropertyOptional({ description: 'Reason for refund' })
+  @IsOptional()
+  @IsString()
+  reason?: string;
+}
+
 export class PaymentResponseDto {
   @ApiProperty({ description: 'Payment ID' })
   id: string;
@@ -141,6 +164,7 @@ export class PaymentListQueryDto {
 
   @ApiPropertyOptional({ description: 'Page number (default: 1)' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   page?: number = 1;
@@ -149,6 +173,7 @@ export class PaymentListQueryDto {
     description: 'Items per page (default: 10, max: 100)',
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(100)

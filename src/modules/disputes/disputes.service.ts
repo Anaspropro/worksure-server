@@ -64,7 +64,13 @@ export class DisputesService {
       }
 
       clientId = job.clientId;
-      artisanId = job.artisanId || '';
+
+      if (!job.artisanId) {
+        throw new BadRequestException(
+          'Cannot create a dispute for a job without an assigned artisan',
+        );
+      }
+      artisanId = job.artisanId;
 
       const existingDispute = await this.prisma.dispute.findFirst({
         where: {
@@ -145,6 +151,7 @@ export class DisputesService {
         await this.paymentsService.refundContract(
           dispute.contractId,
           contract.clientId,
+          true,
           resolutionNotes,
         );
       } else if (decision === DisputeDecision.PAY_ARTISAN) {
@@ -221,7 +228,14 @@ export class DisputesService {
         OR: [{ clientId: userId }, { artisanId: userId }],
       },
       include: {
-        user: {
+        client: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        artisan: {
           select: {
             id: true,
             name: true,
@@ -230,6 +244,7 @@ export class DisputesService {
         },
       },
       orderBy: { createdAt: 'desc' },
+      take: 50,
     });
   }
 
@@ -237,7 +252,14 @@ export class DisputesService {
     const dispute = await this.prisma.dispute.findUnique({
       where: { id: disputeId },
       include: {
-        user: {
+        client: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        artisan: {
           select: {
             id: true,
             name: true,

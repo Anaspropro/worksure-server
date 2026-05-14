@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AccountLockoutService } from '../../common/services/account-lockout.service';
 import { SessionService } from '../../common/services/session.service';
 import { EphemeralCleanupService } from '../../common/services/ephemeral-cleanup.service';
+import { IdempotencyService } from '../../common/services/idempotency.service';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { EphemeralCleanupService } from '../../common/services/ephemeral-cleanup
     AccountLockoutService,
     SessionService,
     EphemeralCleanupService,
+    IdempotencyService,
   ],
-  exports: [AuthService, JwtAuthGuard, SessionService],
+  exports: [AuthService, JwtAuthGuard, SessionService, JwtModule],
 })
 export class AuthModule {}

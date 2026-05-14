@@ -89,7 +89,17 @@ enum AuditEntityType {
   USER
   DISPUTE
   JOB
+  CONTRACT
   REPORT
+}
+
+enum FinancialEventType {
+  FUND_REQUESTED
+  FUND_CONFIRMED
+  RELEASE_REQUESTED
+  RELEASE_CONFIRMED
+  REFUND_REQUESTED
+  REFUND_CONFIRMED
 }
 
 enum KycDocumentType {
@@ -110,24 +120,34 @@ enum PaymentStatus {
   FAILED
 }
 
+enum KycVerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 model User {
-  id                          String     @id
+  id                          String                @id
   name                        String
-  email                       String     @unique
+  email                       String                @unique
   passwordHash                String
-  passwordResetTokenHash      String?    @unique
+  passwordResetTokenHash      String?               @unique
   passwordResetTokenExpiresAt DateTime?
   passwordResetRequestedAt    DateTime?
   role                        UserRole
   status                      UserStatus
-  artisanVerified             Boolean    @default(false)
+  artisanVerified             Boolean               @default(false)
+  kycVerified                 Boolean               @default(false)
+  kycStatus                   KycVerificationStatus @default(UNVERIFIED)
   paystackRecipientCode       String?
   payoutBankCode              String?
   payoutAccountNumber         String?
   payoutAccountName           String?
+  phone                       String?
   createdAt                   DateTime
   lastLoginAt                 DateTime?
-  updatedAt                   DateTime   @updatedAt
+  updatedAt                   DateTime              @updatedAt
 
   // Relations
   artisanProfile    ArtisanProfile?
@@ -144,7 +164,8 @@ model User {
   notifications     Notification[]
   transactions      Transaction[]
   payments          Payment[]       @relation("UserPayments")
-  disputes          Dispute[]       @relation("UserDisputes")
+  clientDisputes    Dispute[]       @relation("ClientDisputes")
+  artisanDisputes   Dispute[]       @relation("ArtisanDisputes")
   ledgerAccounts    LedgerAccount?
 }
 
@@ -168,7 +189,9 @@ model Dispute {
   history            DisputeHistory[]
 
   // Relations
-  user User @relation("UserDisputes", fields: [clientId], references: [id])
+  client   User      @relation("ClientDisputes", fields: [clientId], references: [id])
+  artisan  User      @relation("ArtisanDisputes", fields: [artisanId], references: [id])
+  contract Contract? @relation(fields: [contractId], references: [id])
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -227,7 +250,7 @@ model Transaction {
   type          TransactionType
   amount        Int
   status        TransactionStatus @default(PENDING)
-  reference     String
+  reference     String            @unique
   metadata      Json?
   createdAt     DateTime          @default(now())
   completedAt   DateTime?
@@ -324,14 +347,16 @@ model Contract {
   updatedAt DateTime @updatedAt
 
   // Relations
-  job           Job           @relation(fields: [jobId], references: [id])
-  proposal      Proposal      @relation(fields: [proposalId], references: [id])
-  client        User          @relation("ClientContracts", fields: [clientId], references: [id])
-  artisan       User          @relation("ArtisanContracts", fields: [artisanId], references: [id])
-  conversation  Conversation?
-  review        Review?
-  payments      Payment[]
-  ledgerEntries LedgerEntry[]
+  job             Job              @relation(fields: [jobId], references: [id])
+  proposal        Proposal         @relation(fields: [proposalId], references: [id])
+  client          User             @relation("ClientContracts", fields: [clientId], references: [id])
+  artisan         User             @relation("ArtisanContracts", fields: [artisanId], references: [id])
+  conversation    Conversation?
+  review          Review?
+  payments        Payment[]
+  ledgerEntries   LedgerEntry[]
+  financialEvents FinancialEvent[]
+  disputes        Dispute[]
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -501,16 +526,33 @@ model KycDocument {
 
 model IdempotencyKey {
   id          String    @id @default(uuid())
-  key         String    @unique
+  key         String
   namespace   String    @default("default")
   lockedAt    DateTime?
+  expiresAt   DateTime?
   completedAt DateTime?
   metadata    Json?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@index([namespace, key])
+  @@unique([namespace, key])
   @@index([createdAt])
+  @@index([expiresAt])
+}
+
+model FinancialEvent {
+  id         String             @id @default(uuid())
+  contractId String
+  type       FinancialEventType
+  amount     Int
+  actorId    String?
+  metadata   Json?
+  createdAt  DateTime           @default(now())
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId, createdAt])
+  @@index([type, createdAt])
 }
 
 enum LedgerAccountType {

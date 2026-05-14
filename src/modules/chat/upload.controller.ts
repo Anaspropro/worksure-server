@@ -51,4 +51,11 @@ export class UploadController {
       fileSize: file?.size ?? null,
     };
   }
+
+  @Post('signed-params')
+  @ApiOperation({ summary: 'Get signed upload parameters for direct Cloudinary upload' })
+  @ApiResponse({ status: 200, description: 'Signed parameters generated successfully' })
+  async getSignedParams() {
+    return this.mediaService.getSignedUploadParams();
+  }
 }

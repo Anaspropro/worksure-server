@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { StringValue } from 'ms';
 
 @Injectable()
 export class AppConfigService {
+  constructor(private configService: ConfigService) {}
+
   get port(): number {
-    const rawPort = process.env.PORT;
-    return rawPort ? Number(rawPort) : 8000;
+    return this.configService.get<number>('PORT', 8000);
   }
 
-  get databaseUrl(): string | undefined {
-    return process.env.DATABASE_URL;
+  get databaseUrl(): string {
+    return this.configService.get<string>('DATABASE_URL')!;
   }
 
   get isDatabaseConfigured(): boolean {
@@ -17,20 +19,36 @@ export class AppConfigService {
   }
 
   get jwtSecret(): string {
-    const secret = process.env.JWT_SECRET;
-    if (!secret || secret.length < 32) {
-      throw new Error(
-        'JWT_SECRET environment variable is required and must be at least 32 characters long',
-      );
-    }
-    return secret;
+    return this.configService.get<string>('JWT_SECRET')!;
   }
 
   get jwtExpiresIn(): StringValue {
-    return (process.env.JWT_EXPIRES_IN || '1d') as StringValue;
+    return this.configService.get<StringValue>('JWT_EXPIRES_IN', '1d' as StringValue);
   }
 
   get nodeEnv(): string {
-    return process.env.NODE_ENV || 'development';
+    return this.configService.get<string>('NODE_ENV', 'development');
+  }
+
+  // Paystack
+  get paystackSecret(): string {
+    return this.configService.get<string>('PAYSTACK_SECRET')!;
+  }
+
+  get paystackPublic(): string {
+    return this.configService.get<string>('PAYSTACK_PUBLIC')!;
+  }
+
+  // Cloudinary
+  get cloudinaryName(): string {
+    return this.configService.get<string>('CLOUDINARY_NAME')!;
+  }
+
+  get cloudinaryKey(): string {
+    return this.configService.get<string>('CLOUDINARY_KEY')!;
+  }
+
+  get cloudinarySecret(): string {
+    return this.configService.get<string>('CLOUDINARY_SECRET')!;
   }
 }

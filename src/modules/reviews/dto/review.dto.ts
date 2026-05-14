@@ -9,6 +9,7 @@ import {
   ArrayNotEmpty,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreateReviewDto {
   @ApiProperty({ description: 'Contract ID' })
@@ -205,6 +206,7 @@ export class ReviewListQueryDto {
 
   @ApiPropertyOptional({ description: 'Filter by minimum rating' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(5)
@@ -212,6 +214,7 @@ export class ReviewListQueryDto {
 
   @ApiPropertyOptional({ description: 'Filter by maximum rating' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(5)
@@ -239,6 +242,7 @@ export class ReviewListQueryDto {
 
   @ApiPropertyOptional({ description: 'Page number (default: 1)' })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   page?: number = 1;
@@ -247,6 +251,7 @@ export class ReviewListQueryDto {
     description: 'Items per page (default: 10, max: 100)',
   })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(100)

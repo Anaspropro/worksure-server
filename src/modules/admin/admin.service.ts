@@ -4,9 +4,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import { AuthService } from '../auth/auth.service';
 import {
   AuditEntityType,
+  ContractStatus,
   DisputeDecision,
   DisputeStatus,
   JobStatus,
@@ -60,11 +62,16 @@ export class AdminService {
     private readonly authService: AuthService,
   ) {}
 
-  async getAllUsers() {
-    const [data, active, banned] = await this.prisma.$transaction([
+  async getAllUsers(page = 1, limit = 50) {
+    const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
+    const [data, total, active, banned] = await Promise.all([
       this.prisma.user.findMany({
         orderBy: { createdAt: 'asc' },
+        take,
+        skip,
       }),
+      this.prisma.user.count(),
       this.prisma.user.count({ where: { status: UserStatus.ACTIVE } }),
       this.prisma.user.count({ where: { status: UserStatus.BANNED } }),
     ]);
@@ -72,7 +79,10 @@ export class AdminService {
     return {
       data: data.map((user) => this.mapUser(user)),
       meta: {
-        total: data.length,
+        total,
+        page,
+        limit: take,
+        totalPages: Math.ceil(total / take),
         active,
         banned,
       },
@@ -313,24 +323,40 @@ export class AdminService {
     };
   }
 
-  async getAllDisputes() {
-    const [disputes, active, resolved] = await this.prisma.$transaction([
+  async getAllDisputes(page = 1, limit = 50) {
+    const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
+    const [disputes, total, active, resolved] = await Promise.all([
       this.prisma.dispute.findMany({
         include: {
+          client: { select: { name: true } },
+          artisan: { select: { name: true } },
+          contract: { include: { job: { select: { title: true } } } },
           history: {
             orderBy: { at: 'asc' },
           },
         },
         orderBy: { createdAt: 'desc' },
+        take,
+        skip,
       }),
+      this.prisma.dispute.count(),
       this.prisma.dispute.count({ where: { status: DisputeStatus.OPEN } }),
       this.prisma.dispute.count({ where: { status: DisputeStatus.RESOLVED } }),
     ]);
 
     return {
-      data: disputes.map((dispute) => this.mapDispute(dispute)),
+      data: disputes.map((dispute: any) => ({
+        ...this.mapDispute(dispute),
+        clientName: dispute.client.name,
+        artisanName: dispute.artisan.name,
+        contractTitle: dispute.contract?.job.title ?? 'Untitled Contract',
+      })),
       meta: {
-        total: disputes.length,
+        total,
+        page,
+        limit: take,
+        totalPages: Math.ceil(total / take),
         active,
         resolved,
       },
@@ -380,7 +406,7 @@ export class AdminService {
 
       await tx.disputeHistory.create({
         data: {
-          id: await this.nextIdentifier(tx, 'disputeHistory', 'dsh'),
+          id: this.nextIdentifier(),
           disputeId: dispute.id,
           action: 'DISPUTE_RESOLVED',
           at: resolvedAt,
@@ -391,7 +417,7 @@ export class AdminService {
 
       await tx.transaction.create({
         data: {
-          id: await this.nextIdentifier(tx, 'transaction', 'txn'),
+          id: this.nextIdentifier(),
           userId: beneficiaryId,
           type: transactionType,
           amount: dispute.amount,
@@ -403,7 +429,7 @@ export class AdminService {
 
       await tx.notification.create({
         data: {
-          id: await this.nextIdentifier(tx, 'notification', 'ntf'),
+          id: this.nextIdentifier(),
           userId: dispute.clientId,
           title: 'Dispute update',
           message: notificationMessage,
@@ -413,7 +439,7 @@ export class AdminService {
 
       await tx.notification.create({
         data: {
-          id: await this.nextIdentifier(tx, 'notification', 'ntf'),
+          id: this.nextIdentifier(),
           userId: dispute.artisanId,
           title: 'Dispute update',
           message: notificationMessage,
@@ -435,7 +461,7 @@ export class AdminService {
 
       await tx.auditLog.create({
         data: {
-          id: await this.nextIdentifier(tx, 'auditLog', 'log'),
+          id: this.nextIdentifier(),
           action: 'DISPUTE_RESOLVED',
           entityType: AuditEntityType.DISPUTE,
           entityId: dispute.id,
@@ -469,7 +495,7 @@ export class AdminService {
     };
   }
 
-  async getAllJobs(status?: string) {
+  async getAllJobs(status?: string, page = 1, limit = 50) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
@@ -480,14 +506,19 @@ export class AdminService {
       );
     }
 
+    const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
     const where = normalizedStatus
       ? { status: normalizedStatus as JobStatus }
       : undefined;
-    const [data, flagged] = await this.prisma.$transaction([
+    const [data, total, flagged] = await Promise.all([
       this.prisma.job.findMany({
         where,
         orderBy: { createdAt: 'desc' },
+        take,
+        skip,
       }),
+      this.prisma.job.count({ where }),
       this.prisma.job.count({
         where: {
           ...where,
@@ -499,7 +530,10 @@ export class AdminService {
     return {
       data: data.map((job) => this.mapJob(job)),
       meta: {
-        total: data.length,
+        total,
+        page,
+        limit: take,
+        totalPages: Math.ceil(total / take),
         flagged,
       },
     };
@@ -547,7 +581,7 @@ export class AdminService {
     };
   }
 
-  async getAllTransactions(type?: string) {
+  async getAllTransactions(type?: string, page = 1, limit = 50) {
     const normalizedType = type?.toUpperCase();
     if (
       normalizedType &&
@@ -558,18 +592,28 @@ export class AdminService {
       );
     }
 
+    const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
     const where = normalizedType
       ? { type: normalizedType as TransactionType }
       : undefined;
-    const data = await this.prisma.transaction.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-    });
+    const [data, total] = await Promise.all([
+      this.prisma.transaction.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take,
+        skip,
+      }),
+      this.prisma.transaction.count({ where }),
+    ]);
 
     return {
       data: data.map((transaction) => this.mapTransaction(transaction)),
       meta: {
-        total: data.length,
+        total,
+        page,
+        limit: take,
+        totalPages: Math.ceil(total / take),
         escrowTransactions: data.filter(
           (transaction) => transaction.type === TransactionType.ESCROW_HOLD,
         ).length,
@@ -593,94 +637,137 @@ export class AdminService {
       throw new BadRequestException(`Unsupported report type: ${reportType}.`);
     }
 
-    const [users, jobs, disputes, transactions] =
-      await this.prisma.$transaction([
-        this.prisma.user.findMany(),
-        this.prisma.job.findMany(),
-        this.prisma.dispute.findMany(),
-        this.prisma.transaction.findMany(),
-      ]);
+    let reportData: Record<string, unknown>;
 
-    const reports = {
-      jobs_per_month: {
-        reportType: 'jobs_per_month',
-        filters: { month: month ?? '2026-03' },
-        totals: {
-          jobsCreated: jobs.length,
-          inProgress: jobs.filter((job) => job.status === JobStatus.IN_PROGRESS)
-            .length,
-          completed: jobs.filter((job) => job.status === JobStatus.COMPLETED)
-            .length,
-        },
-      },
-      platform_earnings: {
-        reportType: 'platform_earnings',
-        totals: {
-          grossFees: transactions
-            .filter(
-              (transaction) =>
-                transaction.type === TransactionType.PLATFORM_FEE,
-            )
-            .reduce((sum, transaction) => sum + transaction.amount, 0),
-          generatedAt: new Date().toISOString(),
-        },
-      },
-      active_disputes: {
-        reportType: 'active_disputes',
-        totals: {
-          active: disputes.filter(
-            (dispute) => dispute.status === DisputeStatus.OPEN,
-          ).length,
-          resolved: disputes.filter(
-            (dispute) => dispute.status === DisputeStatus.RESOLVED,
-          ).length,
-        },
-      },
-      top_artisans: {
-        reportType: 'top_artisans',
-        data: users
-          .filter((user) => user.role === UserRole.ARTISAN)
-          .map((user) => ({
-            artisanId: user.id,
-            name: user.name,
-            verified: user.artisanVerified,
-            completedJobs: jobs.filter(
-              (job) =>
-                job.artisanId === user.id && job.status === JobStatus.COMPLETED,
-            ).length,
-            earnings: jobs
-              .filter(
-                (job) =>
-                  job.artisanId === user.id &&
-                  job.status === JobStatus.COMPLETED,
-              )
-              .reduce((sum, job) => sum + (job.amount || 0), 0),
-          }))
-          .sort((left, right) =>
-            right.completedJobs === left.completedJobs
-              ? right.earnings - left.earnings
-              : right.completedJobs - left.completedJobs,
-          ),
-      },
-      overview: {
-        reportType: 'overview',
-        totals: {
-          users: users.length,
-          activeJobs: jobs.filter((job) => job.status === JobStatus.IN_PROGRESS)
-            .length,
-          openDisputes: disputes.filter(
-            (dispute) => dispute.status === DisputeStatus.OPEN,
-          ).length,
-          platformFees: transactions
-            .filter(
-              (transaction) =>
-                transaction.type === TransactionType.PLATFORM_FEE,
-            )
-            .reduce((sum, transaction) => sum + transaction.amount, 0),
-          flaggedJobs: jobs.filter((job) => job.flagged).length,
-        },
-      },
-    } as const;
+    switch (reportType) {
+      case 'jobs_per_month': {
+        const jobStats = await this.prisma.job.groupBy({
+          by: ['status'],
+          _count: { id: true },
+        });
+        const statusMap = Object.fromEntries(
+          jobStats.map((s) => [s.status, s._count.id]),
+        );
+        reportData = {
+          reportType: 'jobs_per_month',
+          filters: { month: month ?? '2026-03' },
+          totals: {
+            jobsCreated: Object.values(statusMap).reduce(
+              (sum, c) => sum + (c as number),
+              0,
+            ),
+            inProgress: statusMap[JobStatus.IN_PROGRESS] ?? 0,
+            completed: statusMap[JobStatus.COMPLETED] ?? 0,
+          },
+        };
+        break;
+      }
+      case 'platform_earnings': {
+        const feeAgg = await this.prisma.transaction.aggregate({
+          where: { type: TransactionType.PLATFORM_FEE },
+          _sum: { amount: true },
+        });
+        reportData = {
+          reportType: 'platform_earnings',
+          totals: {
+            grossFees: feeAgg._sum.amount ?? 0,
+            generatedAt: new Date().toISOString(),
+          },
+        };
+        break;
+      }
+      case 'active_disputes': {
+        const [activeCount, resolvedCount] = await Promise.all([
+          this.prisma.dispute.count({
+            where: { status: DisputeStatus.OPEN },
+          }),
+          this.prisma.dispute.count({
+            where: { status: DisputeStatus.RESOLVED },
+          }),
+        ]);
+        reportData = {
+          reportType: 'active_disputes',
+          totals: {
+            active: activeCount,
+            resolved: resolvedCount,
+          },
+        };
+        break;
+      }
+      case 'top_artisans': {
+        const leaderboard = await this.prisma.job.groupBy({
+          by: ['artisanId'],
+          where: {
+            status: JobStatus.COMPLETED,
+            artisanId: { not: null },
+          },
+          _count: { id: true },
+          _sum: { amount: true },
+          orderBy: { _count: { id: 'desc' } },
+          take: 20,
+        });
+        const artisanIds = leaderboard
+          .map((entry) => entry.artisanId)
+          .filter((id): id is string => id !== null);
+        const artisanUsers =
+          artisanIds.length > 0
+            ? await this.prisma.user.findMany({
+                where: { id: { in: artisanIds } },
+                select: { id: true, name: true, artisanVerified: true },
+              })
+            : [];
+        const artisanMap = new Map(
+          artisanUsers.map((u) => [u.id, u]),
+        );
+        reportData = {
+          reportType: 'top_artisans',
+          data: leaderboard.map((entry) => {
+            const user = artisanMap.get(entry.artisanId!);
+            return {
+              artisanId: entry.artisanId,
+              name: user?.name ?? 'Unknown',
+              verified: user?.artisanVerified ?? false,
+              completedJobs: entry._count.id,
+              earnings: entry._sum.amount ?? 0,
+            };
+          }),
+        };
+        break;
+      }
+      case 'overview':
+      default: {
+        const [userCount, jobStatusGroups, openDisputes, feeTotal, flaggedJobs] =
+          await Promise.all([
+            this.prisma.user.count(),
+            this.prisma.job.groupBy({
+              by: ['status'],
+              _count: { id: true },
+            }),
+            this.prisma.dispute.count({
+              where: { status: DisputeStatus.OPEN },
+            }),
+            this.prisma.transaction.aggregate({
+              where: { type: TransactionType.PLATFORM_FEE },
+              _sum: { amount: true },
+            }),
+            this.prisma.job.count({ where: { flagged: true } }),
+          ]);
+        const jobMap = Object.fromEntries(
+          jobStatusGroups.map((s) => [s.status, s._count.id]),
+        );
+        reportData = {
+          reportType: 'overview',
+          totals: {
+            users: userCount,
+            activeJobs: jobMap[JobStatus.IN_PROGRESS] ?? 0,
+            openDisputes,
+            platformFees: feeTotal._sum.amount ?? 0,
+            flaggedJobs,
+          },
+        };
+        break;
+      }
+    }
 
     await this.logAction(
       'REPORT_GENERATED',
@@ -691,21 +778,138 @@ export class AdminService {
     );
 
     return {
-      data: reports[reportType],
+      data: reportData,
       exportFormats: ['json', 'csv'],
     };
   }
 
-  async getAuditLogs() {
-    const data = await this.prisma.auditLog.findMany({
-      orderBy: { performedAt: 'desc' },
-    });
+  async getAuditLogs(page = 1, limit = 50) {
+    const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
+    const [data, total] = await Promise.all([
+      this.prisma.auditLog.findMany({
+        orderBy: { performedAt: 'desc' },
+        take,
+        skip,
+      }),
+      this.prisma.auditLog.count(),
+    ]);
 
     return {
       data: data.map((log) => this.mapAuditLog(log)),
       meta: {
-        total: data.length,
+        total,
+        page,
+        limit: take,
+        totalPages: Math.ceil(total / take),
       },
+    };
+  }
+
+  async getAllContracts(status?: string, page = 1, limit = 50) {
+    const normalizedStatus = status?.toUpperCase();
+    if (
+      normalizedStatus &&
+      !Object.values(ContractStatus).includes(
+        normalizedStatus as ContractStatus,
+      )
+    ) {
+      throw new BadRequestException(
+        `Unsupported contract status filter: ${status}.`,
+      );
+    }
+
+    const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
+    const where = normalizedStatus
+      ? { status: normalizedStatus as ContractStatus }
+      : undefined;
+
+    const [contracts, total] = await Promise.all([
+      this.prisma.contract.findMany({
+        where,
+        include: {
+          client: { select: { name: true, email: true } },
+          artisan: { select: { name: true, email: true } },
+          job: { select: { title: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take,
+        skip,
+      }),
+      this.prisma.contract.count({ where }),
+    ]);
+
+    return {
+      data: contracts.map((c) => ({
+        ...c,
+        clientName: c.client.name,
+        artisanName: c.artisan.name,
+        jobTitle: c.job.title,
+      })),
+      meta: {
+        total,
+        page,
+        limit: take,
+        totalPages: Math.ceil(total / take),
+      },
+    };
+  }
+
+  async getContractStats() {
+    const escrowStatuses: ContractStatus[] = [
+      ContractStatus.FUNDED,
+      ContractStatus.ACTIVE,
+      ContractStatus.IN_PROGRESS,
+      ContractStatus.CLIENT_CONFIRMED,
+      ContractStatus.READY_FOR_PAYOUT,
+      ContractStatus.DISPUTED,
+    ];
+
+    const [
+      statusGroups,
+      totalAgg,
+      escrowAgg,
+      payoutAgg,
+      refundAgg,
+      totalCount,
+    ] = await Promise.all([
+      this.prisma.contract.groupBy({
+        by: ['status'],
+        _count: { id: true },
+        _sum: { amount: true },
+      }),
+      this.prisma.contract.aggregate({ _sum: { amount: true } }),
+      this.prisma.contract.aggregate({
+        where: { status: { in: escrowStatuses } },
+        _sum: { amount: true },
+        _count: { id: true },
+      }),
+      this.prisma.contract.aggregate({
+        where: { status: ContractStatus.PAID_OUT },
+        _sum: { amount: true },
+      }),
+      this.prisma.contract.aggregate({
+        where: { status: ContractStatus.REFUNDED },
+        _sum: { amount: true },
+      }),
+      this.prisma.contract.count(),
+    ]);
+
+    const statusDistribution = Object.fromEntries(
+      statusGroups.map((s) => [s.status, s._count.id]),
+    );
+    const totalVolume = totalAgg._sum.amount ?? 0;
+
+    return {
+      totalCount,
+      statusDistribution,
+      totalVolume,
+      escrowVolume: escrowAgg._sum.amount ?? 0,
+      payoutVolume: payoutAgg._sum.amount ?? 0,
+      refundVolume: refundAgg._sum.amount ?? 0,
+      averageValue: totalCount > 0 ? totalVolume / totalCount : 0,
+      activeContractCount: escrowAgg._count.id,
     };
   }
 
@@ -756,7 +960,7 @@ export class AdminService {
   ) {
     await this.prisma.auditLog.create({
       data: {
-        id: await this.nextIdentifier(this.prisma, 'auditLog', 'log'),
+        id: randomUUID(),
         action,
         entityType,
         entityId,
@@ -805,6 +1009,7 @@ export class AdminService {
       role: user.role,
       status: user.status,
       artisanVerified: user.artisanVerified,
+      phone: user.phone,
       createdAt: user.createdAt.toISOString(),
     };
   }
@@ -818,6 +1023,7 @@ export class AdminService {
       artisanId: dispute.artisanId,
       amount: dispute.amount,
       status: dispute.status,
+      createdAt: dispute.createdAt.toISOString(),
       evidence: {
         images: this.jsonStringArray(dispute.evidenceImages),
         videos: this.jsonStringArray(dispute.evidenceVideos),
@@ -917,28 +1123,7 @@ export class AdminService {
     return JSON.stringify(value);
   }
 
-  private async nextIdentifier(
-    prisma: PrismaService | Prisma.TransactionClient,
-    model: 'auditLog' | 'disputeHistory' | 'notification' | 'transaction',
-    prefix: string,
-  ) {
-    let currentCount = 0;
-
-    switch (model) {
-      case 'auditLog':
-        currentCount = await prisma.auditLog.count();
-        break;
-      case 'disputeHistory':
-        currentCount = await prisma.disputeHistory.count();
-        break;
-      case 'notification':
-        currentCount = await prisma.notification.count();
-        break;
-      case 'transaction':
-        currentCount = await prisma.transaction.count();
-        break;
-    }
-
-    return `${prefix}_${String(currentCount + 1).padStart(3, '0')}`;
+  private nextIdentifier(): string {
+    return randomUUID();
   }
 }

@@ -16,9 +16,9 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { UsersModule } from './modules/users/users.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { KycModule } from './modules/kyc/kyc.module';
 import { AppConfigModule } from './config/app-config.module';
 import { PrismaModule } from './database/prisma.module';
-import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { SanitizationService } from './common/services/sanitization.service';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -29,6 +29,16 @@ import { ScheduleModule } from '@nestjs/schedule';
     ThrottlerModule.forRoot([
       {
         name: 'default',
+        ttl: 60000,
+        limit: 60,
+      },
+      {
+        name: 'auth',
+        ttl: 60000,
+        limit: 5,
+      },
+      {
+        name: 'financial',
         ttl: 60000,
         limit: 10,
       },
@@ -49,21 +59,13 @@ import { ScheduleModule } from '@nestjs/schedule';
     ReviewsModule,
     DisputesModule,
     NotificationsModule,
+    KycModule,
   ],
   controllers: [AppController],
   providers: [AppService, SanitizationService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggingMiddleware)
-      .forRoutes('*')
-      .apply(RateLimitMiddleware)
-      .forRoutes(
-        'auth/login',
-        'auth/register',
-        'auth/forgot-password',
-        'auth/reset-password',
-      );
+    consumer.apply(LoggingMiddleware).forRoutes('*');
   }
 }

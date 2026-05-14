@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
+import { NotificationsGateway } from './notifications.gateway';
 import {
   CreateNotificationDto,
   MarkNotificationsDto,
@@ -17,7 +18,10 @@ import {
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsGateway: NotificationsGateway,
+  ) {}
 
   private async ensureUserExists(userId: string) {
     const user = await this.prisma.user.findUnique({
@@ -74,7 +78,10 @@ export class NotificationsService {
       },
     });
 
-    return this.toResponse(notification);
+    const response = this.toResponse(notification);
+    this.notificationsGateway.emitToUser(dto.userId, 'newNotification', response);
+
+    return response;
   }
 
   async listNotifications(
@@ -114,8 +121,8 @@ export class NotificationsService {
       };
     }
 
-    const skip = (page - 1) * limit;
     const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
 
     const [notifications, total] = await Promise.all([
       this.prisma.notification.findMany({
@@ -127,16 +134,19 @@ export class NotificationsService {
       this.prisma.notification.count({ where }),
     ]);
 
+    const items = notifications.map((notification) =>
+      this.toResponse(notification),
+    );
+
     return {
-      notifications: notifications.map((notification) =>
-        this.toResponse(notification),
-      ),
+      data: items,
+      notifications: items,
       pagination: {
         page,
-        limit,
+        limit: take,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
+        totalPages: Math.ceil(total / take),
+        hasNext: page * take < total,
         hasPrev: page > 1,
       },
     };
@@ -300,32 +310,43 @@ export class NotificationsService {
   }
 
   async getNotificationStats(userId: string): Promise<NotificationStatsDto> {
-    const notifications = await this.prisma.notification.findMany({
-      where: { userId },
-    });
+    const [total, unread, archived, typeGroups, priorityGroups] =
+      await Promise.all([
+        this.prisma.notification.count({ where: { userId } }),
+        this.prisma.notification.count({ where: { userId, read: false } }),
+        this.prisma.notification.count({
+          where: { userId, isArchived: true },
+        }),
+        this.prisma.notification.groupBy({
+          by: ['type'],
+          where: { userId },
+          _count: { id: true },
+        }),
+        this.prisma.notification.groupBy({
+          by: ['priority'],
+          where: { userId },
+          _count: { id: true },
+        }),
+      ]);
 
     const byType = Object.fromEntries(
       Object.values(NotificationType).map((type) => [
         type,
-        notifications.filter((notification) => notification.type === type)
-          .length,
+        typeGroups.find((g) => g.type === type)?._count.id ?? 0,
       ]),
     ) as Record<NotificationType, number>;
 
     const byPriority = Object.fromEntries(
       Object.values(NotificationPriority).map((priority) => [
         priority,
-        notifications.filter(
-          (notification) => notification.priority === priority,
-        ).length,
+        priorityGroups.find((g) => g.priority === priority)?._count.id ?? 0,
       ]),
     ) as Record<NotificationPriority, number>;
 
     return {
-      total: notifications.length,
-      unread: notifications.filter((notification) => !notification.read).length,
-      archived: notifications.filter((notification) => notification.isArchived)
-        .length,
+      total,
+      unread,
+      archived,
       byType,
       byPriority,
     };

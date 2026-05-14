@@ -16,10 +16,39 @@ export async function resetAdminFixtures(prisma: PrismaClient) {
   await prisma.dispute.deleteMany();
   await prisma.job.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.ledgerAccount.deleteMany();
 }
 
 export async function seedAdminFixtures(prisma: PrismaClient) {
   await resetAdminFixtures(prisma);
+
+  const existingEscrow = await prisma.ledgerAccount.findFirst({
+    where: { type: 'SYSTEM_ESCROW' },
+  });
+
+  if (!existingEscrow) {
+    await prisma.ledgerAccount.create({
+      data: {
+        id: uuidv4(),
+        name: 'WorkSure Escrow',
+        type: 'SYSTEM_ESCROW',
+      },
+    });
+  }
+
+  const existingFee = await prisma.ledgerAccount.findFirst({
+    where: { type: 'SYSTEM_FEE' },
+  });
+
+  if (!existingFee) {
+    await prisma.ledgerAccount.create({
+      data: {
+        id: uuidv4(),
+        name: 'WorkSure Fees',
+        type: 'SYSTEM_FEE',
+      },
+    });
+  }
 
   const adminPasswordHash = await bcrypt.hash('AdminPass123', 10);
   const clientPasswordHash = await bcrypt.hash('ClientPass123', 10);

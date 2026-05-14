@@ -7,6 +7,24 @@ import { SanitizationPipe } from './common/pipes/sanitization.pipe';
 import * as express from 'express';
 
 export function configureApp(app: INestApplication) {
+  const trustProxyRaw = process.env.TRUST_PROXY;
+  const httpAdapter = app.getHttpAdapter();
+  const httpInstance = httpAdapter?.getInstance?.() as
+    | { set?: (key: string, value: unknown) => void }
+    | undefined;
+
+  if (trustProxyRaw) {
+    const trustProxy =
+      trustProxyRaw === 'true'
+        ? true
+        : Number.isFinite(Number(trustProxyRaw))
+          ? Number(trustProxyRaw)
+          : true;
+    httpInstance?.set?.('trust proxy', trustProxy);
+  } else if (process.env.NODE_ENV === 'production') {
+    httpInstance?.set?.('trust proxy', 1);
+  }
+
   // Apply security headers with Helmet
   app.use(
     helmet({
