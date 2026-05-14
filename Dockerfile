@@ -7,15 +7,17 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+COPY package*.json ./
+RUN npm ci
 COPY . .
 
 # Generate Prisma client
+ENV DATABASE_URL="postgres://84952c7e5b51e7335ab66544c6b47cb3f674914cb5ab3fa0bebf105c6f667f01:sk_il5VeAcdgJlygRp3T5C_f@db.prisma.io:5432/postgres?sslmode=require"
 RUN npx prisma generate
 
 # Build the application
