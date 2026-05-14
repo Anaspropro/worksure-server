@@ -10,6 +10,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '../../common/constants/roles.constants';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -48,28 +50,7 @@ export class PaymentsController {
     private readonly webhookSignatureService: WebhookSignatureService,
   ) {}
 
-  private verifyWebhookSignature(
-    signature: string | undefined,
-    rawBody: Buffer | undefined,
-  ) {
-    const secret =
-      process.env.PAYSTACK_WEBHOOK_SECRET ?? process.env.PAYSTACK_SECRET_KEY;
 
-    if (!secret || !signature || !rawBody) {
-      throw new BadRequestException('Invalid webhook signature');
-    }
-
-    const computed = createHmac('sha512', secret).update(rawBody).digest('hex');
-    const signatureBuffer = Buffer.from(signature, 'hex');
-    const computedBuffer = Buffer.from(computed, 'hex');
-
-    if (
-      signatureBuffer.length !== computedBuffer.length ||
-      !timingSafeEqual(signatureBuffer, computedBuffer)
-    ) {
-      throw new BadRequestException('Invalid webhook signature');
-    }
-  }
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Initialize Paystack funding for a contract' })
@@ -141,7 +122,23 @@ export class PaymentsController {
     @Req() request: { rawBody?: Buffer; body: any },
     @Headers('x-paystack-signature') signature?: string,
   ) {
-    this.verifyWebhookSignature(signature, request.rawBody);
+    if (!request.rawBody) {
+      throw new BadRequestException('Raw body is required for webhook signature verification');
+    }
+    if (!signature) {
+      throw new BadRequestException('Webhook signature is missing');
+    }
+    
+    const secret = process.env.PAYSTACK_WEBHOOK_SECRET;
+    if (!secret) {
+      throw new BadRequestException('Webhook secret is not configured');
+    }
+
+    this.webhookSignatureService.verifyAndParseWebhook(
+      request.rawBody.toString('utf8'),
+      signature,
+      secret,
+    );
     const eventType = request.body?.event as string | undefined;
     const eventIdRaw = request.body?.data?.id;
     const eventReference = request.body?.data?.reference as string | undefined;
@@ -243,14 +240,12 @@ export class PaymentsController {
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Admin manual release of escrow (for disputes)' })
   @ApiOkResponse({ description: 'Escrow released successfully.' })
+  @Roles(UserRole.ADMIN)
   @Post('release/admin')
   async releaseEscrowAdmin(
     @CurrentUser() user: { id: string; role: string },
     @Body() dto: ReleasePaymentDto,
   ) {
-    if (user.role !== 'ADMIN') {
-      throw new ForbiddenException('Only admin can manually release escrow');
-    }
     await this.paymentsService.releaseEscrowByAdmin(dto.contractId, dto.reason);
 
     return {

@@ -388,6 +388,7 @@ exports.Prisma.IdempotencyKeyScalarFieldEnum = {
   key: 'key',
   namespace: 'namespace',
   lockedAt: 'lockedAt',
+  expiresAt: 'expiresAt',
   completedAt: 'completedAt',
   metadata: 'metadata',
   createdAt: 'createdAt',

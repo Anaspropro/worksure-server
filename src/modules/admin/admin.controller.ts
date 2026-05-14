@@ -37,8 +37,14 @@ export class AdminController {
   @ApiOperation({ summary: 'List all users' })
   @ApiOkResponse({ description: 'User list returned successfully.' })
   @Get('users')
-  getAllUsers() {
-    return this.adminService.getAllUsers();
+  getAllUsers(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getAllUsers(
+      page ? parseInt(page, 10) : undefined,
+      limit ? parseInt(limit, 10) : undefined,
+    );
   }
 
   @ApiOperation({ summary: 'Get detailed admin view of a user' })
@@ -96,8 +102,14 @@ export class AdminController {
 
   @ApiOperation({ summary: 'List all disputes' })
   @Get('disputes')
-  getAllDisputes() {
-    return this.adminService.getAllDisputes();
+  getAllDisputes(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getAllDisputes(
+      page ? parseInt(page, 10) : undefined,
+      limit ? parseInt(limit, 10) : undefined,
+    );
   }
 
   @ApiOperation({ summary: 'Resolve a dispute' })
@@ -123,8 +135,16 @@ export class AdminController {
     description: 'Job status filter',
   })
   @Get('jobs')
-  getAllJobs(@Query('status') status?: string) {
-    return this.adminService.getAllJobs(status);
+  getAllJobs(
+    @Query('status') status?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getAllJobs(
+      status,
+      page ? parseInt(page, 10) : undefined,
+      limit ? parseInt(limit, 10) : undefined,
+    );
   }
 
   @ApiOperation({ summary: 'Force-close a job' })
@@ -151,8 +171,16 @@ export class AdminController {
     description: 'Transaction type filter',
   })
   @Get('transactions')
-  getAllTransactions(@Query('type') type?: string) {
-    return this.adminService.getAllTransactions(type);
+  getAllTransactions(
+    @Query('type') type?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getAllTransactions(
+      type,
+      page ? parseInt(page, 10) : undefined,
+      limit ? parseInt(limit, 10) : undefined,
+    );
   }
 
   @ApiOperation({ summary: 'Generate admin reports' })
@@ -176,8 +204,14 @@ export class AdminController {
 
   @ApiOperation({ summary: 'List audit logs' })
   @Get('audit-logs')
-  getAuditLogs() {
-    return this.adminService.getAuditLogs();
+  getAuditLogs(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getAuditLogs(
+      page ? parseInt(page, 10) : undefined,
+      limit ? parseInt(limit, 10) : undefined,
+    );
   }
 
   @ApiOperation({ summary: 'List all system contracts' })
@@ -187,8 +221,16 @@ export class AdminController {
     description: 'Contract status filter',
   })
   @Get('contracts')
-  getAllContracts(@Query('status') status?: string) {
-    return this.adminService.getAllContracts(status);
+  getAllContracts(
+    @Query('status') status?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getAllContracts(
+      status,
+      page ? parseInt(page, 10) : undefined,
+      limit ? parseInt(limit, 10) : undefined,
+    );
   }
 
   @ApiOperation({ summary: 'Get system contract statistics' })

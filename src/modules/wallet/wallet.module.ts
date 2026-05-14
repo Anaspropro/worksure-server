@@ -5,6 +5,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { PaymentsModule } from '../payments/payments.module';
 import { DisputesModule } from '../disputes/disputes.module';
 import { AuthModule } from '../auth/auth.module';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { AuthModule } from '../auth/auth.module';
     forwardRef(() => AuthModule),
   ],
   controllers: [WalletController],
-  providers: [WalletService, PrismaService],
+  providers: [WalletService, PrismaService, PaystackClientService],
   exports: [WalletService],
 })
 export class WalletModule {}

@@ -9,13 +9,28 @@ type PrismaClientWithPool = {
 };
 
 export function createPrismaAdapter(databaseUrl?: string) {
-  const parsedUrl = databaseUrl ? new URL(databaseUrl) : undefined;
-  const schema = parsedUrl?.searchParams.get('schema') ?? undefined;
+  const urlObj = databaseUrl ? new URL(databaseUrl) : undefined;
+  const schema = urlObj?.searchParams.get('schema') ?? undefined;
 
-  const pool = databaseUrl
+  // Fix SSL warning: pg 8.x+ warns if sslmode is in the connection string.
+  // We strip it from the URL and configure SSL explicitly.
+  const hasSsl =
+    urlObj?.searchParams.get('sslmode') === 'require' ||
+    urlObj?.searchParams.get('ssl') === 'true';
+
+  if (urlObj) {
+    urlObj.searchParams.delete('sslmode');
+    urlObj.searchParams.delete('ssl');
+  }
+
+  const pool = urlObj
     ? new Pool({
-        connectionString: databaseUrl,
+        connectionString: urlObj.toString(),
         options: schema ? `-c search_path=${schema}` : undefined,
+        max: 20,
+        idleTimeoutMillis: 30_000,
+        connectionTimeoutMillis: 30_000, // Increased for cloud DB cold starts
+        ssl: hasSsl ? { rejectUnauthorized: false } : false,
       })
     : undefined;
 

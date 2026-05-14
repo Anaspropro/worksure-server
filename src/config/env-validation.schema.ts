@@ -12,6 +12,8 @@ export const envValidationSchema = Joi.object({
   // Paystack
   PAYSTACK_SECRET: Joi.string().required(),
   PAYSTACK_PUBLIC: Joi.string().required(),
+  PAYSTACK_SECRET_KEY: Joi.string().optional(),
+  PAYSTACK_WEBHOOK_SECRET: Joi.string().required(),
   
   // Cloudinary
   CLOUDINARY_NAME: Joi.string().required(),
@@ -21,4 +23,6 @@ export const envValidationSchema = Joi.object({
   // App specific
   ALLOWED_ORIGINS: Joi.string().default('http://localhost:3000'),
   TRUST_PROXY: Joi.string().valid('true', 'false').default('false'),
+  PLATFORM_FEE_PERCENT: Joi.number().default(10),
+  APP_URL: Joi.string().default('http://localhost:3000'),
 });

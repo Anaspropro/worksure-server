@@ -64,7 +64,13 @@ export class DisputesService {
       }
 
       clientId = job.clientId;
-      artisanId = job.artisanId || '';
+
+      if (!job.artisanId) {
+        throw new BadRequestException(
+          'Cannot create a dispute for a job without an assigned artisan',
+        );
+      }
+      artisanId = job.artisanId;
 
       const existingDispute = await this.prisma.dispute.findFirst({
         where: {
