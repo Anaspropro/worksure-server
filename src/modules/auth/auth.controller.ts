@@ -27,7 +27,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Register a new user account' })
   @ApiCreatedResponse({ description: 'User registered successfully.' })
   @Public()
-  @Throttle({ auth: { limit: 5, ttl: 60_000 } })
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('register')
   register(@Body() dto: RegisterDto, @Req() request: Request) {
     return this.authService.register(
@@ -41,7 +41,7 @@ export class AuthController {
   @ApiCreatedResponse({ description: 'Login successful.' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })
   @Public()
-  @Throttle({ auth: { limit: 5, ttl: 60_000 } })
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('login')
   login(@Body() dto: LoginDto, @Req() request: Request) {
     return this.authService.login(
