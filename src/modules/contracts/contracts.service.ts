@@ -177,7 +177,7 @@ export class ContractsService {
   ) {
     const contract = await prismaClient.contract.findUnique({
       where: { id: contractId },
-      select: { status: true, paystackReference: true },
+      select: { status: true, paystackReference: true, jobId: true },
     });
 
     if (!contract) {
@@ -195,6 +195,14 @@ export class ContractsService {
       },
       include: this.contractInclude,
     });
+
+    // Synchronize Job status if contract reaches a successful terminal state
+    if (newStatus === ContractStatus.COMPLETED || newStatus === ContractStatus.PAID_OUT) {
+      await prismaClient.job.update({
+        where: { id: contract.jobId },
+        data: { status: 'COMPLETED' },
+      });
+    }
 
     await this.recordTransitionAudit(contractId, contract.status, newStatus, {
       actorId: context?.actorId,
