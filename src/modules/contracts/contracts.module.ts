@@ -5,6 +5,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { PaymentsModule } from '../payments/payments.module';
 import { DisputesModule } from '../disputes/disputes.module';
 import { AuthModule } from '../auth/auth.module';
+import { IdempotencyService } from '../../common/services/idempotency.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { AuthModule } from '../auth/auth.module';
     forwardRef(() => AuthModule),
   ],
   controllers: [ContractsController],
-  providers: [ContractsService, PrismaService],
+  providers: [ContractsService, PrismaService, IdempotencyService],
   exports: [ContractsService],
 })
 export class ContractsModule {}
