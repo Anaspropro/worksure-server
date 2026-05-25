@@ -49,8 +49,9 @@ export class JobsController {
   async createJob(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Body() createDto: CreateJobDto,
-  ): Promise<JobResponseDto> {
-    return this.jobsService.createJob(user, createDto);
+  ): Promise<{ message: string; data: JobResponseDto }> {
+    const job = await this.jobsService.createJob(user, createDto);
+    return { message: 'Job created successfully', data: job };
   }
 
   @ApiOperation({ summary: 'List jobs with filtering and pagination' })
@@ -72,8 +73,9 @@ export class JobsController {
   @ApiNotFoundResponse({ description: 'Job not found.' })
   @ApiParam({ name: 'id', description: 'Job ID' })
   @Get(':id')
-  async getJob(@Param('id') id: string) {
-    return this.jobsService.getJob(id);
+  async getJob(@Param('id') id: string): Promise<{ data: JobResponseDto }> {
+    const job = await this.jobsService.getJob(id);
+    return { data: job };
   }
 
   @ApiBearerAuth('bearer')
@@ -88,8 +90,9 @@ export class JobsController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Param('id') id: string,
     @Body() updateDto: UpdateJobDto,
-  ): Promise<JobResponseDto> {
-    return this.jobsService.updateJob(user, id, updateDto);
+  ): Promise<{ message: string; data: JobResponseDto }> {
+    const job = await this.jobsService.updateJob(user, id, updateDto);
+    return { message: 'Job updated successfully', data: job };
   }
 
   @ApiBearerAuth('bearer')
@@ -119,7 +122,8 @@ export class JobsController {
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
     @Param('id') id: string,
     @Body() body: { artisanId: string },
-  ): Promise<JobResponseDto> {
-    return this.jobsService.assignArtisan(user, id, body.artisanId);
+  ): Promise<{ message: string; data: JobResponseDto }> {
+    const job = await this.jobsService.assignArtisan(user, id, body.artisanId);
+    return { message: 'Artisan assigned successfully', data: job };
   }
 }

@@ -346,6 +346,16 @@ export class PaymentsService {
           },
         });
 
+        await tx.ledgerAccount.update({
+          where: { id: userWallet.id },
+          data: { balance: { decrement: Math.round(paystackData.amount / 100) } }
+        });
+
+        await tx.ledgerAccount.update({
+          where: { id: systemEscrow.id },
+          data: { balance: { increment: Math.round(paystackData.amount / 100) } }
+        });
+
         await this.createFinancialEvent(tx, {
           contractId,
           type: FinancialEventType.FUND_CONFIRMED,
@@ -538,7 +548,50 @@ export class PaymentsService {
     }
 
     const reference = this.buildTransferReference(contract.id);
+    let dbTxId: string | undefined = undefined;
     try {
+      await this.prisma.$transaction(async (tx) => {
+        const tr = await tx.transaction.create({
+          data: {
+            id: randomUUID(),
+            userId: contract.artisanId,
+            type: TransactionType.TRANSFER,
+            amount: payoutAmount,
+            status: TransactionStatus.PENDING,
+            reference,
+            metadata: {
+              contractId: contract.id,
+              recipientCode,
+              platformFee,
+            },
+            createdAt: new Date(),
+          },
+        });
+        dbTxId = tr.id;
+
+        await this.createFinancialEvent(tx, {
+          contractId: contract.id,
+          type: FinancialEventType.RELEASE_REQUESTED,
+          amount: payoutAmount,
+          actorId: contract.artisanId,
+          metadata: {
+            reference,
+            recipientCode,
+            platformFee,
+          },
+        });
+
+        await this.createAuditLog(tx, {
+          action: 'PAYOUT_REQUESTED',
+          contractId: contract.id,
+          actorId: contract.artisanId,
+          metadata: {
+            reference,
+            recipientCode,
+          },
+        });
+      });
+
       const transferData = await this.paystackClient.call<{
         transfer_code: string;
         reference?: string;
@@ -561,48 +614,6 @@ export class PaymentsService {
       );
 
       await this.prisma.$transaction(async (tx) => {
-        await tx.transaction.create({
-          data: {
-            id: randomUUID(),
-            userId: contract.artisanId,
-            type: TransactionType.TRANSFER,
-            amount: payoutAmount,
-            status: TransactionStatus.PENDING,
-            reference,
-            metadata: {
-              contractId: contract.id,
-              recipientCode,
-              transferCode: transferData.transfer_code,
-              platformFee,
-            },
-            createdAt: new Date(),
-          },
-        });
-
-        await this.createFinancialEvent(tx, {
-          contractId: contract.id,
-          type: FinancialEventType.RELEASE_REQUESTED,
-          amount: payoutAmount,
-          actorId: contract.artisanId,
-          metadata: {
-            reference,
-            transferCode: transferData.transfer_code,
-            recipientCode,
-            platformFee,
-          },
-        });
-
-        await this.createAuditLog(tx, {
-          action: 'PAYOUT_REQUESTED',
-          contractId: contract.id,
-          actorId: contract.artisanId,
-          metadata: {
-            reference,
-            transferCode: transferData.transfer_code,
-            recipientCode,
-          },
-        });
-
         const payment = await tx.payment.findFirst({
           where: {
             contractId: contract.id,
@@ -636,6 +647,12 @@ export class PaymentsService {
         platformFee,
       };
     } catch (error) {
+      if (dbTxId) {
+        await this.prisma.transaction.update({
+          where: { id: dbTxId },
+          data: { status: TransactionStatus.FAILED }
+        });
+      }
       await this.idempotency.release(lockKey, this.payoutNamespace);
       throw error;
     }
@@ -762,27 +779,10 @@ export class PaymentsService {
       );
     }
 
+    let dbTxId: string | undefined = undefined;
     try {
-      await this.contractsService.refundContract(
-        contractId,
-        userId,
-        isAdmin,
-        reason,
-      );
-
-      await this.paystackClient.call<{
-        status?: string;
-      }>('/refund', {
-        method: 'POST',
-        body: JSON.stringify({
-          transaction: payment.paymentReference,
-          amount: contract.amount * 100,
-          merchant_note: reason || `Refund for contract ${contractId}`,
-        }),
-      });
-
       await this.prisma.$transaction(async (tx) => {
-        await tx.transaction.create({
+        const tr = await tx.transaction.create({
           data: {
             id: randomUUID(),
             userId: contract.clientId,
@@ -798,6 +798,7 @@ export class PaymentsService {
             createdAt: new Date(),
           },
         });
+        dbTxId = tr.id;
 
         await this.createFinancialEvent(tx, {
           contractId,
@@ -824,8 +825,32 @@ export class PaymentsService {
         });
       });
 
+      await this.paystackClient.call<{
+        status?: string;
+      }>('/refund', {
+        method: 'POST',
+        body: JSON.stringify({
+          transaction: payment.paymentReference,
+          amount: contract.amount * 100,
+          merchant_note: reason || `Refund for contract ${contractId}`,
+        }),
+      });
+
+      await this.contractsService.refundContract(
+        contractId,
+        userId,
+        isAdmin,
+        reason,
+      );
+
       await this.idempotency.complete(lockKey, this.refundNamespace);
     } catch (error) {
+      if (dbTxId) {
+        await this.prisma.transaction.update({
+          where: { id: dbTxId },
+          data: { status: TransactionStatus.FAILED }
+        });
+      }
       await this.idempotency.release(lockKey, this.refundNamespace);
       throw error;
     }

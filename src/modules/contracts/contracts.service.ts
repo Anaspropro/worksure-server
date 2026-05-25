@@ -12,9 +12,14 @@ import {
   Prisma,
 } from '../../generated/prisma';
 
+import { IdempotencyService } from '../../common/services/idempotency.service';
+
 @Injectable()
 export class ContractsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly idempotency: IdempotencyService,
+  ) {}
   private readonly contractTransitionNamespace = 'contract_transition';
 
   private buildTransitionKey(
@@ -27,45 +32,7 @@ export class ContractsService {
       : `contract:${contractId}:${action}`;
   }
 
-  private async tryAcquireOperationLock(key: string, namespace: string) {
-    try {
-      await this.prisma.idempotencyKey.create({
-        data: {
-          key,
-          namespace,
-          lockedAt: new Date(),
-        },
-      });
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  private async completeOperationLock(key: string, namespace: string) {
-    await this.prisma.idempotencyKey.update({
-      where: {
-        namespace_key: {
-          namespace,
-          key,
-        },
-      },
-      data: {
-        completedAt: new Date(),
-      },
-    });
-  }
-
-  private async releaseOperationLock(key: string, namespace: string) {
-    await this.prisma.idempotencyKey.delete({
-      where: {
-        namespace_key: {
-          namespace,
-          key,
-        },
-      },
-    });
-  }
+  // Removed duplicate lock methods in favor of IdempotencyService
 
   private async recordTransitionAudit(
     contractId: string,
@@ -264,6 +231,26 @@ export class ContractsService {
     review: true,
   } as const;
 
+  private readonly contractListInclude = {
+    job: true,
+    proposal: true,
+    client: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    },
+    artisan: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        artisanVerified: true,
+      },
+    },
+  } as const;
+
   private async getContractOrThrow(contractId: string) {
     const contract = await this.prisma.contract.findUnique({
       where: { id: contractId },
@@ -363,7 +350,7 @@ export class ContractsService {
       contractId,
       userId,
     );
-    const acquired = await this.tryAcquireOperationLock(
+    const acquired = await this.idempotency.tryAcquire(
       operationKey,
       'contract_transition',
     );
@@ -385,13 +372,13 @@ export class ContractsService {
           source: 'contracts.activate',
         },
       );
-      await this.completeOperationLock(
+      await this.idempotency.complete(
         operationKey,
         this.contractTransitionNamespace,
       );
       return updatedContract;
     } catch (error) {
-      await this.releaseOperationLock(
+      await this.idempotency.release(
         operationKey,
         this.contractTransitionNamespace,
       );
@@ -412,7 +399,7 @@ export class ContractsService {
       contractId,
       paystackReference || paymentId,
     );
-    const acquired = await this.tryAcquireOperationLock(
+    const acquired = await this.idempotency.tryAcquire(
       operationKey,
       'contract_transition',
     );
@@ -438,13 +425,13 @@ export class ContractsService {
           externalReference: paystackReference || paymentId,
         },
       );
-      await this.completeOperationLock(
+      await this.idempotency.complete(
         operationKey,
         this.contractTransitionNamespace,
       );
       return updatedContract;
     } catch (error) {
-      await this.releaseOperationLock(
+      await this.idempotency.release(
         operationKey,
         this.contractTransitionNamespace,
       );
@@ -601,7 +588,7 @@ export class ContractsService {
 
   async markPaidOut(contractId: string) {
     const operationKey = this.buildTransitionKey('paid_out', contractId);
-    const acquired = await this.tryAcquireOperationLock(
+    const acquired = await this.idempotency.tryAcquire(
       operationKey,
       'contract_transition',
     );
@@ -626,13 +613,13 @@ export class ContractsService {
           source: 'payments.webhook',
         },
       );
-      await this.completeOperationLock(
+      await this.idempotency.complete(
         operationKey,
         this.contractTransitionNamespace,
       );
       return updatedContract;
     } catch (error) {
-      await this.releaseOperationLock(
+      await this.idempotency.release(
         operationKey,
         this.contractTransitionNamespace,
       );
@@ -698,7 +685,7 @@ export class ContractsService {
 
   async markRefunded(contractId: string, reason?: string) {
     const operationKey = this.buildTransitionKey('refunded', contractId);
-    const acquired = await this.tryAcquireOperationLock(
+    const acquired = await this.idempotency.tryAcquire(
       operationKey,
       'contract_transition',
     );
@@ -722,13 +709,13 @@ export class ContractsService {
           reason,
         },
       );
-      await this.completeOperationLock(
+      await this.idempotency.complete(
         operationKey,
         this.contractTransitionNamespace,
       );
       return this.getContractOrThrow(contractId);
     } catch (error) {
-      await this.releaseOperationLock(
+      await this.idempotency.release(
         operationKey,
         this.contractTransitionNamespace,
       );
@@ -738,7 +725,7 @@ export class ContractsService {
 
   async markDisputed(contractId: string) {
     const operationKey = this.buildTransitionKey('disputed', contractId);
-    const acquired = await this.tryAcquireOperationLock(
+    const acquired = await this.idempotency.tryAcquire(
       operationKey,
       'contract_transition',
     );
@@ -757,13 +744,13 @@ export class ContractsService {
           source: 'disputes.create',
         },
       );
-      await this.completeOperationLock(
+      await this.idempotency.complete(
         operationKey,
         this.contractTransitionNamespace,
       );
       return this.getContractOrThrow(contractId);
     } catch (error) {
-      await this.releaseOperationLock(
+      await this.idempotency.release(
         operationKey,
         this.contractTransitionNamespace,
       );
@@ -794,7 +781,7 @@ export class ContractsService {
 
     return this.prisma.contract.findMany({
       where,
-      include: this.contractInclude,
+      include: this.contractListInclude,
       orderBy: {
         createdAt: 'desc',
       },
