@@ -80,7 +80,33 @@ export class HttpExceptionFilter implements ExceptionFilter {
         details = responseObj.details ?? null;
       }
     } else if (exception instanceof Error) {
-      message = exception.message;
+      if (exception.name === 'PrismaClientKnownRequestError') {
+        const prismaError = exception as any;
+        if (prismaError.code === 'P2002') {
+          status = HttpStatus.CONFLICT;
+          message = 'A record with this data already exists.';
+          code = ErrorCode.STATE_VIOLATION;
+        } else if (prismaError.code === 'P2025') {
+          status = HttpStatus.NOT_FOUND;
+          message = 'The requested resource could not be found.';
+          code = ErrorCode.NOT_FOUND;
+        } else if (prismaError.code === 'P2003') {
+          status = HttpStatus.BAD_REQUEST;
+          message = 'This operation failed because a related record does not exist.';
+          code = ErrorCode.VALIDATION_ERROR;
+        } else {
+          status = HttpStatus.INTERNAL_SERVER_ERROR;
+          message = 'A database error occurred. Please try again later.';
+          code = ErrorCode.INTERNAL_ERROR;
+        }
+      } else if (exception.name === 'PrismaClientValidationError') {
+        status = HttpStatus.BAD_REQUEST;
+        message = 'Invalid data provided. Please check your input.';
+        code = ErrorCode.VALIDATION_ERROR;
+      } else {
+        message = 'An unexpected error occurred. Please try again later.';
+      }
+
       this.logger.error(
         `Unexpected error: ${exception.message}`,
         exception.stack,
