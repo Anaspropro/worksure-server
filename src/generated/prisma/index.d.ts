@@ -123,6 +123,11 @@ export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
  * 
  */
 export type AccountLockout = $Result.DefaultSelection<Prisma.$AccountLockoutPayload>
+/**
+ * Model SystemLog
+ * 
+ */
+export type SystemLog = $Result.DefaultSelection<Prisma.$SystemLogPayload>
 
 /**
  * Enums
@@ -715,6 +720,16 @@ export class PrismaClient<
     * ```
     */
   get accountLockout(): Prisma.AccountLockoutDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.systemLog`: Exposes CRUD operations for the **SystemLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SystemLogs
+    * const systemLogs = await prisma.systemLog.findMany()
+    * ```
+    */
+  get systemLog(): Prisma.SystemLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1170,7 +1185,8 @@ export namespace Prisma {
     LedgerAccount: 'LedgerAccount',
     LedgerEntry: 'LedgerEntry',
     Session: 'Session',
-    AccountLockout: 'AccountLockout'
+    AccountLockout: 'AccountLockout',
+    SystemLog: 'SystemLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1186,7 +1202,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "session" | "accountLockout"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "session" | "accountLockout" | "systemLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2818,6 +2834,80 @@ export namespace Prisma {
           }
         }
       }
+      SystemLog: {
+        payload: Prisma.$SystemLogPayload<ExtArgs>
+        fields: Prisma.SystemLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SystemLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SystemLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>
+          }
+          findFirst: {
+            args: Prisma.SystemLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SystemLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>
+          }
+          findMany: {
+            args: Prisma.SystemLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>[]
+          }
+          create: {
+            args: Prisma.SystemLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>
+          }
+          createMany: {
+            args: Prisma.SystemLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SystemLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>[]
+          }
+          delete: {
+            args: Prisma.SystemLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>
+          }
+          update: {
+            args: Prisma.SystemLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.SystemLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SystemLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SystemLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.SystemLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemLogPayload>
+          }
+          aggregate: {
+            args: Prisma.SystemLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSystemLog>
+          }
+          groupBy: {
+            args: Prisma.SystemLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SystemLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SystemLogCountArgs<ExtArgs>
+            result: $Utils.Optional<SystemLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2948,6 +3038,7 @@ export namespace Prisma {
     ledgerEntry?: LedgerEntryOmit
     session?: SessionOmit
     accountLockout?: AccountLockoutOmit
+    systemLog?: SystemLogOmit
   }
 
   /* Types for Logging */
@@ -29996,6 +30087,1028 @@ export namespace Prisma {
 
 
   /**
+   * Model SystemLog
+   */
+
+  export type AggregateSystemLog = {
+    _count: SystemLogCountAggregateOutputType | null
+    _min: SystemLogMinAggregateOutputType | null
+    _max: SystemLogMaxAggregateOutputType | null
+  }
+
+  export type SystemLogMinAggregateOutputType = {
+    id: string | null
+    level: string | null
+    context: string | null
+    message: string | null
+    trace: string | null
+    createdAt: Date | null
+  }
+
+  export type SystemLogMaxAggregateOutputType = {
+    id: string | null
+    level: string | null
+    context: string | null
+    message: string | null
+    trace: string | null
+    createdAt: Date | null
+  }
+
+  export type SystemLogCountAggregateOutputType = {
+    id: number
+    level: number
+    context: number
+    message: number
+    trace: number
+    metadata: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SystemLogMinAggregateInputType = {
+    id?: true
+    level?: true
+    context?: true
+    message?: true
+    trace?: true
+    createdAt?: true
+  }
+
+  export type SystemLogMaxAggregateInputType = {
+    id?: true
+    level?: true
+    context?: true
+    message?: true
+    trace?: true
+    createdAt?: true
+  }
+
+  export type SystemLogCountAggregateInputType = {
+    id?: true
+    level?: true
+    context?: true
+    message?: true
+    trace?: true
+    metadata?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SystemLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemLog to aggregate.
+     */
+    where?: SystemLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemLogs to fetch.
+     */
+    orderBy?: SystemLogOrderByWithRelationInput | SystemLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SystemLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SystemLogs
+    **/
+    _count?: true | SystemLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SystemLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SystemLogMaxAggregateInputType
+  }
+
+  export type GetSystemLogAggregateType<T extends SystemLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateSystemLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSystemLog[P]>
+      : GetScalarType<T[P], AggregateSystemLog[P]>
+  }
+
+
+
+
+  export type SystemLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemLogWhereInput
+    orderBy?: SystemLogOrderByWithAggregationInput | SystemLogOrderByWithAggregationInput[]
+    by: SystemLogScalarFieldEnum[] | SystemLogScalarFieldEnum
+    having?: SystemLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SystemLogCountAggregateInputType | true
+    _min?: SystemLogMinAggregateInputType
+    _max?: SystemLogMaxAggregateInputType
+  }
+
+  export type SystemLogGroupByOutputType = {
+    id: string
+    level: string
+    context: string | null
+    message: string
+    trace: string | null
+    metadata: JsonValue | null
+    createdAt: Date
+    _count: SystemLogCountAggregateOutputType | null
+    _min: SystemLogMinAggregateOutputType | null
+    _max: SystemLogMaxAggregateOutputType | null
+  }
+
+  type GetSystemLogGroupByPayload<T extends SystemLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SystemLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SystemLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SystemLogGroupByOutputType[P]>
+            : GetScalarType<T[P], SystemLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SystemLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    level?: boolean
+    context?: boolean
+    message?: boolean
+    trace?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["systemLog"]>
+
+  export type SystemLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    level?: boolean
+    context?: boolean
+    message?: boolean
+    trace?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["systemLog"]>
+
+  export type SystemLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    level?: boolean
+    context?: boolean
+    message?: boolean
+    trace?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["systemLog"]>
+
+  export type SystemLogSelectScalar = {
+    id?: boolean
+    level?: boolean
+    context?: boolean
+    message?: boolean
+    trace?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+  }
+
+  export type SystemLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "level" | "context" | "message" | "trace" | "metadata" | "createdAt", ExtArgs["result"]["systemLog"]>
+
+  export type $SystemLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SystemLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      level: string
+      context: string | null
+      message: string
+      trace: string | null
+      metadata: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["systemLog"]>
+    composites: {}
+  }
+
+  type SystemLogGetPayload<S extends boolean | null | undefined | SystemLogDefaultArgs> = $Result.GetResult<Prisma.$SystemLogPayload, S>
+
+  type SystemLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SystemLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SystemLogCountAggregateInputType | true
+    }
+
+  export interface SystemLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SystemLog'], meta: { name: 'SystemLog' } }
+    /**
+     * Find zero or one SystemLog that matches the filter.
+     * @param {SystemLogFindUniqueArgs} args - Arguments to find a SystemLog
+     * @example
+     * // Get one SystemLog
+     * const systemLog = await prisma.systemLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SystemLogFindUniqueArgs>(args: SelectSubset<T, SystemLogFindUniqueArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SystemLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SystemLogFindUniqueOrThrowArgs} args - Arguments to find a SystemLog
+     * @example
+     * // Get one SystemLog
+     * const systemLog = await prisma.systemLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SystemLogFindUniqueOrThrowArgs>(args: SelectSubset<T, SystemLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemLogFindFirstArgs} args - Arguments to find a SystemLog
+     * @example
+     * // Get one SystemLog
+     * const systemLog = await prisma.systemLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SystemLogFindFirstArgs>(args?: SelectSubset<T, SystemLogFindFirstArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemLogFindFirstOrThrowArgs} args - Arguments to find a SystemLog
+     * @example
+     * // Get one SystemLog
+     * const systemLog = await prisma.systemLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SystemLogFindFirstOrThrowArgs>(args?: SelectSubset<T, SystemLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SystemLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SystemLogs
+     * const systemLogs = await prisma.systemLog.findMany()
+     * 
+     * // Get first 10 SystemLogs
+     * const systemLogs = await prisma.systemLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const systemLogWithIdOnly = await prisma.systemLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SystemLogFindManyArgs>(args?: SelectSubset<T, SystemLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SystemLog.
+     * @param {SystemLogCreateArgs} args - Arguments to create a SystemLog.
+     * @example
+     * // Create one SystemLog
+     * const SystemLog = await prisma.systemLog.create({
+     *   data: {
+     *     // ... data to create a SystemLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends SystemLogCreateArgs>(args: SelectSubset<T, SystemLogCreateArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SystemLogs.
+     * @param {SystemLogCreateManyArgs} args - Arguments to create many SystemLogs.
+     * @example
+     * // Create many SystemLogs
+     * const systemLog = await prisma.systemLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SystemLogCreateManyArgs>(args?: SelectSubset<T, SystemLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SystemLogs and returns the data saved in the database.
+     * @param {SystemLogCreateManyAndReturnArgs} args - Arguments to create many SystemLogs.
+     * @example
+     * // Create many SystemLogs
+     * const systemLog = await prisma.systemLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SystemLogs and only return the `id`
+     * const systemLogWithIdOnly = await prisma.systemLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SystemLogCreateManyAndReturnArgs>(args?: SelectSubset<T, SystemLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SystemLog.
+     * @param {SystemLogDeleteArgs} args - Arguments to delete one SystemLog.
+     * @example
+     * // Delete one SystemLog
+     * const SystemLog = await prisma.systemLog.delete({
+     *   where: {
+     *     // ... filter to delete one SystemLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SystemLogDeleteArgs>(args: SelectSubset<T, SystemLogDeleteArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SystemLog.
+     * @param {SystemLogUpdateArgs} args - Arguments to update one SystemLog.
+     * @example
+     * // Update one SystemLog
+     * const systemLog = await prisma.systemLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SystemLogUpdateArgs>(args: SelectSubset<T, SystemLogUpdateArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SystemLogs.
+     * @param {SystemLogDeleteManyArgs} args - Arguments to filter SystemLogs to delete.
+     * @example
+     * // Delete a few SystemLogs
+     * const { count } = await prisma.systemLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SystemLogDeleteManyArgs>(args?: SelectSubset<T, SystemLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SystemLogs
+     * const systemLog = await prisma.systemLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SystemLogUpdateManyArgs>(args: SelectSubset<T, SystemLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemLogs and returns the data updated in the database.
+     * @param {SystemLogUpdateManyAndReturnArgs} args - Arguments to update many SystemLogs.
+     * @example
+     * // Update many SystemLogs
+     * const systemLog = await prisma.systemLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SystemLogs and only return the `id`
+     * const systemLogWithIdOnly = await prisma.systemLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SystemLogUpdateManyAndReturnArgs>(args: SelectSubset<T, SystemLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SystemLog.
+     * @param {SystemLogUpsertArgs} args - Arguments to update or create a SystemLog.
+     * @example
+     * // Update or create a SystemLog
+     * const systemLog = await prisma.systemLog.upsert({
+     *   create: {
+     *     // ... data to create a SystemLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SystemLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SystemLogUpsertArgs>(args: SelectSubset<T, SystemLogUpsertArgs<ExtArgs>>): Prisma__SystemLogClient<$Result.GetResult<Prisma.$SystemLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SystemLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemLogCountArgs} args - Arguments to filter SystemLogs to count.
+     * @example
+     * // Count the number of SystemLogs
+     * const count = await prisma.systemLog.count({
+     *   where: {
+     *     // ... the filter for the SystemLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends SystemLogCountArgs>(
+      args?: Subset<T, SystemLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SystemLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SystemLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SystemLogAggregateArgs>(args: Subset<T, SystemLogAggregateArgs>): Prisma.PrismaPromise<GetSystemLogAggregateType<T>>
+
+    /**
+     * Group by SystemLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SystemLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SystemLogGroupByArgs['orderBy'] }
+        : { orderBy?: SystemLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SystemLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSystemLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SystemLog model
+   */
+  readonly fields: SystemLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SystemLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SystemLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SystemLog model
+   */
+  interface SystemLogFieldRefs {
+    readonly id: FieldRef<"SystemLog", 'String'>
+    readonly level: FieldRef<"SystemLog", 'String'>
+    readonly context: FieldRef<"SystemLog", 'String'>
+    readonly message: FieldRef<"SystemLog", 'String'>
+    readonly trace: FieldRef<"SystemLog", 'String'>
+    readonly metadata: FieldRef<"SystemLog", 'Json'>
+    readonly createdAt: FieldRef<"SystemLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SystemLog findUnique
+   */
+  export type SystemLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemLog to fetch.
+     */
+    where: SystemLogWhereUniqueInput
+  }
+
+  /**
+   * SystemLog findUniqueOrThrow
+   */
+  export type SystemLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemLog to fetch.
+     */
+    where: SystemLogWhereUniqueInput
+  }
+
+  /**
+   * SystemLog findFirst
+   */
+  export type SystemLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemLog to fetch.
+     */
+    where?: SystemLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemLogs to fetch.
+     */
+    orderBy?: SystemLogOrderByWithRelationInput | SystemLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemLogs.
+     */
+    cursor?: SystemLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemLogs.
+     */
+    distinct?: SystemLogScalarFieldEnum | SystemLogScalarFieldEnum[]
+  }
+
+  /**
+   * SystemLog findFirstOrThrow
+   */
+  export type SystemLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemLog to fetch.
+     */
+    where?: SystemLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemLogs to fetch.
+     */
+    orderBy?: SystemLogOrderByWithRelationInput | SystemLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemLogs.
+     */
+    cursor?: SystemLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemLogs.
+     */
+    distinct?: SystemLogScalarFieldEnum | SystemLogScalarFieldEnum[]
+  }
+
+  /**
+   * SystemLog findMany
+   */
+  export type SystemLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemLogs to fetch.
+     */
+    where?: SystemLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemLogs to fetch.
+     */
+    orderBy?: SystemLogOrderByWithRelationInput | SystemLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SystemLogs.
+     */
+    cursor?: SystemLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemLogs.
+     */
+    distinct?: SystemLogScalarFieldEnum | SystemLogScalarFieldEnum[]
+  }
+
+  /**
+   * SystemLog create
+   */
+  export type SystemLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SystemLog.
+     */
+    data: XOR<SystemLogCreateInput, SystemLogUncheckedCreateInput>
+  }
+
+  /**
+   * SystemLog createMany
+   */
+  export type SystemLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SystemLogs.
+     */
+    data: SystemLogCreateManyInput | SystemLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemLog createManyAndReturn
+   */
+  export type SystemLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many SystemLogs.
+     */
+    data: SystemLogCreateManyInput | SystemLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemLog update
+   */
+  export type SystemLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SystemLog.
+     */
+    data: XOR<SystemLogUpdateInput, SystemLogUncheckedUpdateInput>
+    /**
+     * Choose, which SystemLog to update.
+     */
+    where: SystemLogWhereUniqueInput
+  }
+
+  /**
+   * SystemLog updateMany
+   */
+  export type SystemLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SystemLogs.
+     */
+    data: XOR<SystemLogUpdateManyMutationInput, SystemLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemLogs to update
+     */
+    where?: SystemLogWhereInput
+    /**
+     * Limit how many SystemLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemLog updateManyAndReturn
+   */
+  export type SystemLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * The data used to update SystemLogs.
+     */
+    data: XOR<SystemLogUpdateManyMutationInput, SystemLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemLogs to update
+     */
+    where?: SystemLogWhereInput
+    /**
+     * Limit how many SystemLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemLog upsert
+   */
+  export type SystemLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SystemLog to update in case it exists.
+     */
+    where: SystemLogWhereUniqueInput
+    /**
+     * In case the SystemLog found by the `where` argument doesn't exist, create a new SystemLog with this data.
+     */
+    create: XOR<SystemLogCreateInput, SystemLogUncheckedCreateInput>
+    /**
+     * In case the SystemLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SystemLogUpdateInput, SystemLogUncheckedUpdateInput>
+  }
+
+  /**
+   * SystemLog delete
+   */
+  export type SystemLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+    /**
+     * Filter which SystemLog to delete.
+     */
+    where: SystemLogWhereUniqueInput
+  }
+
+  /**
+   * SystemLog deleteMany
+   */
+  export type SystemLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemLogs to delete
+     */
+    where?: SystemLogWhereInput
+    /**
+     * Limit how many SystemLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemLog without action
+   */
+  export type SystemLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemLog
+     */
+    select?: SystemLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemLog
+     */
+    omit?: SystemLogOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -30401,6 +31514,19 @@ export namespace Prisma {
   };
 
   export type AccountLockoutScalarFieldEnum = (typeof AccountLockoutScalarFieldEnum)[keyof typeof AccountLockoutScalarFieldEnum]
+
+
+  export const SystemLogScalarFieldEnum: {
+    id: 'id',
+    level: 'level',
+    context: 'context',
+    message: 'message',
+    trace: 'trace',
+    metadata: 'metadata',
+    createdAt: 'createdAt'
+  };
+
+  export type SystemLogScalarFieldEnum = (typeof SystemLogScalarFieldEnum)[keyof typeof SystemLogScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -32894,6 +34020,68 @@ export namespace Prisma {
     expiresAt?: DateTimeWithAggregatesFilter<"AccountLockout"> | Date | string
   }
 
+  export type SystemLogWhereInput = {
+    AND?: SystemLogWhereInput | SystemLogWhereInput[]
+    OR?: SystemLogWhereInput[]
+    NOT?: SystemLogWhereInput | SystemLogWhereInput[]
+    id?: StringFilter<"SystemLog"> | string
+    level?: StringFilter<"SystemLog"> | string
+    context?: StringNullableFilter<"SystemLog"> | string | null
+    message?: StringFilter<"SystemLog"> | string
+    trace?: StringNullableFilter<"SystemLog"> | string | null
+    metadata?: JsonNullableFilter<"SystemLog">
+    createdAt?: DateTimeFilter<"SystemLog"> | Date | string
+  }
+
+  export type SystemLogOrderByWithRelationInput = {
+    id?: SortOrder
+    level?: SortOrder
+    context?: SortOrderInput | SortOrder
+    message?: SortOrder
+    trace?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SystemLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SystemLogWhereInput | SystemLogWhereInput[]
+    OR?: SystemLogWhereInput[]
+    NOT?: SystemLogWhereInput | SystemLogWhereInput[]
+    level?: StringFilter<"SystemLog"> | string
+    context?: StringNullableFilter<"SystemLog"> | string | null
+    message?: StringFilter<"SystemLog"> | string
+    trace?: StringNullableFilter<"SystemLog"> | string | null
+    metadata?: JsonNullableFilter<"SystemLog">
+    createdAt?: DateTimeFilter<"SystemLog"> | Date | string
+  }, "id">
+
+  export type SystemLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    level?: SortOrder
+    context?: SortOrderInput | SortOrder
+    message?: SortOrder
+    trace?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: SystemLogCountOrderByAggregateInput
+    _max?: SystemLogMaxOrderByAggregateInput
+    _min?: SystemLogMinOrderByAggregateInput
+  }
+
+  export type SystemLogScalarWhereWithAggregatesInput = {
+    AND?: SystemLogScalarWhereWithAggregatesInput | SystemLogScalarWhereWithAggregatesInput[]
+    OR?: SystemLogScalarWhereWithAggregatesInput[]
+    NOT?: SystemLogScalarWhereWithAggregatesInput | SystemLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SystemLog"> | string
+    level?: StringWithAggregatesFilter<"SystemLog"> | string
+    context?: StringNullableWithAggregatesFilter<"SystemLog"> | string | null
+    message?: StringWithAggregatesFilter<"SystemLog"> | string
+    trace?: StringNullableWithAggregatesFilter<"SystemLog"> | string | null
+    metadata?: JsonNullableWithAggregatesFilter<"SystemLog">
+    createdAt?: DateTimeWithAggregatesFilter<"SystemLog"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     name: string
@@ -35283,6 +36471,76 @@ export namespace Prisma {
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SystemLogCreateInput = {
+    id?: string
+    level: string
+    context?: string | null
+    message: string
+    trace?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type SystemLogUncheckedCreateInput = {
+    id?: string
+    level: string
+    context?: string | null
+    message: string
+    trace?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type SystemLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: StringFieldUpdateOperationsInput | string
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    trace?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: StringFieldUpdateOperationsInput | string
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    trace?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemLogCreateManyInput = {
+    id?: string
+    level: string
+    context?: string | null
+    message: string
+    trace?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type SystemLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: StringFieldUpdateOperationsInput | string
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    trace?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: StringFieldUpdateOperationsInput | string
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    message?: StringFieldUpdateOperationsInput | string
+    trace?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -37182,6 +38440,34 @@ export namespace Prisma {
 
   export type AccountLockoutSumOrderByAggregateInput = {
     attempts?: SortOrder
+  }
+
+  export type SystemLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    level?: SortOrder
+    context?: SortOrder
+    message?: SortOrder
+    trace?: SortOrder
+    metadata?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SystemLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    level?: SortOrder
+    context?: SortOrder
+    message?: SortOrder
+    trace?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SystemLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    level?: SortOrder
+    context?: SortOrder
+    message?: SortOrder
+    trace?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type ArtisanProfileCreateNestedOneWithoutUserInput = {

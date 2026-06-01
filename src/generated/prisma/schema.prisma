@@ -627,3 +627,16 @@ model AccountLockout {
   @@index([identifier, expiresAt])
   @@index([expiresAt])
 }
+
+model SystemLog {
+  id        String   @id @default(uuid())
+  level     String
+  context   String?
+  message   String
+  trace     String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([level, createdAt])
+  @@index([context, createdAt])
+}

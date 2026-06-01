@@ -1,6 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { PrismaService } from './database/prisma.service';
 import helmet from 'helmet';
 import { SanitizationService } from './common/services/sanitization.service';
 import { SanitizationPipe } from './common/pipes/sanitization.pipe';
@@ -99,7 +100,8 @@ export function configureApp(app: INestApplication) {
     app.useGlobalPipes(new SanitizationPipe(sanitizationService));
   }
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  const prismaService = app.get(PrismaService, { strict: false });
+  app.useGlobalFilters(new HttpExceptionFilter(prismaService));
 
   // Only expose Swagger documentation in non-production environments
   if (process.env.NODE_ENV !== 'production') {

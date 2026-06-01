@@ -1,4 +1,5 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { LoggerModule } from 'nestjs-pino';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -19,12 +20,28 @@ import { ChatModule } from './modules/chat/chat.module';
 import { KycModule } from './modules/kyc/kyc.module';
 import { AppConfigModule } from './config/app-config.module';
 import { PrismaModule } from './database/prisma.module';
+import { AuditModule } from './modules/audit/audit.module';
+import { MonitoringModule } from './modules/monitoring/monitoring.module';
+import { ReconciliationModule } from './modules/reconciliation/reconciliation.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { SanitizationService } from './common/services/sanitization.service';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: process.env.NODE_ENV !== 'production'
+          ? {
+              target: 'pino-pretty',
+              options: {
+                singleLine: true,
+              },
+            }
+          : undefined,
+        autoLogging: false,
+      },
+    }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([
       {
@@ -50,6 +67,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     DisputesModule,
     NotificationsModule,
     KycModule,
+    AuditModule,
+    MonitoringModule,
+    ReconciliationModule,
   ],
   controllers: [AppController],
   providers: [AppService, SanitizationService],

@@ -7,11 +7,7 @@ export interface RequestWithLog extends Request {
   correlationId: string;
 }
 
-type ResponseEnd = (
-  chunk?: string | Uint8Array,
-  encoding?: BufferEncoding,
-  cb?: () => void,
-) => Response;
+
 
 @Injectable()
 export class LoggingMiddleware implements NestMiddleware {
@@ -33,50 +29,25 @@ export class LoggingMiddleware implements NestMiddleware {
     res.setHeader('X-Request-Id', requestId);
     res.setHeader('X-Correlation-Id', correlationId);
 
-    // Log request
-    this.logRequest(req, requestId, correlationId);
+    // Log suspicious patterns
+    this.detectSuspiciousPatterns(req, requestId);
 
-    // Override res.end to log response
-    const originalEnd = res.end.bind(res) as ResponseEnd;
+    // Override res.end to log security events only (standard logging is done by pino-http)
+    const originalEnd = res.end.bind(res) as (chunk?: any, encoding?: any, cb?: any) => Response;
     res.end = ((
-      chunk?: string | Uint8Array,
-      encoding?: BufferEncoding,
-      cb?: () => void,
+      chunk?: any,
+      encoding?: any,
+      cb?: any,
     ) => {
       const duration = Date.now() - startTime;
-
-      // Log response
-      this.logger.log(
-        `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms - ${req.ip} - ${requestId}`,
-      );
-
-      // Log security events
       this.logSecurityEvents(req, res, requestId, correlationId, duration);
-
       return originalEnd(chunk, encoding, cb);
     }) as Response['end'];
 
     next();
   }
 
-  private logRequest(
-    req: RequestWithLog,
-    requestId: string,
-    correlationId: string,
-  ) {
-    const userAgent = req.get('User-Agent') || 'Unknown';
-    const contentLength = req.get('Content-Length') || '0';
 
-    // Sanitize URL to prevent log injection
-    const sanitizedUrl = this.sanitizeLogData(req.originalUrl);
-
-    this.logger.log(
-      `Incoming Request: ${req.method} ${sanitizedUrl} - IP: ${req.ip} - UA: ${userAgent} - Content-Length: ${contentLength} - ID: ${requestId} - Correlation: ${correlationId}`,
-    );
-
-    // Log suspicious patterns
-    this.detectSuspiciousPatterns(req, requestId);
-  }
 
   private logSecurityEvents(
     req: RequestWithLog,

@@ -448,6 +448,16 @@ exports.Prisma.AccountLockoutScalarFieldEnum = {
   expiresAt: 'expiresAt'
 };
 
+exports.Prisma.SystemLogScalarFieldEnum = {
+  id: 'id',
+  level: 'level',
+  context: 'context',
+  message: 'message',
+  trace: 'trace',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -626,7 +636,8 @@ exports.Prisma.ModelName = {
   LedgerAccount: 'LedgerAccount',
   LedgerEntry: 'LedgerEntry',
   Session: 'Session',
-  AccountLockout: 'AccountLockout'
+  AccountLockout: 'AccountLockout',
+  SystemLog: 'SystemLog'
 };
 
 /**

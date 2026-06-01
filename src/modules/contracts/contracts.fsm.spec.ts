@@ -3,6 +3,7 @@ import { ContractsService } from './contracts.service';
 import { PrismaService } from '../../database/prisma.service';
 import { ContractStatus } from '../../generated/prisma';
 import { BadRequestException } from '@nestjs/common';
+import { IdempotencyService } from '../../common/services/idempotency.service';
 
 describe('Contracts FSM (State Machine)', () => {
   let service: ContractsService;
@@ -14,6 +15,13 @@ describe('Contracts FSM (State Machine)', () => {
         {
           provide: PrismaService,
           useValue: {}, // Mocked prisma
+        },
+        {
+          provide: IdempotencyService,
+          useValue: {
+            checkIdempotency: jest.fn(),
+            saveResponse: jest.fn(),
+          },
         },
       ],
     }).compile();

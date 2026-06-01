@@ -16,9 +16,13 @@ type ExceptionResponseShape = {
   details?: unknown;
 };
 
+import { PrismaService } from '../../database/prisma.service';
+
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
+
+  constructor(private readonly prisma?: PrismaService) {}
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -156,10 +160,33 @@ export class HttpExceptionFilter implements ExceptionFilter {
               : 'unknown',
         },
       });
+
+      if (this.prisma) {
+        this.prisma.systemLog.create({
+          data: {
+            level: 'error',
+            context: 'HttpExceptionFilter',
+            message: `${status} ${request.method} ${request.url}: ${exception instanceof Error ? exception.message : 'Unknown error'}`,
+            trace: exception instanceof Error ? exception.stack : undefined,
+            metadata: { path: request.url, method: request.method },
+          }
+        }).catch(e => this.logger.error('Failed to write SystemLog', e));
+      }
     } else if (status >= 400) {
       this.logger.warn(
         `${status} ${request.method} ${request.url}: ${message}`,
       );
+
+      if (this.prisma) {
+        this.prisma.systemLog.create({
+          data: {
+            level: 'warn',
+            context: 'HttpExceptionFilter',
+            message: `${status} ${request.method} ${request.url}: ${message}`,
+            metadata: { path: request.url, method: request.method },
+          }
+        }).catch(e => this.logger.error('Failed to write SystemLog', e));
+      }
     }
 
     response.status(status).json(errorResponse);

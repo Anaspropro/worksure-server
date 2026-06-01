@@ -5,7 +5,6 @@ import { PaymentsController } from './payments.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ContractsModule } from '../contracts/contracts.module';
 import { WebhookSignatureService } from '../../common/services/webhook-signature.service';
-import { NightlyReconciliationService } from './reconciliation.service';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { IdempotencyService } from '../../common/services/idempotency.service';
 import { StuckPayoutDetectorService } from './stuck-payout-detector.service';
@@ -20,7 +19,6 @@ import { StuckPayoutDetectorService } from './stuck-payout-detector.service';
   providers: [
     PaymentsService,
     WebhookSignatureService,
-    NightlyReconciliationService,
     PaystackClientService,
     IdempotencyService,
     StuckPayoutDetectorService,

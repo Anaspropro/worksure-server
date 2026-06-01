@@ -4,6 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { AppConfigService } from '../../config/app-config.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
 
 describe('WalletService', () => {
   let service: WalletService;
@@ -37,6 +38,19 @@ describe('WalletService', () => {
         WalletService,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: AppConfigService, useValue: mockAppConfigService },
+        { 
+          provide: PaystackClientService, 
+          useValue: {
+            initializeTransaction: jest.fn(),
+            verifyTransaction: jest.fn(),
+            isConfigured: jest.fn().mockReturnValue(true),
+            createDedicatedVirtualAccount: jest.fn().mockResolvedValue({
+              account_name: 'Test Account',
+              account_number: '1234567890',
+              bank: { name: 'Test Bank' },
+            }),
+          } 
+        },
       ],
     }).compile();
 
