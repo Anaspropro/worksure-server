@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Logger } from '@nestjs/common';
 import { ReconciliationService } from './reconciliation.service';
 import { PrismaService } from '../../database/prisma.service';
 
@@ -28,6 +29,15 @@ describe('ReconciliationService', () => {
 
     service = module.get<ReconciliationService>(ReconciliationService);
     prisma = module.get<PrismaService>(PrismaService);
+    
+    // Suppress expected logger output during tests
+    jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('should be defined', () => {

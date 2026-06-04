@@ -1,0 +1,4383 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getArchitectureSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Architecture summary returned successfully."
+          }
+        },
+        "summary": "Get architecture and runtime summary",
+        "tags": [
+          "system"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "summary": "Basic health check",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "HealthController_readiness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is ready"
+          },
+          "503": {
+            "description": "Service is not ready"
+          }
+        },
+        "summary": "Readiness check - includes database connectivity",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/health/live": {
+      "get": {
+        "operationId": "HealthController_liveness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is alive"
+          }
+        },
+        "summary": "Liveness check",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "operationId": "AdminController_getAllUsers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User list returned successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all users",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users/{id}": {
+      "get": {
+        "operationId": "AdminController_getUserDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed user view returned successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get detailed admin view of a user",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users/{id}/ban": {
+      "patch": {
+        "operationId": "AdminController_banUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Ban a user account",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users/{id}/unban": {
+      "patch": {
+        "operationId": "AdminController_unbanUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Unban a user account",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users/{id}/verify": {
+      "patch": {
+        "operationId": "AdminController_verifyArtisan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Verify an artisan account",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users/{id}/reset-password": {
+      "patch": {
+        "operationId": "AdminController_resetUserPassword",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Issue a password reset token for a user",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/disputes": {
+      "get": {
+        "operationId": "AdminController_getAllDisputes",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all disputes",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/disputes/{id}/resolve": {
+      "patch": {
+        "operationId": "AdminController_resolveDispute",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Dispute identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveDisputeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Resolve a dispute",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/jobs": {
+      "get": {
+        "operationId": "AdminController_getAllJobs",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Job status filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List jobs with an optional status filter",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/jobs/{id}/force-close": {
+      "patch": {
+        "operationId": "AdminController_forceCloseJob",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Job identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForceCloseJobDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Force-close a job",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/transactions": {
+      "get": {
+        "operationId": "AdminController_getAllTransactions",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Transaction type filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List transactions with an optional transaction type filter",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/reports": {
+      "get": {
+        "operationId": "AdminController_generateReports",
+        "parameters": [
+          {
+            "name": "reportType",
+            "required": false,
+            "in": "query",
+            "description": "Report type to generate",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "required": false,
+            "in": "query",
+            "description": "Optional YYYY-MM month selector",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Generate admin reports",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/audit-logs": {
+      "get": {
+        "operationId": "AdminController_getAuditLogs",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List audit logs",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/contracts": {
+      "get": {
+        "operationId": "AdminController_getAllContracts",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Contract status filter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all system contracts",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/contracts/stats": {
+      "get": {
+        "operationId": "AdminController_getContractStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get system contract statistics",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully."
+          }
+        },
+        "summary": "Register a new user account",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login successful."
+          },
+          "401": {
+            "description": "Invalid credentials."
+          }
+        },
+        "summary": "Authenticate a user and return a JWT",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "operationId": "AuthController_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reset request accepted."
+          }
+        },
+        "summary": "Request a password reset token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Password reset successful."
+          }
+        },
+        "summary": "Reset password with a valid reset token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Authenticated user returned successfully."
+          },
+          "401": {
+            "description": "Missing or invalid bearer token."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the currently authenticated user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Logout successful."
+          },
+          "401": {
+            "description": "Missing or invalid bearer token."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Log out the current session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "operationId": "UsersController_getCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile returned successfully."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_updateCurrentUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update current user profile",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "UsersController_getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile returned successfully."
+          },
+          "403": {
+            "description": "Admin access required."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user by ID (admin only)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/artisan/profile": {
+      "post": {
+        "operationId": "ArtisanController_createArtisanProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArtisanProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Artisan profile created successfully."
+          },
+          "403": {
+            "description": "Artisan access required."
+          },
+          "409": {
+            "description": "Artisan profile already exists."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create artisan profile",
+        "tags": [
+          "artisan"
+        ]
+      },
+      "patch": {
+        "operationId": "ArtisanController_updateArtisanProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArtisanProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Artisan profile updated successfully."
+          },
+          "403": {
+            "description": "Artisan access required."
+          },
+          "404": {
+            "description": "Artisan profile not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update artisan profile",
+        "tags": [
+          "artisan"
+        ]
+      }
+    },
+    "/artisan/profile/me": {
+      "get": {
+        "operationId": "ArtisanController_getCurrentArtisanProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Artisan profile returned successfully."
+          },
+          "403": {
+            "description": "Artisan access required."
+          },
+          "404": {
+            "description": "Artisan profile not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current artisan profile",
+        "tags": [
+          "artisan"
+        ]
+      }
+    },
+    "/artisan/{userId}": {
+      "get": {
+        "operationId": "ArtisanController_getArtisanProfileByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artisan profile returned successfully."
+          },
+          "404": {
+            "description": "Artisan profile not found."
+          }
+        },
+        "summary": "Get artisan profile by user ID",
+        "tags": [
+          "artisan"
+        ]
+      }
+    },
+    "/jobs": {
+      "post": {
+        "operationId": "JobsController_createJob",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateJobDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Job created successfully."
+          },
+          "403": {
+            "description": "Client access required."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new job",
+        "tags": [
+          "jobs"
+        ]
+      },
+      "get": {
+        "operationId": "JobsController_listJobs",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "enum": [
+                "OPEN",
+                "IN_PROGRESS",
+                "COMPLETED",
+                "FORCE_CLOSED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by client ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "artisanId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by artisan ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search in title and description",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 10, max: 100)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jobs retrieved successfully."
+          }
+        },
+        "summary": "List jobs with filtering and pagination",
+        "tags": [
+          "jobs"
+        ]
+      }
+    },
+    "/jobs/{id}": {
+      "get": {
+        "operationId": "JobsController_getJob",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Job ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job retrieved successfully."
+          },
+          "404": {
+            "description": "Job not found."
+          }
+        },
+        "summary": "Get job by ID",
+        "tags": [
+          "jobs"
+        ]
+      },
+      "patch": {
+        "operationId": "JobsController_updateJob",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateJobDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Job updated successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Job not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update job",
+        "tags": [
+          "jobs"
+        ]
+      },
+      "delete": {
+        "operationId": "JobsController_deleteJob",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job deleted successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Job not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete job",
+        "tags": [
+          "jobs"
+        ]
+      }
+    },
+    "/jobs/{id}/assign": {
+      "patch": {
+        "operationId": "JobsController_assignArtisan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artisan assigned successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Job not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Assign artisan to job",
+        "tags": [
+          "jobs"
+        ]
+      }
+    },
+    "/proposals": {
+      "post": {
+        "operationId": "ProposalsController_createProposal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProposalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Proposal created successfully."
+          },
+          "403": {
+            "description": "Artisan access required."
+          },
+          "404": {
+            "description": "Job not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new proposal",
+        "tags": [
+          "proposals"
+        ]
+      },
+      "get": {
+        "operationId": "ProposalsController_listProposals",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED",
+                "WITHDRAWN"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by job ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by client ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "artisanId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by artisan ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search in message and notes",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 10, max: 100)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proposals retrieved successfully."
+          }
+        },
+        "summary": "List proposals with filtering and pagination",
+        "tags": [
+          "proposals"
+        ]
+      }
+    },
+    "/proposals/{id}": {
+      "get": {
+        "operationId": "ProposalsController_getProposal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Proposal ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proposal retrieved successfully."
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "summary": "Get proposal by ID",
+        "tags": [
+          "proposals"
+        ]
+      },
+      "patch": {
+        "operationId": "ProposalsController_updateProposal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProposalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proposal updated successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update proposal",
+        "tags": [
+          "proposals"
+        ]
+      },
+      "delete": {
+        "operationId": "ProposalsController_deleteProposal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proposal deleted successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete proposal",
+        "tags": [
+          "proposals"
+        ]
+      }
+    },
+    "/proposals/{id}/withdraw": {
+      "patch": {
+        "operationId": "ProposalsController_withdrawProposal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proposal withdrawn successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Withdraw proposal",
+        "tags": [
+          "proposals"
+        ]
+      }
+    },
+    "/proposals/{id}/accept": {
+      "patch": {
+        "operationId": "ProposalsController_acceptProposal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proposal accepted successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Accept proposal",
+        "tags": [
+          "proposals"
+        ]
+      }
+    },
+    "/proposals/{id}/reject": {
+      "patch": {
+        "operationId": "ProposalsController_rejectProposal",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposalActionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proposal rejected successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Proposal not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reject proposal",
+        "tags": [
+          "proposals"
+        ]
+      }
+    },
+    "/contracts": {
+      "post": {
+        "operationId": "ContractsController_createContract",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contract created successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a contract from an accepted proposal",
+        "tags": [
+          "contracts"
+        ]
+      },
+      "get": {
+        "operationId": "ContractsController_getUserContracts",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contracts retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user contracts",
+        "tags": [
+          "contracts"
+        ]
+      }
+    },
+    "/contracts/{id}/activate": {
+      "post": {
+        "operationId": "ContractsController_activateContract",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract activated successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Activate a funded contract",
+        "tags": [
+          "contracts"
+        ]
+      }
+    },
+    "/contracts/{id}/fund": {
+      "post": {
+        "operationId": "ContractsController_fundContract",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contract funded successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Fund a contract",
+        "tags": [
+          "contracts"
+        ]
+      }
+    },
+    "/contracts/{id}/release-escrow": {
+      "post": {
+        "operationId": "ContractsController_releaseEscrow",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Escrow released successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Release escrow funds to artisan",
+        "tags": [
+          "contracts"
+        ]
+      }
+    },
+    "/contracts/{id}/refund": {
+      "post": {
+        "operationId": "ContractsController_refundContract",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contract refunded successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refund contract to client",
+        "tags": [
+          "contracts"
+        ]
+      }
+    },
+    "/contracts/{id}/confirm-completion": {
+      "post": {
+        "operationId": "ContractsController_confirmCompletion",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmCompletionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Completion confirmed successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirm contract completion",
+        "tags": [
+          "contracts"
+        ]
+      }
+    },
+    "/contracts/{id}": {
+      "get": {
+        "operationId": "ContractsController_getContract",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get contract details",
+        "tags": [
+          "contracts"
+        ]
+      }
+    },
+    "/payments/fund": {
+      "post": {
+        "operationId": "PaymentsController_fundContract",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentFundContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paystack checkout initialized."
+          },
+          "400": {
+            "description": "Invalid contract funding request."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Initialize Paystack funding for a contract",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/paystack/init": {
+      "post": {
+        "operationId": "PaymentsController_initPaystack",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaystackInitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paystack checkout initialized."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Initialize Paystack funding for a contract",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/paystack/verify": {
+      "post": {
+        "operationId": "PaymentsController_verifyPaystack",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaystackVerifyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paystack payment verified successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Verify Paystack payment after redirect",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/paystack/webhook": {
+      "post": {
+        "operationId": "PaymentsController_paystackWebhook",
+        "parameters": [
+          {
+            "name": "x-paystack-signature",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/verify": {
+      "post": {
+        "operationId": "PaymentsController_verifyPayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment verified successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Manually verify a payment record",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/activate": {
+      "post": {
+        "operationId": "PaymentsController_activateContract",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contract activated successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark a funded contract as in progress",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/complete": {
+      "post": {
+        "operationId": "PaymentsController_completeContract",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Completion recorded successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Confirm contract completion",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/release/admin": {
+      "post": {
+        "operationId": "PaymentsController_releaseEscrowAdmin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleasePaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Escrow released successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Admin manual release of escrow (for disputes)",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments/refund": {
+      "post": {
+        "operationId": "PaymentsController_refundContract",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Refund requested successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refund a contract",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/payments": {
+      "get": {
+        "operationId": "PaymentsController_listPayments",
+        "parameters": [
+          {
+            "name": "contractId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by contract ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 10, max: 100)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payments retrieved successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List payments related to the current user",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/disputes": {
+      "post": {
+        "operationId": "DisputesController_createDispute",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDisputeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dispute created successfully."
+          },
+          "400": {
+            "description": "Invalid dispute data."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Contract or job not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new dispute",
+        "tags": [
+          "disputes"
+        ]
+      },
+      "get": {
+        "operationId": "DisputesController_listDisputes",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "enum": [
+                "OPEN",
+                "RESOLVED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by contract ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by job ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by client ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "artisanId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by artisan ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 10, max: 100)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Disputes retrieved successfully."
+          },
+          "403": {
+            "description": "Authentication required."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List disputes with filtering",
+        "tags": [
+          "disputes"
+        ]
+      }
+    },
+    "/disputes/me": {
+      "get": {
+        "operationId": "DisputesController_getMyDisputes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User disputes retrieved successfully."
+          },
+          "403": {
+            "description": "Authentication required."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user disputes",
+        "tags": [
+          "disputes"
+        ]
+      }
+    },
+    "/disputes/{id}": {
+      "get": {
+        "operationId": "DisputesController_getDispute",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Dispute ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dispute retrieved successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Dispute not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get dispute by ID",
+        "tags": [
+          "disputes"
+        ]
+      },
+      "patch": {
+        "operationId": "DisputesController_updateDispute",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDisputeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dispute updated successfully."
+          },
+          "400": {
+            "description": "Invalid update data."
+          },
+          "403": {
+            "description": "Admin access required."
+          },
+          "404": {
+            "description": "Dispute not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update dispute (Admin only)",
+        "tags": [
+          "disputes"
+        ]
+      }
+    },
+    "/wallet/balance": {
+      "get": {
+        "operationId": "WalletController_getWalletBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Wallet balance retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get wallet balance",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/transactions": {
+      "get": {
+        "operationId": "WalletController_getWalletTransactions",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet transactions retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get wallet transactions",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/summary": {
+      "get": {
+        "operationId": "WalletController_getWalletSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Wallet summary retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get wallet summary",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/transactions/{transactionId}": {
+      "get": {
+        "operationId": "WalletController_getTransaction",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction details retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get transaction details",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/create": {
+      "post": {
+        "operationId": "WalletController_createWallet",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Wallet created successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a wallet for the user",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/add-funds": {
+      "post": {
+        "operationId": "WalletController_addFunds",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFundsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Funds added successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add funds to wallet",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/withdraw-funds": {
+      "post": {
+        "operationId": "WalletController_withdrawFunds",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WithdrawFundsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Funds withdrawn successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Withdraw funds from wallet",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/freeze-funds": {
+      "post": {
+        "operationId": "WalletController_freezeFunds",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FreezeFundsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Funds frozen successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Freeze funds in wallet",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/wallet/unfreeze-funds": {
+      "post": {
+        "operationId": "WalletController_unfreezeFunds",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FreezeFundsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Funds released successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Unfreeze funds in wallet",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/chat/conversations": {
+      "get": {
+        "operationId": "ChatController_getConversations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List conversations available to the current user",
+        "tags": [
+          "chat"
+        ]
+      }
+    },
+    "/chat/socket-token": {
+      "post": {
+        "operationId": "ChatController_createSocketToken",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Issue a short-lived socket token for chat",
+        "tags": [
+          "chat"
+        ]
+      }
+    },
+    "/chat/contracts/{contractId}/conversation": {
+      "post": {
+        "operationId": "ChatController_getOrCreateConversation",
+        "parameters": [
+          {
+            "name": "contractId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get or create the contract conversation",
+        "tags": [
+          "chat"
+        ]
+      }
+    },
+    "/chat/conversations/{conversationId}/messages": {
+      "get": {
+        "operationId": "ChatController_getMessages",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get messages for a conversation",
+        "tags": [
+          "chat"
+        ]
+      },
+      "post": {
+        "operationId": "ChatController_createMessage",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Message created successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new chat message, optionally with media",
+        "tags": [
+          "chat"
+        ]
+      }
+    },
+    "/upload": {
+      "post": {
+        "operationId": "UploadController_uploadFile",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "File uploaded successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload a chat attachment to Cloudinary",
+        "tags": [
+          "upload"
+        ]
+      }
+    },
+    "/upload/signed-params": {
+      "post": {
+        "operationId": "UploadController_getSignedParams",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Signed parameters generated successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get signed upload parameters for direct Cloudinary upload",
+        "tags": [
+          "upload"
+        ]
+      }
+    },
+    "/reviews": {
+      "post": {
+        "operationId": "ReviewsController_createReview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review created successfully."
+          },
+          "400": {
+            "description": "Invalid review data or contract not completed."
+          },
+          "403": {
+            "description": "Access denied or not eligible to review."
+          },
+          "404": {
+            "description": "Contract not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new review",
+        "tags": [
+          "reviews"
+        ]
+      },
+      "get": {
+        "operationId": "ReviewsController_listReviews",
+        "parameters": [
+          {
+            "name": "contractId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by contract ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by client ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "artisanId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by artisan ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minRating",
+            "required": false,
+            "in": "query",
+            "description": "Filter by minimum rating",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxRating",
+            "required": false,
+            "in": "query",
+            "description": "Filter by maximum rating",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "categories",
+            "required": false,
+            "in": "query",
+            "description": "Filter by categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isPublic",
+            "required": false,
+            "in": "query",
+            "description": "Filter by public status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 10, max: 100)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reviews retrieved successfully."
+          },
+          "403": {
+            "description": "Authentication required."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List reviews with filtering",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/reviews/me": {
+      "get": {
+        "operationId": "ReviewsController_getMyReviews",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User reviews retrieved successfully."
+          },
+          "403": {
+            "description": "Authentication required."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user reviews",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/reviews/{id}": {
+      "get": {
+        "operationId": "ReviewsController_getReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Review ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review retrieved successfully."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Review not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get review by ID",
+        "tags": [
+          "reviews"
+        ]
+      },
+      "patch": {
+        "operationId": "ReviewsController_updateReview",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Review ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review updated successfully."
+          },
+          "400": {
+            "description": "Invalid update data."
+          },
+          "403": {
+            "description": "Access denied."
+          },
+          "404": {
+            "description": "Review not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update review",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/reviews/stats/{artisanId}": {
+      "get": {
+        "operationId": "ReviewsController_getReviewStats",
+        "parameters": [
+          {
+            "name": "artisanId",
+            "required": true,
+            "in": "path",
+            "description": "Artisan ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review statistics retrieved successfully."
+          },
+          "404": {
+            "description": "Artisan not found."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get review statistics for an artisan",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/notifications": {
+      "post": {
+        "operationId": "NotificationsController_createNotification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification created successfully."
+          },
+          "400": {
+            "description": "Invalid notification data."
+          },
+          "403": {
+            "description": "Admin access required."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new notification (Admin only)",
+        "tags": [
+          "notifications"
+        ]
+      },
+      "get": {
+        "operationId": "NotificationsController_listNotifications",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "priority",
+            "required": false,
+            "in": "query",
+            "description": "Filter by priority",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isRead",
+            "required": false,
+            "in": "query",
+            "description": "Filter by read status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isArchived",
+            "required": false,
+            "in": "query",
+            "description": "Filter by archived status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by entity ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by entity type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date from",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by date to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 20, max: 100)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notifications retrieved successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List notifications with filtering",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/me": {
+      "get": {
+        "operationId": "NotificationsController_getMyNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User notifications retrieved successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user notifications",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/{id}": {
+      "get": {
+        "operationId": "NotificationsController_getNotification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification retrieved successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get notification by ID",
+        "tags": [
+          "notifications"
+        ]
+      },
+      "patch": {
+        "operationId": "NotificationsController_updateNotification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification updated successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update notification",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/mark": {
+      "patch": {
+        "operationId": "NotificationsController_markNotifications",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkNotificationsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notifications updated successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark multiple notifications as read/archived",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/read-all": {
+      "patch": {
+        "operationId": "NotificationsController_markAllAsRead",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All notifications marked as read."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark all notifications as read",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/stats/me": {
+      "get": {
+        "operationId": "NotificationsController_getNotificationStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Notification statistics retrieved successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get notification statistics",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/{id}/delete": {
+      "patch": {
+        "operationId": "NotificationsController_deleteNotification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification deleted successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete notification",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/kyc/verify-identity": {
+      "post": {
+        "operationId": "KycController_verifyIdentity",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Verify user identity via Paystack BVN match",
+        "tags": [
+          "kyc"
+        ]
+      }
+    },
+    "/kyc/upload": {
+      "post": {
+        "operationId": "KycController_uploadDocument",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload a KYC document",
+        "tags": [
+          "kyc"
+        ]
+      }
+    },
+    "/kyc/status": {
+      "get": {
+        "operationId": "KycController_getStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current KYC status",
+        "tags": [
+          "kyc"
+        ]
+      }
+    },
+    "/admin/audit": {
+      "get": {
+        "operationId": "AuditController_getAuditLogs",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityType",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "performedBy",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Audit"
+        ]
+      }
+    },
+    "/admin/monitoring/health": {
+      "get": {
+        "operationId": "MonitoringController_getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/admin/monitoring/logs": {
+      "get": {
+        "operationId": "MonitoringController_getSystemLogs",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "context",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/admin/reconciliation/reports": {
+      "get": {
+        "operationId": "ReconciliationController_getReports",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reconciliation"
+        ]
+      }
+    },
+    "/admin/reconciliation/trigger": {
+      "post": {
+        "operationId": "ReconciliationController_triggerReconciliation",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reconciliation"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "WorkSure API",
+    "description": "WorkSure - Escrow-based Artisan Marketplace API",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "AdminResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "expiresInMinutes": {
+            "type": "number",
+            "example": 45,
+            "description": "Reset token lifetime in minutes."
+          }
+        }
+      },
+      "ResolveDisputeDto": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "REFUND_CLIENT",
+              "PAY_ARTISAN"
+            ],
+            "example": "REFUND_CLIENT"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Evidence supports a full refund."
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "ForceCloseJobDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "Fraudulent activity detected during review."
+          }
+        }
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "jane.doe@worksure.dev"
+          },
+          "password": {
+            "type": "string",
+            "example": "SecurePass123!"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "CLIENT",
+              "ARTISAN"
+            ],
+            "example": "CLIENT"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password",
+          "role"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@worksure.dev"
+          },
+          "password": {
+            "type": "string",
+            "example": "SecurePass123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@worksure.dev"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "9680f2b7c46a10f7b4d7c8d3e1f6a4cf5d0d09716a2e6f9248d1f317f3f1fa3a"
+          },
+          "newPassword": {
+            "type": "string",
+            "example": "NewSecurePass123!"
+          }
+        },
+        "required": [
+          "token",
+          "newPassword"
+        ]
+      },
+      "UpdateUserProfileDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateArtisanProfileDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateArtisanProfileDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateJobDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Job title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Job description"
+          },
+          "budget": {
+            "type": "number",
+            "description": "Job budget"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location of the job"
+          },
+          "requiredSkills": {
+            "description": "Required skills for the job",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "category": {
+            "type": "string",
+            "description": "Job category"
+          },
+          "deadline": {
+            "type": "string",
+            "description": "Job deadline"
+          },
+          "requirements": {
+            "type": "string",
+            "description": "Additional job requirements"
+          }
+        },
+        "required": [
+          "title",
+          "description"
+        ]
+      },
+      "UpdateJobDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Job title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Job description"
+          },
+          "budget": {
+            "type": "number",
+            "description": "Job budget"
+          },
+          "location": {
+            "type": "string",
+            "description": "Job location"
+          },
+          "requiredSkills": {
+            "description": "Required skills for the job",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "category": {
+            "type": "string",
+            "description": "Job category"
+          },
+          "deadline": {
+            "type": "string",
+            "description": "Job deadline"
+          },
+          "status": {
+            "type": "string",
+            "description": "Job status"
+          },
+          "requirements": {
+            "type": "string",
+            "description": "Additional job requirements"
+          }
+        }
+      },
+      "CreateProposalDto": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "Job ID"
+          },
+          "message": {
+            "type": "string",
+            "description": "Proposal message"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Proposed amount"
+          }
+        },
+        "required": [
+          "jobId",
+          "message",
+          "amount"
+        ]
+      },
+      "UpdateProposalDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Proposal message"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Proposed amount"
+          }
+        }
+      },
+      "ProposalActionDto": {
+        "type": "object",
+        "properties": {
+          "notes": {
+            "type": "string",
+            "description": "Action notes (for rejection)"
+          }
+        },
+        "required": [
+          "notes"
+        ]
+      },
+      "CreateContractDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "FundContractDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "RefundContractDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "ConfirmCompletionDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "PaymentFundContractDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID to fund"
+          },
+          "email": {
+            "type": "string",
+            "description": "Payer email for Paystack checkout"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "description": "Callback URL for Paystack redirect"
+          }
+        },
+        "required": [
+          "contractId",
+          "email"
+        ]
+      },
+      "PaystackInitDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID to fund"
+          },
+          "email": {
+            "type": "string",
+            "description": "Payer email for Paystack checkout"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "description": "Callback URL for Paystack redirect"
+          }
+        },
+        "required": [
+          "contractId",
+          "email"
+        ]
+      },
+      "PaystackVerifyDto": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "description": "Paystack transaction reference to verify"
+          }
+        },
+        "required": [
+          "reference"
+        ]
+      },
+      "VerifyPaymentDto": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "description": "Payment ID to verify"
+          },
+          "verificationCode": {
+            "type": "string",
+            "description": "Verification code"
+          }
+        },
+        "required": [
+          "paymentId",
+          "verificationCode"
+        ]
+      },
+      "ActivateContractDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID to activate"
+          }
+        },
+        "required": [
+          "contractId"
+        ]
+      },
+      "CompleteContractDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID"
+          },
+          "role": {
+            "type": "string",
+            "description": "Confirmation type"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Completion notes"
+          }
+        },
+        "required": [
+          "contractId",
+          "role"
+        ]
+      },
+      "ReleasePaymentDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID to release funds for"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for manual release (admin)"
+          }
+        },
+        "required": [
+          "contractId"
+        ]
+      },
+      "RefundPaymentDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID to refund"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for refund"
+          }
+        },
+        "required": [
+          "contractId"
+        ]
+      },
+      "CreateDisputeDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID (if contract-related)"
+          },
+          "jobId": {
+            "type": "string",
+            "description": "Job ID (if job-related)"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Dispute amount"
+          },
+          "description": {
+            "type": "string",
+            "description": "Dispute description"
+          },
+          "evidenceImages": {
+            "description": "Evidence images URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidenceVideos": {
+            "description": "Evidence videos URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidenceMessages": {
+            "description": "Evidence messages",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "contractId",
+          "jobId",
+          "amount",
+          "description"
+        ]
+      },
+      "UpdateDisputeDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Dispute status"
+          },
+          "resolutionDecision": {
+            "type": "string",
+            "description": "Resolution decision"
+          },
+          "resolutionNotes": {
+            "type": "string",
+            "description": "Resolution notes"
+          },
+          "resolvedBy": {
+            "type": "string",
+            "description": "Resolver ID"
+          }
+        }
+      },
+      "AddFundsDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "WithdrawFundsDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "FreezeFundsDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateReviewDto": {
+        "type": "object",
+        "properties": {
+          "contractId": {
+            "type": "string",
+            "description": "Contract ID"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Rating (1-5)"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review comment"
+          },
+          "categories": {
+            "description": "Review categories",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workQuality": {
+            "type": "number",
+            "description": "Work quality rating (1-5)"
+          },
+          "communication": {
+            "type": "number",
+            "description": "Communication rating (1-5)"
+          },
+          "timeliness": {
+            "type": "number",
+            "description": "Timeliness rating (1-5)"
+          },
+          "professionalism": {
+            "type": "number",
+            "description": "Professionalism rating (1-5)"
+          },
+          "evidence": {
+            "description": "Supporting evidence URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "contractId",
+          "rating",
+          "comment"
+        ]
+      },
+      "UpdateReviewDto": {
+        "type": "object",
+        "properties": {
+          "rating": {
+            "type": "number",
+            "description": "Rating (1-5)"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Review comment"
+          },
+          "categories": {
+            "description": "Review categories",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workQuality": {
+            "type": "number",
+            "description": "Work quality rating (1-5)"
+          },
+          "communication": {
+            "type": "number",
+            "description": "Communication rating (1-5)"
+          },
+          "timeliness": {
+            "type": "number",
+            "description": "Timeliness rating (1-5)"
+          },
+          "professionalism": {
+            "type": "number",
+            "description": "Professionalism rating (1-5)"
+          },
+          "evidence": {
+            "description": "Supporting evidence URLs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateNotificationDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Notification type"
+          },
+          "title": {
+            "type": "string",
+            "description": "Notification title"
+          },
+          "message": {
+            "type": "string",
+            "description": "Notification message"
+          },
+          "entityId": {
+            "type": "string",
+            "description": "Related entity ID"
+          },
+          "entityType": {
+            "type": "string",
+            "description": "Related entity type"
+          },
+          "actionUrl": {
+            "type": "string",
+            "description": "Action URL"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Notification priority"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata"
+          }
+        },
+        "required": [
+          "userId",
+          "type",
+          "title",
+          "message"
+        ]
+      },
+      "UpdateNotificationDto": {
+        "type": "object",
+        "properties": {
+          "isRead": {
+            "type": "boolean",
+            "description": "Mark as read"
+          },
+          "isArchived": {
+            "type": "boolean",
+            "description": "Mark as archived"
+          },
+          "actionUrl": {
+            "type": "string",
+            "description": "Action URL"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata"
+          }
+        }
+      },
+      "MarkNotificationsDto": {
+        "type": "object",
+        "properties": {
+          "notificationIds": {
+            "description": "Notification IDs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "markAsRead": {
+            "type": "boolean",
+            "description": "Mark as read"
+          },
+          "markAsArchived": {
+            "type": "boolean",
+            "description": "Mark as archived"
+          }
+        },
+        "required": [
+          "notificationIds",
+          "markAsRead",
+          "markAsArchived"
+        ]
+      }
+    }
+  }
+}

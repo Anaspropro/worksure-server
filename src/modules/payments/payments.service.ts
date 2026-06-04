@@ -920,6 +920,88 @@ export class PaymentsService {
 
             if (contractId) {
               paidOutContractId = contractId;
+
+              // DOUBLE-ENTRY LEDGER: Payout Release
+              const metadata = transferTx.metadata as { contractId?: string; platformFee?: number } | null;
+              const platformFee = metadata?.platformFee ?? 0;
+              const payoutAmount = transferTx.amount;
+              const totalAmount = payoutAmount + platformFee;
+
+              let systemEscrow = await tx.ledgerAccount.findFirst({
+                where: { type: 'SYSTEM_ESCROW' },
+              });
+              if (!systemEscrow) {
+                throw new NotFoundException('System escrow account not configured.');
+              }
+
+              let artisanWallet = await tx.ledgerAccount.findUnique({
+                where: { userId: transferTx.userId },
+              });
+              if (!artisanWallet) {
+                artisanWallet = await tx.ledgerAccount.create({
+                  data: {
+                    name: 'Artisan Wallet',
+                    type: 'USER_WALLET',
+                    userId: transferTx.userId,
+                  },
+                });
+              }
+
+              let systemFee = await tx.ledgerAccount.findFirst({
+                where: { type: 'SYSTEM_FEE' },
+              });
+              if (!systemFee) {
+                systemFee = await tx.ledgerAccount.create({
+                  data: {
+                    name: 'System Fee Account',
+                    type: 'SYSTEM_FEE',
+                  },
+                });
+              }
+
+              // Create ledger entries
+              await tx.ledgerEntry.create({
+                data: {
+                  debitAccountId: systemEscrow.id,
+                  creditAccountId: artisanWallet.id,
+                  amount: payoutAmount,
+                  reference,
+                  contractId,
+                  description: `Payout Release to Artisan for Contract ${contractId}`,
+                },
+              });
+
+              if (platformFee > 0) {
+                await tx.ledgerEntry.create({
+                  data: {
+                    debitAccountId: systemEscrow.id,
+                    creditAccountId: systemFee.id,
+                    amount: platformFee,
+                    reference,
+                    contractId,
+                    description: `Platform Fee Deducted for Contract ${contractId}`,
+                  },
+                });
+              }
+
+              // Update account balances
+              await tx.ledgerAccount.update({
+                where: { id: systemEscrow.id },
+                data: { balance: { decrement: totalAmount } },
+              });
+
+              await tx.ledgerAccount.update({
+                where: { id: artisanWallet.id },
+                data: { balance: { increment: payoutAmount } },
+              });
+
+              if (platformFee > 0) {
+                await tx.ledgerAccount.update({
+                  where: { id: systemFee.id },
+                  data: { balance: { increment: platformFee } },
+                });
+              }
+
               await this.createFinancialEvent(tx, {
                 contractId,
                 type: FinancialEventType.RELEASE_CONFIRMED,
@@ -1036,6 +1118,51 @@ export class PaymentsService {
                 status: TransactionStatus.COMPLETED,
                 completedAt: new Date(),
               },
+            });
+
+            // DOUBLE-ENTRY LEDGER: Refund Processed
+            let systemEscrow = await tx.ledgerAccount.findFirst({
+              where: { type: 'SYSTEM_ESCROW' },
+            });
+            if (!systemEscrow) {
+              throw new NotFoundException('System escrow account not configured.');
+            }
+
+            let clientWallet = await tx.ledgerAccount.findUnique({
+              where: { userId: payment.userId },
+            });
+            if (!clientWallet) {
+              clientWallet = await tx.ledgerAccount.create({
+                data: {
+                  name: 'Client Wallet',
+                  type: 'USER_WALLET',
+                  userId: payment.userId,
+                },
+              });
+            }
+
+            // Create ledger entry
+            await tx.ledgerEntry.create({
+              data: {
+                debitAccountId: systemEscrow.id,
+                creditAccountId: clientWallet.id,
+                amount: payment.amount,
+                reference: transactionReference,
+                contractId: payment.contractId,
+                paymentId: payment.id,
+                description: `Refund processed for Contract ${payment.contractId}`,
+              },
+            });
+
+            // Update account balances
+            await tx.ledgerAccount.update({
+              where: { id: systemEscrow.id },
+              data: { balance: { decrement: payment.amount } },
+            });
+
+            await tx.ledgerAccount.update({
+              where: { id: clientWallet.id },
+              data: { balance: { increment: payment.amount } },
             });
 
             await this.createFinancialEvent(tx, {

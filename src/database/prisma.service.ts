@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Inject,
   Logger,
   OnModuleDestroy,
   OnModuleInit,
@@ -18,8 +19,8 @@ export class PrismaService
   private connected = false;
   private readonly pool?: Pool;
 
-  constructor(private readonly appConfigService: AppConfigService) {
-    const { adapter, pool } = createPrismaAdapter(appConfigService.databaseUrl);
+  constructor(@Inject(AppConfigService) private readonly appConfigService: AppConfigService) {
+    const { adapter, pool } = createPrismaAdapter(appConfigService?.databaseUrl || process.env.DATABASE_URL);
 
     super({
       adapter,

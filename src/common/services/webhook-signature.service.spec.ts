@@ -46,4 +46,36 @@ describe('WebhookSignatureService', () => {
       }),
     );
   });
+
+  describe('verifyPaystackSignature', () => {
+    it('returns false instead of crashing when signature has different length than hash', () => {
+      const service = new WebhookSignatureService(prisma as any);
+      const payload = 'test-payload';
+      const secret = 'test-secret';
+      const shortSignature = 'short';
+      
+      const isValid = service.verifyPaystackSignature(payload, shortSignature, secret);
+      expect(isValid).toBe(false);
+    });
+
+    it('returns true for a valid signature and false for an invalid signature of the same length', () => {
+      const service = new WebhookSignatureService(prisma as any);
+      const payload = 'test-payload';
+      const secret = 'test-secret';
+      const hash = require('crypto')
+        .createHmac('sha512', secret)
+        .update(payload)
+        .digest('hex');
+      
+      expect(service.verifyPaystackSignature(payload, hash, secret)).toBe(true);
+      expect(service.verifyPaystackSignature(payload, hash.replace('a', 'b'), secret)).toBe(false);
+    });
+
+    it('throws BadRequestException if missing parameters', () => {
+      const service = new WebhookSignatureService(prisma as any);
+      expect(() => service.verifyPaystackSignature('', 'sig', 'sec')).toThrow();
+      expect(() => service.verifyPaystackSignature('pay', '', 'sec')).toThrow();
+      expect(() => service.verifyPaystackSignature('pay', 'sig', '')).toThrow();
+    });
+  });
 });

@@ -29,8 +29,15 @@ export class WebhookSignatureService {
       .update(payload, 'utf8')
       .digest('hex');
 
+    const hashBuffer = Buffer.from(hash);
+    const signatureBuffer = Buffer.from(signature);
+
+    if (hashBuffer.length !== signatureBuffer.length) {
+      return false;
+    }
+
     // Use timing-safe comparison to prevent timing attacks
-    return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(signature));
+    return crypto.timingSafeEqual(hashBuffer, signatureBuffer);
   }
 
   /**
