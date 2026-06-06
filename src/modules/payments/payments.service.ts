@@ -3,6 +3,8 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
@@ -18,6 +20,7 @@ import {
 import { ContractsService } from '../contracts/contracts.service';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { IdempotencyService } from '../../common/services/idempotency.service';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class PaymentsService {
@@ -29,6 +32,8 @@ export class PaymentsService {
     private readonly contractsService: ContractsService,
     private readonly paystackClient: PaystackClientService,
     private readonly idempotency: IdempotencyService,
+    @Inject(forwardRef(() => WalletService))
+    private readonly walletService: WalletService,
   ) {}
 
   private buildTransferReference(contractId: string) {
@@ -86,6 +91,10 @@ export class PaymentsService {
         metadata: input.metadata,
       },
     });
+  }
+
+  async getBanks(country = 'nigeria') {
+    return this.paystackClient.get<{ name: string; code: string; id: number }[]>(`/bank?country=${country}`, { graceful: true });
   }
 
   async initializeContractPayment(
@@ -874,7 +883,11 @@ export class PaymentsService {
       case 'charge.success': {
         const reference = payload?.data?.reference as string | undefined;
         if (reference) {
-          await this.verifyPaystackPayment(reference);
+          if (reference.startsWith('wallet_deposit_')) {
+            await this.walletService.verifyWalletDeposit(null, reference);
+          } else {
+            await this.verifyPaystackPayment(reference);
+          }
         }
         return { handled: true, event };
       }
@@ -884,6 +897,14 @@ export class PaymentsService {
         const transferCode = payload?.data?.transfer_code as string | undefined;
         if (!reference) {
           return { handled: false, event };
+        }
+
+        if (reference.startsWith('payout_req_')) {
+          await this.prisma.transaction.updateMany({
+            where: { reference, type: TransactionType.PAYOUT, status: TransactionStatus.PENDING },
+            data: { status: TransactionStatus.COMPLETED, completedAt: new Date() }
+          });
+          return { handled: true, event };
         }
 
         let paidOutContractId: string | null = null;

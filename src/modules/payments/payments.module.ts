@@ -4,6 +4,7 @@ import { PaymentsService } from './payments.service';
 import { PaymentsController } from './payments.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ContractsModule } from '../contracts/contracts.module';
+import { WalletModule } from '../wallet/wallet.module';
 import { WebhookSignatureService } from '../../common/services/webhook-signature.service';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { IdempotencyService } from '../../common/services/idempotency.service';
@@ -14,6 +15,7 @@ import { StuckPayoutDetectorService } from './stuck-payout-detector.service';
     PrismaModule,
     forwardRef(() => AuthModule),
     forwardRef(() => ContractsModule),
+    forwardRef(() => WalletModule),
   ],
   controllers: [PaymentsController],
   providers: [

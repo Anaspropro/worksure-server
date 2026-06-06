@@ -275,6 +275,15 @@ export class PaymentsController {
     };
   }
 
+  @Public()
+  @Get('banks')
+  @ApiOperation({ summary: 'List supported banks from Paystack' })
+  @ApiOkResponse({ description: 'List of banks.' })
+  async getBanks() {
+    const banks = await this.paymentsService.getBanks();
+    return { data: banks ?? [] };
+  }
+
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'List payments related to the current user' })
   @ApiOkResponse({ description: 'Payments retrieved successfully.' })

@@ -9,6 +9,14 @@ export class WithdrawFundsDto {
   @IsOptional()
   reference?: string;
 
+  @IsString()
+  @IsOptional()
+  bankCode?: string;
+
+  @IsString()
+  @IsOptional()
+  accountNumber?: string;
+
   @IsOptional()
   metadata?: any;
 }

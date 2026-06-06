@@ -35,27 +35,31 @@ export class KycService {
     }
 
     // Attempt Paystack BVN match
-    // Note: This requires valid real BVN and account details in production,
-    // or test BVN details in test mode.
-    try {
-      const matchData = await this.paystackClient.post<any>('/bvn/match', {
-        bvn,
-        account_number: accountNumber,
-        bank_code: bankCode,
-        first_name: user.name.split(' ')[0], // Optional in Paystack but good for validation
+    if (process.env.NODE_ENV === 'development') {
+      import('@nestjs/common').then(({ Logger }) => {
+        Logger.warn(
+          `[DEV MODE] Bypassing Paystack BVN match for ${bvn}. Assuming identity is verified.`,
+          'KycService'
+        );
       });
+    } else {
+      try {
+        const matchData = await this.paystackClient.post<any>('/bvn/match', {
+          bvn,
+          account_number: accountNumber,
+          bank_code: bankCode,
+          first_name: user.name.split(' ')[0],
+        });
 
-      if (!matchData.is_match) {
-        throw new BadRequestException('Identity verification failed. Information does not match.');
+        if (!matchData?.is_match) {
+          throw new BadRequestException('Identity verification failed. Information does not match.');
+        }
+      } catch (error: any) {
+        if (error instanceof BadRequestException) {
+          throw error;
+        }
+        throw new BadRequestException('Failed to verify identity with Paystack.');
       }
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        throw new BadRequestException(error.response.data.message);
-      }
-      // If error is something else, you might want to log it and throw a generic error.
-      // But for local test, if paystack fails because of test data, we might want to mock it.
-      // For this implementation, we assume real Paystack integration.
-      throw new BadRequestException('Failed to verify identity with Paystack.');
     }
 
     // Verification successful
@@ -99,7 +103,7 @@ export class KycService {
             }
           },
         )
-        .end(file.buffer);
+        .end(Buffer.from(file.buffer));
     });
 
     const kycDoc = await this.prisma.kycDocument.create({

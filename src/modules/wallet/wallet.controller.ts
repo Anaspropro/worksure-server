@@ -23,6 +23,10 @@ import { FreezeFundsDto } from './dto/freeze-funds.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AuthenticatedUser } from '../auth/auth.service';
+import { BadRequestException } from '@nestjs/common';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '../../common/constants/roles.constants';
 
 @ApiTags('wallet')
 @Controller('wallet')
@@ -115,37 +119,72 @@ export class WalletController {
     };
   }
 
-  @Post('add-funds')
+  @Post('deposit/init')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Add funds to wallet' })
-  @ApiResponse({ status: 200, description: 'Funds added successfully' })
-  async addFunds(
+  @ApiOperation({ summary: 'Initialize wallet deposit via Paystack' })
+  @ApiResponse({ status: 200, description: 'Checkout initialized' })
+  async initiateDeposit(
     @Body() addFundsDto: AddFundsDto,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    const result = await this.walletService.addFunds(
+    const result = await this.walletService.initiateWalletDeposit(
       user.id,
       addFundsDto.amount,
-      addFundsDto.reference,
-      addFundsDto.metadata,
+      user.email,
     );
 
     return result;
   }
 
-  @Post('withdraw-funds')
+  @Post('deposit/verify')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Withdraw funds from wallet' })
-  @ApiResponse({ status: 200, description: 'Funds withdrawn successfully' })
-  async withdrawFunds(
+  @ApiOperation({ summary: 'Verify wallet deposit via Paystack reference' })
+  @ApiResponse({ status: 200, description: 'Deposit verified successfully' })
+  async verifyDeposit(
+    @Body('reference') reference: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!reference) throw new BadRequestException('reference is required');
+    const result = await this.walletService.verifyWalletDeposit(
+      user.id,
+      reference,
+    );
+
+    return result;
+  }
+
+  @Post('payout/request')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request wallet payout to bank account' })
+  @ApiResponse({ status: 200, description: 'Payout requested successfully' })
+  async requestPayout(
     @Body() withdrawFundsDto: WithdrawFundsDto,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    const result = await this.walletService.withdrawFunds(
+    const result = await this.walletService.requestWalletPayout(
       user.id,
       withdrawFundsDto.amount,
-      withdrawFundsDto.reference,
-      withdrawFundsDto.metadata,
+      withdrawFundsDto.bankCode,
+      withdrawFundsDto.accountNumber,
+    );
+
+    return result;
+  }
+
+  @Post('payout/process')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Process pending payout request (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Payout processed successfully' })
+  async processPayout(
+    @Body('transactionId') transactionId: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!transactionId) throw new BadRequestException('transactionId is required');
+    const result = await this.walletService.processPayout(
+      user.id,
+      transactionId,
     );
 
     return result;
