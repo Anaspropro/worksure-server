@@ -81,18 +81,10 @@ export class AuthService {
       },
     });
 
-    // Send verification OTP using Resend
-    try {
-      await this.emailService.sendVerificationOtp(user.email, verificationToken);
-    } catch (err: any) {
-      this.logger.error(`Failed to send verification email during registration: ${err.message}`, err.stack);
-      return {
-        message: 'Registration successful. However, there was an issue sending the verification email. Please click resend code on the verification screen.',
-        data: {
-          user: this.usersService.sanitizeUser(user),
-        },
-      };
-    }
+    // Send verification OTP using Resend in the background to prevent blocking/timing out the request
+    this.emailService.sendVerificationOtp(user.email, verificationToken).catch((err) => {
+      this.logger.error(`Failed to send verification email for ${user.email} in the background: ${err.message}`, err.stack);
+    });
 
     return {
       message: 'Registration successful. Please check your email to verify your account.',
@@ -327,12 +319,10 @@ export class AuthService {
       },
     });
 
-    try {
-      await this.emailService.sendVerificationOtp(user.email, verificationToken);
-    } catch (err: any) {
-      this.logger.error(`Failed to send verification email during resend: ${err.message}`, err.stack);
-      throw new ConflictException('Failed to send verification email. Please verify the email address is correct or try again later.');
-    }
+    // Send verification OTP in the background (fire-and-forget) to ensure instant responsiveness
+    this.emailService.sendVerificationOtp(user.email, verificationToken).catch((err) => {
+      this.logger.error(`Failed to send verification email for ${user.email} on resend: ${err.message}`, err.stack);
+    });
 
     return {
       message: 'A new verification code has been sent to your email.',
@@ -371,8 +361,10 @@ export class AuthService {
       requestedAt: new Date(),
     });
 
-    // Send the password reset email using Resend
-    await this.emailService.sendPasswordReset(user.email, rawToken);
+    // Send the password reset email in the background (fire-and-forget) to keep request responsive
+    this.emailService.sendPasswordReset(user.email, rawToken).catch((err) => {
+      this.logger.error(`Failed to send password reset email for ${user.email}: ${err.message}`, err.stack);
+    });
 
     const response: {
       message: string;
