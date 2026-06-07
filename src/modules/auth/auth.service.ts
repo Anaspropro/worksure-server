@@ -82,7 +82,17 @@ export class AuthService {
     });
 
     // Send verification OTP using Resend
-    await this.emailService.sendVerificationOtp(user.email, verificationToken);
+    try {
+      await this.emailService.sendVerificationOtp(user.email, verificationToken);
+    } catch (err: any) {
+      this.logger.error(`Failed to send verification email during registration: ${err.message}`, err.stack);
+      return {
+        message: 'Registration successful. However, there was an issue sending the verification email. Please click resend code on the verification screen.',
+        data: {
+          user: this.usersService.sanitizeUser(user),
+        },
+      };
+    }
 
     return {
       message: 'Registration successful. Please check your email to verify your account.',
@@ -317,7 +327,12 @@ export class AuthService {
       },
     });
 
-    await this.emailService.sendVerificationOtp(user.email, verificationToken);
+    try {
+      await this.emailService.sendVerificationOtp(user.email, verificationToken);
+    } catch (err: any) {
+      this.logger.error(`Failed to send verification email during resend: ${err.message}`, err.stack);
+      throw new ConflictException('Failed to send verification email. Please verify the email address is correct or try again later.');
+    }
 
     return {
       message: 'A new verification code has been sent to your email.',
