@@ -40,6 +40,14 @@ import { ScheduleModule } from '@nestjs/schedule';
             }
           : undefined,
         autoLogging: false,
+        serializers: {
+          req: (req) => ({
+            id: req.id,
+            method: req.method,
+            url: req.url,
+            // Omitting the massive headers object to keep production logs clean
+          }),
+        },
       },
     }),
     ScheduleModule.forRoot(),
