@@ -356,6 +356,9 @@ export class AuthService {
       requestedAt: new Date(),
     });
 
+    // Send the password reset email using Resend
+    await this.emailService.sendPasswordReset(user.email, rawToken);
+
     const response: {
       message: string;
       data?: {
@@ -363,7 +366,7 @@ export class AuthService {
       };
     } = {
       message:
-        'Password reset token generated. Deliver this token through your notification/email workflow.',
+        'A password reset link has been sent to your email address.',
     };
 
     if (process.env.NODE_ENV === 'test') {
