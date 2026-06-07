@@ -132,6 +132,7 @@ exports.Prisma.UserScalarFieldEnum = {
   status: 'status',
   artisanVerified: 'artisanVerified',
   kycVerified: 'kycVerified',
+  emailVerified: 'emailVerified',
   kycStatus: 'kycStatus',
   paystackRecipientCode: 'paystackRecipientCode',
   payoutBankCode: 'payoutBankCode',
@@ -448,6 +449,14 @@ exports.Prisma.AccountLockoutScalarFieldEnum = {
   expiresAt: 'expiresAt'
 };
 
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SystemLogScalarFieldEnum = {
   id: 'id',
   level: 'level',
@@ -637,6 +646,7 @@ exports.Prisma.ModelName = {
   LedgerEntry: 'LedgerEntry',
   Session: 'Session',
   AccountLockout: 'AccountLockout',
+  VerificationToken: 'VerificationToken',
   SystemLog: 'SystemLog'
 };
 

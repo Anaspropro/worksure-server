@@ -139,6 +139,7 @@ model User {
   status           UserStatus
   artisanVerified  Boolean        @default(false)
   kycVerified      Boolean        @default(false)
+  emailVerified    Boolean        @default(false)
   kycStatus        KycVerificationStatus @default(UNVERIFIED)
   paystackRecipientCode String?
   payoutBankCode   String?
@@ -626,6 +627,17 @@ model AccountLockout {
 
   @@index([identifier, expiresAt])
   @@index([expiresAt])
+}
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
 }
 
 model SystemLog {

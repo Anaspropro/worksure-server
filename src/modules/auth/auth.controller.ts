@@ -37,6 +37,26 @@ export class AuthController {
     );
   }
 
+  @ApiOperation({ summary: 'Verify email using a code' })
+  @ApiOkResponse({ description: 'Email verified successfully.' })
+  @ApiUnauthorizedResponse({ description: 'Invalid or expired code.' })
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('verify-email')
+  verifyEmail(@Body() dto: { token: string; email?: string }) {
+    return this.authService.verifyEmail(dto.token, dto.email);
+  }
+
+  @ApiOperation({ summary: 'Resend verification code' })
+  @ApiOkResponse({ description: 'Verification code resent successfully.' })
+  @Public()
+  @Throttle({ default: { limit: 3, ttl: 60_000 } })
+  @Post('resend-verification')
+  resendVerification(@Body() dto: { email: string }) {
+    return this.authService.resendVerification(dto.email);
+  }
+
+
   @ApiOperation({ summary: 'Authenticate a user and return a JWT' })
   @ApiCreatedResponse({ description: 'Login successful.' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })

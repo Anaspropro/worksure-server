@@ -14,6 +14,9 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { AccountLockoutService } from '../../common/services/account-lockout.service';
 import { SessionService } from '../../common/services/session.service';
+import { PrismaService } from '../../database/prisma.service';
+import { EmailService } from '../../common/services/email.service';
+
 
 export type AuthenticatedUser = {
   id: string;
@@ -32,6 +35,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly accountLockoutService: AccountLockoutService,
     private readonly sessionService: SessionService,
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
   ) {}
 
   async register(dto: RegisterDto, ipAddress?: string, userAgent?: string) {
@@ -52,27 +57,37 @@ export class AuthService {
       role: dto.role,
     });
 
-    const sessionId = await this.sessionService.createSession(
-      user.id,
-      user.email,
-      user.role,
-      ipAddress || 'unknown',
-      userAgent || 'unknown',
-    );
+    // Generate 6-digit numeric OTP and ensure uniqueness
+    let verificationToken = '';
+    let isUnique = false;
+    while (!isUnique) {
+      verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+      const existing = await this.prisma.verificationToken.findUnique({
+        where: { token: verificationToken },
+      });
+      if (!existing) {
+        isUnique = true;
+      }
+    }
 
-    const accessToken = await this.signAccessToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-      sessionId,
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes validity for OTP
+
+    await this.prisma.verificationToken.create({
+      data: {
+        email: user.email,
+        token: verificationToken,
+        expiresAt,
+      },
     });
 
+    // Send verification OTP using Resend
+    await this.emailService.sendVerificationOtp(user.email, verificationToken);
+
     return {
-      message: 'Registration successful.',
+      message: 'Registration successful. Please check your email to verify your account.',
       data: {
         user: this.usersService.sanitizeUser(user),
-        accessToken,
-        sessionId,
       },
     };
   }
@@ -115,6 +130,10 @@ export class AuthService {
 
     if (user.status === UserStatus.BANNED) {
       throw new UnauthorizedException('This account has been banned.');
+    }
+
+    if (!user.emailVerified) {
+      throw new UnauthorizedException('Please verify your email before logging in.');
     }
 
     // Record successful attempt and clear failed attempts
@@ -213,6 +232,96 @@ export class AuthService {
         message.includes('expired') ? 'Token has expired.' : 'Invalid token.',
       );
     }
+  }
+
+  async verifyEmail(token: string, email?: string) {
+    const verificationToken = await this.prisma.verificationToken.findUnique({
+      where: { token },
+    });
+
+    if (!verificationToken) {
+      throw new UnauthorizedException('Invalid verification code.');
+    }
+
+    if (email && verificationToken.email.toLowerCase() !== email.toLowerCase()) {
+      throw new UnauthorizedException('Invalid verification code for this email address.');
+    }
+
+    if (new Date() > verificationToken.expiresAt) {
+      throw new UnauthorizedException('Verification code has expired.');
+    }
+
+    const user = await this.usersService.findByEmail(verificationToken.email);
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    if (user.emailVerified) {
+      throw new ConflictException('Email is already verified.');
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: user.id },
+        data: { emailVerified: true },
+      });
+      await tx.verificationToken.delete({
+        where: { id: verificationToken.id },
+      });
+    });
+
+    return {
+      message: 'Email successfully verified. You can now log in.',
+    };
+  }
+
+  async resendVerification(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      // Prevent user enumeration by returning a generic success message
+      return {
+        message: 'If the email is registered, a new verification code has been sent.',
+      };
+    }
+
+    if (user.emailVerified) {
+      throw new ConflictException('Email is already verified.');
+    }
+
+    // Delete any existing tokens for this email to avoid redundancy
+    await this.prisma.verificationToken.deleteMany({
+      where: { email: user.email },
+    });
+
+    // Generate new OTP and ensure uniqueness
+    let verificationToken = '';
+    let isUnique = false;
+    while (!isUnique) {
+      verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+      const existing = await this.prisma.verificationToken.findUnique({
+        where: { token: verificationToken },
+      });
+      if (!existing) {
+        isUnique = true;
+      }
+    }
+
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes validity
+
+    await this.prisma.verificationToken.create({
+      data: {
+        email: user.email,
+        token: verificationToken,
+        expiresAt,
+      },
+    });
+
+    await this.emailService.sendVerificationOtp(user.email, verificationToken);
+
+    return {
+      message: 'A new verification code has been sent to your email.',
+    };
   }
 
   async me(user: AuthenticatedUser) {

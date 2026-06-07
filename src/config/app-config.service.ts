@@ -51,4 +51,14 @@ export class AppConfigService {
   get cloudinarySecret(): string {
     return this.configService.get<string>('CLOUDINARY_SECRET')!;
   }
+
+  // Resend
+  get resendApiKey(): string {
+    return this.configService.get<string>('RESEND_API_KEY')!;
+  }
+
+  get emailFromAddress(): string {
+    return this.configService.get<string>('EMAIL_FROM_ADDRESS', 'noreply@bustaan.xyz');
+  }
 }
+
