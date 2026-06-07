@@ -71,7 +71,7 @@ export class AuthService {
     }
 
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes validity for OTP
+    expiresAt.setMinutes(expiresAt.getMinutes() + 5); // 5 minutes validity for OTP
 
     await this.prisma.verificationToken.create({
       data: {
@@ -309,7 +309,7 @@ export class AuthService {
     }
 
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes validity
+    expiresAt.setMinutes(expiresAt.getMinutes() + 5); // 5 minutes validity
 
     await this.prisma.verificationToken.create({
       data: {

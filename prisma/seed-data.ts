@@ -72,6 +72,7 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         role: 'ADMIN',
         status: 'ACTIVE',
         artisanVerified: false,
+        emailVerified: true,
         createdAt: new Date('2026-01-10T08:00:00.000Z'),
       },
       {
@@ -82,6 +83,7 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         role: 'CLIENT',
         status: 'ACTIVE',
         artisanVerified: false,
+        emailVerified: true,
         createdAt: new Date('2026-02-01T10:30:00.000Z'),
       },
       {
@@ -92,6 +94,7 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         role: 'ARTISAN',
         status: 'ACTIVE',
         artisanVerified: false,
+        emailVerified: true,
         createdAt: new Date('2026-02-03T09:15:00.000Z'),
       },
       {
@@ -102,16 +105,18 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         role: 'ARTISAN',
         status: 'BANNED',
         artisanVerified: true,
+        emailVerified: true,
         createdAt: new Date('2026-01-22T11:45:00.000Z'),
       },
       {
         id: platformId,
         name: 'WorkSure Platform',
-        email: 'platform@worksure.dev',
+        email: 'aliuanas',
         passwordHash: 'system:platform',
         role: 'ADMIN',
         status: 'ACTIVE',
         artisanVerified: false,
+        emailVerified: true,
         createdAt: new Date('2026-01-01T00:00:00.000Z'),
       },
     ],
