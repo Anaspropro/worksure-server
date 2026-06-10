@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { UserRole } from '../../common/constants/roles.constants';
 import { PrismaService } from '../../database/prisma.service';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import {
   CreateReviewDto,
   UpdateReviewDto,
@@ -134,7 +134,7 @@ export class ReviewsController {
     // Create review
     const review = await this.prisma.review.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         contractId: createDto.contractId,
         clientId: user.id,
         artisanId: contract.artisanId,

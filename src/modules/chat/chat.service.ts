@@ -7,7 +7,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
 import {
   MessageType as MessageTypeEnum,
@@ -69,7 +69,7 @@ export class ChatService {
       where: { contractId },
       update: {},
       create: {
-        id: randomUUID(),
+        id: uuidv7(),
         contractId,
         clientId: contract.clientId,
         artisanId: contract.artisanId,
@@ -309,7 +309,7 @@ export class ChatService {
     const message = await this.prisma.$transaction(async (tx) => {
       const created = await tx.message.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           conversationId,
           senderId,
           content: trimmedContent,

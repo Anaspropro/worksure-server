@@ -85,6 +85,16 @@ export class AdminController {
     return this.adminService.verifyArtisan(userId, this.getActor(adminUser));
   }
 
+  @ApiOperation({ summary: 'Reject an artisan account verification' })
+  @ApiParam({ name: 'id', description: 'User identifier' })
+  @Patch('users/:id/reject-verification')
+  rejectArtisanVerification(
+    @Param('id') userId: string,
+    @CurrentUser() adminUser: AuthenticatedUser,
+  ) {
+    return this.adminService.rejectArtisanVerification(userId, this.getActor(adminUser));
+  }
+
   @ApiOperation({ summary: 'Issue a password reset token for a user' })
   @ApiParam({ name: 'id', description: 'User identifier' })
   @Patch('users/:id/reset-password')

@@ -7,7 +7,7 @@ import {
 import { PrismaService } from '../../database/prisma.service';
 import { UserRole } from '../../common/constants/roles.constants';
 import { $Enums, ProposalStatus, JobStatus } from '../../generated/prisma';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import {
   CreateProposalDto,
   UpdateProposalDto,
@@ -113,7 +113,7 @@ export class ProposalsService {
 
     const proposal = await this.prisma.proposal.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         jobId: createDto.jobId,
         artisanId: user.id,
         clientId: job.clientId,

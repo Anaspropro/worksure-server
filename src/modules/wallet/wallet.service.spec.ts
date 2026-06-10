@@ -3,7 +3,7 @@ import { WalletService } from './wallet.service';
 import { PrismaService } from '../../database/prisma.service';
 import { AppConfigService } from '../../config/app-config.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 
 describe('WalletService', () => {

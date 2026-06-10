@@ -111,7 +111,7 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
       {
         id: platformId,
         name: 'WorkSure Platform',
-        email: 'aliuanas',
+        email: 'platform@worksure.dev',
         passwordHash: 'system:platform',
         role: 'ADMIN',
         status: 'ACTIVE',

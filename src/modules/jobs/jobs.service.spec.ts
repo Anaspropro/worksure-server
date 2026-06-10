@@ -4,7 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { UserRole } from '../../common/constants/roles.constants';
 import { JobStatus, UserRole as PrismaUserRole } from '../../generated/prisma';
 import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 
 describe('JobsService', () => {
   let service: JobsService;

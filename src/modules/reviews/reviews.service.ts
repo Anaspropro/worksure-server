@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { ContractStatus } from '../../generated/prisma';
 
 @Injectable()
@@ -70,7 +70,7 @@ export class ReviewsService {
     // Create review with basic schema fields
     const review = await this.prisma.review.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         contractId,
         clientId: userId,
         artisanId: contract.artisanId,

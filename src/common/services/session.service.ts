@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
 
 export interface SessionData {
@@ -83,7 +83,7 @@ export class SessionService {
 
     const session = await this.prisma.session.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         userId,
         email,
         role,
@@ -339,7 +339,7 @@ export class SessionService {
   }
 
   private generateSessionId(): string {
-    return randomUUID();
+    return uuidv7();
   }
 
   private sanitizeUserAgent(userAgent: string): string {

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { TransactionType, TransactionStatus } from '../../generated/prisma';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 
 @Injectable()
@@ -140,7 +140,7 @@ export class WalletService {
 
     return this.prisma.wallet.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         userId,
         balance: 0,
         frozen: 0,
@@ -213,7 +213,7 @@ export class WalletService {
 
     const wallet = await this.prisma.wallet.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         userId,
         balance: 0,
         frozen: 0,
@@ -231,7 +231,7 @@ export class WalletService {
   async initiateWalletDeposit(userId: string, amount: number, email: string) {
     if (amount <= 0) throw new BadRequestException('Amount must be positive');
 
-    const reference = `wallet_deposit_${randomUUID()}`;
+    const reference = `wallet_deposit_${uuidv7()}`;
 
     const paystackData = await this.paystackClient.call<{
       authorization_url: string;
@@ -253,7 +253,7 @@ export class WalletService {
 
     await this.prisma.transaction.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         userId,
         type: TransactionType.FUNDING,
         amount,
@@ -327,7 +327,7 @@ export class WalletService {
       });
 
       const wallet = await tx.wallet.findUnique({ where: { userId: txUserId } }) ?? 
-        await tx.wallet.create({ data: { id: randomUUID(), userId: txUserId, balance: 0, frozen: 0, version: 1 } });
+        await tx.wallet.create({ data: { id: uuidv7(), userId: txUserId, balance: 0, frozen: 0, version: 1 } });
 
       const updatedWallet = await tx.wallet.update({
         where: { userId: txUserId, version: wallet.version },
@@ -381,11 +381,11 @@ export class WalletService {
         },
       });
 
-      const reference = `payout_req_${randomUUID()}`;
+      const reference = `payout_req_${uuidv7()}`;
       
       const transaction = await tx.transaction.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           userId,
           type: TransactionType.PAYOUT,
           amount: -amount,
@@ -541,7 +541,7 @@ export class WalletService {
 
       const transaction = await tx.transaction.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           userId,
           type: TransactionType.ESCROW_HOLD,
           amount: -amount,
@@ -604,7 +604,7 @@ export class WalletService {
 
       const transaction = await tx.transaction.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           userId,
           type: TransactionType.ESCROW_RELEASE,
           amount: amount,
@@ -662,7 +662,7 @@ export class WalletService {
       if (!destinationWallet) {
         destinationWallet = await tx.wallet.create({
           data: {
-            id: randomUUID(),
+            id: uuidv7(),
             userId: destinationUserId,
             balance: 0,
             frozen: 0,
@@ -696,7 +696,7 @@ export class WalletService {
 
       const transaction = await tx.transaction.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           userId: destinationUserId,
           type: TransactionType.ESCROW_RELEASE,
           amount,
@@ -769,7 +769,7 @@ export class WalletService {
 
       const transaction = await tx.transaction.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           userId,
           type: TransactionType.PLATFORM_FEE,
           amount,

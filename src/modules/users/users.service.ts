@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { UserRole, UserStatus } from '../../generated/prisma';
 import { PrismaService } from '../../database/prisma.service';
 
@@ -38,7 +38,7 @@ export class UsersService {
   }) {
     return this.prisma.user.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         name: input.name.trim(),
         email: input.email.toLowerCase().trim(),
         passwordHash: input.passwordHash,

@@ -6,7 +6,7 @@ import {
   forwardRef,
   Inject,
 } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
 import {
   AuditEntityType,
@@ -61,7 +61,7 @@ export class PaymentsService {
   ) {
     return prismaClient.financialEvent.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         contractId: input.contractId,
         type: input.type,
         amount: input.amount,
@@ -82,7 +82,7 @@ export class PaymentsService {
   ) {
     return prismaClient.auditLog.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         action: input.action,
         entityType: AuditEntityType.CONTRACT,
         entityId: input.contractId,
@@ -129,7 +129,7 @@ export class PaymentsService {
     const payment = await this.prisma.$transaction(async (tx) => {
       const createdPayment = await tx.payment.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           contractId,
           userId,
           amount: contract.amount,
@@ -307,7 +307,7 @@ export class PaymentsService {
       if (!existingTx) {
         await tx.transaction.create({
           data: {
-            id: randomUUID(),
+            id: uuidv7(),
             userId: payment.userId,
             type: TransactionType.PAYMENT,
             amount: Math.round(paystackData.amount / 100),
@@ -562,7 +562,7 @@ export class PaymentsService {
       await this.prisma.$transaction(async (tx) => {
         const tr = await tx.transaction.create({
           data: {
-            id: randomUUID(),
+            id: uuidv7(),
             userId: contract.artisanId,
             type: TransactionType.TRANSFER,
             amount: payoutAmount,
@@ -793,7 +793,7 @@ export class PaymentsService {
       await this.prisma.$transaction(async (tx) => {
         const tr = await tx.transaction.create({
           data: {
-            id: randomUUID(),
+            id: uuidv7(),
             userId: contract.clientId,
             type: TransactionType.REFUND,
             amount: contract.amount,

@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
 import { NotificationsGateway } from './notifications.gateway';
 import {
@@ -64,7 +64,7 @@ export class NotificationsService {
 
     const notification = await this.prisma.notification.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         userId: dto.userId,
         type: dto.type,
         title: dto.title,

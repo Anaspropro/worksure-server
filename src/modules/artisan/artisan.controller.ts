@@ -27,7 +27,7 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { $Enums } from '../../generated/prisma';
 import { PrismaService } from '../../database/prisma.service';
 import { UserRole } from '../../common/constants/roles.constants';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import {
   CreateArtisanProfileDto,
   UpdateArtisanProfileDto,
@@ -70,7 +70,7 @@ export class ArtisanController {
 
     const profile = await this.prisma.artisanProfile.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         userId: user.id,
         bio: createDto.bio || null,
         skills: JSON.stringify(createDto.skills || []),

@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
 import {
   AuditEntityType,
@@ -49,7 +49,7 @@ export class ContractsService {
   ) {
     await this.prisma.auditLog.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         action: context?.action ?? 'CONTRACT_STATUS_TRANSITION',
         entityType: AuditEntityType.CONTRACT,
         entityId: contractId,
@@ -307,7 +307,7 @@ export class ContractsService {
     const contract = await this.prisma.$transaction(async (tx) => {
       const newContract = await tx.contract.create({
         data: {
-          id: randomUUID(),
+          id: uuidv7(),
           jobId: proposal.jobId,
           proposalId,
           clientId: proposal.clientId,
@@ -321,8 +321,39 @@ export class ContractsService {
 
       await tx.job.update({
         where: { id: proposal.jobId },
-        data: { contractId: newContract.id },
+        data: { contractId: newContract.id, status: 'IN_PROGRESS' },
       });
+
+      const otherProposals = await tx.proposal.findMany({
+        where: {
+          jobId: proposal.jobId,
+          id: { not: proposalId },
+          status: 'PENDING',
+        },
+      });
+
+      if (otherProposals.length > 0) {
+        await tx.proposal.updateMany({
+          where: {
+            jobId: proposal.jobId,
+            id: { not: proposalId },
+            status: 'PENDING',
+          },
+          data: { status: 'REJECTED' },
+        });
+
+        const notificationsData = otherProposals.map(p => ({
+          id: uuidv7(),
+          userId: p.artisanId,
+          title: 'Proposal Rejected',
+          message: 'The client has awarded the contract for this job to another artisan.',
+          createdAt: new Date(),
+        }));
+        
+        await tx.notification.createMany({
+          data: notificationsData,
+        });
+      }
 
       return newContract;
     });

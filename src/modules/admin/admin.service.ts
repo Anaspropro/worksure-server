@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import {
   AuditEntityType,
@@ -279,6 +279,48 @@ export class AdminService {
 
     return {
       message: `Artisan ${updatedUser.id} verified successfully.`,
+      data: this.mapUser(updatedUser),
+    };
+  }
+
+  async rejectArtisanVerification(userId: string, actor: AdminActor) {
+    const user = await this.findUser(userId);
+
+    if (user.role !== UserRole.ARTISAN) {
+      throw new BadRequestException('Only artisan accounts can be rejected.');
+    }
+
+    if (user.artisanVerified) {
+      throw new ConflictException(`Artisan ${user.id} is already verified.`);
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id: user.id },
+      data: { artisanVerified: false }, // Maintain false state
+    });
+
+    await this.prisma.notification.create({
+      data: {
+        id: this.nextIdentifier(),
+        userId: user.id,
+        title: 'Verification Rejected',
+        message: 'Your artisan verification request has been rejected. Please ensure your provided details are accurate and resubmit if necessary.',
+        createdAt: new Date(),
+      },
+    });
+
+    await this.logAction(
+      'ARTISAN_VERIFICATION_REJECTED',
+      AuditEntityType.USER,
+      user.id,
+      actor,
+      {
+        artisanVerified: false,
+      },
+    );
+
+    return {
+      message: `Artisan ${updatedUser.id} verification rejected.`,
       data: this.mapUser(updatedUser),
     };
   }
@@ -960,7 +1002,7 @@ export class AdminService {
   ) {
     await this.prisma.auditLog.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         action,
         entityType,
         entityId,
@@ -1124,6 +1166,6 @@ export class AdminService {
   }
 
   private nextIdentifier(): string {
-    return randomUUID();
+    return uuidv7();
   }
 }

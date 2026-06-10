@@ -7,7 +7,7 @@ import {
 import { PrismaService } from '../../database/prisma.service';
 import { UserRole } from '../../common/constants/roles.constants';
 import { $Enums, JobStatus } from '../../generated/prisma';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import {
   CreateJobDto,
   UpdateJobDto,
@@ -47,7 +47,7 @@ export class JobsService {
 
     const job = await this.prisma.job.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         clientId: user.id,
         title: createDto.title,
         description: createDto.description,

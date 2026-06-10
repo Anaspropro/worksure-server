@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
+import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
 import { DisputeDecision, DisputeStatus } from '../../generated/prisma';
 import { ContractsService } from '../contracts/contracts.service';
@@ -96,7 +96,7 @@ export class DisputesService {
 
     const dispute = await this.prisma.dispute.create({
       data: {
-        id: randomUUID(),
+        id: uuidv7(),
         contractId: contractId || null,
         jobId: jobId || null,
         clientId,

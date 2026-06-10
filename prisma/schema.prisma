@@ -213,7 +213,7 @@ model DisputeHistory {
 }
 
 model Job {
-  id               String    @id @default(uuid())
+  id               String    @id @default(uuid(7))
   title            String
   description      String?
   budget           Int?
@@ -246,7 +246,7 @@ model Job {
 }
 
 model Transaction {
-  id          String            @id @default(uuid())
+  id          String            @id @default(uuid(7))
   userId      String
   type        TransactionType
   amount      Int
@@ -267,7 +267,7 @@ model Transaction {
 }
 
 model ArtisanProfile {
-  id          String   @id @default(uuid())
+  id          String   @id @default(uuid(7))
   userId      String   @unique
   bio         String?
   skills      Json     @default("[]")
@@ -286,7 +286,7 @@ model ArtisanProfile {
 }
 
 model Proposal {
-  id         String         @id @default(uuid())
+  id         String         @id @default(uuid(7))
   jobId      String
   artisanId  String
   clientId   String
@@ -308,7 +308,7 @@ model Proposal {
 }
 
 model Contract {
-  id             String          @id @default(uuid())
+  id             String          @id @default(uuid(7))
   jobId          String          @unique
   proposalId     String          @unique
   clientId       String
@@ -365,7 +365,7 @@ model Contract {
 }
 
 model Conversation {
-  id         String    @id @default(uuid())
+  id         String    @id @default(uuid(7))
   contractId String    @unique
   clientId   String
   artisanId  String
@@ -380,7 +380,7 @@ model Conversation {
 }
 
 model Message {
-  id             String      @id @default(uuid())
+  id             String      @id @default(uuid(7))
   conversationId String
   senderId       String
   content        String?
@@ -398,7 +398,7 @@ model Message {
 }
 
 model Wallet {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   userId    String   @unique
   balance   Int      @default(0)
   frozen    Int      @default(0)
@@ -413,7 +413,7 @@ model Wallet {
 }
 
 model Review {
-  id         String   @id @default(uuid())  
+  id         String   @id @default(uuid(7))  
   contractId String   @unique
   clientId   String
   artisanId  String
@@ -439,7 +439,7 @@ model Review {
 }
 
 model Notification {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   userId    String
   type      String   @default("system_update")
   title     String
@@ -461,7 +461,7 @@ model Notification {
 }
 
 model AuditLog {
-  id          String          @id @default(uuid())
+  id          String          @id @default(uuid(7))
   action      String
   entityType  AuditEntityType
   entityId    String
@@ -473,7 +473,7 @@ model AuditLog {
 }
 
 model Payment {
-  id                String         @id @default(uuid())
+  id                String         @id @default(uuid(7))
   contractId        String
   userId            String
   amount            Int
@@ -507,7 +507,7 @@ model Payment {
 }
 
 model KycDocument {
-  id           String            @id @default(uuid())
+  id           String            @id @default(uuid(7))
   userId       String
   documentType KycDocumentType
   documentUrl  String
@@ -526,7 +526,7 @@ model KycDocument {
 }
 
 model IdempotencyKey {
-  id          String   @id @default(uuid())
+  id          String   @id @default(uuid(7))
   key         String
   namespace   String   @default("default")
   lockedAt    DateTime? 
@@ -542,7 +542,7 @@ model IdempotencyKey {
 }
 
 model FinancialEvent {
-  id         String             @id @default(uuid())
+  id         String             @id @default(uuid(7))
   contractId String
   type       FinancialEventType
   amount     Int
@@ -564,7 +564,7 @@ enum LedgerAccountType {
 }
 
 model LedgerAccount {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   name      String
   type      LedgerAccountType
   userId    String?  @unique
@@ -581,7 +581,7 @@ model LedgerAccount {
 }
 
 model LedgerEntry {
-  id                String   @id @default(uuid())
+  id                String   @id @default(uuid(7))
   debitAccountId    String
   creditAccountId   String
   amount            Int
@@ -603,7 +603,7 @@ model LedgerEntry {
 }
 
 model Session {
-  id            String   @id @default(uuid())
+  id            String   @id @default(uuid(7))
   userId        String
   email         String
   role          String
@@ -618,7 +618,7 @@ model Session {
 }
 
 model AccountLockout {
-  id            String    @id @default(uuid())
+  id            String    @id @default(uuid(7))
   identifier    String    @unique
   attempts      Int       @default(0)
   lastAttemptAt DateTime  @default(now())
@@ -630,7 +630,7 @@ model AccountLockout {
 }
 
 model VerificationToken {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   email     String
   token     String   @unique
   expiresAt DateTime
@@ -641,7 +641,7 @@ model VerificationToken {
 }
 
 model SystemLog {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   level     String
   context   String?
   message   String
