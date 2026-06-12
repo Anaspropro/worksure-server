@@ -17,10 +17,10 @@ export class PaystackClientService {
   private readonly baseUrl = 'https://api.paystack.co';
 
   private getSecretKey(): string {
-    const key = process.env.PAYSTACK_SECRET_KEY;
+    const key = process.env.PAYSTACK_SECRET_KEY || process.env.PAYSTACK_SECRET;
     if (!key) {
       throw new Error(
-        'PAYSTACK_SECRET_KEY is required in environment variables',
+        'PAYSTACK_SECRET_KEY (or PAYSTACK_SECRET) is required in environment variables',
       );
     }
     return key;
@@ -31,7 +31,7 @@ export class PaystackClientService {
    * degradation when the key is not set (e.g. local dev).
    */
   isConfigured(): boolean {
-    return Boolean(process.env.PAYSTACK_SECRET_KEY);
+    return Boolean(process.env.PAYSTACK_SECRET_KEY || process.env.PAYSTACK_SECRET);
   }
 
   private buildHeaders(
