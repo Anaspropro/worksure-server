@@ -57,7 +57,7 @@ import { AppCacheModule } from './common/cache/cache.module';
       {
         name: 'default',
         ttl: 60000,
-        limit: 60,
+        limit: 300,
       },
     ]),
     AppConfigModule,
