@@ -228,7 +228,7 @@ export class WalletService {
     };
   }
 
-  async initiateWalletDeposit(userId: string, amount: number, email: string) {
+  async initiateWalletDeposit(userId: string, amount: number, email: string, callbackUrl?: string) {
     if (amount <= 0) throw new BadRequestException('Amount must be positive');
 
     const reference = `wallet_deposit_${uuidv7()}`;
@@ -243,7 +243,7 @@ export class WalletService {
         amount: Math.round(amount * 100),
         email,
         reference,
-        callback_url: `${process.env.APP_URL}/dashboard`, 
+        callback_url: callbackUrl || `${process.env.APP_URL}/dashboard`, 
         metadata: {
           type: 'wallet_deposit',
           userId,

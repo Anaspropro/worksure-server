@@ -131,6 +131,7 @@ export class WalletController {
       user.id,
       addFundsDto.amount,
       user.email,
+      addFundsDto.callbackUrl,
     );
 
     return result;

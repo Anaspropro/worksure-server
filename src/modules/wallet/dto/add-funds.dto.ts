@@ -11,4 +11,8 @@ export class AddFundsDto {
 
   @IsOptional()
   metadata?: any;
+
+  @IsString()
+  @IsOptional()
+  callbackUrl?: string;
 }
