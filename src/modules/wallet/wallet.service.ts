@@ -240,7 +240,7 @@ export class WalletService {
     }>('/transaction/initialize', {
       method: 'POST',
       body: JSON.stringify({
-        amount: amount * 100,
+        amount: Math.round(amount * 100),
         email,
         reference,
         callback_url: `${process.env.APP_URL}/dashboard`, 

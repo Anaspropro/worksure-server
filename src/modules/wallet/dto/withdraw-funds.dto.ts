@@ -1,7 +1,7 @@
-import { IsInt, IsString, IsOptional, Min } from 'class-validator';
+import { IsNumber, IsString, IsOptional, Min } from 'class-validator';
 
 export class WithdrawFundsDto {
-  @IsInt()
+  @IsNumber()
   @Min(1)
   amount: number;
 

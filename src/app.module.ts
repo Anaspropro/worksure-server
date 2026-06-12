@@ -1,6 +1,7 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './modules/admin/admin.module';
@@ -26,6 +27,7 @@ import { ReconciliationModule } from './modules/reconciliation/reconciliation.mo
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { SanitizationService } from './common/services/sanitization.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AppCacheModule } from './common/cache/cache.module';
 
 @Module({
   imports: [
@@ -59,6 +61,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       },
     ]),
     AppConfigModule,
+    AppCacheModule,
     PrismaModule,
     HealthModule,
     AdminModule,
@@ -80,7 +83,14 @@ import { ScheduleModule } from '@nestjs/schedule';
     ReconciliationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SanitizationService],
+  providers: [
+    AppService,
+    SanitizationService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
