@@ -778,7 +778,7 @@ export class AdminService {
       }
       case 'overview':
       default: {
-        const [userCount, jobStatusGroups, openDisputes, feeTotal, flaggedJobs] =
+        const [userCount, jobStatusGroups, openDisputes, feeTotal, flaggedJobs, pendingArtisansCount] =
           await Promise.all([
             this.prisma.user.count(),
             this.prisma.job.groupBy({
@@ -793,6 +793,7 @@ export class AdminService {
               _sum: { amount: true },
             }),
             this.prisma.job.count({ where: { flagged: true } }),
+            this.prisma.user.count({ where: { role: UserRole.ARTISAN, artisanVerified: false } }),
           ]);
         const jobMap = Object.fromEntries(
           jobStatusGroups.map((s) => [s.status, s._count.id]),
@@ -805,6 +806,7 @@ export class AdminService {
             openDisputes,
             platformFees: feeTotal._sum.amount ?? 0,
             flaggedJobs,
+            pendingArtisansCount,
           },
         };
         break;
