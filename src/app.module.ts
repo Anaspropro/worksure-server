@@ -25,6 +25,7 @@ import { AuditModule } from './modules/audit/audit.module';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
 import { ReconciliationModule } from './modules/reconciliation/reconciliation.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
+import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
 import { SanitizationService } from './common/services/sanitization.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppCacheModule } from './common/cache/cache.module';
@@ -95,5 +96,6 @@ import { AppCacheModule } from './common/cache/cache.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggingMiddleware).forRoutes('*');
+    consumer.apply(RateLimitMiddleware).forRoutes('auth/login', 'auth/register');
   }
 }
