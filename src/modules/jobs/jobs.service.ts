@@ -89,11 +89,12 @@ export class JobsService {
     if (clientId) where.clientId = clientId;
     if (artisanId) where.artisanId = artisanId;
     if (category) where.category = category;
-    if (search) {
+    if (search && search.trim()) {
+      const formattedSearch = search.trim().split(/\s+/).join(' | ');
       where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-        { requirements: { contains: search, mode: 'insensitive' } },
+        { title: { search: formattedSearch } },
+        { description: { search: formattedSearch } },
+        { requirements: { search: formattedSearch } },
       ];
     }
 

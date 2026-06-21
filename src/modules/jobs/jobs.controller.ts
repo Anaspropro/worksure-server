@@ -8,7 +8,9 @@ import {
   Body,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -63,6 +65,8 @@ export class JobsController {
   @ApiQuery({ name: 'search', required: false })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(60000)
   @Get()
   async listJobs(@Query() query: JobListQueryDto) {
     return this.jobsService.listJobs(query);

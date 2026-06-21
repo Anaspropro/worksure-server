@@ -32684,6 +32684,22 @@ export namespace Prisma {
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
+  export const UserOrderByRelevanceFieldEnum: {
+    id: 'id',
+    name: 'name',
+    email: 'email',
+    passwordHash: 'passwordHash',
+    passwordResetTokenHash: 'passwordResetTokenHash',
+    paystackRecipientCode: 'paystackRecipientCode',
+    payoutBankCode: 'payoutBankCode',
+    payoutAccountNumber: 'payoutAccountNumber',
+    payoutAccountName: 'payoutAccountName',
+    phone: 'phone'
+  };
+
+  export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
   export const JsonNullValueFilter: {
     DbNull: typeof DbNull,
     JsonNull: typeof JsonNull,
@@ -32691,6 +32707,273 @@ export namespace Prisma {
   };
 
   export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const DisputeOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    jobId: 'jobId',
+    clientId: 'clientId',
+    artisanId: 'artisanId',
+    resolvedBy: 'resolvedBy',
+    resolutionNotes: 'resolutionNotes'
+  };
+
+  export type DisputeOrderByRelevanceFieldEnum = (typeof DisputeOrderByRelevanceFieldEnum)[keyof typeof DisputeOrderByRelevanceFieldEnum]
+
+
+  export const DisputeHistoryOrderByRelevanceFieldEnum: {
+    id: 'id',
+    disputeId: 'disputeId',
+    action: 'action',
+    by: 'by',
+    notes: 'notes'
+  };
+
+  export type DisputeHistoryOrderByRelevanceFieldEnum = (typeof DisputeHistoryOrderByRelevanceFieldEnum)[keyof typeof DisputeHistoryOrderByRelevanceFieldEnum]
+
+
+  export const JobOrderByRelevanceFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    clientId: 'clientId',
+    artisanId: 'artisanId',
+    contractId: 'contractId',
+    location: 'location',
+    category: 'category',
+    requirements: 'requirements',
+    forceCloseReason: 'forceCloseReason'
+  };
+
+  export type JobOrderByRelevanceFieldEnum = (typeof JobOrderByRelevanceFieldEnum)[keyof typeof JobOrderByRelevanceFieldEnum]
+
+
+  export const TransactionOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    reference: 'reference',
+    failureReason: 'failureReason'
+  };
+
+  export type TransactionOrderByRelevanceFieldEnum = (typeof TransactionOrderByRelevanceFieldEnum)[keyof typeof TransactionOrderByRelevanceFieldEnum]
+
+
+  export const ArtisanProfileOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    bio: 'bio',
+    experience: 'experience'
+  };
+
+  export type ArtisanProfileOrderByRelevanceFieldEnum = (typeof ArtisanProfileOrderByRelevanceFieldEnum)[keyof typeof ArtisanProfileOrderByRelevanceFieldEnum]
+
+
+  export const ProposalOrderByRelevanceFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    artisanId: 'artisanId',
+    clientId: 'clientId',
+    message: 'message'
+  };
+
+  export type ProposalOrderByRelevanceFieldEnum = (typeof ProposalOrderByRelevanceFieldEnum)[keyof typeof ProposalOrderByRelevanceFieldEnum]
+
+
+  export const ContractOrderByRelevanceFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    proposalId: 'proposalId',
+    clientId: 'clientId',
+    artisanId: 'artisanId',
+    currency: 'currency',
+    paystackReference: 'paystackReference',
+    paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+    paystackAccessCode: 'paystackAccessCode',
+    fundedPaymentId: 'fundedPaymentId',
+    refundReason: 'refundReason',
+    payoutFailureReason: 'payoutFailureReason'
+  };
+
+  export type ContractOrderByRelevanceFieldEnum = (typeof ContractOrderByRelevanceFieldEnum)[keyof typeof ContractOrderByRelevanceFieldEnum]
+
+
+  export const ConversationOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    clientId: 'clientId',
+    artisanId: 'artisanId'
+  };
+
+  export type ConversationOrderByRelevanceFieldEnum = (typeof ConversationOrderByRelevanceFieldEnum)[keyof typeof ConversationOrderByRelevanceFieldEnum]
+
+
+  export const MessageOrderByRelevanceFieldEnum: {
+    id: 'id',
+    conversationId: 'conversationId',
+    senderId: 'senderId',
+    content: 'content',
+    fileUrl: 'fileUrl',
+    fileType: 'fileType',
+    fileName: 'fileName'
+  };
+
+  export type MessageOrderByRelevanceFieldEnum = (typeof MessageOrderByRelevanceFieldEnum)[keyof typeof MessageOrderByRelevanceFieldEnum]
+
+
+  export const WalletOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId'
+  };
+
+  export type WalletOrderByRelevanceFieldEnum = (typeof WalletOrderByRelevanceFieldEnum)[keyof typeof WalletOrderByRelevanceFieldEnum]
+
+
+  export const ReviewOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    clientId: 'clientId',
+    artisanId: 'artisanId',
+    comment: 'comment'
+  };
+
+  export type ReviewOrderByRelevanceFieldEnum = (typeof ReviewOrderByRelevanceFieldEnum)[keyof typeof ReviewOrderByRelevanceFieldEnum]
+
+
+  export const NotificationOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    type: 'type',
+    title: 'title',
+    message: 'message',
+    entityId: 'entityId',
+    entityType: 'entityType',
+    actionUrl: 'actionUrl',
+    priority: 'priority'
+  };
+
+  export type NotificationOrderByRelevanceFieldEnum = (typeof NotificationOrderByRelevanceFieldEnum)[keyof typeof NotificationOrderByRelevanceFieldEnum]
+
+
+  export const AuditLogOrderByRelevanceFieldEnum: {
+    id: 'id',
+    action: 'action',
+    entityId: 'entityId',
+    performedBy: 'performedBy'
+  };
+
+  export type AuditLogOrderByRelevanceFieldEnum = (typeof AuditLogOrderByRelevanceFieldEnum)[keyof typeof AuditLogOrderByRelevanceFieldEnum]
+
+
+  export const PaymentOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    userId: 'userId',
+    currency: 'currency',
+    gateway: 'gateway',
+    paymentMethod: 'paymentMethod',
+    paymentReference: 'paymentReference',
+    paystackAccessCode: 'paystackAccessCode',
+    paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+    paystackTransactionId: 'paystackTransactionId',
+    recipientCode: 'recipientCode',
+    transferCode: 'transferCode',
+    verificationCode: 'verificationCode',
+    failureReason: 'failureReason'
+  };
+
+  export type PaymentOrderByRelevanceFieldEnum = (typeof PaymentOrderByRelevanceFieldEnum)[keyof typeof PaymentOrderByRelevanceFieldEnum]
+
+
+  export const KycDocumentOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    documentUrl: 'documentUrl',
+    reviewedBy: 'reviewedBy',
+    rejectionReason: 'rejectionReason'
+  };
+
+  export type KycDocumentOrderByRelevanceFieldEnum = (typeof KycDocumentOrderByRelevanceFieldEnum)[keyof typeof KycDocumentOrderByRelevanceFieldEnum]
+
+
+  export const IdempotencyKeyOrderByRelevanceFieldEnum: {
+    id: 'id',
+    key: 'key',
+    namespace: 'namespace'
+  };
+
+  export type IdempotencyKeyOrderByRelevanceFieldEnum = (typeof IdempotencyKeyOrderByRelevanceFieldEnum)[keyof typeof IdempotencyKeyOrderByRelevanceFieldEnum]
+
+
+  export const FinancialEventOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    actorId: 'actorId'
+  };
+
+  export type FinancialEventOrderByRelevanceFieldEnum = (typeof FinancialEventOrderByRelevanceFieldEnum)[keyof typeof FinancialEventOrderByRelevanceFieldEnum]
+
+
+  export const LedgerAccountOrderByRelevanceFieldEnum: {
+    id: 'id',
+    name: 'name',
+    userId: 'userId'
+  };
+
+  export type LedgerAccountOrderByRelevanceFieldEnum = (typeof LedgerAccountOrderByRelevanceFieldEnum)[keyof typeof LedgerAccountOrderByRelevanceFieldEnum]
+
+
+  export const LedgerEntryOrderByRelevanceFieldEnum: {
+    id: 'id',
+    debitAccountId: 'debitAccountId',
+    creditAccountId: 'creditAccountId',
+    contractId: 'contractId',
+    paymentId: 'paymentId',
+    reference: 'reference',
+    description: 'description'
+  };
+
+  export type LedgerEntryOrderByRelevanceFieldEnum = (typeof LedgerEntryOrderByRelevanceFieldEnum)[keyof typeof LedgerEntryOrderByRelevanceFieldEnum]
+
+
+  export const SessionOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    email: 'email',
+    role: 'role',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent'
+  };
+
+  export type SessionOrderByRelevanceFieldEnum = (typeof SessionOrderByRelevanceFieldEnum)[keyof typeof SessionOrderByRelevanceFieldEnum]
+
+
+  export const AccountLockoutOrderByRelevanceFieldEnum: {
+    id: 'id',
+    identifier: 'identifier'
+  };
+
+  export type AccountLockoutOrderByRelevanceFieldEnum = (typeof AccountLockoutOrderByRelevanceFieldEnum)[keyof typeof AccountLockoutOrderByRelevanceFieldEnum]
+
+
+  export const VerificationTokenOrderByRelevanceFieldEnum: {
+    id: 'id',
+    email: 'email',
+    token: 'token'
+  };
+
+  export type VerificationTokenOrderByRelevanceFieldEnum = (typeof VerificationTokenOrderByRelevanceFieldEnum)[keyof typeof VerificationTokenOrderByRelevanceFieldEnum]
+
+
+  export const SystemLogOrderByRelevanceFieldEnum: {
+    id: 'id',
+    level: 'level',
+    context: 'context',
+    message: 'message',
+    trace: 'trace'
+  };
+
+  export type SystemLogOrderByRelevanceFieldEnum = (typeof SystemLogOrderByRelevanceFieldEnum)[keyof typeof SystemLogOrderByRelevanceFieldEnum]
 
 
   /**
@@ -33099,6 +33382,7 @@ export namespace Prisma {
     clientDisputes?: DisputeOrderByRelationAggregateInput
     artisanDisputes?: DisputeOrderByRelationAggregateInput
     ledgerAccounts?: LedgerAccountOrderByWithRelationInput
+    _relevance?: UserOrderByRelevanceInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -33246,6 +33530,7 @@ export namespace Prisma {
     client?: UserOrderByWithRelationInput
     artisan?: UserOrderByWithRelationInput
     contract?: ContractOrderByWithRelationInput
+    _relevance?: DisputeOrderByRelevanceInput
   }
 
   export type DisputeWhereUniqueInput = Prisma.AtLeast<{
@@ -33341,6 +33626,7 @@ export namespace Prisma {
     by?: SortOrder
     notes?: SortOrderInput | SortOrder
     dispute?: DisputeOrderByWithRelationInput
+    _relevance?: DisputeHistoryOrderByRelevanceInput
   }
 
   export type DisputeHistoryWhereUniqueInput = Prisma.AtLeast<{
@@ -33433,6 +33719,7 @@ export namespace Prisma {
     artisan?: UserOrderByWithRelationInput
     contract?: ContractOrderByWithRelationInput
     proposals?: ProposalOrderByRelationAggregateInput
+    _relevance?: JobOrderByRelevanceInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -33547,6 +33834,7 @@ export namespace Prisma {
     failedAt?: SortOrderInput | SortOrder
     failureReason?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
+    _relevance?: TransactionOrderByRelevanceInput
   }
 
   export type TransactionWhereUniqueInput = Prisma.AtLeast<{
@@ -33634,6 +33922,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
+    _relevance?: ArtisanProfileOrderByRelevanceInput
   }
 
   export type ArtisanProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -33723,6 +34012,7 @@ export namespace Prisma {
     artisan?: UserOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
     contract?: ContractOrderByWithRelationInput
+    _relevance?: ProposalOrderByRelevanceInput
   }
 
   export type ProposalWhereUniqueInput = Prisma.AtLeast<{
@@ -33866,6 +34156,7 @@ export namespace Prisma {
     ledgerEntries?: LedgerEntryOrderByRelationAggregateInput
     financialEvents?: FinancialEventOrderByRelationAggregateInput
     disputes?: DisputeOrderByRelationAggregateInput
+    _relevance?: ContractOrderByRelevanceInput
   }
 
   export type ContractWhereUniqueInput = Prisma.AtLeast<{
@@ -34014,6 +34305,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     contract?: ContractOrderByWithRelationInput
     messages?: MessageOrderByRelationAggregateInput
+    _relevance?: ConversationOrderByRelevanceInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -34083,6 +34375,7 @@ export namespace Prisma {
     fileSize?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     conversation?: ConversationOrderByWithRelationInput
+    _relevance?: MessageOrderByRelevanceInput
   }
 
   export type MessageWhereUniqueInput = Prisma.AtLeast<{
@@ -34159,6 +34452,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
+    _relevance?: WalletOrderByRelevanceInput
   }
 
   export type WalletWhereUniqueInput = Prisma.AtLeast<{
@@ -34246,6 +34540,7 @@ export namespace Prisma {
     contract?: ContractOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
     artisan?: UserOrderByWithRelationInput
+    _relevance?: ReviewOrderByRelevanceInput
   }
 
   export type ReviewWhereUniqueInput = Prisma.AtLeast<{
@@ -34355,6 +34650,7 @@ export namespace Prisma {
     readAt?: SortOrderInput | SortOrder
     archivedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
+    _relevance?: NotificationOrderByRelevanceInput
   }
 
   export type NotificationWhereUniqueInput = Prisma.AtLeast<{
@@ -34442,6 +34738,7 @@ export namespace Prisma {
     performedBy?: SortOrder
     performedAt?: SortOrder
     metadata?: SortOrderInput | SortOrder
+    _relevance?: AuditLogOrderByRelevanceInput
   }
 
   export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
@@ -34540,6 +34837,7 @@ export namespace Prisma {
     contract?: ContractOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     ledgerEntries?: LedgerEntryOrderByRelationAggregateInput
+    _relevance?: PaymentOrderByRelevanceInput
   }
 
   export type PaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -34660,6 +34958,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
+    _relevance?: KycDocumentOrderByRelevanceInput
   }
 
   export type KycDocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -34736,6 +35035,7 @@ export namespace Prisma {
     metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    _relevance?: IdempotencyKeyOrderByRelevanceInput
   }
 
   export type IdempotencyKeyWhereUniqueInput = Prisma.AtLeast<{
@@ -34807,6 +35107,7 @@ export namespace Prisma {
     metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     contract?: ContractOrderByWithRelationInput
+    _relevance?: FinancialEventOrderByRelevanceInput
   }
 
   export type FinancialEventWhereUniqueInput = Prisma.AtLeast<{
@@ -34878,6 +35179,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     debitEntries?: LedgerEntryOrderByRelationAggregateInput
     creditEntries?: LedgerEntryOrderByRelationAggregateInput
+    _relevance?: LedgerAccountOrderByRelevanceInput
   }
 
   export type LedgerAccountWhereUniqueInput = Prisma.AtLeast<{
@@ -34957,6 +35259,7 @@ export namespace Prisma {
     creditAccount?: LedgerAccountOrderByWithRelationInput
     contract?: ContractOrderByWithRelationInput
     payment?: PaymentOrderByWithRelationInput
+    _relevance?: LedgerEntryOrderByRelevanceInput
   }
 
   export type LedgerEntryWhereUniqueInput = Prisma.AtLeast<{
@@ -35035,6 +35338,7 @@ export namespace Prisma {
     loginTime?: SortOrder
     lastActivity?: SortOrder
     expiresAt?: SortOrder
+    _relevance?: SessionOrderByRelevanceInput
   }
 
   export type SessionWhereUniqueInput = Prisma.AtLeast<{
@@ -35101,6 +35405,7 @@ export namespace Prisma {
     lastAttemptAt?: SortOrder
     lockedUntil?: SortOrderInput | SortOrder
     expiresAt?: SortOrder
+    _relevance?: AccountLockoutOrderByRelevanceInput
   }
 
   export type AccountLockoutWhereUniqueInput = Prisma.AtLeast<{
@@ -35158,6 +35463,7 @@ export namespace Prisma {
     token?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
+    _relevance?: VerificationTokenOrderByRelevanceInput
   }
 
   export type VerificationTokenWhereUniqueInput = Prisma.AtLeast<{
@@ -35214,6 +35520,7 @@ export namespace Prisma {
     trace?: SortOrderInput | SortOrder
     metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    _relevance?: SystemLogOrderByRelevanceInput
   }
 
   export type SystemLogWhereUniqueInput = Prisma.AtLeast<{
@@ -37788,6 +38095,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
   }
@@ -37803,6 +38111,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
@@ -37965,6 +38274,12 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type UserOrderByRelevanceInput = {
+    fields: UserOrderByRelevanceFieldEnum | UserOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -38048,6 +38363,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     mode?: QueryMode
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
@@ -38066,6 +38382,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     mode?: QueryMode
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
@@ -38207,6 +38524,12 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type DisputeOrderByRelevanceInput = {
+    fields: DisputeOrderByRelevanceFieldEnum | DisputeOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type DisputeCountOrderByAggregateInput = {
     id?: SortOrder
     contractId?: SortOrder
@@ -38333,6 +38656,12 @@ export namespace Prisma {
     isNot?: DisputeWhereInput
   }
 
+  export type DisputeHistoryOrderByRelevanceInput = {
+    fields: DisputeHistoryOrderByRelevanceFieldEnum | DisputeHistoryOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type DisputeHistoryCountOrderByAggregateInput = {
     id?: SortOrder
     disputeId?: SortOrder
@@ -38404,6 +38733,12 @@ export namespace Prisma {
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
+  }
+
+  export type JobOrderByRelevanceInput = {
+    fields: JobOrderByRelevanceFieldEnum | JobOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type JobCountOrderByAggregateInput = {
@@ -38546,6 +38881,12 @@ export namespace Prisma {
     not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
   }
 
+  export type TransactionOrderByRelevanceInput = {
+    fields: TransactionOrderByRelevanceFieldEnum | TransactionOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type TransactionCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -38625,6 +38966,12 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type ArtisanProfileOrderByRelevanceInput = {
+    fields: ArtisanProfileOrderByRelevanceFieldEnum | ArtisanProfileOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type ArtisanProfileCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -38699,6 +39046,12 @@ export namespace Prisma {
   export type JobScalarRelationFilter = {
     is?: JobWhereInput
     isNot?: JobWhereInput
+  }
+
+  export type ProposalOrderByRelevanceInput = {
+    fields: ProposalOrderByRelevanceFieldEnum | ProposalOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type ProposalJobIdArtisanIdCompoundUniqueInput = {
@@ -38800,6 +39153,12 @@ export namespace Prisma {
 
   export type FinancialEventOrderByRelationAggregateInput = {
     _count?: SortOrder
+  }
+
+  export type ContractOrderByRelevanceInput = {
+    fields: ContractOrderByRelevanceFieldEnum | ContractOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type ContractCountOrderByAggregateInput = {
@@ -38937,6 +39296,12 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ConversationOrderByRelevanceInput = {
+    fields: ConversationOrderByRelevanceFieldEnum | ConversationOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type ConversationCountOrderByAggregateInput = {
     id?: SortOrder
     contractId?: SortOrder
@@ -38974,6 +39339,12 @@ export namespace Prisma {
   export type ConversationScalarRelationFilter = {
     is?: ConversationWhereInput
     isNot?: ConversationWhereInput
+  }
+
+  export type MessageOrderByRelevanceInput = {
+    fields: MessageOrderByRelevanceFieldEnum | MessageOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type MessageCountOrderByAggregateInput = {
@@ -39033,6 +39404,12 @@ export namespace Prisma {
     _max?: NestedEnumMessageTypeFilter<$PrismaModel>
   }
 
+  export type WalletOrderByRelevanceInput = {
+    fields: WalletOrderByRelevanceFieldEnum | WalletOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type WalletCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -39073,6 +39450,12 @@ export namespace Prisma {
     balance?: SortOrder
     frozen?: SortOrder
     version?: SortOrder
+  }
+
+  export type ReviewOrderByRelevanceInput = {
+    fields: ReviewOrderByRelevanceFieldEnum | ReviewOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type ReviewCountOrderByAggregateInput = {
@@ -39141,6 +39524,12 @@ export namespace Prisma {
     professionalism?: SortOrder
   }
 
+  export type NotificationOrderByRelevanceInput = {
+    fields: NotificationOrderByRelevanceFieldEnum | NotificationOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -39200,6 +39589,12 @@ export namespace Prisma {
     not?: NestedEnumAuditEntityTypeFilter<$PrismaModel> | $Enums.AuditEntityType
   }
 
+  export type AuditLogOrderByRelevanceInput = {
+    fields: AuditLogOrderByRelevanceFieldEnum | AuditLogOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type AuditLogCountOrderByAggregateInput = {
     id?: SortOrder
     action?: SortOrder
@@ -39243,6 +39638,12 @@ export namespace Prisma {
     in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type PaymentOrderByRelevanceInput = {
+    fields: PaymentOrderByRelevanceFieldEnum | PaymentOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type PaymentCountOrderByAggregateInput = {
@@ -39350,6 +39751,12 @@ export namespace Prisma {
     not?: NestedEnumKycDocumentStatusFilter<$PrismaModel> | $Enums.KycDocumentStatus
   }
 
+  export type KycDocumentOrderByRelevanceInput = {
+    fields: KycDocumentOrderByRelevanceFieldEnum | KycDocumentOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type KycDocumentCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -39409,6 +39816,12 @@ export namespace Prisma {
     _max?: NestedEnumKycDocumentStatusFilter<$PrismaModel>
   }
 
+  export type IdempotencyKeyOrderByRelevanceInput = {
+    fields: IdempotencyKeyOrderByRelevanceFieldEnum | IdempotencyKeyOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type IdempotencyKeyNamespaceKeyCompoundUniqueInput = {
     namespace: string
     key: string
@@ -39453,6 +39866,12 @@ export namespace Prisma {
     in?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.FinancialEventType[] | ListEnumFinancialEventTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumFinancialEventTypeFilter<$PrismaModel> | $Enums.FinancialEventType
+  }
+
+  export type FinancialEventOrderByRelevanceInput = {
+    fields: FinancialEventOrderByRelevanceFieldEnum | FinancialEventOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type FinancialEventCountOrderByAggregateInput = {
@@ -39506,6 +39925,12 @@ export namespace Prisma {
     in?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.LedgerAccountType[] | ListEnumLedgerAccountTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumLedgerAccountTypeFilter<$PrismaModel> | $Enums.LedgerAccountType
+  }
+
+  export type LedgerAccountOrderByRelevanceInput = {
+    fields: LedgerAccountOrderByRelevanceFieldEnum | LedgerAccountOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type LedgerAccountCountOrderByAggregateInput = {
@@ -39566,6 +39991,12 @@ export namespace Prisma {
     isNot?: PaymentWhereInput | null
   }
 
+  export type LedgerEntryOrderByRelevanceInput = {
+    fields: LedgerEntryOrderByRelevanceFieldEnum | LedgerEntryOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type LedgerEntryCountOrderByAggregateInput = {
     id?: SortOrder
     debitAccountId?: SortOrder
@@ -39610,6 +40041,12 @@ export namespace Prisma {
     amount?: SortOrder
   }
 
+  export type SessionOrderByRelevanceInput = {
+    fields: SessionOrderByRelevanceFieldEnum | SessionOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type SessionCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -39644,6 +40081,12 @@ export namespace Prisma {
     loginTime?: SortOrder
     lastActivity?: SortOrder
     expiresAt?: SortOrder
+  }
+
+  export type AccountLockoutOrderByRelevanceInput = {
+    fields: AccountLockoutOrderByRelevanceFieldEnum | AccountLockoutOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type AccountLockoutCountOrderByAggregateInput = {
@@ -39681,6 +40124,12 @@ export namespace Prisma {
     attempts?: SortOrder
   }
 
+  export type VerificationTokenOrderByRelevanceInput = {
+    fields: VerificationTokenOrderByRelevanceFieldEnum | VerificationTokenOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type VerificationTokenCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -39703,6 +40152,12 @@ export namespace Prisma {
     token?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type SystemLogOrderByRelevanceInput = {
+    fields: SystemLogOrderByRelevanceFieldEnum | SystemLogOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type SystemLogCountOrderByAggregateInput = {
@@ -41532,6 +41987,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
@@ -41546,6 +42002,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
@@ -41608,6 +42065,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
@@ -41636,6 +42094,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>

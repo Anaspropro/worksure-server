@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { SanitizationService } from './common/services/sanitization.service';
 import { SanitizationPipe } from './common/pipes/sanitization.pipe';
 import * as express from 'express';
+import * as compression from 'compression';
 
 export function configureApp(app: INestApplication) {
   const trustProxyRaw = process.env.TRUST_PROXY;
@@ -55,6 +56,9 @@ export function configureApp(app: INestApplication) {
       },
     }),
   );
+
+  // Enable compression
+  app.use(compression());
 
   // Enable CORS with secure configuration
   app.enableCors({

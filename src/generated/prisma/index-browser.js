@@ -491,10 +491,221 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.UserOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  passwordHash: 'passwordHash',
+  passwordResetTokenHash: 'passwordResetTokenHash',
+  paystackRecipientCode: 'paystackRecipientCode',
+  payoutBankCode: 'payoutBankCode',
+  payoutAccountNumber: 'payoutAccountNumber',
+  payoutAccountName: 'payoutAccountName',
+  phone: 'phone'
+};
+
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.DisputeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  jobId: 'jobId',
+  clientId: 'clientId',
+  artisanId: 'artisanId',
+  resolvedBy: 'resolvedBy',
+  resolutionNotes: 'resolutionNotes'
+};
+
+exports.Prisma.DisputeHistoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  disputeId: 'disputeId',
+  action: 'action',
+  by: 'by',
+  notes: 'notes'
+};
+
+exports.Prisma.JobOrderByRelevanceFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  clientId: 'clientId',
+  artisanId: 'artisanId',
+  contractId: 'contractId',
+  location: 'location',
+  category: 'category',
+  requirements: 'requirements',
+  forceCloseReason: 'forceCloseReason'
+};
+
+exports.Prisma.TransactionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  failureReason: 'failureReason'
+};
+
+exports.Prisma.ArtisanProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bio: 'bio',
+  experience: 'experience'
+};
+
+exports.Prisma.ProposalOrderByRelevanceFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  artisanId: 'artisanId',
+  clientId: 'clientId',
+  message: 'message'
+};
+
+exports.Prisma.ContractOrderByRelevanceFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  proposalId: 'proposalId',
+  clientId: 'clientId',
+  artisanId: 'artisanId',
+  currency: 'currency',
+  paystackReference: 'paystackReference',
+  paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+  paystackAccessCode: 'paystackAccessCode',
+  fundedPaymentId: 'fundedPaymentId',
+  refundReason: 'refundReason',
+  payoutFailureReason: 'payoutFailureReason'
+};
+
+exports.Prisma.ConversationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  clientId: 'clientId',
+  artisanId: 'artisanId'
+};
+
+exports.Prisma.MessageOrderByRelevanceFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  senderId: 'senderId',
+  content: 'content',
+  fileUrl: 'fileUrl',
+  fileType: 'fileType',
+  fileName: 'fileName'
+};
+
+exports.Prisma.WalletOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+};
+
+exports.Prisma.ReviewOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  clientId: 'clientId',
+  artisanId: 'artisanId',
+  comment: 'comment'
+};
+
+exports.Prisma.NotificationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  message: 'message',
+  entityId: 'entityId',
+  entityType: 'entityType',
+  actionUrl: 'actionUrl',
+  priority: 'priority'
+};
+
+exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  action: 'action',
+  entityId: 'entityId',
+  performedBy: 'performedBy'
+};
+
+exports.Prisma.PaymentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  userId: 'userId',
+  currency: 'currency',
+  gateway: 'gateway',
+  paymentMethod: 'paymentMethod',
+  paymentReference: 'paymentReference',
+  paystackAccessCode: 'paystackAccessCode',
+  paystackAuthorizationUrl: 'paystackAuthorizationUrl',
+  paystackTransactionId: 'paystackTransactionId',
+  recipientCode: 'recipientCode',
+  transferCode: 'transferCode',
+  verificationCode: 'verificationCode',
+  failureReason: 'failureReason'
+};
+
+exports.Prisma.KycDocumentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  documentUrl: 'documentUrl',
+  reviewedBy: 'reviewedBy',
+  rejectionReason: 'rejectionReason'
+};
+
+exports.Prisma.IdempotencyKeyOrderByRelevanceFieldEnum = {
+  id: 'id',
+  key: 'key',
+  namespace: 'namespace'
+};
+
+exports.Prisma.FinancialEventOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  actorId: 'actorId'
+};
+
+exports.Prisma.LedgerAccountOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  userId: 'userId'
+};
+
+exports.Prisma.LedgerEntryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  debitAccountId: 'debitAccountId',
+  creditAccountId: 'creditAccountId',
+  contractId: 'contractId',
+  paymentId: 'paymentId',
+  reference: 'reference',
+  description: 'description'
+};
+
+exports.Prisma.SessionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  email: 'email',
+  role: 'role',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent'
+};
+
+exports.Prisma.AccountLockoutOrderByRelevanceFieldEnum = {
+  id: 'id',
+  identifier: 'identifier'
+};
+
+exports.Prisma.VerificationTokenOrderByRelevanceFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token'
+};
+
+exports.Prisma.SystemLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  level: 'level',
+  context: 'context',
+  message: 'message',
+  trace: 'trace'
 };
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
