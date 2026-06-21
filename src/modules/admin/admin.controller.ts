@@ -6,7 +6,9 @@ import {
   Patch,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -204,6 +206,8 @@ export class AdminController {
     required: false,
     description: 'Optional YYYY-MM month selector',
   })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000) // 5 minutes
   @Get('reports')
   generateReports(
     @Query('reportType') reportType?: ReportType,
@@ -244,6 +248,8 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: 'Get system contract statistics' })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000) // 5 minutes
   @Get('contracts/stats')
   getContractStats() {
     return this.adminService.getContractStats();
