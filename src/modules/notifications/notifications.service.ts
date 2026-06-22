@@ -60,8 +60,10 @@ export class NotificationsService {
   }
 
   async createNotification(dto: CreateNotificationDto) {
-    await this.ensureUserExists(dto.userId);
-
+    // Note: user existence is enforced by the DB foreign key constraint.
+    // The pre-check query is omitted here to avoid an extra round-trip
+    // on every notification (they are always created as side-effects of
+    // already-validated operations).
     const notification = await this.prisma.notification.create({
       data: {
         id: uuidv7(),
@@ -140,7 +142,6 @@ export class NotificationsService {
 
     return {
       data: items,
-      notifications: items,
       pagination: {
         page,
         limit: take,
@@ -310,24 +311,32 @@ export class NotificationsService {
   }
 
   async getNotificationStats(userId: string): Promise<NotificationStatsDto> {
-    const [total, unread, archived, typeGroups, priorityGroups] =
-      await Promise.all([
-        this.prisma.notification.count({ where: { userId } }),
-        this.prisma.notification.count({ where: { userId, read: false } }),
-        this.prisma.notification.count({
-          where: { userId, isArchived: true },
-        }),
-        this.prisma.notification.groupBy({
-          by: ['type'],
-          where: { userId },
-          _count: { id: true },
-        }),
-        this.prisma.notification.groupBy({
-          by: ['priority'],
-          where: { userId },
-          _count: { id: true },
-        }),
-      ]);
+    // Two groupBy queries replace the previous 5 separate count/groupBy calls.
+    const [readGroups, typeGroups, priorityGroups] = await Promise.all([
+      this.prisma.notification.groupBy({
+        by: ['read', 'isArchived'],
+        where: { userId },
+        _count: { id: true },
+      }),
+      this.prisma.notification.groupBy({
+        by: ['type'],
+        where: { userId },
+        _count: { id: true },
+      }),
+      this.prisma.notification.groupBy({
+        by: ['priority'],
+        where: { userId },
+        _count: { id: true },
+      }),
+    ]);
+
+    const total = readGroups.reduce((s, g) => s + g._count.id, 0);
+    const unread = readGroups
+      .filter((g) => g.read === false)
+      .reduce((s, g) => s + g._count.id, 0);
+    const archived = readGroups
+      .filter((g) => g.isArchived === true)
+      .reduce((s, g) => s + g._count.id, 0);
 
     const byType = Object.fromEntries(
       Object.values(NotificationType).map((type) => [
@@ -343,13 +352,7 @@ export class NotificationsService {
       ]),
     ) as Record<NotificationPriority, number>;
 
-    return {
-      total,
-      unread,
-      archived,
-      byType,
-      byPriority,
-    };
+    return { total, unread, archived, byType, byPriority };
   }
 
   async createProposalNotification(

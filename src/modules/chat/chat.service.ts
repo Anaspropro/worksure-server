@@ -14,8 +14,6 @@ import {
   type MessageType,
 } from '../../generated/prisma';
 import { ChatGateway } from './chat.gateway';
-import { MediaService } from './media.service';
-import { SendMessageDto } from './dto/send-message.dto';
 import { SendSocketMessageDto } from './dto/send-socket-message.dto';
 
 type UploadedAttachment = {
@@ -29,7 +27,6 @@ type UploadedAttachment = {
 export class ChatService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly mediaService: MediaService,
     private readonly jwtService: JwtService,
     @Inject(forwardRef(() => ChatGateway))
     private readonly chatGateway: ChatGateway,
@@ -204,36 +201,6 @@ export class ChatService {
   }
 
   async createMessage(
-    dto: SendMessageDto,
-    senderId: string,
-    file?: Express.Multer.File,
-  ) {
-    const conversation = await this.ensureParticipant(
-      dto.conversationId,
-      senderId,
-    );
-    const messageType = this.resolveMessageType(dto.type, file);
-
-    let upload: UploadedAttachment | undefined;
-
-    if (file) {
-      const result = await this.mediaService.uploadFile(file);
-      upload = {
-        fileUrl: result.secure_url,
-        fileType: file.mimetype || null,
-        fileName: file.originalname || null,
-        fileSize: file.size ?? null,
-      };
-    }
-
-    return this.persistMessage(conversation.id, senderId, {
-      content: dto.content,
-      type: messageType,
-      upload,
-    });
-  }
-
-  async createMessageFromUpload(
     payload: Omit<SendSocketMessageDto, 'conversationId'> & {
       conversationId: string;
     },
@@ -260,7 +227,7 @@ export class ChatService {
 
   private resolveMessageType(
     inputType?: MessageType,
-    file?: Express.Multer.File | string,
+    file?: string,
   ): MessageType {
     if (!file) {
       return inputType ?? MessageTypeEnum.TEXT;
@@ -268,18 +235,6 @@ export class ChatService {
 
     if (typeof file === 'string') {
       return inputType ?? MessageTypeEnum.FILE;
-    }
-
-    if (file.mimetype.startsWith('image/')) {
-      return MessageTypeEnum.IMAGE;
-    }
-
-    if (file.mimetype.startsWith('video/')) {
-      return MessageTypeEnum.VIDEO;
-    }
-
-    if (file.mimetype.startsWith('audio/')) {
-      return MessageTypeEnum.AUDIO;
     }
 
     return MessageTypeEnum.FILE;

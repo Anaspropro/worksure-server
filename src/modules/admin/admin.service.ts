@@ -2,10 +2,13 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { v7 as uuidv7 } from 'uuid';
 import { AuthService } from '../auth/auth.service';
+import { PaymentsService } from '../payments/payments.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import {
   AuditEntityType,
   ContractStatus,
@@ -57,24 +60,46 @@ type AdminAuditLogRecord = Prisma.AuditLogGetPayload<Record<string, never>>;
 
 @Injectable()
 export class AdminService {
+  private readonly logger = new Logger(AdminService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly authService: AuthService,
+    private readonly paymentsService: PaymentsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
-  async getAllUsers(page = 1, limit = 50) {
+  async getAllUsers(search?: string, page = 1, limit = 50) {
     const take = Math.min(limit, 100);
     const skip = (page - 1) * take;
-    const [data, total, active, banned] = await Promise.all([
+
+    const where: Prisma.UserWhereInput = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: 'insensitive' } },
+          ],
+        }
+      : {};
+
+    const [data, statusGroups] = await Promise.all([
       this.prisma.user.findMany({
+        where,
         orderBy: { createdAt: 'asc' },
         take,
         skip,
       }),
-      this.prisma.user.count(),
-      this.prisma.user.count({ where: { status: UserStatus.ACTIVE } }),
-      this.prisma.user.count({ where: { status: UserStatus.BANNED } }),
+      this.prisma.user.groupBy({
+        by: ['status'],
+        where,
+        _count: { id: true },
+      }),
     ]);
+
+    const statusMap = Object.fromEntries(
+      statusGroups.map((g) => [g.status, g._count.id]),
+    );
+    const total = statusGroups.reduce((s, g) => s + g._count.id, 0);
 
     return {
       data: data.map((user) => this.mapUser(user)),
@@ -83,8 +108,8 @@ export class AdminService {
         page,
         limit: take,
         totalPages: Math.ceil(total / take),
-        active,
-        banned,
+        active: statusMap['ACTIVE'] ?? 0,
+        banned: statusMap['BANNED'] ?? 0,
       },
     };
   }
@@ -421,19 +446,12 @@ export class AdminService {
     }
 
     const resolvedAt = new Date();
-    const beneficiaryId =
-      parsedDecision === DisputeDecision.REFUND_CLIENT
-        ? dispute.clientId
-        : dispute.artisanId;
-    const transactionType =
-      parsedDecision === DisputeDecision.REFUND_CLIENT
-        ? TransactionType.REFUND
-        : TransactionType.PAYOUT;
     const notificationMessage =
       parsedDecision === DisputeDecision.REFUND_CLIENT
         ? `A refund of NGN ${dispute.amount} has been approved for dispute ${dispute.id}.`
         : `A payout of NGN ${dispute.amount} has been approved for dispute ${dispute.id}.`;
 
+    // Step 1: Update dispute status + job flag atomically
     const updatedDispute = await this.prisma.$transaction(async (tx) => {
       await tx.dispute.update({
         where: { id: dispute.id },
@@ -454,38 +472,6 @@ export class AdminService {
           at: resolvedAt,
           by: actor.id,
           notes,
-        },
-      });
-
-      await tx.transaction.create({
-        data: {
-          id: this.nextIdentifier(),
-          userId: beneficiaryId,
-          type: transactionType,
-          amount: dispute.amount,
-          status: TransactionStatus.COMPLETED,
-          reference: `dispute_${dispute.id.toLowerCase()}`,
-          createdAt: resolvedAt,
-        },
-      });
-
-      await tx.notification.create({
-        data: {
-          id: this.nextIdentifier(),
-          userId: dispute.clientId,
-          title: 'Dispute update',
-          message: notificationMessage,
-          createdAt: resolvedAt,
-        },
-      });
-
-      await tx.notification.create({
-        data: {
-          id: this.nextIdentifier(),
-          userId: dispute.artisanId,
-          title: 'Dispute update',
-          message: notificationMessage,
-          createdAt: resolvedAt,
         },
       });
 
@@ -518,26 +504,78 @@ export class AdminService {
 
       return tx.dispute.findUniqueOrThrow({
         where: { id: dispute.id },
-        include: {
-          history: {
-            orderBy: { at: 'asc' },
-          },
-        },
+        include: { history: { orderBy: { at: 'asc' } } },
       });
     });
+
+    // Step 2: Route fund movement through the real payment service
+    // This ensures actual escrow/refund logic runs (Paystack, ledger, wallet).
+    let fundMovementSucceeded = false;
+    try {
+      if (!dispute.contractId) {
+        throw new BadRequestException('Dispute is not associated with a contract');
+      }
+
+      if (parsedDecision === DisputeDecision.REFUND_CLIENT) {
+        await this.paymentsService.refundContract(
+          dispute.contractId,
+          actor.id,
+          true,  // isAdmin = true
+          notes || `Dispute ${dispute.id} resolved: refund to client`,
+        );
+      } else {
+        await this.paymentsService.releaseEscrowByAdmin(
+          dispute.contractId,
+          notes || `Dispute ${dispute.id} resolved: payout to artisan`,
+        );
+      }
+      fundMovementSucceeded = true;
+    } catch (err) {
+      this.logger.error(
+        `Dispute ${dispute.id} resolved but fund movement failed: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+        err instanceof Error ? err.stack : undefined,
+        'AdminService',
+      );
+      // Do not re-throw — the dispute record is already resolved.
+      // An admin can manually trigger the payout/refund from the payments panel.
+    }
+
+    // Step 3: Send real-time notifications via NotificationsService
+    await Promise.allSettled([
+      this.notificationsService.createNotification({
+        userId: dispute.clientId,
+        type: 'system_alert' as any,
+        title: 'Dispute Update',
+        message: notificationMessage,
+        entityId: dispute.id,
+        entityType: 'dispute',
+        priority: 'high' as any,
+      }),
+      this.notificationsService.createNotification({
+        userId: dispute.artisanId,
+        type: 'system_alert' as any,
+        title: 'Dispute Update',
+        message: notificationMessage,
+        entityId: dispute.id,
+        entityType: 'dispute',
+        priority: 'high' as any,
+      }),
+    ]);
 
     return {
       message: `Dispute ${updatedDispute.id} resolved with decision ${parsedDecision}.`,
       data: this.mapDispute(updatedDispute),
       sideEffects: {
-        walletTransactionRecorded: true,
+        fundMovementTriggered: fundMovementSucceeded,
         notificationsSent: 2,
         jobForceClosed: parsedDecision === DisputeDecision.REFUND_CLIENT,
       },
     };
   }
 
-  async getAllJobs(status?: string, page = 1, limit = 50) {
+  async getAllJobs(search?: string, status?: string, page = 1, limit = 50) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
@@ -550,9 +588,21 @@ export class AdminService {
 
     const take = Math.min(limit, 100);
     const skip = (page - 1) * take;
-    const where = normalizedStatus
+
+    const baseWhere: Prisma.JobWhereInput = normalizedStatus
       ? { status: normalizedStatus as JobStatus }
-      : undefined;
+      : {};
+
+    const where: Prisma.JobWhereInput = search
+      ? {
+          ...baseWhere,
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } },
+          ],
+        }
+      : baseWhere;
+
     const [data, total, flagged] = await Promise.all([
       this.prisma.job.findMany({
         where,
@@ -778,7 +828,7 @@ export class AdminService {
       }
       case 'overview':
       default: {
-        const [userCount, jobStatusGroups, openDisputes, feeTotal, flaggedJobs, pendingArtisansCount] =
+        const [userCount, jobStatusGroups, openDisputes, feeTotal, flaggedJobs, pendingArtisansCount, pendingPayoutsCount] =
           await Promise.all([
             this.prisma.user.count(),
             this.prisma.job.groupBy({
@@ -794,6 +844,7 @@ export class AdminService {
             }),
             this.prisma.job.count({ where: { flagged: true } }),
             this.prisma.user.count({ where: { role: UserRole.ARTISAN, artisanVerified: false } }),
+            this.prisma.contract.count({ where: { status: 'READY_FOR_PAYOUT' } }),
           ]);
         const jobMap = Object.fromEntries(
           jobStatusGroups.map((s) => [s.status, s._count.id]),
@@ -807,6 +858,7 @@ export class AdminService {
             platformFees: feeTotal._sum.amount ?? 0,
             flaggedJobs,
             pendingArtisansCount,
+            pendingPayoutsCount,
           },
         };
         break;
@@ -850,13 +902,11 @@ export class AdminService {
     };
   }
 
-  async getAllContracts(status?: string, page = 1, limit = 50) {
+  async getAllContracts(search?: string, status?: string, page = 1, limit = 50) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
-      !Object.values(ContractStatus).includes(
-        normalizedStatus as ContractStatus,
-      )
+      !Object.values(ContractStatus).includes(normalizedStatus as ContractStatus)
     ) {
       throw new BadRequestException(
         `Unsupported contract status filter: ${status}.`,
@@ -865,9 +915,22 @@ export class AdminService {
 
     const take = Math.min(limit, 100);
     const skip = (page - 1) * take;
-    const where = normalizedStatus
+
+    const baseWhere: Prisma.ContractWhereInput = normalizedStatus
       ? { status: normalizedStatus as ContractStatus }
-      : undefined;
+      : {};
+
+    const where: Prisma.ContractWhereInput = search
+      ? {
+          ...baseWhere,
+          OR: [
+            { id: { equals: search } },
+            { job: { title: { contains: search, mode: 'insensitive' } } },
+            { client: { name: { contains: search, mode: 'insensitive' } } },
+            { artisan: { name: { contains: search, mode: 'insensitive' } } },
+          ],
+        }
+      : baseWhere;
 
     const [contracts, total] = await Promise.all([
       this.prisma.contract.findMany({

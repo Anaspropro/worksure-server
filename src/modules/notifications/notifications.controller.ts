@@ -81,7 +81,7 @@ export class NotificationsController {
       { page: 1, limit: 100 },
     );
 
-    return result.notifications;
+    return result.data;
   }
 
   @ApiBearerAuth('bearer')

@@ -134,7 +134,7 @@ export class ChatGateway
       throw new UnauthorizedException('Authentication required.');
     }
 
-    const message = await this.chatService.createMessageFromUpload(
+    const message = await this.chatService.createMessage(
       {
         conversationId: payload.conversationId,
         content: payload.content,

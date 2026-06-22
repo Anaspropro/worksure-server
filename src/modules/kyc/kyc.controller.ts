@@ -5,15 +5,11 @@ import {
   Body,
   UseGuards,
   Request,
-  UseInterceptors,
-  UploadedFile,
   BadRequestException,
 } from '@nestjs/common';
 import { KycService } from './kyc.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { KycDocumentType } from '../../generated/prisma';
 
 @ApiTags('kyc')
@@ -38,25 +34,16 @@ export class KycController {
   }
 
   @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: memoryStorage(),
-      limits: {
-        fileSize: 10 * 1024 * 1024,
-      },
-    }),
-  )
-  @ApiConsumes('multipart/form-data')
-  @ApiOperation({ summary: 'Upload a KYC document' })
+  @ApiOperation({ summary: 'Upload a KYC document via direct Cloudinary URL' })
   async uploadDocument(
     @Request() req,
-    @UploadedFile() file: Express.Multer.File,
+    @Body('documentUrl') documentUrl: string,
     @Body('documentType') documentType: KycDocumentType,
   ) {
-    if (!documentType) {
-      throw new BadRequestException('documentType is required');
+    if (!documentType || !documentUrl) {
+      throw new BadRequestException('documentType and documentUrl are required');
     }
-    return this.kycService.uploadKycDocument(req.user.id, file, documentType);
+    return this.kycService.uploadKycDocument(req.user.id, documentUrl, documentType);
   }
 
   @Get('status')

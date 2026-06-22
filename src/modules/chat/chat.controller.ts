@@ -5,19 +5,14 @@ import {
   Param,
   Post,
   Query,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AuthenticatedUser } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -76,45 +71,25 @@ export class ChatController {
   }
 
   @Post('conversations/:conversationId/messages')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: memoryStorage(),
-      limits: {
-        fileSize: 10 * 1024 * 1024,
-      },
-    }),
-  )
-  @ApiConsumes('multipart/form-data')
-  @ApiOperation({ summary: 'Create a new chat message, optionally with media' })
+  @ApiOperation({ summary: 'Create a new chat message, optionally with media URL' })
   @ApiResponse({ status: 201, description: 'Message created successfully' })
   async createMessage(
     @Param('conversationId') conversationId: string,
     @Body() body: Omit<SendMessageDto, 'conversationId'>,
     @CurrentUser() user: AuthenticatedUser,
-    @UploadedFile() file?: Express.Multer.File,
   ) {
-    const message = body.fileUrl
-      ? await this.chatService.createMessageFromUpload(
-          {
-            conversationId,
-            content: body.content,
-            type: body.type,
-            fileUrl: body.fileUrl,
-            fileType: body.fileType,
-            fileName: body.fileName,
-            fileSize: body.fileSize,
-          },
-          user.id,
-        )
-      : await this.chatService.createMessage(
-          {
-            conversationId,
-            content: body.content,
-            type: body.type,
-          },
-          user.id,
-          file,
-        );
+    const message = await this.chatService.createMessage(
+      {
+        conversationId,
+        content: body.content,
+        type: body.type,
+        fileUrl: body.fileUrl,
+        fileType: body.fileType,
+        fileName: body.fileName,
+        fileSize: body.fileSize,
+      },
+      user.id,
+    );
 
     return {
       message: 'Message sent successfully',

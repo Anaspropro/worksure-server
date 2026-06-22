@@ -79,38 +79,19 @@ export class KycService {
 
   async uploadKycDocument(
     userId: string,
-    file: Express.Multer.File,
+    documentUrl: string,
     documentType: KycDocumentType,
   ) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    // Upload to Cloudinary
-    if (!file) throw new BadRequestException('A file is required.');
-    
-    const uploadResult = await new Promise<any>((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            resource_type: 'auto',
-            folder: `worksure/kyc/${userId}`,
-          },
-          (error, result) => {
-            if (error || !result) {
-              reject(new BadRequestException('Unable to upload document.'));
-            } else {
-              resolve(result);
-            }
-          },
-        )
-        .end(Buffer.from(file.buffer));
-    });
+    if (!documentUrl) throw new BadRequestException('documentUrl is required.');
 
     const kycDoc = await this.prisma.kycDocument.create({
       data: {
         userId,
         documentType,
-        documentUrl: uploadResult.secure_url,
+        documentUrl,
         status: KycDocumentStatus.PENDING,
       },
     });

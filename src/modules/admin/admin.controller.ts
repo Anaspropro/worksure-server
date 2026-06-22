@@ -40,10 +40,12 @@ export class AdminController {
   @ApiOkResponse({ description: 'User list returned successfully.' })
   @Get('users')
   getAllUsers(
+    @Query('search') search?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllUsers(
+      search,
       page ? parseInt(page, 10) : undefined,
       limit ? parseInt(limit, 10) : undefined,
     );
@@ -148,11 +150,13 @@ export class AdminController {
   })
   @Get('jobs')
   getAllJobs(
+    @Query('search') search?: string,
     @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllJobs(
+      search,
       status,
       page ? parseInt(page, 10) : undefined,
       limit ? parseInt(limit, 10) : undefined,
@@ -236,11 +240,13 @@ export class AdminController {
   })
   @Get('contracts')
   getAllContracts(
+    @Query('search') search?: string,
     @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllContracts(
+      search,
       status,
       page ? parseInt(page, 10) : undefined,
       limit ? parseInt(limit, 10) : undefined,

@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Delete, Query, UseGuards } from '@nestjs/common';
 import { MonitoringService } from './monitoring.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -49,5 +49,11 @@ export class MonitoringController {
         totalPages: Math.ceil(total / take),
       },
     };
+  }
+
+  @Delete('logs')
+  async clearSystemLogs() {
+    await this.monitoringService.clearSystemLogs();
+    return { success: true, message: 'System logs cleared' };
   }
 }

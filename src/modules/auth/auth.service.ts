@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes, randomInt } from 'node:crypto';
 import { UserRole, UserStatus, type User } from '../../generated/prisma';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
@@ -57,18 +57,8 @@ export class AuthService {
       role: dto.role,
     });
 
-    // Generate 6-digit numeric OTP and ensure uniqueness
-    let verificationToken = '';
-    let isUnique = false;
-    while (!isUnique) {
-      verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-      const existing = await this.prisma.verificationToken.findUnique({
-        where: { token: verificationToken },
-      });
-      if (!existing) {
-        isUnique = true;
-      }
-    }
+    // Generate 6-digit numeric OTP — safe, non-blocking, max 3 attempts
+    const verificationToken = await this.generateOtp(user.email);
 
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 5); // 5 minutes validity for OTP
@@ -295,18 +285,8 @@ export class AuthService {
       where: { email: user.email },
     });
 
-    // Generate new OTP and ensure uniqueness
-    let verificationToken = '';
-    let isUnique = false;
-    while (!isUnique) {
-      verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-      const existing = await this.prisma.verificationToken.findUnique({
-        where: { token: verificationToken },
-      });
-      if (!existing) {
-        isUnique = true;
-      }
-    }
+    // Generate new OTP — safe, non-blocking, max 3 attempts
+    const verificationToken = await this.generateOtp(user.email);
 
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 5); // 5 minutes validity
@@ -458,6 +438,30 @@ export class AuthService {
 
   private comparePassword(password: string, passwordHash: string) {
     return compare(password, passwordHash);
+  }
+
+  /**
+   * Generates a unique 6-digit OTP using cryptographically secure randomInt.
+   * Retries up to 3 times to handle the extremely unlikely case of a collision.
+   * Throws ConflictException if uniqueness cannot be guaranteed after max retries.
+   */
+  private async generateOtp(email: string): Promise<string> {
+    const MAX_RETRIES = 3;
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      const candidate = randomInt(100000, 1000000).toString();
+      const existing = await this.prisma.verificationToken.findUnique({
+        where: { token: candidate },
+      });
+      if (!existing) {
+        return candidate;
+      }
+      this.logger.warn(
+        `OTP collision on attempt ${attempt + 1} for ${email}, retrying…`,
+      );
+    }
+    throw new ConflictException(
+      'Unable to generate a unique verification code. Please try again.',
+    );
   }
 
   private issuePasswordResetToken() {

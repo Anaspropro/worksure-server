@@ -7,6 +7,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { v7 as uuidv7 } from 'uuid';
+import { randomBytes } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
 import {
   AuditEntityType,
@@ -37,11 +38,13 @@ export class PaymentsService {
   ) {}
 
   private buildTransferReference(contractId: string) {
-    return `ws_transfer_${contractId}_${Date.now()}`;
+    const hash = randomBytes(4).toString('hex');
+    return `ws_transfer_${contractId}_${hash}`;
   }
 
   private buildRefundReference(contractId: string) {
-    return `ws_refund_${contractId}_${Date.now()}`;
+    const hash = randomBytes(4).toString('hex');
+    return `ws_refund_${contractId}_${hash}`;
   }
 
   private getPlatformFeePercent() {
@@ -388,16 +391,20 @@ export class PaymentsService {
         });
       }
 
+      // Mark contract as funded INSIDE the transaction — ensures atomicity.
+      // If anything below fails the transaction rolls back automatically.
+      if (!lockedPayment?.isVerified) {
+        await this.contractsService.markFunded(
+          contractId,
+          completedPayment.id,
+          paystackData.reference,
+          payment.paystackAuthorizationUrl ?? null,
+          payment.paystackAccessCode ?? null,
+        );
+      }
+
       return completedPayment;
     });
-
-    await this.contractsService.markFunded(
-      contractId,
-      updatedPayment.id,
-      paystackData.reference,
-      payment.paystackAuthorizationUrl,
-      payment.paystackAccessCode,
-    );
 
     return {
       message: 'Paystack payment verified successfully',
@@ -907,7 +914,6 @@ export class PaymentsService {
           return { handled: true, event };
         }
 
-        let paidOutContractId: string | null = null;
 
         await this.prisma.$transaction(async (tx) => {
           const rawLocks = await tx.$queryRaw<
@@ -940,8 +946,6 @@ export class PaymentsService {
             });
 
             if (contractId) {
-              paidOutContractId = contractId;
-
               // DOUBLE-ENTRY LEDGER: Payout Release
               const metadata = transferTx.metadata as { contractId?: string; platformFee?: number } | null;
               const platformFee = metadata?.platformFee ?? 0;
@@ -1042,13 +1046,12 @@ export class PaymentsService {
                   transferCode: transferCode || null,
                 },
               });
+
+              // Mark contract as paid out INSIDE the transaction — ensures atomicity.
+              await this.contractsService.markPaidOut(contractId);
             }
           }
         });
-
-        if (paidOutContractId) {
-          await this.contractsService.markPaidOut(paidOutContractId);
-        }
 
         return { handled: true, event };
       }

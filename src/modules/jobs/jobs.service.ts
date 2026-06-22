@@ -117,7 +117,6 @@ export class JobsService {
 
     return {
       data: items,
-      jobs: items,
       pagination: {
         page,
         limit: take,
@@ -257,8 +256,8 @@ export class JobsService {
       description: job.description,
       budget: job.budget,
       location: job.location,
-      requiredSkills: job.requiredSkills
-        ? JSON.parse(job.requiredSkills as string)
+      requiredSkills: Array.isArray(job.requiredSkills)
+        ? job.requiredSkills
         : [],
       category: job.category,
       deadline: job.deadline?.toISOString() || null,

@@ -60,4 +60,8 @@ export class MonitoringService {
       console.error('Failed to write to SystemLog', e);
     }
   }
+
+  async clearSystemLogs() {
+    return this.prisma.systemLog.deleteMany({});
+  }
 }

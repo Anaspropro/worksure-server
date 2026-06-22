@@ -167,25 +167,20 @@ export class WalletService {
   }
 
   async getWalletTransactions(userId: string, limit = 50, offset = 0) {
-    const transactions = await this.prisma.transaction.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      skip: offset,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+    const [transactions, total] = await Promise.all([
+      this.prisma.transaction.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        skip: offset,
+        include: {
+          user: {
+            select: { id: true, name: true, email: true },
           },
         },
-      },
-    });
-
-    const total = await this.prisma.transaction.count({
-      where: { userId },
-    });
+      }),
+      this.prisma.transaction.count({ where: { userId } }),
+    ]);
 
     return {
       transactions,
@@ -820,27 +815,23 @@ export class WalletService {
   }
 
   async getWalletSummary(userId: string) {
-    const wallet = await this.prisma.wallet.findUnique({
-      where: { userId },
-    });
-    const virtualAccount = await this.getCachedVirtualAccount(userId);
-
-    const transactions = await this.prisma.transaction.groupBy({
-      by: ['type', 'status'],
-      where: { userId },
-      _sum: {
-        amount: true,
-      },
-      _count: {
-        id: true,
-      },
-    });
-
-    const recentTransactions = await this.prisma.transaction.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-    });
+    // Parallelise all three independent DB reads to avoid sequential round-trips.
+    const [wallet, virtualAccount, transactions, recentTransactions] =
+      await Promise.all([
+        this.prisma.wallet.findUnique({ where: { userId } }),
+        this.getCachedVirtualAccount(userId),
+        this.prisma.transaction.groupBy({
+          by: ['type', 'status'],
+          where: { userId },
+          _sum: { amount: true },
+          _count: { id: true },
+        }),
+        this.prisma.transaction.findMany({
+          where: { userId },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        }),
+      ]);
 
     return {
       wallet: {
