@@ -14,6 +14,11 @@ export class UpdateUserProfileDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(20)
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
   @Length(3, 10)
   payoutBankCode?: string;
 
@@ -34,6 +39,7 @@ export class UserProfileResponseDto {
   email: string;
   role: string;
   status: string;
+  phone?: string | null;
   artisanVerified: boolean;
   paystackRecipientCode?: string | null;
   payoutBankCode?: string | null;

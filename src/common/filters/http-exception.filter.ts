@@ -176,6 +176,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
       this.logger.warn(
         `${status} ${request.method} ${request.url}: ${message}`,
       );
+
+      if (this.prisma) {
+        this.prisma.systemLog.create({
+          data: {
+            level: 'warn',
+            context: 'HttpExceptionFilter',
+            message: `${status} ${request.method} ${request.url}: ${message}`,
+            metadata: { path: request.url, method: request.method },
+          }
+        }).catch(e => this.logger.error('Failed to write SystemLog', e));
+      }
     }
 
     response.status(status).json(errorResponse);
