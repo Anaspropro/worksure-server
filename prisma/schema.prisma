@@ -82,6 +82,7 @@ enum TransactionType {
 
 enum TransactionStatus {
   PENDING
+  PROCESSING
   COMPLETED
   FAILED
 }
@@ -601,33 +602,6 @@ model LedgerEntry {
   @@index([debitAccountId])
   @@index([creditAccountId])
   @@index([contractId])
-}
-
-model Session {
-  id            String   @id @default(uuid(7))
-  userId        String
-  email         String
-  role          String
-  ipAddress     String
-  userAgent     String   @db.VarChar(500)
-  loginTime     DateTime @default(now())
-  lastActivity  DateTime @default(now())
-  expiresAt     DateTime
-
-  @@index([userId, expiresAt])
-  @@index([expiresAt])
-}
-
-model AccountLockout {
-  id            String    @id @default(uuid(7))
-  identifier    String    @unique
-  attempts      Int       @default(0)
-  lastAttemptAt DateTime  @default(now())
-  lockedUntil   DateTime?
-  expiresAt     DateTime
-
-  @@index([identifier, expiresAt])
-  @@index([expiresAt])
 }
 
 model VerificationToken {

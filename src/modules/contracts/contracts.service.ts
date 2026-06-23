@@ -264,6 +264,33 @@ export class ContractsService {
     return contract;
   }
 
+  private async findContractMetadata(contractId: string) {
+    const contract = await this.prisma.contract.findUnique({
+      where: { id: contractId },
+      select: {
+        id: true,
+        status: true,
+        clientId: true,
+        artisanId: true,
+        amount: true,
+        activatedAt: true,
+        startedAt: true,
+        paystackReference: true,
+        artisan: {
+          select: {
+            artisanVerified: true,
+          },
+        },
+      },
+    });
+
+    if (!contract) {
+      throw new NotFoundException('Contract not found');
+    }
+
+    return contract;
+  }
+
   async createContract(proposalId: string, userId: string) {
     const proposal = await this.prisma.proposal.findUnique({
       where: { id: proposalId },
@@ -362,7 +389,7 @@ export class ContractsService {
   }
 
   async activateContract(contractId: string, userId: string) {
-    const contract = await this.getContractOrThrow(contractId);
+    const contract = await this.findContractMetadata(contractId);
 
     if (contract.clientId !== userId && contract.artisanId !== userId) {
       throw new ForbiddenException(
@@ -476,7 +503,7 @@ export class ContractsService {
     authorizationUrl?: string | null,
     accessCode?: string | null,
   ) {
-    const contract = await this.getContractOrThrow(contractId);
+    const contract = await this.findContractMetadata(contractId);
     const targetStatus = ContractStatus.PENDING_PAYMENT;
 
     if (contract.status !== targetStatus) {
@@ -588,7 +615,7 @@ export class ContractsService {
   }
 
   async assertReadyForPayout(contractId: string) {
-    const contract = await this.getContractOrThrow(contractId);
+    const contract = await this.findContractMetadata(contractId);
 
     if (contract.status !== ContractStatus.READY_FOR_PAYOUT) {
       throw new BadRequestException(
@@ -606,7 +633,7 @@ export class ContractsService {
   }
 
   async markPayoutInitiated(contractId: string) {
-    await this.getContractOrThrow(contractId);
+    await this.findContractMetadata(contractId);
 
     return this.prisma.contract.update({
       where: { id: contractId },
@@ -659,7 +686,7 @@ export class ContractsService {
   }
 
   async recordPayoutFailure(contractId: string, reason?: string) {
-    const contract = await this.getContractOrThrow(contractId);
+    const contract = await this.findContractMetadata(contractId);
     if (contract.status !== ContractStatus.READY_FOR_PAYOUT) {
       throw new BadRequestException(
         'Payout failure can only be recorded while contract is READY_FOR_PAYOUT',
@@ -681,7 +708,7 @@ export class ContractsService {
     isAdmin: boolean,
     reason?: string,
   ) {
-    const contract = await this.getContractOrThrow(contractId);
+    const contract = await this.findContractMetadata(contractId);
 
     const canRefund =
       isAdmin ||

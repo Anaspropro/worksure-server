@@ -4,8 +4,6 @@ import {
   OnModuleInit,
   OnModuleDestroy,
 } from '@nestjs/common';
-import { SessionService } from './session.service';
-import { AccountLockoutService } from './account-lockout.service';
 import { IdempotencyService } from './idempotency.service';
 
 /**
@@ -29,8 +27,6 @@ export class EphemeralCleanupService implements OnModuleInit, OnModuleDestroy {
   private static readonly CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
   constructor(
-    private readonly sessionService: SessionService,
-    private readonly accountLockoutService: AccountLockoutService,
     private readonly idempotencyService: IdempotencyService,
   ) {}
 
@@ -57,25 +53,22 @@ export class EphemeralCleanupService implements OnModuleInit, OnModuleDestroy {
    * Execute a single cleanup cycle. Can also be called manually from
    * admin endpoints or health checks.
    */
-  async runCleanup(): Promise<{ sessions: number; lockouts: number; locks: number }> {
+  async runCleanup(): Promise<{ locks: number }> {
     this.logger.log('Starting ephemeral cleanup cycle...');
     const startTime = Date.now();
 
-    // Run sequentially to avoid simultaneous cold-start connection requests
-    const sessions = await this.sessionService.purgeExpired();
-    const lockouts = await this.accountLockoutService.purgeExpired();
     const locks = await this.idempotencyService.purgeExpired();
 
     const duration = Date.now() - startTime;
 
-    if (sessions > 0 || lockouts > 0 || locks > 0) {
+    if (locks > 0) {
       this.logger.log(
-        `Cleanup cycle complete (${duration}ms). Purged ${sessions} sessions, ${lockouts} lockout records, ${locks} stale locks`,
+        `Cleanup cycle complete (${duration}ms). Purged ${locks} stale locks`,
       );
     } else {
       this.logger.debug(`Cleanup cycle complete (${duration}ms). No records to purge.`);
     }
 
-    return { sessions, lockouts, locks };
+    return { locks };
   }
 }

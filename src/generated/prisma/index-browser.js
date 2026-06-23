@@ -428,27 +428,6 @@ exports.Prisma.LedgerEntryScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  email: 'email',
-  role: 'role',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent',
-  loginTime: 'loginTime',
-  lastActivity: 'lastActivity',
-  expiresAt: 'expiresAt'
-};
-
-exports.Prisma.AccountLockoutScalarFieldEnum = {
-  id: 'id',
-  identifier: 'identifier',
-  attempts: 'attempts',
-  lastAttemptAt: 'lastAttemptAt',
-  lockedUntil: 'lockedUntil',
-  expiresAt: 'expiresAt'
-};
-
 exports.Prisma.VerificationTokenScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -680,20 +659,6 @@ exports.Prisma.LedgerEntryOrderByRelevanceFieldEnum = {
   description: 'description'
 };
 
-exports.Prisma.SessionOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  email: 'email',
-  role: 'role',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent'
-};
-
-exports.Prisma.AccountLockoutOrderByRelevanceFieldEnum = {
-  id: 'id',
-  identifier: 'identifier'
-};
-
 exports.Prisma.VerificationTokenOrderByRelevanceFieldEnum = {
   id: 'id',
   email: 'email',
@@ -756,6 +721,7 @@ exports.TransactionType = exports.$Enums.TransactionType = {
 
 exports.TransactionStatus = exports.$Enums.TransactionStatus = {
   PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
   COMPLETED: 'COMPLETED',
   FAILED: 'FAILED'
 };
@@ -855,8 +821,6 @@ exports.Prisma.ModelName = {
   FinancialEvent: 'FinancialEvent',
   LedgerAccount: 'LedgerAccount',
   LedgerEntry: 'LedgerEntry',
-  Session: 'Session',
-  AccountLockout: 'AccountLockout',
   VerificationToken: 'VerificationToken',
   SystemLog: 'SystemLog'
 };

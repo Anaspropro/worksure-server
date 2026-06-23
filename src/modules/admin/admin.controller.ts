@@ -8,7 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -25,7 +25,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminResetPasswordDto } from './dto/admin-reset-password.dto';
 import { ForceCloseJobDto } from './dto/force-close-job.dto';
 import { ResolveDisputeDto } from './dto/resolve-dispute.dto';
-import { AdminService, ReportType } from './admin.service';
+import { AdminService } from './admin.service';
+import { AnalyticsService, ReportType } from '../analytics/analytics.service';
 import { AuthenticatedUser } from '../auth/auth.service';
 
 @ApiTags('admin')
@@ -34,7 +35,10 @@ import { AuthenticatedUser } from '../auth/auth.service';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly analyticsService: AnalyticsService,
+  ) {}
 
   @ApiOperation({ summary: 'List all users' })
   @ApiOkResponse({ description: 'User list returned successfully.' })
@@ -210,14 +214,12 @@ export class AdminController {
     required: false,
     description: 'Optional YYYY-MM month selector',
   })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000) // 5 minutes
   @Get('reports')
   generateReports(
     @Query('reportType') reportType?: ReportType,
     @Query('month') month?: string,
   ) {
-    return this.adminService.generateReports(reportType, month);
+    return this.analyticsService.generateReports(reportType, month);
   }
 
   @ApiOperation({ summary: 'List audit logs' })
@@ -254,11 +256,9 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: 'Get system contract statistics' })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000) // 5 minutes
   @Get('contracts/stats')
   getContractStats() {
-    return this.adminService.getContractStats();
+    return this.analyticsService.getContractStats();
   }
 
   private getActor(adminUser: AuthenticatedUser) {

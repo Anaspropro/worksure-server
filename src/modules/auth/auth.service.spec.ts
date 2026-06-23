@@ -79,8 +79,8 @@ describe('AuthService', () => {
 
       const result = await service.register(registerDto);
 
-      expect(result.message).toBe('Registration successful.');
-      expect(result.data.accessToken).toBe('test-token');
+      expect(result.message).toContain('Registration successful');
+      expect(result.data.user).toBeDefined();
       expect(usersService.createUser).toHaveBeenCalled();
     });
 

@@ -29,6 +29,7 @@ import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
 import { SanitizationService } from './common/services/sanitization.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppCacheModule } from './common/cache/cache.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -52,6 +53,10 @@ import { AppCacheModule } from './common/cache/cache.module';
           }),
         },
       },
+    }),
+    EventEmitterModule.forRoot({
+      wildcard: true,
+      delimiter: '.',
     }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([

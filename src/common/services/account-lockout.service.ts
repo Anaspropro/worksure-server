@@ -1,155 +1,144 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
+import { redisConnection } from '../../queue/redis';
 
 const MAX_ATTEMPTS = 5;
-const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-const ATTEMPT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const LOCKOUT_DURATION_SECONDS = 15 * 60; // 15 minutes
+const ATTEMPT_WINDOW_SECONDS = 15 * 60; // 15 minutes
 
 @Injectable()
 export class AccountLockoutService {
   private readonly logger = new Logger(AccountLockoutService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly LUA_LOCKOUT_SCRIPT = `
+  local lockKey = KEYS[1]
+  local attemptsKey = KEYS[2]
+  local maxAttempts = tonumber(ARGV[1])
+  local lockoutDuration = tonumber(ARGV[2])
+  local attemptWindow = tonumber(ARGV[3])
 
+  if redis.call("EXISTS", lockKey) == 1 then
+    local ttl = redis.call("TTL", lockKey)
+    return {1, ttl}
+  end
+
+  local attempts = redis.call("INCR", attemptsKey)
+  if attempts == 1 then
+    redis.call("EXPIRE", attemptsKey, attemptWindow)
+  end
+
+  if attempts >= maxAttempts then
+    redis.call("SETEX", lockKey, lockoutDuration, "1")
+    redis.call("DEL", attemptsKey)
+    return {1, lockoutDuration}
+  end
+
+  return {0, attempts}
+`;
+
+  /**
+   * Normalize identifier
+   */
+  private normalizeIdentifier(identifier: string): string {
+    return identifier.toLowerCase().trim();
+  }
+
+  /**
+   * Records a failed attempt and locks the account if MAX_ATTEMPTS is reached.
+   */
   async recordFailedAttempt(identifier: string): Promise<{
     locked: boolean;
     remainingAttempts?: number;
     lockoutExpires?: number;
   }> {
-    const now = new Date();
+    const normalized = this.normalizeIdentifier(identifier);
+    const lockKey = `auth:lockout:locked:${normalized}`;
+    const attemptsKey = `auth:lockout:attempts:${normalized}`;
 
-    // Find existing non-expired lockout record
-    const existing = await this.prisma.accountLockout.findFirst({
-      where: {
-        identifier,
-        expiresAt: { gt: now },
-      },
-    });
+    try {
+      const result = await redisConnection.eval(
+        this.LUA_LOCKOUT_SCRIPT,
+        2, // number of keys
+        lockKey,
+        attemptsKey,
+        MAX_ATTEMPTS,
+        LOCKOUT_DURATION_SECONDS,
+        ATTEMPT_WINDOW_SECONDS,
+      ) as [number, number];
 
-    if (!existing) {
-      // First failure — create a new lockout record
-      const expiresAt = new Date(now.getTime() + ATTEMPT_WINDOW_MS);
-      await this.prisma.accountLockout.upsert({
-        where: { identifier },
-        create: {
-          identifier,
-          attempts: 1,
-          lastAttemptAt: now,
-          expiresAt,
-        },
-        update: {
-          attempts: 1,
-          lastAttemptAt: now,
-          lockedUntil: null,
-          expiresAt,
-        },
-      });
-      return { locked: false, remainingAttempts: MAX_ATTEMPTS - 1 };
-    }
+      const isLocked = result[0] === 1;
+      const val = result[1];
 
-    // If currently locked and lock hasn't expired, reject
-    if (existing.lockedUntil && now < existing.lockedUntil) {
+      if (isLocked) {
+        return {
+          locked: true,
+          lockoutExpires: Date.now() + val * 1000,
+        };
+      }
+
       return {
-        locked: true,
-        lockoutExpires: existing.lockedUntil.getTime(),
+        locked: false,
+        remainingAttempts: Math.max(0, MAX_ATTEMPTS - val),
       };
+    } catch (e) {
+      this.logger.error(`Redis failure in recordFailedAttempt: ${e.message}`);
+      // Fail closed: assume locked to prevent brute force if Redis is down
+      throw new Error('Lockout service is currently unavailable');
     }
-
-    // If lock has expired but record exists, reset
-    if (existing.lockedUntil && now >= existing.lockedUntil) {
-      const expiresAt = new Date(now.getTime() + ATTEMPT_WINDOW_MS);
-      await this.prisma.accountLockout.update({
-        where: { id: existing.id },
-        data: {
-          attempts: 1,
-          lastAttemptAt: now,
-          lockedUntil: null,
-          expiresAt,
-        },
-      });
-      return { locked: false, remainingAttempts: MAX_ATTEMPTS - 1 };
-    }
-
-    // Increment failed attempts
-    const newAttempts = existing.attempts + 1;
-
-    if (newAttempts >= MAX_ATTEMPTS) {
-      // Lock the account
-      const lockedUntil = new Date(now.getTime() + LOCKOUT_DURATION_MS);
-      await this.prisma.accountLockout.update({
-        where: { id: existing.id },
-        data: {
-          attempts: newAttempts,
-          lastAttemptAt: now,
-          lockedUntil,
-          expiresAt: lockedUntil, // Extend record lifetime to cover the lockout
-        },
-      });
-      return {
-        locked: true,
-        lockoutExpires: lockedUntil.getTime(),
-      };
-    }
-
-    // Not yet locked — just bump the counter
-    await this.prisma.accountLockout.update({
-      where: { id: existing.id },
-      data: {
-        attempts: newAttempts,
-        lastAttemptAt: now,
-      },
-    });
-
-    return {
-      locked: false,
-      remainingAttempts: MAX_ATTEMPTS - newAttempts,
-    };
-  }
-
-  async recordSuccessfulAttempt(identifier: string): Promise<void> {
-    await this.prisma.accountLockout.deleteMany({
-      where: { identifier },
-    });
-  }
-
-  async isLocked(
-    identifier: string,
-  ): Promise<{ locked: boolean; lockoutExpires?: number }> {
-    const now = new Date();
-
-    const record = await this.prisma.accountLockout.findFirst({
-      where: {
-        identifier,
-        expiresAt: { gt: now },
-        lockedUntil: { gt: now },
-      },
-    });
-
-    if (!record) {
-      return { locked: false };
-    }
-
-    return {
-      locked: true,
-      lockoutExpires: record.lockedUntil!.getTime(),
-    };
-  }
-
-  async getLockoutRemainingTime(identifier: string): Promise<number> {
-    const { locked, lockoutExpires } = await this.isLocked(identifier);
-    if (!locked || !lockoutExpires) {
-      return 0;
-    }
-    return Math.max(0, Math.ceil((lockoutExpires - Date.now()) / 1000));
   }
 
   /**
-   * Delete all expired lockout records. Called by EphemeralCleanupService.
+   * Resets the failed attempts counter upon successful login.
    */
-  async purgeExpired(): Promise<number> {
-    const result = await this.prisma.accountLockout.deleteMany({
-      where: { expiresAt: { lte: new Date() } },
-    });
-    return result.count;
+  async recordSuccessfulAttempt(identifier: string): Promise<void> {
+    const normalized = this.normalizeIdentifier(identifier);
+    try {
+      await redisConnection.del(`auth:lockout:attempts:${normalized}`);
+      await redisConnection.del(`auth:lockout:locked:${normalized}`);
+    } catch (e) {
+      this.logger.error(`Redis failure in recordSuccessfulAttempt: ${e.message}`);
+    }
+  }
+
+  /**
+   * Checks if an account is currently locked.
+   */
+  async isLocked(
+    identifier: string,
+  ): Promise<{ locked: boolean; lockoutExpires?: number }> {
+    const normalized = this.normalizeIdentifier(identifier);
+    const lockKey = `auth:lockout:locked:${normalized}`;
+    
+    try {
+      const isLocked = await redisConnection.exists(lockKey);
+
+      if (!isLocked) {
+        return { locked: false };
+      }
+
+      const ttl = await redisConnection.ttl(lockKey);
+      return {
+        locked: true,
+        lockoutExpires: Date.now() + ttl * 1000,
+      };
+    } catch (e) {
+      this.logger.error(`Redis failure in isLocked: ${e.message}`);
+      // Fail closed
+      return { locked: true };
+    }
+  }
+
+  /**
+   * Returns remaining lockout time in seconds.
+   */
+  async getLockoutRemainingTime(identifier: string): Promise<number> {
+    const normalized = this.normalizeIdentifier(identifier);
+    const lockKey = `auth:lockout:locked:${normalized}`;
+    try {
+      const ttl = await redisConnection.ttl(lockKey);
+      return ttl > 0 ? ttl : 0;
+    } catch (e) {
+      this.logger.error(`Redis failure in getLockoutRemainingTime: ${e.message}`);
+      return LOCKOUT_DURATION_SECONDS; // Fail closed
+    }
   }
 }

@@ -39,7 +39,6 @@ export class UserProfileResponseDto {
   email: string;
   role: string;
   status: string;
-  phone?: string | null;
   artisanVerified: boolean;
   paystackRecipientCode?: string | null;
   payoutBankCode?: string | null;

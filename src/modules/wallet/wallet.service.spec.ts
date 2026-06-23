@@ -92,7 +92,7 @@ describe('WalletService', () => {
     });
   });
 
-  describe('addFunds', () => {
+  describe('initiateWalletDeposit', () => {
     const userId = 'user-1';
     const amount = 5000;
     const reference = 'ref-123';
@@ -103,10 +103,10 @@ describe('WalletService', () => {
       mockPrismaService.transaction.findUnique.mockResolvedValue(null);
       mockPrismaService.wallet.update.mockResolvedValue({ ...mockWallet, balance: amount });
 
-      const result = await service.addFunds(userId, amount, reference);
+      const result = await service.initiateWalletDeposit(userId, amount, 'test@example.com');
 
-      expect(result.message).toContain('successfully');
-      expect(result.balance).toBe(amount);
+      expect(result.authorizationUrl).toBeDefined();
+      expect(result.reference).toBeDefined();
       expect(prisma.wallet.update).toHaveBeenCalled();
       expect(prisma.transaction.create).toHaveBeenCalledWith(expect.objectContaining({
         data: expect.objectContaining({
@@ -120,14 +120,14 @@ describe('WalletService', () => {
     });
 
     it('should throw BadRequestException for non-positive amounts', async () => {
-      await expect(service.addFunds(userId, 0, reference)).rejects.toThrow(BadRequestException);
-      await expect(service.addFunds(userId, -100, reference)).rejects.toThrow(BadRequestException);
+      await expect(service.initiateWalletDeposit(userId, 0, 'test@example.com')).rejects.toThrow(BadRequestException);
+      await expect(service.initiateWalletDeposit(userId, -100, 'test@example.com')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if reference is already used', async () => {
       mockPrismaService.transaction.findUnique.mockResolvedValue({ id: 'tx-1' });
 
-      await expect(service.addFunds(userId, amount, reference)).rejects.toThrow(BadRequestException);
+      await expect(service.initiateWalletDeposit(userId, amount, 'test@example.com')).rejects.toThrow(BadRequestException);
     });
   });
 

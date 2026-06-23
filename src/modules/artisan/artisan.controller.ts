@@ -105,7 +105,7 @@ export class ArtisanController {
   @Get('profile/me')
   async getCurrentArtisanProfile(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
-  ): Promise<ArtisanProfileResponseDto> {
+  ): Promise<ArtisanProfileResponseDto | null> {
     this.ensureArtisanRole(user);
 
     const profile = await this.prisma.artisanProfile.findUnique({
@@ -122,7 +122,7 @@ export class ArtisanController {
     });
 
     if (!profile) {
-      throw new NotFoundException('Artisan profile not found');
+      return null;
     }
 
     return {

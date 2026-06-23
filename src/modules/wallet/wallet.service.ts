@@ -3,18 +3,41 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  OnModuleInit,
+  OnModuleDestroy,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { TransactionType, TransactionStatus } from '../../generated/prisma';
 import { v7 as uuidv7 } from 'uuid';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
+import { Worker } from 'bullmq';
+import { redisConnection } from '../../queue/redis';
 
 @Injectable()
-export class WalletService {
+export class WalletService implements OnModuleInit, OnModuleDestroy {
+  private payoutWorker: Worker;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly paystackClient: PaystackClientService,
   ) {}
+
+  onModuleInit() {
+    this.payoutWorker = new Worker('payout-queue', async (job) => {
+      const { transactionId, adminId } = job.data;
+      await this.executePayoutTask(adminId, transactionId);
+    }, { connection: redisConnection as any });
+
+    this.payoutWorker.on('failed', (job, err) => {
+      console.error(`[Payout Worker] Job ${job?.id} failed:`, err);
+    });
+  }
+
+  async onModuleDestroy() {
+    if (this.payoutWorker) {
+      await this.payoutWorker.close();
+    }
+  }
 
   // In-memory cache for Paystack dedicated account data
   // Avoids external API calls on every balance check
@@ -307,6 +330,9 @@ export class WalletService {
 
     const verifiedAmount = Math.round(paystackData.amount / 100);
 
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId: txUserId } }) ?? 
+      await this.prisma.wallet.create({ data: { id: uuidv7(), userId: txUserId, balance: 0, frozen: 0, version: 1 } });
+
     const result = await this.prisma.$transaction(async (tx) => {
       const completedTx = await tx.transaction.update({
         where: { id: transaction.id },
@@ -321,9 +347,6 @@ export class WalletService {
         },
       });
 
-      const wallet = await tx.wallet.findUnique({ where: { userId: txUserId } }) ?? 
-        await tx.wallet.create({ data: { id: uuidv7(), userId: txUserId, balance: 0, frozen: 0, version: 1 } });
-
       const updatedWallet = await tx.wallet.update({
         where: { userId: txUserId, version: wallet.version },
         data: {
@@ -334,6 +357,8 @@ export class WalletService {
 
       return { wallet: updatedWallet, transaction: completedTx };
     });
+
+
 
     return {
       message: 'Deposit verified successfully',
@@ -359,15 +384,15 @@ export class WalletService {
       });
     }
 
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+
+    const availableBalance = wallet.balance - wallet.frozen;
+    if (availableBalance < amount) {
+      throw new BadRequestException('Insufficient available balance');
+    }
+
     const result = await this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({ where: { userId } });
-      if (!wallet) throw new NotFoundException('Wallet not found');
-
-      const availableBalance = wallet.balance - wallet.frozen;
-      if (availableBalance < amount) {
-        throw new BadRequestException('Insufficient available balance');
-      }
-
       const updatedWallet = await tx.wallet.update({
         where: { userId, version: wallet.version },
         data: {
@@ -403,16 +428,61 @@ export class WalletService {
   async processPayout(adminId: string, transactionId: string) {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id: transactionId },
-      include: { user: true }
+      include: { user: true },
     });
 
-    if (!transaction || transaction.type !== TransactionType.PAYOUT || transaction.status !== TransactionStatus.PENDING) {
+    if (
+      !transaction ||
+      transaction.type !== TransactionType.PAYOUT ||
+      transaction.status !== TransactionStatus.PENDING
+    ) {
       throw new BadRequestException('Invalid payout request');
     }
 
     const user = transaction.user;
     if (!user.payoutBankCode || !user.payoutAccountNumber) {
       throw new BadRequestException('User payout profile is incomplete');
+    }
+
+    // Immediately mark as processing so admin doesn't double-click
+    const updatedTx = await this.prisma.transaction.update({
+      where: { id: transactionId },
+      data: {
+        status: TransactionStatus.PROCESSING,
+        metadata: {
+          ...(transaction.metadata as any),
+          adminId,
+          queuedAt: new Date(),
+        },
+      },
+    });
+
+    // Enqueue the heavy Paystack API work
+    const { payoutQueue } = await import('../../queue/queue');
+    await payoutQueue.add('process-payout', {
+      transactionId,
+      adminId,
+    });
+
+    return {
+      message: 'Payout queued for processing',
+      transaction: updatedTx,
+    };
+  }
+
+  async executePayoutTask(adminId: string, transactionId: string) {
+    const transaction = await this.prisma.transaction.findUnique({
+      where: { id: transactionId },
+      include: { user: true },
+    });
+
+    if (!transaction || transaction.type !== TransactionType.PAYOUT || transaction.status !== TransactionStatus.PROCESSING) {
+      throw new Error(`Transaction ${transactionId} is not in PROCESSING state`);
+    }
+
+    const user = transaction.user;
+    if (!user.payoutBankCode || !user.payoutAccountNumber) {
+      throw new Error('User payout profile is incomplete');
     }
 
     let recipientCode = user.paystackRecipientCode;
@@ -438,7 +508,7 @@ export class WalletService {
     }
 
     if (!recipientCode) {
-      throw new BadRequestException('Failed to create transfer recipient');
+      throw new Error('Failed to create transfer recipient');
     }
 
     const payoutAmount = Math.abs(transaction.amount);
@@ -459,13 +529,13 @@ export class WalletService {
     );
 
     if (!transferData) {
-      throw new BadRequestException('Transfer initiation failed');
+      throw new Error('Transfer initiation failed');
     }
 
-    const result = await this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({ where: { userId: user.id } });
-      if (!wallet) throw new NotFoundException('Wallet not found');
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId: user.id } });
+    if (!wallet) throw new Error('Wallet not found');
 
+    await this.prisma.$transaction(async (tx) => {
       await tx.wallet.update({
         where: { userId: user.id, version: wallet.version },
         data: {
@@ -475,7 +545,7 @@ export class WalletService {
         },
       });
 
-      const updatedTx = await tx.transaction.update({
+      await tx.transaction.update({
         where: { id: transaction.id },
         data: {
           status: TransactionStatus.COMPLETED,
@@ -487,14 +557,7 @@ export class WalletService {
           },
         },
       });
-
-      return updatedTx;
     });
-
-    return {
-      message: 'Payout processed successfully',
-      transaction: result,
-    };
   }
 
   async freezeFunds(
@@ -507,22 +570,20 @@ export class WalletService {
       throw new BadRequestException('Amount must be positive');
     }
 
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    const availableBalance = wallet.balance - wallet.frozen;
+    if (availableBalance < amount) {
+      throw new BadRequestException('Insufficient balance');
+    }
+
     const result = await this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({
-        where: { userId },
-      });
-
-      if (!wallet) {
-        throw new NotFoundException('Wallet not found');
-      }
-
-      const availableBalance = wallet.balance - wallet.frozen;
-      if (availableBalance < amount) {
-        throw new BadRequestException(
-          'Insufficient balance',
-        );
-      }
-
       const updatedWallet = await tx.wallet.update({
         where: {
           userId,
@@ -573,19 +634,19 @@ export class WalletService {
       throw new BadRequestException('Amount must be positive');
     }
 
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    if (wallet.frozen < amount) {
+      throw new BadRequestException('Insufficient frozen funds to release');
+    }
+
     const result = await this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({
-        where: { userId },
-      });
-
-      if (!wallet) {
-        throw new NotFoundException('Wallet not found');
-      }
-
-      if (wallet.frozen < amount) {
-        throw new BadRequestException('Insufficient frozen funds to release');
-      }
-
       const updatedWallet = await tx.wallet.update({
         where: {
           userId,
@@ -637,35 +698,35 @@ export class WalletService {
       throw new BadRequestException('Amount must be positive');
     }
 
+    const sourceWallet = await this.prisma.wallet.findUnique({
+      where: { userId: sourceUserId },
+    });
+
+    if (!sourceWallet) {
+      throw new NotFoundException('Source wallet not found');
+    }
+
+    if (sourceWallet.frozen < amount) {
+      throw new BadRequestException('Insufficient frozen funds to release');
+    }
+
+    let destinationWallet = await this.prisma.wallet.findUnique({
+      where: { userId: destinationUserId },
+    });
+
+    if (!destinationWallet) {
+      destinationWallet = await this.prisma.wallet.create({
+        data: {
+          id: uuidv7(),
+          userId: destinationUserId,
+          balance: 0,
+          frozen: 0,
+          version: 1,
+        },
+      });
+    }
+
     const result = await this.prisma.$transaction(async (tx) => {
-      const sourceWallet = await tx.wallet.findUnique({
-        where: { userId: sourceUserId },
-      });
-
-      if (!sourceWallet) {
-        throw new NotFoundException('Source wallet not found');
-      }
-
-      if (sourceWallet.frozen < amount) {
-        throw new BadRequestException('Insufficient frozen funds to release');
-      }
-
-      let destinationWallet = await tx.wallet.findUnique({
-        where: { userId: destinationUserId },
-      });
-
-      if (!destinationWallet) {
-        destinationWallet = await tx.wallet.create({
-          data: {
-            id: uuidv7(),
-            userId: destinationUserId,
-            balance: 0,
-            frozen: 0,
-            version: 1,
-          },
-        });
-      }
-
       const updatedSourceWallet = await tx.wallet.update({
         where: {
           userId: sourceUserId,
@@ -737,20 +798,20 @@ export class WalletService {
       throw new BadRequestException('Amount must be positive');
     }
 
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    const availableBalance = wallet.balance - wallet.frozen;
+    if (availableBalance < amount) {
+      throw new BadRequestException('Insufficient available balance');
+    }
+
     const result = await this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({
-        where: { userId },
-      });
-
-      if (!wallet) {
-        throw new NotFoundException('Wallet not found');
-      }
-
-      const availableBalance = wallet.balance - wallet.frozen;
-      if (availableBalance < amount) {
-        throw new BadRequestException('Insufficient available balance');
-      }
-
       const updatedWallet = await tx.wallet.update({
         where: {
           userId,

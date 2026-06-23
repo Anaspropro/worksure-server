@@ -6,9 +6,10 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { PrismaModule } from '../../database/prisma.module';
 import { PaymentsModule } from '../payments/payments.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { AnalyticsModule } from '../analytics/analytics.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, PaymentsModule, NotificationsModule],
+  imports: [PrismaModule, AuthModule, PaymentsModule, NotificationsModule, AnalyticsModule],
   controllers: [AdminController],
   providers: [AdminService, RolesGuard],
   exports: [AdminService],
