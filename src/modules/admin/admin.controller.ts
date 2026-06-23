@@ -48,12 +48,12 @@ export class AdminController {
   @Get('users')
   getAllUsers(
     @Query('search') search?: string,
-    @Query('page') page?: string,
+    @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllUsers(
       search,
-      page ? parseInt(page, 10) : undefined,
+      cursor,
       limit ? parseInt(limit, 10) : undefined,
     );
   }
@@ -126,11 +126,11 @@ export class AdminController {
   @CacheTTL(300000)
   @Get('disputes')
   getAllDisputes(
-    @Query('page') page?: string,
+    @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllDisputes(
-      page ? parseInt(page, 10) : undefined,
+      cursor,
       limit ? parseInt(limit, 10) : undefined,
     );
   }
@@ -163,13 +163,13 @@ export class AdminController {
   getAllJobs(
     @Query('search') search?: string,
     @Query('status') status?: string,
-    @Query('page') page?: string,
+    @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllJobs(
       search,
       status,
-      page ? parseInt(page, 10) : undefined,
+      cursor,
       limit ? parseInt(limit, 10) : undefined,
     );
   }
@@ -202,12 +202,12 @@ export class AdminController {
   @Get('transactions')
   getAllTransactions(
     @Query('type') type?: string,
-    @Query('page') page?: string,
+    @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllTransactions(
       type,
-      page ? parseInt(page, 10) : undefined,
+      cursor,
       limit ? parseInt(limit, 10) : undefined,
     );
   }
@@ -236,11 +236,11 @@ export class AdminController {
   @CacheTTL(300000)
   @Get('audit-logs')
   getAuditLogs(
-    @Query('page') page?: string,
+    @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAuditLogs(
-      page ? parseInt(page, 10) : undefined,
+      cursor,
       limit ? parseInt(limit, 10) : undefined,
     );
   }
@@ -257,13 +257,13 @@ export class AdminController {
   getAllContracts(
     @Query('search') search?: string,
     @Query('status') status?: string,
-    @Query('page') page?: string,
+    @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllContracts(
       search,
       status,
-      page ? parseInt(page, 10) : undefined,
+      cursor,
       limit ? parseInt(limit, 10) : undefined,
     );
   }

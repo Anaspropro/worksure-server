@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   output          = "../src/generated/prisma"
   previewFeatures = ["fullTextSearchPostgres"]
 }
@@ -130,50 +130,50 @@ enum KycVerificationStatus {
 }
 
 model User {
-  id               String         @id
-  name             String
-  email            String         @unique
-  passwordHash     String
-  passwordResetTokenHash String?  @unique
+  id                          String                @id
+  name                        String
+  email                       String                @unique
+  passwordHash                String
+  passwordResetTokenHash      String?               @unique
   passwordResetTokenExpiresAt DateTime?
-  passwordResetRequestedAt DateTime?
-  role             UserRole
-  status           UserStatus
-  artisanVerified  Boolean        @default(false)
-  kycVerified      Boolean        @default(false)
-  emailVerified    Boolean        @default(false)
-  kycStatus        KycVerificationStatus @default(UNVERIFIED)
-  paystackRecipientCode String?
-  payoutBankCode   String?
-  payoutAccountNumber String?
-  payoutAccountName String?
-  phone            String?
-  createdAt        DateTime
-  lastLoginAt      DateTime?
-  updatedAt        DateTime       @updatedAt
-  
+  passwordResetRequestedAt    DateTime?
+  role                        UserRole
+  status                      UserStatus
+  artisanVerified             Boolean               @default(false)
+  kycVerified                 Boolean               @default(false)
+  emailVerified               Boolean               @default(false)
+  kycStatus                   KycVerificationStatus @default(UNVERIFIED)
+  paystackRecipientCode       String?
+  payoutBankCode              String?
+  payoutAccountNumber         String?
+  payoutAccountName           String?
+  phone                       String?
+  createdAt                   DateTime
+  lastLoginAt                 DateTime?
+  updatedAt                   DateTime              @updatedAt
+
   // Relations
-  artisanProfile   ArtisanProfile?
-  kycDocuments    KycDocument[]
-  sentProposals    Proposal[]     @relation("SentProposals")
-  receivedProposals Proposal[]     @relation("ReceivedProposals")
-  clientContracts  Contract[]     @relation("ClientContracts")
-  artisanContracts Contract[]     @relation("ArtisanContracts")
-  clientJobs       Job[]          @relation("ClientJobs")
-  artisanJobs      Job[]          @relation("ArtisanJobs")
-  wallet           Wallet?
-  sentReviews      Review[]       @relation("SentReviews")
-  receivedReviews  Review[]       @relation("ReceivedReviews")
-  notifications    Notification[]
-  transactions     Transaction[]
-  payments         Payment[]       @relation("UserPayments")
-  clientDisputes   Dispute[]       @relation("ClientDisputes")
-  artisanDisputes  Dispute[]       @relation("ArtisanDisputes")
-  ledgerAccounts   LedgerAccount?
+  artisanProfile    ArtisanProfile?
+  kycDocuments      KycDocument[]
+  sentProposals     Proposal[]      @relation("SentProposals")
+  receivedProposals Proposal[]      @relation("ReceivedProposals")
+  clientContracts   Contract[]      @relation("ClientContracts")
+  artisanContracts  Contract[]      @relation("ArtisanContracts")
+  clientJobs        Job[]           @relation("ClientJobs")
+  artisanJobs       Job[]           @relation("ArtisanJobs")
+  wallet            Wallet?
+  sentReviews       Review[]        @relation("SentReviews")
+  receivedReviews   Review[]        @relation("ReceivedReviews")
+  notifications     Notification[]
+  transactions      Transaction[]
+  payments          Payment[]       @relation("UserPayments")
+  clientDisputes    Dispute[]       @relation("ClientDisputes")
+  artisanDisputes   Dispute[]       @relation("ArtisanDisputes")
+  ledgerAccounts    LedgerAccount?
 }
 
 model Dispute {
-  id                 String            @id
+  id                 String           @id
   contractId         String?
   jobId              String?
   clientId           String
@@ -187,14 +187,14 @@ model Dispute {
   resolvedAt         DateTime?
   resolvedBy         String?
   resolutionNotes    String?
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
   history            DisputeHistory[]
-  
+
   // Relations
-  client             User              @relation("ClientDisputes", fields: [clientId], references: [id])
-  artisan            User              @relation("ArtisanDisputes", fields: [artisanId], references: [id])
-  contract           Contract?         @relation(fields: [contractId], references: [id])
+  client   User      @relation("ClientDisputes", fields: [clientId], references: [id])
+  artisan  User      @relation("ArtisanDisputes", fields: [artisanId], references: [id])
+  contract Contract? @relation(fields: [contractId], references: [id])
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -234,13 +234,13 @@ model Job {
   forceCloseReason String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
-  
+
   // Relations
-  client           User      @relation("ClientJobs", fields: [clientId], references: [id])
-  artisan          User?     @relation("ArtisanJobs", fields: [artisanId], references: [id])
-  contract         Contract?
-  proposals        Proposal[]
-  
+  client    User       @relation("ClientJobs", fields: [clientId], references: [id])
+  artisan   User?      @relation("ArtisanJobs", fields: [artisanId], references: [id])
+  contract  Contract?
+  proposals Proposal[]
+
   @@index([clientId, status])
   @@index([artisanId, status])
   @@index([category])
@@ -248,21 +248,21 @@ model Job {
 }
 
 model Transaction {
-  id          String            @id @default(uuid(7))
-  userId      String
-  type        TransactionType
-  amount      Int
-  status      TransactionStatus  @default(PENDING)
-  reference   String            @unique
-  metadata    Json?
-  createdAt   DateTime           @default(now())
-  completedAt DateTime?
-  failedAt    DateTime?
+  id            String            @id @default(uuid(7))
+  userId        String
+  type          TransactionType
+  amount        Int
+  status        TransactionStatus @default(PENDING)
+  reference     String            @unique
+  metadata      Json?
+  createdAt     DateTime          @default(now())
+  completedAt   DateTime?
+  failedAt      DateTime?
   failureReason String?
-  
+
   // Relations
-  user        User              @relation(fields: [userId], references: [id], onDelete: Restrict)
-  
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
   @@index([userId, createdAt])
   @@index([type, status])
 }
@@ -276,105 +276,105 @@ model ArtisanProfile {
   portfolio   Json     @default("[]")
   verified    Boolean  @default(false)
   rating      Float?   @default(0)
-  reviewCount Int     @default(0)
+  reviewCount Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   // Relations
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([verified, rating])
 }
 
 model Proposal {
-  id         String         @id @default(uuid(7))
-  jobId      String
-  artisanId  String
-  clientId   String
-  amount     Int
-  message    String
-  status     ProposalStatus @default(PENDING)
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  
+  id        String         @id @default(uuid(7))
+  jobId     String
+  artisanId String
+  clientId  String
+  amount    Int
+  message   String
+  status    ProposalStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
   // Relations
-  job        Job            @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  artisan    User           @relation("SentProposals", fields: [artisanId], references: [id])
-  client     User           @relation("ReceivedProposals", fields: [clientId], references: [id])
-  contract   Contract?
-  
+  job      Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  artisan  User      @relation("SentProposals", fields: [artisanId], references: [id])
+  client   User      @relation("ReceivedProposals", fields: [clientId], references: [id])
+  contract Contract?
+
   @@unique([jobId, artisanId])
   @@index([jobId, status])
   @@index([artisanId, status])
 }
 
 model Contract {
-  id             String          @id @default(uuid(7))
-  jobId          String          @unique
-  proposalId     String          @unique
-  clientId       String
-  artisanId      String
-  amount         Int
-  status         ContractStatus  @default(DRAFT)
-  currency       String          @default("NGN")
-  paystackReference String?      @unique
+  id                       String         @id @default(uuid(7))
+  jobId                    String         @unique
+  proposalId               String         @unique
+  clientId                 String
+  artisanId                String
+  amount                   Int
+  status                   ContractStatus @default(DRAFT)
+  currency                 String         @default("NGN")
+  paystackReference        String?        @unique
   paystackAuthorizationUrl String?
-  paystackAccessCode String?
-  fundedPaymentId String?
-  payoutRequestedAt DateTime?
-  paidOutAt      DateTime?
-  refundedAt     DateTime?
-  refundReason   String?
-  payoutFailureReason String?
-  
+  paystackAccessCode       String?
+  fundedPaymentId          String?
+  payoutRequestedAt        DateTime?
+  paidOutAt                DateTime?
+  refundedAt               DateTime?
+  refundReason             String?
+  payoutFailureReason      String?
+
   // Lifecycle timestamps
-  fundedAt       DateTime?
-  activatedAt    DateTime?
-  startedAt      DateTime?
-  completedAt    DateTime?
-  cancelledAt    DateTime?
-  
+  fundedAt    DateTime?
+  activatedAt DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+  cancelledAt DateTime?
+
   // Completion confirmations
-  clientConfirmedCompletion Boolean @default(false)
-  clientConfirmedAt        DateTime?
-  artisanConfirmedCompletion Boolean @default(false)
-  artisanConfirmedAt       DateTime?
-  
+  clientConfirmedCompletion  Boolean   @default(false)
+  clientConfirmedAt          DateTime?
+  artisanConfirmedCompletion Boolean   @default(false)
+  artisanConfirmedAt         DateTime?
+
   // Payment tracking
-  escrowReleased Boolean @default(false)
-  escrowReleasedAt DateTime?
-  platformFeeDeducted Boolean @default(false)
-  
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  
+  escrowReleased      Boolean   @default(false)
+  escrowReleasedAt    DateTime?
+  platformFeeDeducted Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  job            Job             @relation(fields: [jobId], references: [id])
-  proposal       Proposal        @relation(fields: [proposalId], references: [id])
-  client         User            @relation("ClientContracts", fields: [clientId], references: [id])
-  artisan        User            @relation("ArtisanContracts", fields: [artisanId], references: [id])
-  conversation   Conversation?
-  review         Review?
-  payments       Payment[]
-  ledgerEntries  LedgerEntry[]
+  job             Job              @relation(fields: [jobId], references: [id])
+  proposal        Proposal         @relation(fields: [proposalId], references: [id])
+  client          User             @relation("ClientContracts", fields: [clientId], references: [id])
+  artisan         User             @relation("ArtisanContracts", fields: [artisanId], references: [id])
+  conversation    Conversation?
+  review          Review?
+  payments        Payment[]
+  ledgerEntries   LedgerEntry[]
   financialEvents FinancialEvent[]
-  disputes       Dispute[]
-  
+  disputes        Dispute[]
+
   @@index([clientId, status])
   @@index([artisanId, status])
   @@index([status, activatedAt])
 }
 
 model Conversation {
-  id         String    @id @default(uuid(7))
-  contractId String    @unique
+  id         String   @id @default(uuid(7))
+  contractId String   @unique
   clientId   String
   artisanId  String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  contract   Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  messages   Message[]
+  contract Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  messages Message[]
 
   @@index([clientId, updatedAt])
   @@index([artisanId, updatedAt])
@@ -392,7 +392,7 @@ model Message {
   fileSize       Int?
   createdAt      DateTime    @default(now())
 
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId, createdAt])
   @@index([senderId, createdAt])
@@ -406,53 +406,53 @@ model Wallet {
   version   Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Review {
-  id         String   @id @default(uuid(7))  
-  contractId String   @unique
-  clientId   String
-  artisanId  String
-  rating     Int
-  comment    String?
-  categories Json?
-  workQuality Int?
-  communication Int?
-  timeliness Int?
+  id              String   @id @default(uuid(7))
+  contractId      String   @unique
+  clientId        String
+  artisanId       String
+  rating          Int
+  comment         String?
+  categories      Json?
+  workQuality     Int?
+  communication   Int?
+  timeliness      Int?
   professionalism Int?
-  evidence   Json?
-  isPublic   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-  
+  evidence        Json?
+  isPublic        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
   // Relations
-  contract   Contract @relation(fields: [contractId], references: [id])
-  client     User     @relation("SentReviews", fields: [clientId], references: [id])
-  artisan    User     @relation("ReceivedReviews", fields: [artisanId], references: [id])
-  
+  contract Contract @relation(fields: [contractId], references: [id])
+  client   User     @relation("SentReviews", fields: [clientId], references: [id])
+  artisan  User     @relation("ReceivedReviews", fields: [artisanId], references: [id])
+
   @@index([artisanId, rating])
 }
 
 model Notification {
-  id        String   @id @default(uuid(7))
-  userId    String
-  type      String   @default("system_update")
-  title     String
-  message   String
-  entityId  String?
+  id         String    @id @default(uuid(7))
+  userId     String
+  type       String    @default("system_update")
+  title      String
+  message    String
+  entityId   String?
   entityType String?
-  actionUrl String?
-  priority  String   @default("medium")
-  read      Boolean  @default(false)
-  isArchived Boolean @default(false)
-  metadata  Json?
-  createdAt DateTime
-  readAt    DateTime?
+  actionUrl  String?
+  priority   String    @default("medium")
+  read       Boolean   @default(false)
+  isArchived Boolean   @default(false)
+  metadata   Json?
+  createdAt  DateTime
+  readAt     DateTime?
   archivedAt DateTime?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@index([userId, createdAt])
   @@index([userId, type, createdAt])
@@ -471,68 +471,68 @@ model AuditLog {
 }
 
 model Payment {
-  id                String         @id @default(uuid(7))
-  contractId        String
-  userId            String
-  amount            Int
-  status            PaymentStatus  @default(PENDING)
-  currency          String         @default("NGN")
-  gateway           String?
-  paymentMethod     String?
-  paymentReference  String?
-  paystackAccessCode String?
+  id                       String        @id @default(uuid(7))
+  contractId               String
+  userId                   String
+  amount                   Int
+  status                   PaymentStatus @default(PENDING)
+  currency                 String        @default("NGN")
+  gateway                  String?
+  paymentMethod            String?
+  paymentReference         String?
+  paystackAccessCode       String?
   paystackAuthorizationUrl String?
-  paystackTransactionId String?
-  recipientCode     String?
-  transferCode      String?
-  verificationCode  String?
-  isVerified        Boolean        @default(false)
-  metadata          Json?
-  failureReason     String?
-  createdAt         DateTime       @default(now())
-  verifiedAt        DateTime?
-  completedAt       DateTime?
-  refundedAt        DateTime?
-  
+  paystackTransactionId    String?
+  recipientCode            String?
+  transferCode             String?
+  verificationCode         String?
+  isVerified               Boolean       @default(false)
+  metadata                 Json?
+  failureReason            String?
+  createdAt                DateTime      @default(now())
+  verifiedAt               DateTime?
+  completedAt              DateTime?
+  refundedAt               DateTime?
+
   // Relations
-  contract          Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  user              User          @relation("UserPayments", fields: [userId], references: [id], onDelete: Restrict)
-  ledgerEntries     LedgerEntry[]
-  
+  contract      Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  user          User          @relation("UserPayments", fields: [userId], references: [id], onDelete: Restrict)
+  ledgerEntries LedgerEntry[]
+
   @@index([contractId, status])
   @@index([userId, createdAt])
   @@index([status, createdAt])
 }
 
 model KycDocument {
-  id           String            @id @default(uuid(7))
-  userId       String
-  documentType KycDocumentType
-  documentUrl  String
-  status       KycDocumentStatus @default(PENDING)
-  reviewedBy   String?
-  reviewedAt   DateTime?
+  id              String            @id @default(uuid(7))
+  userId          String
+  documentType    KycDocumentType
+  documentUrl     String
+  status          KycDocumentStatus @default(PENDING)
+  reviewedBy      String?
+  reviewedAt      DateTime?
   rejectionReason String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
   // Relations
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, status])
   @@index([status, createdAt])
 }
 
 model IdempotencyKey {
-  id          String   @id @default(uuid(7))
+  id          String    @id @default(uuid(7))
   key         String
-  namespace   String   @default("default")
-  lockedAt    DateTime? 
+  namespace   String    @default("default")
+  lockedAt    DateTime?
   expiresAt   DateTime?
   completedAt DateTime?
   metadata    Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@unique([namespace, key])
   @@index([createdAt])
@@ -548,7 +548,7 @@ model FinancialEvent {
   metadata   Json?
   createdAt  DateTime           @default(now())
 
-  contract   Contract           @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
   @@index([contractId, createdAt])
   @@index([type, createdAt])
@@ -562,15 +562,15 @@ enum LedgerAccountType {
 }
 
 model LedgerAccount {
-  id        String   @id @default(uuid(7))
+  id        String            @id @default(uuid(7))
   name      String
   type      LedgerAccountType
-  userId    String?  @unique
-  balance   Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userId    String?           @unique
+  balance   Int               @default(0)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   debitEntries  LedgerEntry[] @relation("DebitAccount")
   creditEntries LedgerEntry[] @relation("CreditAccount")
 
@@ -578,20 +578,20 @@ model LedgerAccount {
 }
 
 model LedgerEntry {
-  id                String   @id @default(uuid(7))
-  debitAccountId    String
-  creditAccountId   String
-  amount            Int
-  contractId        String?
-  paymentId         String?
-  reference         String
-  description       String?
-  createdAt         DateTime @default(now())
+  id              String   @id @default(uuid(7))
+  debitAccountId  String
+  creditAccountId String
+  amount          Int
+  contractId      String?
+  paymentId       String?
+  reference       String
+  description     String?
+  createdAt       DateTime @default(now())
 
-  debitAccount      LedgerAccount @relation("DebitAccount", fields: [debitAccountId], references: [id], onDelete: Restrict)
-  creditAccount     LedgerAccount @relation("CreditAccount", fields: [creditAccountId], references: [id], onDelete: Restrict)
-  contract          Contract?     @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  payment           Payment?      @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  debitAccount  LedgerAccount @relation("DebitAccount", fields: [debitAccountId], references: [id], onDelete: Restrict)
+  creditAccount LedgerAccount @relation("CreditAccount", fields: [creditAccountId], references: [id], onDelete: Restrict)
+  contract      Contract?     @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  payment       Payment?      @relation(fields: [paymentId], references: [id], onDelete: SetNull)
 
   @@index([reference])
   @@index([debitAccountId])

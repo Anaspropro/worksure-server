@@ -71,9 +71,8 @@ export class AdminService {
     private readonly cacheService: RedisCacheService,
   ) {}
 
-  async getAllUsers(search?: string, page = 1, limit = 50) {
+  async getAllUsers(search?: string, cursor?: string, limit = 50) {
     const take = Math.min(limit, 100);
-    const skip = (page - 1) * take;
 
     const where: Prisma.UserWhereInput = search
       ? {
@@ -88,8 +87,11 @@ export class AdminService {
       this.prisma.user.findMany({
         where,
         orderBy: { createdAt: 'asc' },
-        take,
-        skip,
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
       }),
       this.prisma.user.groupBy({
         by: ['status'],
@@ -97,6 +99,12 @@ export class AdminService {
         _count: { id: true },
       }),
     ]);
+
+    let nextCursor: string | undefined = undefined;
+    if (data.length > take) {
+      const nextItem = data.pop();
+      nextCursor = nextItem?.id;
+    }
 
     const statusMap = Object.fromEntries(
       statusGroups.map((g) => [g.status, g._count.id]),
@@ -107,9 +115,8 @@ export class AdminService {
       data: data.map((user) => this.mapUser(user)),
       meta: {
         total,
-        page,
         limit: take,
-        totalPages: Math.ceil(total / take),
+        nextCursor,
         active: statusMap['ACTIVE'] ?? 0,
         banned: statusMap['BANNED'] ?? 0,
       },
@@ -404,9 +411,8 @@ export class AdminService {
     };
   }
 
-  async getAllDisputes(page = 1, limit = 50) {
+  async getAllDisputes(cursor?: string, limit = 50) {
     const take = Math.min(limit, 100);
-    const skip = (page - 1) * take;
     const [disputes, total, active, resolved] = await Promise.all([
       this.prisma.dispute.findMany({
         include: {
@@ -418,13 +424,22 @@ export class AdminService {
           },
         },
         orderBy: { createdAt: 'desc' },
-        take,
-        skip,
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
       }),
       this.prisma.dispute.count(),
       this.prisma.dispute.count({ where: { status: DisputeStatus.OPEN } }),
       this.prisma.dispute.count({ where: { status: DisputeStatus.RESOLVED } }),
     ]);
+
+    let nextCursor: string | undefined = undefined;
+    if (disputes.length > take) {
+      const nextItem = disputes.pop();
+      nextCursor = nextItem?.id;
+    }
 
     return {
       data: disputes.map((dispute: any) => ({
@@ -435,9 +450,8 @@ export class AdminService {
       })),
       meta: {
         total,
-        page,
         limit: take,
-        totalPages: Math.ceil(total / take),
+        nextCursor,
         active,
         resolved,
       },
@@ -596,7 +610,7 @@ export class AdminService {
     };
   }
 
-  async getAllJobs(search?: string, status?: string, page = 1, limit = 50) {
+  async getAllJobs(search?: string, status?: string, cursor?: string, limit = 50) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
@@ -608,7 +622,6 @@ export class AdminService {
     }
 
     const take = Math.min(limit, 100);
-    const skip = (page - 1) * take;
 
     const baseWhere: Prisma.JobWhereInput = normalizedStatus
       ? { status: normalizedStatus as JobStatus }
@@ -628,8 +641,11 @@ export class AdminService {
       this.prisma.job.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        take,
-        skip,
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
       }),
       this.prisma.job.count({ where }),
       this.prisma.job.count({
@@ -640,13 +656,18 @@ export class AdminService {
       }),
     ]);
 
+    let nextCursor: string | undefined = undefined;
+    if (data.length > take) {
+      const nextItem = data.pop();
+      nextCursor = nextItem?.id;
+    }
+
     return {
       data: data.map((job) => this.mapJob(job)),
       meta: {
         total,
-        page,
         limit: take,
-        totalPages: Math.ceil(total / take),
+        nextCursor,
         flagged,
       },
     };
@@ -697,7 +718,7 @@ export class AdminService {
     };
   }
 
-  async getAllTransactions(type?: string, page = 1, limit = 50) {
+  async getAllTransactions(type?: string, cursor?: string, limit = 50) {
     const normalizedType = type?.toUpperCase();
     if (
       normalizedType &&
@@ -709,7 +730,6 @@ export class AdminService {
     }
 
     const take = Math.min(limit, 100);
-    const skip = (page - 1) * take;
     const where = normalizedType
       ? { type: normalizedType as TransactionType }
       : undefined;
@@ -717,19 +737,27 @@ export class AdminService {
       this.prisma.transaction.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        take,
-        skip,
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
       }),
       this.prisma.transaction.count({ where }),
     ]);
+
+    let nextCursor: string | undefined = undefined;
+    if (data.length > take) {
+      const nextItem = data.pop();
+      nextCursor = nextItem?.id;
+    }
 
     return {
       data: data.map((transaction) => this.mapTransaction(transaction)),
       meta: {
         total,
-        page,
         limit: take,
-        totalPages: Math.ceil(total / take),
+        nextCursor,
         escrowTransactions: data.filter(
           (transaction) => transaction.type === TransactionType.ESCROW_HOLD,
         ).length,
@@ -749,30 +777,37 @@ export class AdminService {
   }
 
 
-  async getAuditLogs(page = 1, limit = 50) {
+  async getAuditLogs(cursor?: string, limit = 50) {
     const take = Math.min(limit, 100);
-    const skip = (page - 1) * take;
     const [data, total] = await Promise.all([
       this.prisma.auditLog.findMany({
         orderBy: { performedAt: 'desc' },
-        take,
-        skip,
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
       }),
       this.prisma.auditLog.count(),
     ]);
+
+    let nextCursor: string | undefined = undefined;
+    if (data.length > take) {
+      const nextItem = data.pop();
+      nextCursor = nextItem?.id;
+    }
 
     return {
       data: data.map((log) => this.mapAuditLog(log)),
       meta: {
         total,
-        page,
         limit: take,
-        totalPages: Math.ceil(total / take),
+        nextCursor,
       },
     };
   }
 
-  async getAllContracts(search?: string, status?: string, page = 1, limit = 50) {
+  async getAllContracts(search?: string, status?: string, cursor?: string, limit = 50) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
@@ -784,7 +819,6 @@ export class AdminService {
     }
 
     const take = Math.min(limit, 100);
-    const skip = (page - 1) * take;
 
     const baseWhere: Prisma.ContractWhereInput = normalizedStatus
       ? { status: normalizedStatus as ContractStatus }
@@ -811,11 +845,20 @@ export class AdminService {
           job: { select: { title: true } },
         },
         orderBy: { createdAt: 'desc' },
-        take,
-        skip,
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
       }),
       this.prisma.contract.count({ where }),
     ]);
+
+    let nextCursor: string | undefined = undefined;
+    if (contracts.length > take) {
+      const nextItem = contracts.pop();
+      nextCursor = nextItem?.id;
+    }
 
     return {
       data: contracts.map((c) => ({
@@ -826,9 +869,8 @@ export class AdminService {
       })),
       meta: {
         total,
-        page,
         limit: take,
-        totalPages: Math.ceil(total / take),
+        nextCursor,
       },
     };
   }
