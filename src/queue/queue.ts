@@ -55,3 +55,8 @@ export const payoutQueue = new Queue('payout-queue', {
   connection: redisConnection as any,
   defaultJobOptions,
 });
+
+export const escrowQueue = new Queue('escrow-queue', {
+  connection: redisConnection as any,
+  defaultJobOptions,
+});

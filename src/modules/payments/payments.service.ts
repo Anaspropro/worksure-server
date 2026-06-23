@@ -5,7 +5,12 @@ import {
   NotFoundException,
   forwardRef,
   Inject,
+  OnModuleInit,
+  OnModuleDestroy,
 } from '@nestjs/common';
+import { Worker } from 'bullmq';
+import { redisConnection } from '../../queue/redis';
+import { escrowQueue } from '../../queue/queue';
 import { v7 as uuidv7 } from 'uuid';
 import { randomBytes } from 'node:crypto';
 import { PrismaService } from '../../database/prisma.service';
@@ -24,9 +29,10 @@ import { IdempotencyService } from '../../common/services/idempotency.service';
 import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
-export class PaymentsService {
+export class PaymentsService implements OnModuleInit, OnModuleDestroy {
   private readonly payoutNamespace = 'payout';
   private readonly refundNamespace = 'refund';
+  private escrowWorker: Worker;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -36,6 +42,26 @@ export class PaymentsService {
     @Inject(forwardRef(() => WalletService))
     private readonly walletService: WalletService,
   ) {}
+
+  onModuleInit() {
+    this.escrowWorker = new Worker('escrow-queue', async (job) => {
+      if (job.name === 'process-payout') {
+        await this.processEscrowPayout(job.data);
+      } else if (job.name === 'process-refund') {
+        await this.processEscrowRefund(job.data);
+      }
+    }, { connection: redisConnection as any });
+
+    this.escrowWorker.on('failed', (job, err) => {
+      console.error(`[Escrow Worker] Job ${job?.id} failed:`, err);
+    });
+  }
+
+  async onModuleDestroy() {
+    if (this.escrowWorker) {
+      await this.escrowWorker.close();
+    }
+  }
 
   private buildTransferReference(contractId: string) {
     const hash = randomBytes(4).toString('hex');
@@ -608,57 +634,20 @@ export class PaymentsService {
         });
       });
 
-      const transferData = await this.paystackClient.call<{
-        transfer_code: string;
-        reference?: string;
-        status?: string;
-      }>(
-        '/transfer',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            source: 'balance',
-            amount: payoutAmount * 100,
-            recipient: recipientCode,
-            reason: `WorkSure payout for contract ${contract.id}`,
-            reference,
-          }),
-        },
-        {
-          'X-Idempotency-Key': reference,
-        },
-      );
-
-      await this.prisma.$transaction(async (tx) => {
-        const payment = await tx.payment.findFirst({
-          where: {
-            contractId: contract.id,
-            isVerified: true,
-          },
-          orderBy: {
-            createdAt: 'desc',
-          },
-        });
-
-        if (payment) {
-          await tx.payment.update({
-            where: { id: payment.id },
-            data: {
-              recipientCode,
-              transferCode: transferData.transfer_code,
-            },
-          });
-        }
+      await escrowQueue.add('process-payout', {
+        contractId: contract.id,
+        payoutAmount,
+        recipientCode,
+        reference,
+        lockKey,
+        platformFee,
       });
-
-      await this.idempotency.complete(lockKey, this.payoutNamespace);
-      await this.contractsService.markPayoutInitiated(contract.id);
 
       return {
         message: 'Payout initiated successfully',
         reference,
         recipientCode,
-        transferCode: transferData.transfer_code,
+        transferCode: null,
         payoutAmount,
         platformFee,
       };
@@ -841,25 +830,15 @@ export class PaymentsService {
         });
       });
 
-      await this.paystackClient.call<{
-        status?: string;
-      }>('/refund', {
-        method: 'POST',
-        body: JSON.stringify({
-          transaction: payment.paymentReference,
-          amount: contract.amount * 100,
-          merchant_note: reason || `Refund for contract ${contractId}`,
-        }),
-      });
-
-      await this.contractsService.refundContract(
+      await escrowQueue.add('process-refund', {
         contractId,
         userId,
         isAdmin,
-        reason,
-      );
-
-      await this.idempotency.complete(lockKey, this.refundNamespace);
+        reason: reason || null,
+        paymentReference: payment.paymentReference,
+        amount: contract.amount,
+        lockKey,
+      });
     } catch (error) {
       if (dbTxId) {
         await this.prisma.transaction.update({
@@ -1294,4 +1273,101 @@ export class PaymentsService {
     };
   }
   // Duplicate webhook handlers removed — unified handler above is used.
+
+  private async processEscrowPayout(data: {
+    contractId: string;
+    payoutAmount: number;
+    recipientCode: string;
+    reference: string;
+    lockKey: string;
+    platformFee: number;
+  }) {
+    const { contractId, payoutAmount, recipientCode, reference, lockKey } = data;
+    try {
+      const transferData = await this.paystackClient.call<{
+        transfer_code: string;
+        reference?: string;
+        status?: string;
+      }>(
+        '/transfer',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            source: 'balance',
+            amount: payoutAmount * 100,
+            recipient: recipientCode,
+            reason: `WorkSure payout for contract ${contractId}`,
+            reference,
+          }),
+        },
+        {
+          'X-Idempotency-Key': reference,
+        },
+      );
+
+      await this.prisma.$transaction(async (tx) => {
+        const payment = await tx.payment.findFirst({
+          where: {
+            contractId,
+            isVerified: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        });
+
+        if (payment) {
+          await tx.payment.update({
+            where: { id: payment.id },
+            data: {
+              recipientCode,
+              transferCode: transferData.transfer_code,
+            },
+          });
+        }
+      });
+
+      await this.idempotency.complete(lockKey, this.payoutNamespace);
+      await this.contractsService.markPayoutInitiated(contractId);
+    } catch (err) {
+      console.error(`[Escrow Worker] process-payout failed for contract ${contractId}`, err);
+      throw err;
+    }
+  }
+
+  private async processEscrowRefund(data: {
+    contractId: string;
+    userId: string;
+    isAdmin: boolean;
+    reason: string | null;
+    paymentReference: string;
+    amount: number;
+    lockKey: string;
+  }) {
+    const { contractId, userId, isAdmin, reason, paymentReference, amount, lockKey } = data;
+    try {
+      await this.paystackClient.call<{
+        status?: string;
+      }>('/refund', {
+        method: 'POST',
+        body: JSON.stringify({
+          transaction: paymentReference,
+          amount: amount * 100,
+          merchant_note: reason || `Refund for contract ${contractId}`,
+        }),
+      });
+
+      await this.contractsService.refundContract(
+        contractId,
+        userId,
+        isAdmin,
+        reason || undefined,
+      );
+
+      await this.idempotency.complete(lockKey, this.refundNamespace);
+    } catch (err) {
+      console.error(`[Escrow Worker] process-refund failed for contract ${contractId}`, err);
+      throw err;
+    }
+  }
 }
