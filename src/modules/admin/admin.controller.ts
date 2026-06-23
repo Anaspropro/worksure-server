@@ -8,6 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 import {
   ApiBearerAuth,
@@ -42,6 +43,8 @@ export class AdminController {
 
   @ApiOperation({ summary: 'List all users' })
   @ApiOkResponse({ description: 'User list returned successfully.' })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000)
   @Get('users')
   getAllUsers(
     @Query('search') search?: string,
@@ -119,6 +122,8 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: 'List all disputes' })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000)
   @Get('disputes')
   getAllDisputes(
     @Query('page') page?: string,
@@ -152,6 +157,8 @@ export class AdminController {
     required: false,
     description: 'Job status filter',
   })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000)
   @Get('jobs')
   getAllJobs(
     @Query('search') search?: string,
@@ -190,6 +197,8 @@ export class AdminController {
     required: false,
     description: 'Transaction type filter',
   })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000)
   @Get('transactions')
   getAllTransactions(
     @Query('type') type?: string,
@@ -223,6 +232,8 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: 'List audit logs' })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000)
   @Get('audit-logs')
   getAuditLogs(
     @Query('page') page?: string,
@@ -240,6 +251,8 @@ export class AdminController {
     required: false,
     description: 'Contract status filter',
   })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000)
   @Get('contracts')
   getAllContracts(
     @Query('search') search?: string,

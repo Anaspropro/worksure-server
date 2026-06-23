@@ -73,8 +73,8 @@ export class JobsService {
 
   async listJobs(query: JobListQueryDto) {
     const {
-      page = 1,
       limit = 10,
+      cursor,
       status,
       clientId,
       artisanId,
@@ -82,7 +82,6 @@ export class JobsService {
       search,
     } = query;
     const take = Math.min(limit, 100);
-    const skip = (page - 1) * take;
 
     const where: any = {};
     if (status) where.status = status;
@@ -101,8 +100,8 @@ export class JobsService {
     const [jobs, total] = await Promise.all([
       this.prisma.job.findMany({
         where,
-        skip,
-        take,
+        take: take + 1,
+        ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
         include: {
           client: { select: { id: true, name: true, email: true } },
           artisan: { select: { id: true, name: true, email: true } },
@@ -113,17 +112,20 @@ export class JobsService {
       this.prisma.job.count({ where }),
     ]);
 
+    let nextCursor: string | undefined = undefined;
+    if (jobs.length > take) {
+      const nextItem = jobs.pop();
+      nextCursor = nextItem!.id;
+    }
+
     const items = jobs.map((job) => this.formatJobResponse(job));
 
     return {
       data: items,
       pagination: {
-        page,
+        nextCursor,
         limit: take,
         total,
-        totalPages: Math.ceil(total / take),
-        hasNext: page * take < total,
-        hasPrev: page > 1,
       },
     };
   }

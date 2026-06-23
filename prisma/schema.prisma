@@ -265,7 +265,6 @@ model Transaction {
   
   @@index([userId, createdAt])
   @@index([type, status])
-  @@index([reference])
 }
 
 model ArtisanProfile {
@@ -410,8 +409,6 @@ model Wallet {
   
   // Relations
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@index([userId])
 }
 
 model Review {
@@ -437,7 +434,6 @@ model Review {
   artisan    User     @relation("ReceivedReviews", fields: [artisanId], references: [id])
   
   @@index([artisanId, rating])
-  @@index([contractId])
 }
 
 model Notification {
@@ -579,7 +575,6 @@ model LedgerAccount {
   creditEntries LedgerEntry[] @relation("CreditAccount")
 
   @@index([type])
-  @@index([userId])
 }
 
 model LedgerEntry {
@@ -611,7 +606,6 @@ model VerificationToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  @@index([token])
   @@index([email])
 }
 

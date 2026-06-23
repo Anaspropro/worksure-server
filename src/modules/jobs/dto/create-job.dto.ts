@@ -184,11 +184,10 @@ export class JobListQueryDto {
   @IsString()
   search?: string;
 
-  @ApiPropertyOptional({ description: 'Page number (default: 1)' })
+  @ApiPropertyOptional({ description: 'Cursor for pagination (Job ID)' })
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  page?: number = 1;
+  @IsString()
+  cursor?: string;
 
   @ApiPropertyOptional({
     description: 'Items per page (default: 10, max: 100)',

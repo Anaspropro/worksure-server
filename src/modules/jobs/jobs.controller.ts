@@ -63,7 +63,7 @@ export class JobsController {
   @ApiQuery({ name: 'artisanId', required: false })
   @ApiQuery({ name: 'category', required: false })
   @ApiQuery({ name: 'search', required: false })
-  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'cursor', required: false, type: String })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(60000)

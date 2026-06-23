@@ -22,6 +22,7 @@ import {
   UserStatus,
 } from '../../generated/prisma';
 import { PrismaService } from '../../database/prisma.service';
+import { RedisCacheService } from '../../common/cache/redis-cache.service';
 
 type AdminActor = {
   id: string;
@@ -67,6 +68,7 @@ export class AdminService {
     private readonly authService: AuthService,
     private readonly paymentsService: PaymentsService,
     private readonly notificationsService: NotificationsService,
+    private readonly cacheService: RedisCacheService,
   ) {}
 
   async getAllUsers(search?: string, page = 1, limit = 50) {
@@ -242,6 +244,9 @@ export class AdminService {
       userStatus: updatedUser.status,
     });
 
+    await this.cacheService.invalidatePattern('*admin/users*');
+    await this.cacheService.invalidatePattern('analytics:report:*');
+
     return {
       message: `User ${updatedUser.id} has been banned.`,
       data: this.mapUser(updatedUser),
@@ -269,6 +274,9 @@ export class AdminService {
         userStatus: updatedUser.status,
       },
     );
+
+    await this.cacheService.invalidatePattern('*admin/users*');
+    await this.cacheService.invalidatePattern('analytics:report:*');
 
     return {
       message: `User ${updatedUser.id} has been restored.`,
@@ -301,6 +309,9 @@ export class AdminService {
         artisanVerified: updatedUser.artisanVerified,
       },
     );
+
+    await this.cacheService.invalidatePattern('*admin/users*');
+    await this.cacheService.invalidatePattern('analytics:report:*');
 
     return {
       message: `Artisan ${updatedUser.id} verified successfully.`,
@@ -343,6 +354,9 @@ export class AdminService {
         artisanVerified: false,
       },
     );
+
+    await this.cacheService.invalidatePattern('*admin/users*');
+    await this.cacheService.invalidatePattern('analytics:report:*');
 
     return {
       message: `Artisan ${updatedUser.id} verification rejected.`,
@@ -564,6 +578,13 @@ export class AdminService {
       }),
     ]);
 
+    await this.cacheService.invalidatePattern('*admin/disputes*');
+    await this.cacheService.invalidatePattern('*admin/jobs*');
+    await this.cacheService.invalidatePattern('*admin/transactions*');
+    await this.cacheService.invalidatePattern('*admin/contracts*');
+    await this.cacheService.invalidatePattern('analytics:report:*');
+    await this.cacheService.invalidatePattern('analytics:contract:stats');
+
     return {
       message: `Dispute ${updatedDispute.id} resolved with decision ${parsedDecision}.`,
       data: this.mapDispute(updatedDispute),
@@ -666,6 +687,9 @@ export class AdminService {
         reason: resolvedReason,
       },
     );
+
+    await this.cacheService.invalidatePattern('*admin/jobs*');
+    await this.cacheService.invalidatePattern('analytics:report:*');
 
     return {
       message: `Job ${updatedJob.id} has been force-closed.`,

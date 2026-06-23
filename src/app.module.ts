@@ -30,6 +30,8 @@ import { SanitizationService } from './common/services/sanitization.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppCacheModule } from './common/cache/cache.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CacheModule } from '@nestjs/cache-manager';
+import KeyvRedis from '@keyv/redis';
 
 @Module({
   imports: [
@@ -66,6 +68,12 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         limit: 300,
       },
     ]),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: () => ({
+        stores: [new KeyvRedis(process.env.REDIS_URL || 'redis://localhost:6379')],
+      }),
+    }),
     AppConfigModule,
     AppCacheModule,
     PrismaModule,

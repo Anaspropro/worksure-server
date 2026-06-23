@@ -50,4 +50,23 @@ export class RedisCacheService {
       this.logger.error(`Error deleting cache key ${key}: ${e.message}`);
     }
   }
+
+  /**
+   * Invalidate cache keys matching a specific pattern
+   * @param pattern The pattern to match (e.g., '/admin/jobs*')
+   */
+  async invalidatePattern(pattern: string): Promise<void> {
+    try {
+      let cursor = '0';
+      do {
+        const [nextCursor, keys] = await redisConnection.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+        cursor = nextCursor;
+        if (keys.length > 0) {
+          await redisConnection.del(...keys);
+        }
+      } while (cursor !== '0');
+    } catch (e) {
+      this.logger.error(`Error invalidating pattern ${pattern}: ${e.message}`);
+    }
+  }
 }
