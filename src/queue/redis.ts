@@ -2,7 +2,7 @@ import Redis from 'ioredis';
 import * as dotenv from 'dotenv';
 
 // Ensure environment variables are loaded if run independently
-dotenv.config();
+dotenv.config({ override: true });
 
 const redisUrl = process.env.REDIS_URL;
 
@@ -17,8 +17,7 @@ if (!redisUrl) {
 export const redisConnection = new Redis(redisUrl, {
   maxRetriesPerRequest: null,
   // Optimal settings for Upstash / remote serverless Redis
-  family: 0, 
-  tls: redisUrl.startsWith('rediss://') ? { rejectUnauthorized: false } : undefined,
+  family: 0,
 });
 
 redisConnection.on('error', (err) => {

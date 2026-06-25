@@ -32,6 +32,7 @@ import { AppCacheModule } from './common/cache/cache.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CacheModule } from '@nestjs/cache-manager';
 import KeyvRedis from '@keyv/redis';
+import { redisConnection } from './queue/redis';
 
 @Module({
   imports: [
@@ -71,7 +72,7 @@ import KeyvRedis from '@keyv/redis';
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: () => ({
-        stores: [new KeyvRedis(process.env.REDIS_URL || 'redis://localhost:6379')],
+        stores: [new KeyvRedis(redisConnection as any)],
       }),
     }),
     AppConfigModule,
