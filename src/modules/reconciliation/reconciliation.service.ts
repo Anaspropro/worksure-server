@@ -58,20 +58,8 @@ export class ReconciliationService {
           },
         });
       } else {
+        // Exception-only tracking: do not save success logs to the database
         this.logger.log('Reconciliation successful. No discrepancies found.');
-        await this.prisma.auditLog.create({
-          data: {
-            action: 'RECONCILIATION_SUCCESS',
-            entityType: 'REPORT',
-            entityId: 'SYSTEM',
-            performedBy: 'SYSTEM',
-            performedAt: new Date(),
-            metadata: {
-              totalObligations,
-              actualPaystackBalance
-            },
-          },
-        });
       }
 
       return {
