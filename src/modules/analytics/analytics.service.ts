@@ -39,7 +39,7 @@ export class AnalyticsService {
       throw new BadRequestException(`Unsupported report type: ${reportType}.`);
     }
 
-    const cacheKey = `analytics:report:${reportType}:${month ?? 'all'}`;
+    const cacheKey = `analytics:report:${reportType}:${month ?? 'all'}:v3`;
     const cached = await this.cacheService.get<any>(cacheKey);
 
     if (cached) {
@@ -147,8 +147,26 @@ export class AnalyticsService {
       }
       case 'overview':
       default: {
-        const [userCount, jobStatusGroups, openDisputes, feeTotal, flaggedJobs, pendingArtisansCount, pendingPayoutsCount] =
-          await Promise.all([
+        const escrowStatuses = [
+          'FUNDED',
+          'ACTIVE',
+          'IN_PROGRESS',
+          'CLIENT_CONFIRMED',
+          'READY_FOR_PAYOUT',
+          'DISPUTED',
+        ];
+
+        const [
+          userCount, 
+          jobStatusGroups, 
+          openDisputes, 
+          feeTotal, 
+          flaggedJobs, 
+          pendingArtisansCount, 
+          pendingPayoutsCount,
+          walletAgg,
+          escrowAgg
+        ] = await Promise.all([
             this.prisma.user.count(),
             this.prisma.job.groupBy({
               by: ['status'],
@@ -164,10 +182,18 @@ export class AnalyticsService {
             this.prisma.job.count({ where: { flagged: true } }),
             this.prisma.user.count({ where: { role: UserRole.ARTISAN, artisanVerified: false } }),
             this.prisma.contract.count({ where: { status: 'READY_FOR_PAYOUT' } }),
+            this.prisma.wallet.aggregate({ _sum: { balance: true } }),
+            this.prisma.contract.aggregate({
+              where: { status: { in: escrowStatuses as any } },
+              _sum: { amount: true },
+            }),
           ]);
         const jobMap = Object.fromEntries(
           jobStatusGroups.map((s) => [s.status, s._count.id]),
         );
+        // Wallet balance already includes frozen funds (escrow), so adding escrow amounts would double-count.
+        const totalSystemValue = walletAgg._sum.balance ?? 0;
+        
         reportData = {
           reportType: 'overview',
           totals: {
@@ -178,6 +204,7 @@ export class AnalyticsService {
             flaggedJobs,
             pendingArtisansCount,
             pendingPayoutsCount,
+            totalSystemValue,
           },
         };
         break;
