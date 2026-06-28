@@ -35,7 +35,12 @@ The system follows a **state-machine-driven modular monolith** design.
 * Executes funding, payouts, and refunds
 * Confirms outcomes via **webhooks**
 
-#### 3. Interaction Layer
+#### 3. Data Integrity & Monitoring Layer
+* `monitoring`: Automated background jobs (`DataPruningService`) to clean up old database logs (14-180 days).
+* `reconciliation`: Automated financial ledger checks ensuring zero discrepancy between system balances and escrow accounts.
+* Supports robust error-logging with "exception-only" DB persistence to optimize storage.
+
+#### 4. Interaction Layer
 * `jobs`, `proposals`, `chat`, `reviews`, `disputes`, `notifications`, `admin`
 * Supports user workflows around contracts
 
@@ -53,6 +58,7 @@ User Action → Contracts (state) → Payments → Paystack → Webhook → Cont
 
 * **Core**: NestJS, TypeScript
 * **Database**: PostgreSQL, Prisma ORM
+* **Background Jobs**: `@nestjs/schedule` (Cron jobs)
 * **Auth & Security**: JWT (`@nestjs/jwt`), bcrypt, helmet, class-validator
 * **Payments**: Paystack API (transactions, transfers, refunds, webhooks)
 * **Realtime & Media**: WebSockets (chat), Cloudinary (uploads)
