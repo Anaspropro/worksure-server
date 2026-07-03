@@ -18,6 +18,11 @@ export const redisConnection = new Redis(redisUrl, {
   maxRetriesPerRequest: null,
   // Optimal settings for Upstash / remote serverless Redis
   family: 0,
+  tls: {
+    rejectUnauthorized: false
+  },
+  enableReadyCheck: false,
+  connectTimeout: 20000,
 });
 
 redisConnection.on('error', (err) => {

@@ -245,6 +245,7 @@ model Job {
   @@index([artisanId, status])
   @@index([category])
   @@index([status, createdAt])
+  @@index([title, description])
 }
 
 model Transaction {

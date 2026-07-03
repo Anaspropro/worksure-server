@@ -71,17 +71,20 @@ export class AdminService {
     private readonly cacheService: RedisCacheService,
   ) {}
 
-  async getAllUsers(search?: string, cursor?: string, limit = 50) {
+  async getAllUsers(search?: string, role?: UserRole, cursor?: string, limit = 50) {
     const take = Math.min(limit, 100);
+
+    const baseWhere: Prisma.UserWhereInput = role ? { role } : {};
 
     const where: Prisma.UserWhereInput = search
       ? {
+          ...baseWhere,
           OR: [
             { name: { contains: search, mode: 'insensitive' } },
             { email: { contains: search, mode: 'insensitive' } },
           ],
         }
-      : {};
+      : baseWhere;
 
     const [data, statusGroups] = await Promise.all([
       this.prisma.user.findMany({

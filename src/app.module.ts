@@ -10,6 +10,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ContractsModule } from './modules/contracts/contracts.module';
 import { DisputesModule } from './modules/disputes/disputes.module';
 import { HealthModule } from './modules/health/health.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { QueueModule } from './modules/queue/queue.module';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaymentsModule } from './modules/payments/payments.module';
@@ -96,6 +98,8 @@ import { redisConnection } from './queue/redis';
     AuditModule,
     MonitoringModule,
     ReconciliationModule,
+    AnalyticsModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [

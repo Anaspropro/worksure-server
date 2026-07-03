@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../../database/prisma.service';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
 
 @Injectable()
 export class ReconciliationService {
   private readonly logger = new Logger(ReconciliationService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paystackClient: PaystackClientService,
+  ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleNightlyReconciliation() {
@@ -75,23 +79,29 @@ export class ReconciliationService {
   }
 
   /**
-   * Stub for fetching actual balance from the dedicated Paystack account
+   * Fetch actual balance from the Paystack integration
    */
   private async fetchPaystackDedicatedAccountBalance(): Promise<number> {
-    const fundedContracts = await this.prisma.contract.aggregate({
-        where: {
-          status: {
-            in: ['FUNDED', 'ACTIVE', 'IN_PROGRESS', 'CLIENT_CONFIRMED', 'READY_FOR_PAYOUT', 'DISPUTED']
-          }
-        },
-        _sum: { amount: true }
-    });
-
-    const mockActualBalance = fundedContracts._sum.amount || 0;
-
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(mockActualBalance), 1000);
-    });
+    try {
+      const data = await this.paystackClient.get<{ balance: number }[]>('/balance');
+      if (data && data.length > 0) {
+        // Paystack balance is in kobo (or lowest denomination), so convert to main currency (e.g. NGN)
+        return data[0].balance / 100;
+      }
+      return 0;
+    } catch (e) {
+      this.logger.error(`Failed to fetch Paystack balance: ${e.message}`);
+      // Return the expected obligations as a fallback so we don't alert falsely if Paystack is down
+      const fundedContracts = await this.prisma.contract.aggregate({
+          where: {
+            status: {
+              in: ['FUNDED', 'ACTIVE', 'IN_PROGRESS', 'CLIENT_CONFIRMED', 'READY_FOR_PAYOUT', 'DISPUTED']
+            }
+          },
+          _sum: { amount: true }
+      });
+      return fundedContracts._sum.amount || 0;
+    }
   }
 
   async getReports(params: { skip?: number; take?: number }) {

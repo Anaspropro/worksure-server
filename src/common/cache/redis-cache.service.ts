@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { redisConnection } from '../../queue/redis';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable()
 export class RedisCacheService {
@@ -67,6 +68,48 @@ export class RedisCacheService {
       } while (cursor !== '0');
     } catch (e) {
       this.logger.error(`Error invalidating pattern ${pattern}: ${e.message}`);
+    }
+  }
+
+  /**
+   * Acquire a distributed lock using Redis SET NX
+   * @param key The lock key
+   * @param ttlMs Time to live in milliseconds
+   * @returns A string token if lock acquired, else null
+   */
+  async acquireLock(key: string, ttlMs: number = 5000): Promise<string | null> {
+    try {
+      const token = uuidv7();
+      const acquired = await redisConnection.set(key, token, 'PX', ttlMs, 'NX');
+      if (acquired === 'OK') {
+        return token;
+      }
+      return null;
+    } catch (e) {
+      this.logger.error(`Error acquiring lock ${key}: ${e.message}`);
+      return null;
+    }
+  }
+
+  /**
+   * Release a distributed lock safely using a Lua script
+   * @param key The lock key
+   * @param token The token returned by acquireLock
+   */
+  async releaseLock(key: string, token: string): Promise<boolean> {
+    try {
+      const script = `
+        if redis.call("get", KEYS[1]) == ARGV[1] then
+          return redis.call("del", KEYS[1])
+        else
+          return 0
+        end
+      `;
+      const result = await redisConnection.eval(script, 1, key, token);
+      return result === 1;
+    } catch (e) {
+      this.logger.error(`Error releasing lock ${key}: ${e.message}`);
+      return false;
     }
   }
 }

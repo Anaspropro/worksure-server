@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
 import { RedisCacheService } from '../../common/cache/redis-cache.service';
@@ -34,20 +35,23 @@ export class AnalyticsService {
     private readonly cacheService: RedisCacheService,
   ) {}
 
-  async generateReports(reportType: ReportType = 'overview', month?: string) {
+  async generateReports(reportType: ReportType = 'overview', month?: string, force = false) {
     if (!REPORT_TYPES.includes(reportType)) {
       throw new BadRequestException(`Unsupported report type: ${reportType}.`);
     }
 
     const cacheKey = `analytics:report:${reportType}:${month ?? 'all'}:v3`;
-    const cached = await this.cacheService.get<any>(cacheKey);
+    
+    if (!force) {
+      const cached = await this.cacheService.get<any>(cacheKey);
 
-    if (cached) {
-      this.logger.debug(`Cache hit for ${cacheKey}`);
-      return cached;
+      if (cached) {
+        this.logger.debug(`Cache hit for ${cacheKey}`);
+        return cached;
+      }
     }
 
-    this.logger.debug(`Cache miss for ${cacheKey}, executing heavy queries...`);
+    this.logger.debug(`Cache miss/force for ${cacheKey}, executing heavy queries...`);
     let reportData: Record<string, unknown>;
 
     switch (reportType) {

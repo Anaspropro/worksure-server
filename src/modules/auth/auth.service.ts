@@ -1,9 +1,10 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   Logger,
-  NotFoundException,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
@@ -16,6 +17,7 @@ import { AccountLockoutService } from '../../common/services/account-lockout.ser
 import { SessionService } from '../../common/services/session.service';
 import { PrismaService } from '../../database/prisma.service';
 import { EmailService } from '../../common/services/email.service';
+import { EmailProducer } from '../../queue/producer';
 
 
 export type AuthenticatedUser = {
@@ -71,9 +73,13 @@ export class AuthService {
       },
     });
 
-    // Send verification OTP using Resend in the background to prevent blocking/timing out the request
-    this.emailService.sendVerificationOtp(user.email, verificationToken).catch((err) => {
-      this.logger.error(`Failed to send verification email for ${user.email} in the background: ${err.message}`, err.stack);
+    // Send verification OTP using BullMQ to prevent blocking and ensure retries
+    EmailProducer.sendVerificationOtp({
+      to: user.email,
+      name: user.name,
+      token: verificationToken,
+    }).catch((err) => {
+      this.logger.error(`Failed to enqueue verification email for ${user.email}: ${err.message}`, err.stack);
     });
 
     return {
@@ -299,9 +305,13 @@ export class AuthService {
       },
     });
 
-    // Send verification OTP in the background (fire-and-forget) to ensure instant responsiveness
-    this.emailService.sendVerificationOtp(user.email, verificationToken).catch((err) => {
-      this.logger.error(`Failed to send verification email for ${user.email} on resend: ${err.message}`, err.stack);
+    // Send verification OTP in the background via BullMQ to ensure instant responsiveness
+    EmailProducer.sendVerificationOtp({
+      to: user.email,
+      name: user.name,
+      token: verificationToken,
+    }).catch((err) => {
+      this.logger.error(`Failed to enqueue verification email for ${user.email} on resend: ${err.message}`, err.stack);
     });
 
     return {
@@ -341,9 +351,13 @@ export class AuthService {
       requestedAt: new Date(),
     });
 
-    // Send the password reset email in the background (fire-and-forget) to keep request responsive
-    this.emailService.sendPasswordReset(user.email, rawToken).catch((err) => {
-      this.logger.error(`Failed to send password reset email for ${user.email}: ${err.message}`, err.stack);
+    // Send the password reset email via BullMQ to keep request responsive
+    EmailProducer.sendPasswordReset({
+      to: user.email,
+      name: user.name,
+      token: rawToken,
+    }).catch((err) => {
+      this.logger.error(`Failed to enqueue password reset email for ${user.email}: ${err.message}`, err.stack);
     });
 
     const response: {
