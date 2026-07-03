@@ -205,6 +205,7 @@ export class AnalyticsService {
             pendingArtisansCount,
             pendingPayoutsCount,
             totalSystemValue,
+            lockedInEscrow: escrowAgg._sum.amount ?? 0,
           },
         };
         break;
