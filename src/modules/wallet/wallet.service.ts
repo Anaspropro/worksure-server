@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   OnModuleInit,
   OnModuleDestroy,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { TransactionType, TransactionStatus } from '../../generated/prisma';
@@ -12,14 +13,19 @@ import { v7 as uuidv7 } from 'uuid';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { Worker } from 'bullmq';
 import { redisConnection } from '../../queue/redis';
+import { RedisCacheService } from '../../common/cache/redis-cache.service';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class WalletService implements OnModuleInit, OnModuleDestroy {
   private payoutWorker: Worker;
+  private readonly logger = new Logger(WalletService.name);
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly paystackClient: PaystackClientService,
+    private readonly cacheService: RedisCacheService,
+    private readonly cls: ClsService,
   ) {}
 
   onModuleInit() {
@@ -570,20 +576,25 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Amount must be positive');
     }
 
-    const wallet = await this.prisma.wallet.findUnique({
-      where: { userId },
-    });
+    const lockKey = `wallet:lock:${userId}`;
+    const lockToken = await this.cacheService.acquireLock(lockKey, 10000);
+    if (!lockToken) throw new BadRequestException('Wallet is currently busy. Please try again.');
 
-    if (!wallet) {
-      throw new NotFoundException('Wallet not found');
-    }
+    try {
+      const wallet = await this.prisma.wallet.findUnique({
+        where: { userId },
+      });
 
-    const availableBalance = wallet.balance - wallet.frozen;
-    if (availableBalance < amount) {
-      throw new BadRequestException('Insufficient balance');
-    }
+      if (!wallet) {
+        throw new NotFoundException('Wallet not found');
+      }
 
-    const result = await this.prisma.$transaction(async (tx) => {
+      const availableBalance = wallet.balance - wallet.frozen;
+      if (availableBalance < amount) {
+        throw new BadRequestException('Insufficient balance');
+      }
+
+      const result = await this.prisma.$transaction(async (tx) => {
       const updatedWallet = await tx.wallet.update({
         where: {
           userId,
@@ -622,6 +633,9 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       available: result.wallet.balance - result.wallet.frozen,
       transaction: result.transaction,
     };
+    } finally {
+      await this.cacheService.releaseLock(lockKey, lockToken);
+    }
   }
 
   async unfreezeFunds(
@@ -634,19 +648,24 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Amount must be positive');
     }
 
-    const wallet = await this.prisma.wallet.findUnique({
-      where: { userId },
-    });
+    const lockKey = `wallet:lock:${userId}`;
+    const lockToken = await this.cacheService.acquireLock(lockKey, 10000);
+    if (!lockToken) throw new BadRequestException('Wallet is currently busy. Please try again.');
 
-    if (!wallet) {
-      throw new NotFoundException('Wallet not found');
-    }
+    try {
+      const wallet = await this.prisma.wallet.findUnique({
+        where: { userId },
+      });
 
-    if (wallet.frozen < amount) {
-      throw new BadRequestException('Insufficient frozen funds to release');
-    }
+      if (!wallet) {
+        throw new NotFoundException('Wallet not found');
+      }
 
-    const result = await this.prisma.$transaction(async (tx) => {
+      if (wallet.frozen < amount) {
+        throw new BadRequestException('Insufficient frozen funds to release');
+      }
+
+      const result = await this.prisma.$transaction(async (tx) => {
       const updatedWallet = await tx.wallet.update({
         where: {
           userId,
@@ -685,6 +704,9 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       available: result.wallet.balance - result.wallet.frozen,
       transaction: result.transaction,
     };
+    } finally {
+      await this.cacheService.releaseLock(lockKey, lockToken);
+    }
   }
 
   async releaseEscrowToUser(
@@ -698,35 +720,48 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Amount must be positive');
     }
 
-    const sourceWallet = await this.prisma.wallet.findUnique({
-      where: { userId: sourceUserId },
-    });
+    // To avoid deadlocks when locking two resources, lock them in consistent order (lexicographically)
+    const sortedIds = [sourceUserId, destinationUserId].sort();
+    const lockKey1 = `wallet:lock:${sortedIds[0]}`;
+    const lockKey2 = `wallet:lock:${sortedIds[1]}`;
 
-    if (!sourceWallet) {
-      throw new NotFoundException('Source wallet not found');
-    }
+    const lockToken1 = await this.cacheService.acquireLock(lockKey1, 10000);
+    if (!lockToken1) throw new BadRequestException('Wallets are currently busy. Please try again.');
+    
+    let lockToken2: string | null = null;
+    try {
+      lockToken2 = await this.cacheService.acquireLock(lockKey2, 10000);
+      if (!lockToken2) throw new BadRequestException('Wallets are currently busy. Please try again.');
 
-    if (sourceWallet.frozen < amount) {
-      throw new BadRequestException('Insufficient frozen funds to release');
-    }
-
-    let destinationWallet = await this.prisma.wallet.findUnique({
-      where: { userId: destinationUserId },
-    });
-
-    if (!destinationWallet) {
-      destinationWallet = await this.prisma.wallet.create({
-        data: {
-          id: uuidv7(),
-          userId: destinationUserId,
-          balance: 0,
-          frozen: 0,
-          version: 1,
-        },
+      const sourceWallet = await this.prisma.wallet.findUnique({
+        where: { userId: sourceUserId },
       });
-    }
 
-    const result = await this.prisma.$transaction(async (tx) => {
+      if (!sourceWallet) {
+        throw new NotFoundException('Source wallet not found');
+      }
+
+      if (sourceWallet.frozen < amount) {
+        throw new BadRequestException('Insufficient frozen funds to release');
+      }
+
+      let destinationWallet = await this.prisma.wallet.findUnique({
+        where: { userId: destinationUserId },
+      });
+
+      if (!destinationWallet) {
+        destinationWallet = await this.prisma.wallet.create({
+          data: {
+            id: uuidv7(),
+            userId: destinationUserId,
+            balance: 0,
+            frozen: 0,
+            version: 1,
+          },
+        });
+      }
+
+      const result = await this.prisma.$transaction(async (tx) => {
       const updatedSourceWallet = await tx.wallet.update({
         where: {
           userId: sourceUserId,
@@ -786,6 +821,10 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       },
       transaction: result.transaction,
     };
+    } finally {
+      if (lockToken2) await this.cacheService.releaseLock(lockKey2, lockToken2);
+      await this.cacheService.releaseLock(lockKey1, lockToken1);
+    }
   }
 
   async chargePlatformFee(

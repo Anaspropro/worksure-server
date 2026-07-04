@@ -48,11 +48,13 @@ export class AdminController {
   @Get('users')
   getAllUsers(
     @Query('search') search?: string,
+    @Query('role') role?: UserRole,
     @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
   ) {
     return this.adminService.getAllUsers(
       search,
+      role,
       cursor,
       limit ? parseInt(limit, 10) : undefined,
     );

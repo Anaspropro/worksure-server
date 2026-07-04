@@ -2,6 +2,8 @@ import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ClsModule, ClsService } from 'nestjs-cls';
+import { v4 as uuidv4 } from 'uuid';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './modules/admin/admin.module';
@@ -10,6 +12,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ContractsModule } from './modules/contracts/contracts.module';
 import { DisputesModule } from './modules/disputes/disputes.module';
 import { HealthModule } from './modules/health/health.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { QueueModule } from './modules/queue/queue.module';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaymentsModule } from './modules/payments/payments.module';
@@ -33,28 +37,51 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CacheModule } from '@nestjs/cache-manager';
 import KeyvRedis from '@keyv/redis';
 import { redisConnection } from './queue/redis';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
-    LoggerModule.forRoot({
-      pinoHttp: {
-        transport: process.env.NODE_ENV !== 'production'
-          ? {
-              target: 'pino-pretty',
-              options: {
-                singleLine: true,
-              },
-            }
-          : undefined,
-        autoLogging: false,
-        serializers: {
-          req: (req) => ({
-            id: req.id,
-            method: req.method,
-            url: req.url,
-            // Omitting the massive headers object to keep production logs clean
-          }),
-        },
+    PrometheusModule.register({
+      path: '/metrics',
+      defaultMetrics: {
+        enabled: true,
+      },
+    }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true, generateId: true, idGenerator: (req: any) => req.headers['x-request-id'] ?? uuidv4() },
+    }),
+    LoggerModule.forRootAsync({
+      inject: [ClsService],
+      useFactory: (cls: ClsService) => {
+        return {
+          pinoHttp: {
+            transport: process.env.NODE_ENV !== 'production'
+              ? {
+                  target: 'pino-pretty',
+                  options: {
+                    singleLine: true,
+                  },
+                }
+              : undefined,
+            autoLogging: false,
+            customProps: () => ({
+              userId: cls.get('userId'),
+              traceId: cls.get('traceId'),
+              contractId: cls.get('contractId'),
+              transactionId: cls.get('transactionId'),
+              paymentReference: cls.get('paymentReference'),
+              walletId: cls.get('walletId'),
+            }),
+            serializers: {
+              req: (req) => ({
+                id: req.id,
+                method: req.method,
+                url: req.url,
+              }),
+            },
+          },
+        };
       },
     }),
     EventEmitterModule.forRoot({
@@ -96,6 +123,8 @@ import { redisConnection } from './queue/redis';
     AuditModule,
     MonitoringModule,
     ReconciliationModule,
+    AnalyticsModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { PrismaService } from '../../database/prisma.service';
+import { redisConnection } from '../../queue/redis';
 
 @Injectable()
 export class WebhookSignatureService {
@@ -64,7 +64,7 @@ export class WebhookSignatureService {
       : (body as unknown as T);
   }
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor() {}
 
   /**
    * Check if webhook event has been processed (idempotency)
@@ -72,26 +72,9 @@ export class WebhookSignatureService {
    * @returns Promise<boolean> - True if already processed
    */
   async isEventProcessed(eventId: string): Promise<boolean> {
-    const existing = await this.prisma.idempotencyKey.findUnique({
-      where: {
-        namespace_key: {
-          namespace: this.namespace,
-          key: eventId,
-        },
-      },
-    });
-
-    if (existing) {
-      if (!existing.completedAt) {
-        // It might be locked by an active process.
-        // For a strict fintech app we should throw or wait,
-        // but returning true rejects the concurrent paystack webhook safely.
-        return true;
-      }
-      return true;
-    }
-
-    return false;
+    const key = `idempotency:${this.namespace}:${eventId}`;
+    const exists = await redisConnection.exists(key);
+    return exists === 1;
   }
 
   /**
@@ -99,18 +82,11 @@ export class WebhookSignatureService {
    * Returns false when another worker/request already owns or completed it.
    */
   async tryBeginEventProcessing(eventId: string): Promise<boolean> {
-    try {
-      await this.prisma.idempotencyKey.create({
-        data: {
-          key: eventId,
-          namespace: this.namespace,
-          lockedAt: new Date(),
-        },
-      });
-      return true;
-    } catch {
-      return false;
-    }
+    const key = `idempotency:${this.namespace}:${eventId}`;
+    // Set a lock for 10 minutes while processing. 
+    // NX ensures only one worker gets it.
+    const acquired = await redisConnection.set(key, 'processing', 'PX', 10 * 60 * 1000, 'NX');
+    return acquired === 'OK';
   }
 
   /**
@@ -119,22 +95,8 @@ export class WebhookSignatureService {
    * @returns Promise<void>
    */
   async markEventProcessed(eventId: string): Promise<void> {
-    await this.prisma.idempotencyKey.upsert({
-      where: {
-        namespace_key: {
-          namespace: this.namespace,
-          key: eventId,
-        },
-      },
-      update: {
-        completedAt: new Date(),
-      },
-      create: {
-        key: eventId,
-        namespace: this.namespace,
-        lockedAt: new Date(),
-        completedAt: new Date(),
-      },
-    });
+    const key = `idempotency:${this.namespace}:${eventId}`;
+    // Keep idempotency key for 7 days after completion
+    await redisConnection.set(key, 'completed', 'PX', 7 * 24 * 60 * 60 * 1000);
   }
 }

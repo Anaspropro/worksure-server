@@ -33,6 +33,20 @@ export class EmailProducer {
       priority: EmailJobPriority.LOW,
     });
   }
+
+  static async sendVerificationOtp(data: EmailJobData & { token: string }) {
+    console.log(`[Producer] Adding Verification OTP Email for ${data.to}`);
+    return await emailQueue.add('sendVerificationOtp', data, {
+      priority: EmailJobPriority.VIP,
+    });
+  }
+
+  static async sendPasswordReset(data: EmailJobData & { token: string }) {
+    console.log(`[Producer] Adding Password Reset Email for ${data.to}`);
+    return await emailQueue.add('sendPasswordReset', data, {
+      priority: EmailJobPriority.VIP,
+    });
+  }
 }
 
 // Example execution if file is run directly (node src/queue/producer.js)
