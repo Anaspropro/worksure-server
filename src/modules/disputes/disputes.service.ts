@@ -8,6 +8,8 @@ import { PrismaService } from '../../database/prisma.service';
 import { DisputeDecision, DisputeStatus } from '../../generated/prisma';
 import { ContractsService } from '../contracts/contracts.service';
 import { PaymentsService } from '../payments/payments.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DisputeRaisedEvent, DomainEventName } from '../../common/events/domain.events';
 
 @Injectable()
 export class DisputesService {
@@ -15,6 +17,7 @@ export class DisputesService {
     private readonly prisma: PrismaService,
     private readonly contractsService: ContractsService,
     private readonly paymentsService: PaymentsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async createDispute(
@@ -113,6 +116,19 @@ export class DisputesService {
     if (contractId) {
       await this.contractsService.markDisputed(contractId);
     }
+
+    const relatedUserId = userId === clientId ? artisanId : clientId;
+
+    this.eventEmitter.emit(
+      DomainEventName.DISPUTE_RAISED,
+      new DisputeRaisedEvent(
+        dispute.id,
+        dispute.contractId || '',
+        dispute.contractId || '', // using contractId as reference
+        userId,
+        relatedUserId
+      )
+    );
 
     return dispute;
   }

@@ -13,12 +13,15 @@ import {
 } from '../../generated/prisma';
 
 import { IdempotencyService } from '../../common/services/idempotency.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ContractFundedEvent, DomainEventName } from '../../common/events/domain.events';
 
 @Injectable()
 export class ContractsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly idempotency: IdempotencyService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
   private readonly contractTransitionNamespace = 'contract_transition';
 
@@ -487,6 +490,22 @@ export class ContractsService {
         operationKey,
         this.contractTransitionNamespace,
       );
+
+      const job = await this.prisma.job.findUnique({ where: { id: updatedContract.jobId }, select: { title: true } });
+
+      this.eventEmitter.emit(
+        DomainEventName.CONTRACT_FUNDED,
+        new ContractFundedEvent(
+          updatedContract.id,
+          updatedContract.id, // contract reference (placeholder)
+          updatedContract.jobId,
+          job?.title || 'Job',
+          updatedContract.clientId,
+          updatedContract.artisanId,
+          Number(updatedContract.amount)
+        )
+      );
+
       return updatedContract;
     } catch (error) {
       await this.idempotency.release(

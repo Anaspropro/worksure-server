@@ -14,10 +14,15 @@ import {
   ProposalResponseDto,
   ProposalListQueryDto,
 } from './dto/create-proposal.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DomainEventName, ProposalSubmittedEvent, ProposalAcceptedEvent } from '../../common/events/domain.events';
 
 @Injectable()
 export class ProposalsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   private ensureArtisanRole(user: { role: $Enums.UserRole }) {
     if (user.role !== UserRole.ARTISAN) {
@@ -135,6 +140,11 @@ export class ProposalsService {
         artisan: { select: { id: true, name: true, email: true } },
       },
     });
+
+    this.eventEmitter.emit(
+      DomainEventName.PROPOSAL_SUBMITTED,
+      new ProposalSubmittedEvent(proposal.id, proposal.jobId, proposal.job.title, proposal.artisanId, proposal.clientId)
+    );
 
     return this.formatProposalResponse(proposal);
   }
@@ -343,11 +353,22 @@ export class ProposalsService {
       where: { id },
       data: { status: ProposalStatus.ACCEPTED },
       include: {
-        job: { select: { id: true, clientId: true, status: true } },
+        job: { select: { id: true, clientId: true, status: true, title: true } },
         client: { select: { id: true, name: true, email: true } },
         artisan: { select: { id: true, name: true, email: true } },
       },
     });
+
+    this.eventEmitter.emit(
+      DomainEventName.PROPOSAL_ACCEPTED,
+      new ProposalAcceptedEvent(
+        updatedProposal.id,
+        updatedProposal.jobId,
+        (updatedProposal.job as any).title || 'Job', // fallback if TS gets mad
+        updatedProposal.artisanId,
+        updatedProposal.clientId
+      )
+    );
 
     return this.formatProposalResponse(updatedProposal);
   }

@@ -86,22 +86,23 @@ export class AdminService {
         }
       : baseWhere;
 
-    const [data, statusGroups] = await Promise.all([
-      this.prisma.user.findMany({
-        where,
-        orderBy: { createdAt: 'asc' },
-        take: take + 1,
-        ...(cursor && {
-          cursor: { id: cursor },
-          skip: 1,
-        }),
+    const data = await this.prisma.user.findMany({
+      where,
+      orderBy: { createdAt: 'asc' },
+      take: take + 1,
+      ...(cursor && {
+        cursor: { id: cursor },
+        skip: 1,
       }),
-      this.prisma.user.groupBy({
-        by: ['status'],
-        where,
-        _count: { id: true },
-      }),
-    ]);
+    });
+
+    const statusGroups = cursor
+      ? []
+      : await this.prisma.user.groupBy({
+          by: ['status'],
+          where,
+          _count: { id: true },
+        });
 
     let nextCursor: string | undefined = undefined;
     if (data.length > take) {
@@ -129,38 +130,67 @@ export class AdminService {
   async getUserDetail(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        artisanProfile: true,
-        wallet: true,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        status: true,
+        artisanVerified: true,
+        kycVerified: true,
+        emailVerified: true,
+        kycStatus: true,
+        paystackRecipientCode: true,
+        payoutBankCode: true,
+        payoutAccountNumber: true,
+        payoutAccountName: true,
+        phone: true,
+        createdAt: true,
+        updatedAt: true,
+        lastLoginAt: true,
+        artisanProfile: {
+          select: { bio: true, skills: true, experience: true, portfolio: true, verified: true, rating: true, reviewCount: true, updatedAt: true }
+        },
+        wallet: {
+          select: { balance: true, frozen: true, updatedAt: true }
+        },
         transactions: {
+          select: { id: true, userId: true, type: true, amount: true, status: true, reference: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 10,
         },
         notifications: {
+          select: { id: true, title: true, message: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
         clientJobs: {
+          select: { id: true, title: true, contractId: true, clientId: true, artisanId: true, amount: true, status: true, flagged: true, forceClosedAt: true, forceCloseReason: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
         artisanJobs: {
+          select: { id: true, title: true, contractId: true, clientId: true, artisanId: true, amount: true, status: true, flagged: true, forceClosedAt: true, forceCloseReason: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
         clientContracts: {
+          select: { id: true, amount: true, status: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
         artisanContracts: {
+          select: { id: true, amount: true, status: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
         sentReviews: {
+          select: { id: true, rating: true, comment: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
         receivedReviews: {
+          select: { id: true, rating: true, comment: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
@@ -173,7 +203,14 @@ export class AdminService {
 
     return {
       data: {
-        ...this.mapUser(user),
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+        artisanVerified: user.artisanVerified,
+        kycVerified: user.kycVerified,
+        createdAt: user.createdAt.toISOString(),
         lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
         updatedAt: user.updatedAt.toISOString(),
         wallet: user.wallet
@@ -197,7 +234,7 @@ export class AdminService {
             }
           : null,
         transactions: user.transactions.map((transaction) =>
-          this.mapTransaction(transaction),
+          this.mapTransaction(transaction as any),
         ),
         notifications: user.notifications.map((notification) => ({
           id: notification.id,
@@ -206,8 +243,8 @@ export class AdminService {
           createdAt: notification.createdAt.toISOString(),
         })),
         activity: {
-          clientJobs: user.clientJobs.map((job) => this.mapJob(job)),
-          artisanJobs: user.artisanJobs.map((job) => this.mapJob(job)),
+          clientJobs: user.clientJobs.map((job) => this.mapJob(job as any)),
+          artisanJobs: user.artisanJobs.map((job) => this.mapJob(job as any)),
           clientContracts: user.clientContracts.map((contract) => ({
             id: contract.id,
             amount: contract.amount,
@@ -640,24 +677,18 @@ export class AdminService {
         }
       : baseWhere;
 
-    const [data, total, flagged] = await Promise.all([
-      this.prisma.job.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: take + 1,
-        ...(cursor && {
-          cursor: { id: cursor },
-          skip: 1,
-        }),
+    const data = await this.prisma.job.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take: take + 1,
+      ...(cursor && {
+        cursor: { id: cursor },
+        skip: 1,
       }),
-      this.prisma.job.count({ where }),
-      this.prisma.job.count({
-        where: {
-          ...where,
-          flagged: true,
-        },
-      }),
-    ]);
+    });
+
+    const total = cursor ? 0 : await this.prisma.job.count({ where });
+    const flagged = cursor ? 0 : await this.prisma.job.count({ where: { ...where, flagged: true } });
 
     let nextCursor: string | undefined = undefined;
     if (data.length > take) {
@@ -736,18 +767,17 @@ export class AdminService {
     const where = normalizedType
       ? { type: normalizedType as TransactionType }
       : undefined;
-    const [data, total] = await Promise.all([
-      this.prisma.transaction.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: take + 1,
-        ...(cursor && {
-          cursor: { id: cursor },
-          skip: 1,
-        }),
+    const data = await this.prisma.transaction.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take: take + 1,
+      ...(cursor && {
+        cursor: { id: cursor },
+        skip: 1,
       }),
-      this.prisma.transaction.count({ where }),
-    ]);
+    });
+
+    const total = cursor ? 0 : await this.prisma.transaction.count({ where });
 
     let nextCursor: string | undefined = undefined;
     if (data.length > take) {

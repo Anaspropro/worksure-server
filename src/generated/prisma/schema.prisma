@@ -245,6 +245,8 @@ model Job {
   @@index([artisanId, status])
   @@index([category])
   @@index([status, createdAt])
+  @@index([title, description])
+  @@index([requiredSkills], type: Gin)
 }
 
 model Transaction {
@@ -265,6 +267,7 @@ model Transaction {
 
   @@index([userId, createdAt])
   @@index([type, status])
+  @@index([metadata], type: Gin)
 }
 
 model ArtisanProfile {
@@ -284,6 +287,7 @@ model ArtisanProfile {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([verified, rating])
+  @@index([skills], type: Gin)
 }
 
 model Proposal {

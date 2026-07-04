@@ -27,6 +27,8 @@ import { ContractsService } from '../contracts/contracts.service';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { IdempotencyService } from '../../common/services/idempotency.service';
 import { WalletService } from '../wallet/wallet.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DomainEventName, PaymentReleasedEvent } from '../../common/events/domain.events';
 
 @Injectable()
 export class PaymentsService implements OnModuleInit, OnModuleDestroy {
@@ -41,6 +43,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     private readonly idempotency: IdempotencyService,
     @Inject(forwardRef(() => WalletService))
     private readonly walletService: WalletService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   onModuleInit() {
@@ -1028,6 +1031,25 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
 
               // Mark contract as paid out INSIDE the transaction — ensures atomicity.
               await this.contractsService.markPaidOut(contractId);
+
+              const contract = await tx.contract.findUnique({
+                where: { id: contractId },
+                include: { job: true },
+              });
+
+              if (contract) {
+                this.eventEmitter.emit(
+                  DomainEventName.PAYMENT_PROCESSED,
+                  new PaymentReleasedEvent(
+                    transferTx.id, // paymentId or transactionId
+                    contractId,
+                    contract.jobId,
+                    contract.job?.title || 'Job',
+                    contract.artisanId,
+                    Number(payoutAmount)
+                  )
+                );
+              }
             }
           }
         });

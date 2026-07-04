@@ -9,7 +9,9 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  UseInterceptors,
 } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -20,6 +22,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { RedisCacheService } from '../../common/cache/redis-cache.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -37,7 +40,10 @@ import {
 @ApiTags('artisan')
 @Controller('artisan')
 export class ArtisanController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cacheService: RedisCacheService,
+  ) {}
 
   private ensureArtisanRole(user: { role: $Enums.UserRole }) {
     if (user.role !== $Enums.UserRole.ARTISAN) {
@@ -177,6 +183,8 @@ export class ArtisanController {
       },
     });
 
+    await this.cacheService.invalidatePattern(`*/artisan/${user.id}*`);
+
     return {
       ...profile,
       createdAt: profile.createdAt.toISOString(),
@@ -187,6 +195,8 @@ export class ArtisanController {
   @ApiOperation({ summary: 'Get artisan profile by user ID' })
   @ApiOkResponse({ description: 'Artisan profile returned successfully.' })
   @ApiNotFoundResponse({ description: 'Artisan profile not found.' })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000)
   @Get(':userId')
   async getArtisanProfileByUserId(
     @Param('userId') userId: string,
