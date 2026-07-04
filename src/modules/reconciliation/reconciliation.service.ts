@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../../database/prisma.service';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
+import { AlertingService } from '../monitoring/alerting.service';
 
 @Injectable()
 export class ReconciliationService {
@@ -10,6 +11,7 @@ export class ReconciliationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly paystackClient: PaystackClientService,
+    private readonly alertingService: AlertingService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -61,9 +63,21 @@ export class ReconciliationService {
             },
           },
         });
+        
+        await this.alertingService.sendCriticalAlert(
+          'reconciliation_mismatch',
+          'Reconciliation Mismatch Detected',
+          `The internal ledger obligations (${totalObligations}) do not match the Paystack actual balance (${actualPaystackBalance}). Discrepancy: ${discrepancy}`,
+          { totalObligations, actualPaystackBalance, discrepancy }
+        );
       } else {
         // Exception-only tracking: do not save success logs to the database
         this.logger.log('Reconciliation successful. No discrepancies found.');
+        
+        await this.alertingService.resolveAlert(
+          'reconciliation_mismatch', 
+          'Reconciliation mismatch resolved. Balances match.'
+        );
       }
 
       return {

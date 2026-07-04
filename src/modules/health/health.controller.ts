@@ -1,22 +1,28 @@
-import * as fs from 'node:fs';
-import * as os from 'node:os';
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { HealthCheckService, HealthCheck, MemoryHealthIndicator, PrismaHealthIndicator, MicroserviceHealthIndicator } from '@nestjs/terminus';
 import { PrismaService } from '../../database/prisma.service';
 import { AppConfigService } from '../../config/app-config.service';
+import { RedisOptions, Transport } from '@nestjs/microservices';
+import { AlertingService } from '../monitoring/alerting.service';
 
 @ApiTags('Health')
 @Controller('health')
 export class HealthController {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly configService: AppConfigService,
+    private health: HealthCheckService,
+    private prismaHealth: PrismaHealthIndicator,
+    private memory: MemoryHealthIndicator,
+    private microservice: MicroserviceHealthIndicator,
+    private prisma: PrismaService,
+    private configService: AppConfigService,
+    private alertingService: AlertingService,
   ) {}
 
   @Get()
   @ApiOperation({ summary: 'Basic health check' })
   @ApiResponse({ status: 200, description: 'Service is healthy' })
-  async health() {
+  healthCheck() {
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -26,79 +32,70 @@ export class HealthController {
   }
 
   @Get('ready')
+  @HealthCheck()
   @ApiOperation({ summary: 'Readiness check - includes database connectivity' })
   @ApiResponse({ status: 200, description: 'Service is ready' })
   @ApiResponse({ status: 503, description: 'Service is not ready' })
   async readiness() {
+    const checkPromise = this.health.check([
+      () => this.prismaHealth.pingCheck('database', this.prisma),
+      () => this.memory.checkHeap('memory_heap', 1024 * 1024 * 1024), // 1GB
+      () => this.memory.checkRSS('memory_rss', 1024 * 1024 * 1024), // 1GB
+      () => {
+        const url = new URL(process.env.REDIS_URL || 'redis://localhost:6379');
+        return this.microservice.pingCheck<RedisOptions>('redis', {
+          transport: Transport.REDIS,
+          options: { 
+            host: url.hostname,
+            port: parseInt(url.port || '6379'),
+            password: url.password,
+            tls: url.protocol === 'rediss:' ? { rejectUnauthorized: false } : undefined,
+          },
+        });
+      },
+    ]);
+
     try {
-      // Check database connectivity
-      await this.prisma.$queryRaw`SELECT 1`;
-      return {
-        status: 'ready',
-        timestamp: new Date().toISOString(),
-        checks: {
-          database: 'ok',
-          memory: this.getMemoryStatus(),
-          disk: this.getDiskStatus(),
-        },
-      };
-    } catch (error) {
-      return {
-        status: 'not ready',
-        timestamp: new Date().toISOString(),
-        error: error instanceof Error ? error.message : String(error),
-        checks: {
-          database: 'error',
-          memory: this.getMemoryStatus(),
-          disk: this.getDiskStatus(),
-        },
-      };
+      const result = await checkPromise;
+      
+      // If we reach here, it means all checks passed successfully.
+      // Send recovery for components if they were previously failing
+      this.alertingService.resolveAlert('health_database', 'Database connection restored and healthy.');
+      this.alertingService.resolveAlert('health_redis', 'Redis connection restored and healthy.');
+      
+      return result;
+    } catch (e: any) {
+      if (e.response && e.response.details) {
+        const details = e.response.details;
+        if (details.database?.status === 'down') {
+          this.alertingService.sendCriticalAlert(
+            'health_database',
+            'Database Connection Failure',
+            'The health check endpoint failed to connect to the Prisma Database.',
+            { details: details.database }
+          );
+        }
+        if (details.redis?.status === 'down') {
+          this.alertingService.sendCriticalAlert(
+            'health_redis',
+            'Redis Connection Failure',
+            'The health check endpoint failed to connect to Redis.',
+            { details: details.redis }
+          );
+        }
+      }
+      throw e;
     }
   }
 
   @Get('live')
   @ApiOperation({ summary: 'Liveness check' })
   @ApiResponse({ status: 200, description: 'Service is alive' })
-  async liveness() {
+  liveness() {
     return {
       status: 'alive',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
     };
-  }
-
-  private getMemoryStatus() {
-    const usage = process.memoryUsage();
-    const totalMemory = os.totalmem();
-    const freeMemory = os.freemem();
-
-    return {
-      used: Math.round((usage.heapUsed / 1024 / 1024) * 100) / 100, // MB
-      total: Math.round((usage.heapTotal / 1024 / 1024) * 100) / 100, // MB
-      external: Math.round((usage.external / 1024 / 1024) * 100) / 100, // MB
-      system: {
-        total: Math.round((totalMemory / 1024 / 1024) * 100) / 100, // MB
-        free: Math.round((freeMemory / 1024 / 1024) * 100) / 100, // MB
-        usagePercent: Math.round(
-          ((totalMemory - freeMemory) / totalMemory) * 100,
-        ),
-      },
-    };
-  }
-
-  private getDiskStatus() {
-    try {
-      fs.statSync('.');
-
-      return {
-        available: 'unknown', // Would need additional library for detailed disk info
-        status: 'ok',
-      };
-    } catch (error) {
-      return {
-        status: 'error',
-        error: error.message,
-      };
-    }
   }
 }

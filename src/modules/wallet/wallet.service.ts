@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   OnModuleInit,
   OnModuleDestroy,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { TransactionType, TransactionStatus } from '../../generated/prisma';
@@ -13,15 +14,18 @@ import { PaystackClientService } from '../../common/services/paystack-client.ser
 import { Worker } from 'bullmq';
 import { redisConnection } from '../../queue/redis';
 import { RedisCacheService } from '../../common/cache/redis-cache.service';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class WalletService implements OnModuleInit, OnModuleDestroy {
   private payoutWorker: Worker;
+  private readonly logger = new Logger(WalletService.name);
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly paystackClient: PaystackClientService,
     private readonly cacheService: RedisCacheService,
+    private readonly cls: ClsService,
   ) {}
 
   onModuleInit() {

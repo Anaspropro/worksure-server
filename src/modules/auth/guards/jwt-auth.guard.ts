@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
+import { ClsService } from 'nestjs-cls';
 import { IS_PUBLIC_ROUTE } from '../../../common/decorators/public.decorator';
 import { AuthService } from '../auth.service';
 
@@ -19,6 +20,7 @@ export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly authService: AuthService,
+    private readonly cls: ClsService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -40,6 +42,11 @@ export class JwtAuthGuard implements CanActivate {
 
     const token = authHeader.slice(7).trim();
     request.user = await this.authService.verifyAccessToken(token);
+    
+    if (request.user?.id) {
+      this.cls.set('userId', request.user.id);
+    }
+    
     return true;
   }
 }

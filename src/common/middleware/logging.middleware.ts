@@ -1,5 +1,7 @@
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { ClsService } from 'nestjs-cls';
+import { trace } from '@opentelemetry/api';
 
 export interface RequestWithLog extends Request {
   startTime: number;
@@ -7,11 +9,10 @@ export interface RequestWithLog extends Request {
   correlationId: string;
 }
 
-
-
 @Injectable()
 export class LoggingMiddleware implements NestMiddleware {
   private readonly logger = new Logger('HTTP');
+  constructor(private readonly cls: ClsService) {}
 
   use(req: RequestWithLog, res: Response, next: NextFunction) {
     const headerRequestId = req.get('x-request-id');
@@ -24,6 +25,11 @@ export class LoggingMiddleware implements NestMiddleware {
     req.requestId = requestId;
     req.correlationId = correlationId;
     req.startTime = startTime;
+
+    const span = trace.getActiveSpan();
+    if (span) {
+      this.cls.set('traceId', span.spanContext().traceId);
+    }
 
     // Propagate tracing identifiers to clients for correlation
     res.setHeader('X-Request-Id', requestId);

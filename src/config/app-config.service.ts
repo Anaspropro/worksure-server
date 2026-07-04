@@ -64,5 +64,10 @@ export class AppConfigService {
   get emailFromAddress(): string {
     return this.configService.get<string>('EMAIL_FROM_ADDRESS', 'noreply@bustaan.xyz');
   }
+
+  // Alerting
+  get discordWebhookUrl(): string | undefined {
+    return this.configService.get<string>('DISCORD_WEBHOOK_URL');
+  }
 }
 
