@@ -38,6 +38,9 @@ export enum EmailJobPriority {
 export interface EmailJobData {
   to: string;
   name: string;
+  token?: string;
+  subject?: string;
+  body?: string;
 }
 
 /**

@@ -35,6 +35,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppCacheModule } from './common/cache/cache.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CacheModule } from '@nestjs/cache-manager';
+import { EventsModule } from './modules/events/events.module';
 import KeyvRedis from '@keyv/redis';
 import { redisConnection } from './queue/redis';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
@@ -104,6 +105,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     }),
     AppConfigModule,
     AppCacheModule,
+    EventsModule,
     PrismaModule,
     HealthModule,
     AdminModule,

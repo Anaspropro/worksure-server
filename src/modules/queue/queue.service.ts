@@ -3,7 +3,7 @@ import { Worker, Job } from 'bullmq';
 import { redisConnection } from '../../queue/redis';
 import { EmailService } from '../../common/services/email.service';
 import { AlertingService } from '../monitoring/alerting.service';
-import { EmailJobData } from '../../queue/queue';
+import { EmailJobData, emailQueue } from '../../queue/queue';
 
 @Injectable()
 export class QueueService implements OnModuleInit, OnModuleDestroy {
@@ -36,6 +36,11 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
             if (!token) throw new Error('Missing reset token');
             await this.emailService.sendPasswordReset(to, token);
             break;
+          case 'sendCustomEmail':
+            // we would normally use emailService.sendEmail(to, subject, body), assuming that exists
+            // Since this is a test/placeholder, we log it.
+            this.logger.log(`[SIMULATED] Sending custom email to ${to}: ${job.data.subject}`);
+            break;
           default:
             this.logger.warn(`Unknown email job type: ${job.name}`);
         }
@@ -57,7 +62,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       // Not sending critical alert here because failures could be transient.
       // But we will log them. For critical issues, see 'error' or 'stalled'.
     });
-    
+
     this.emailWorker.on('error', (err) => {
       this.logger.error(`Worker error: ${err.message}`);
       this.alertingService.sendCriticalAlert(
@@ -78,6 +83,15 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     });
 
     this.logger.log('🚀 QueueService Email Worker started.');
+  }
+
+  async queueEmail(data: { to: string; subject: string; body: string }) {
+    await emailQueue.add('sendCustomEmail', {
+      name: 'sendCustomEmail',
+      to: data.to,
+      subject: data.subject,
+      body: data.body,
+    });
   }
 
   async onModuleDestroy() {

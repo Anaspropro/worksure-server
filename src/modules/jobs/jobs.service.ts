@@ -14,10 +14,15 @@ import {
   JobListQueryDto,
   JobResponseDto,
 } from './dto/create-job.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DomainEventName, JobPostedEvent } from '../../common/events/domain.events';
 
 @Injectable()
 export class JobsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   private ensureClientRole(user: { role: $Enums.UserRole }) {
     if (user.role !== UserRole.CLIENT) {
@@ -68,6 +73,11 @@ export class JobsService {
       },
     });
 
+    this.eventEmitter.emit(
+      DomainEventName.JOB_POSTED,
+      new JobPostedEvent(job.id, job.clientId, job.title)
+    );
+
     return this.formatJobResponse(job);
   }
 
@@ -97,20 +107,32 @@ export class JobsService {
       ];
     }
 
-    const [jobs, total] = await Promise.all([
-      this.prisma.job.findMany({
-        where,
-        take: take + 1,
-        ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
-        include: {
-          client: { select: { id: true, name: true, email: true } },
-          artisan: { select: { id: true, name: true, email: true } },
-          contract: { select: { id: true, status: true, amount: true } },
-        },
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.job.count({ where }),
-    ]);
+    // 1. Fetch jobs
+    const jobs = await this.prisma.job.findMany({
+      where,
+      take: take + 1,
+      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+      select: {
+        id: true,
+        title: true,
+        budget: true,
+        location: true,
+        requiredSkills: true,
+        category: true,
+        deadline: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        client: { select: { id: true, name: true, email: true } },
+        artisan: { select: { id: true, name: true, email: true } },
+        contract: { select: { id: true, status: true, amount: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // 2. Conditionally count totals to avoid full table scans on every page
+    // For subsequent pages (when cursor is present), total count is not necessary
+    const total = cursor ? 0 : await this.prisma.job.count({ where });
 
     let nextCursor: string | undefined = undefined;
     if (jobs.length > take) {
