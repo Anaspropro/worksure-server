@@ -29,7 +29,8 @@ import { AuditModule } from './modules/audit/audit.module';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
 import { ReconciliationModule } from './modules/reconciliation/reconciliation.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
-import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
+import { MetricsGuardMiddleware } from './common/middleware/metrics-guard.middleware';
+import { RedisThrottlerStorage } from './common/throttler/redis-throttler-storage';
 import { SanitizationService } from './common/services/sanitization.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppCacheModule } from './common/cache/cache.module';
@@ -90,13 +91,16 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
       delimiter: '.',
     }),
     ScheduleModule.forRoot(),
-    ThrottlerModule.forRoot([
-      {
-        name: 'default',
-        ttl: 60000,
-        limit: 300,
-      },
-    ]),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'default',
+          ttl: 60000,
+          limit: 300,
+        },
+      ],
+      storage: new RedisThrottlerStorage(),
+    }),
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: () => ({
@@ -141,6 +145,6 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggingMiddleware).forRoutes('*');
-    consumer.apply(RateLimitMiddleware).forRoutes('auth/login', 'auth/register');
+    consumer.apply(MetricsGuardMiddleware).forRoutes('metrics');
   }
 }

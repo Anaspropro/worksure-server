@@ -290,16 +290,6 @@ exports.Prisma.MessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.WalletScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  balance: 'balance',
-  frozen: 'frozen',
-  version: 'version',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.ReviewScalarFieldEnum = {
   id: 'id',
   contractId: 'contractId',
@@ -412,6 +402,8 @@ exports.Prisma.LedgerAccountScalarFieldEnum = {
   type: 'type',
   userId: 'userId',
   balance: 'balance',
+  frozen: 'frozen',
+  version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -572,11 +564,6 @@ exports.Prisma.MessageOrderByRelevanceFieldEnum = {
   fileUrl: 'fileUrl',
   fileType: 'fileType',
   fileName: 'fileName'
-};
-
-exports.Prisma.WalletOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId'
 };
 
 exports.Prisma.ReviewOrderByRelevanceFieldEnum = {
@@ -811,7 +798,6 @@ exports.Prisma.ModelName = {
   Contract: 'Contract',
   Conversation: 'Conversation',
   Message: 'Message',
-  Wallet: 'Wallet',
   Review: 'Review',
   Notification: 'Notification',
   AuditLog: 'AuditLog',

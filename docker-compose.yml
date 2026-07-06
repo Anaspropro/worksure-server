@@ -17,6 +17,21 @@ services:
       - ./prisma/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - worksure-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-worksure_user} -d $${POSTGRES_DB:-worksure_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis Database
+  redis:
+    image: redis:7-alpine
+    container_name: worksure-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - worksure-network
 
   # WorkSure API Application
   api:
@@ -31,10 +46,14 @@ services:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
       PORT: 3000
+      REDIS_URL: redis://redis:6379
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - ./uploads:/app/uploads
     networks:

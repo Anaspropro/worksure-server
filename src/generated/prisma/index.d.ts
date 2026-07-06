@@ -64,11 +64,6 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 /**
- * Model Wallet
- * 
- */
-export type Wallet = $Result.DefaultSelection<Prisma.$WalletPayload>
-/**
  * Model Review
  * 
  */
@@ -596,16 +591,6 @@ export class PrismaClient<
     * ```
     */
   get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.wallet`: Exposes CRUD operations for the **Wallet** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Wallets
-    * const wallets = await prisma.wallet.findMany()
-    * ```
-    */
-  get wallet(): Prisma.WalletDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.review`: Exposes CRUD operations for the **Review** model.
@@ -1160,7 +1145,6 @@ export namespace Prisma {
     Contract: 'Contract',
     Conversation: 'Conversation',
     Message: 'Message',
-    Wallet: 'Wallet',
     Review: 'Review',
     Notification: 'Notification',
     AuditLog: 'AuditLog',
@@ -1187,7 +1171,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "wallet" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1928,80 +1912,6 @@ export namespace Prisma {
           count: {
             args: Prisma.MessageCountArgs<ExtArgs>
             result: $Utils.Optional<MessageCountAggregateOutputType> | number
-          }
-        }
-      }
-      Wallet: {
-        payload: Prisma.$WalletPayload<ExtArgs>
-        fields: Prisma.WalletFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.WalletFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.WalletFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
-          }
-          findFirst: {
-            args: Prisma.WalletFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.WalletFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
-          }
-          findMany: {
-            args: Prisma.WalletFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>[]
-          }
-          create: {
-            args: Prisma.WalletCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
-          }
-          createMany: {
-            args: Prisma.WalletCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.WalletCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>[]
-          }
-          delete: {
-            args: Prisma.WalletDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
-          }
-          update: {
-            args: Prisma.WalletUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
-          }
-          deleteMany: {
-            args: Prisma.WalletDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.WalletUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.WalletUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>[]
-          }
-          upsert: {
-            args: Prisma.WalletUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$WalletPayload>
-          }
-          aggregate: {
-            args: Prisma.WalletAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateWallet>
-          }
-          groupBy: {
-            args: Prisma.WalletGroupByArgs<ExtArgs>
-            result: $Utils.Optional<WalletGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.WalletCountArgs<ExtArgs>
-            result: $Utils.Optional<WalletCountAggregateOutputType> | number
           }
         }
       }
@@ -2937,7 +2847,6 @@ export namespace Prisma {
     contract?: ContractOmit
     conversation?: ConversationOmit
     message?: MessageOmit
-    wallet?: WalletOmit
     review?: ReviewOmit
     notification?: NotificationOmit
     auditLog?: AuditLogOmit
@@ -3698,7 +3607,6 @@ export namespace Prisma {
     artisanContracts?: boolean | User$artisanContractsArgs<ExtArgs>
     clientJobs?: boolean | User$clientJobsArgs<ExtArgs>
     artisanJobs?: boolean | User$artisanJobsArgs<ExtArgs>
-    wallet?: boolean | User$walletArgs<ExtArgs>
     sentReviews?: boolean | User$sentReviewsArgs<ExtArgs>
     receivedReviews?: boolean | User$receivedReviewsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
@@ -3792,7 +3700,6 @@ export namespace Prisma {
     artisanContracts?: boolean | User$artisanContractsArgs<ExtArgs>
     clientJobs?: boolean | User$clientJobsArgs<ExtArgs>
     artisanJobs?: boolean | User$artisanJobsArgs<ExtArgs>
-    wallet?: boolean | User$walletArgs<ExtArgs>
     sentReviews?: boolean | User$sentReviewsArgs<ExtArgs>
     receivedReviews?: boolean | User$receivedReviewsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
@@ -3817,7 +3724,6 @@ export namespace Prisma {
       artisanContracts: Prisma.$ContractPayload<ExtArgs>[]
       clientJobs: Prisma.$JobPayload<ExtArgs>[]
       artisanJobs: Prisma.$JobPayload<ExtArgs>[]
-      wallet: Prisma.$WalletPayload<ExtArgs> | null
       sentReviews: Prisma.$ReviewPayload<ExtArgs>[]
       receivedReviews: Prisma.$ReviewPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
@@ -4251,7 +4157,6 @@ export namespace Prisma {
     artisanContracts<T extends User$artisanContractsArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanContractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clientJobs<T extends User$clientJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     artisanJobs<T extends User$artisanJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    wallet<T extends User$walletArgs<ExtArgs> = {}>(args?: Subset<T, User$walletArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     sentReviews<T extends User$sentReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedReviews<T extends User$receivedReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4887,25 +4792,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
-  }
-
-  /**
-   * User.wallet
-   */
-  export type User$walletArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    where?: WalletWhereInput
   }
 
   /**
@@ -16260,1137 +16146,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Wallet
-   */
-
-  export type AggregateWallet = {
-    _count: WalletCountAggregateOutputType | null
-    _avg: WalletAvgAggregateOutputType | null
-    _sum: WalletSumAggregateOutputType | null
-    _min: WalletMinAggregateOutputType | null
-    _max: WalletMaxAggregateOutputType | null
-  }
-
-  export type WalletAvgAggregateOutputType = {
-    balance: number | null
-    frozen: number | null
-    version: number | null
-  }
-
-  export type WalletSumAggregateOutputType = {
-    balance: number | null
-    frozen: number | null
-    version: number | null
-  }
-
-  export type WalletMinAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    balance: number | null
-    frozen: number | null
-    version: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type WalletMaxAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    balance: number | null
-    frozen: number | null
-    version: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type WalletCountAggregateOutputType = {
-    id: number
-    userId: number
-    balance: number
-    frozen: number
-    version: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type WalletAvgAggregateInputType = {
-    balance?: true
-    frozen?: true
-    version?: true
-  }
-
-  export type WalletSumAggregateInputType = {
-    balance?: true
-    frozen?: true
-    version?: true
-  }
-
-  export type WalletMinAggregateInputType = {
-    id?: true
-    userId?: true
-    balance?: true
-    frozen?: true
-    version?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type WalletMaxAggregateInputType = {
-    id?: true
-    userId?: true
-    balance?: true
-    frozen?: true
-    version?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type WalletCountAggregateInputType = {
-    id?: true
-    userId?: true
-    balance?: true
-    frozen?: true
-    version?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type WalletAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Wallet to aggregate.
-     */
-    where?: WalletWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Wallets to fetch.
-     */
-    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: WalletWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Wallets from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Wallets.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Wallets
-    **/
-    _count?: true | WalletCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: WalletAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: WalletSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: WalletMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: WalletMaxAggregateInputType
-  }
-
-  export type GetWalletAggregateType<T extends WalletAggregateArgs> = {
-        [P in keyof T & keyof AggregateWallet]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateWallet[P]>
-      : GetScalarType<T[P], AggregateWallet[P]>
-  }
-
-
-
-
-  export type WalletGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: WalletWhereInput
-    orderBy?: WalletOrderByWithAggregationInput | WalletOrderByWithAggregationInput[]
-    by: WalletScalarFieldEnum[] | WalletScalarFieldEnum
-    having?: WalletScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: WalletCountAggregateInputType | true
-    _avg?: WalletAvgAggregateInputType
-    _sum?: WalletSumAggregateInputType
-    _min?: WalletMinAggregateInputType
-    _max?: WalletMaxAggregateInputType
-  }
-
-  export type WalletGroupByOutputType = {
-    id: string
-    userId: string
-    balance: number
-    frozen: number
-    version: number
-    createdAt: Date
-    updatedAt: Date
-    _count: WalletCountAggregateOutputType | null
-    _avg: WalletAvgAggregateOutputType | null
-    _sum: WalletSumAggregateOutputType | null
-    _min: WalletMinAggregateOutputType | null
-    _max: WalletMaxAggregateOutputType | null
-  }
-
-  type GetWalletGroupByPayload<T extends WalletGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<WalletGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof WalletGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], WalletGroupByOutputType[P]>
-            : GetScalarType<T[P], WalletGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type WalletSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    balance?: boolean
-    frozen?: boolean
-    version?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["wallet"]>
-
-  export type WalletSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    balance?: boolean
-    frozen?: boolean
-    version?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["wallet"]>
-
-  export type WalletSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    balance?: boolean
-    frozen?: boolean
-    version?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["wallet"]>
-
-  export type WalletSelectScalar = {
-    id?: boolean
-    userId?: boolean
-    balance?: boolean
-    frozen?: boolean
-    version?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type WalletOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "balance" | "frozen" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["wallet"]>
-  export type WalletInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type WalletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type WalletIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-
-  export type $WalletPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Wallet"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      userId: string
-      balance: number
-      frozen: number
-      version: number
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["wallet"]>
-    composites: {}
-  }
-
-  type WalletGetPayload<S extends boolean | null | undefined | WalletDefaultArgs> = $Result.GetResult<Prisma.$WalletPayload, S>
-
-  type WalletCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<WalletFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: WalletCountAggregateInputType | true
-    }
-
-  export interface WalletDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Wallet'], meta: { name: 'Wallet' } }
-    /**
-     * Find zero or one Wallet that matches the filter.
-     * @param {WalletFindUniqueArgs} args - Arguments to find a Wallet
-     * @example
-     * // Get one Wallet
-     * const wallet = await prisma.wallet.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends WalletFindUniqueArgs>(args: SelectSubset<T, WalletFindUniqueArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Wallet that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {WalletFindUniqueOrThrowArgs} args - Arguments to find a Wallet
-     * @example
-     * // Get one Wallet
-     * const wallet = await prisma.wallet.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends WalletFindUniqueOrThrowArgs>(args: SelectSubset<T, WalletFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Wallet that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {WalletFindFirstArgs} args - Arguments to find a Wallet
-     * @example
-     * // Get one Wallet
-     * const wallet = await prisma.wallet.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends WalletFindFirstArgs>(args?: SelectSubset<T, WalletFindFirstArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Wallet that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {WalletFindFirstOrThrowArgs} args - Arguments to find a Wallet
-     * @example
-     * // Get one Wallet
-     * const wallet = await prisma.wallet.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends WalletFindFirstOrThrowArgs>(args?: SelectSubset<T, WalletFindFirstOrThrowArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Wallets that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {WalletFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Wallets
-     * const wallets = await prisma.wallet.findMany()
-     * 
-     * // Get first 10 Wallets
-     * const wallets = await prisma.wallet.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const walletWithIdOnly = await prisma.wallet.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends WalletFindManyArgs>(args?: SelectSubset<T, WalletFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Wallet.
-     * @param {WalletCreateArgs} args - Arguments to create a Wallet.
-     * @example
-     * // Create one Wallet
-     * const Wallet = await prisma.wallet.create({
-     *   data: {
-     *     // ... data to create a Wallet
-     *   }
-     * })
-     * 
-     */
-    create<T extends WalletCreateArgs>(args: SelectSubset<T, WalletCreateArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Wallets.
-     * @param {WalletCreateManyArgs} args - Arguments to create many Wallets.
-     * @example
-     * // Create many Wallets
-     * const wallet = await prisma.wallet.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends WalletCreateManyArgs>(args?: SelectSubset<T, WalletCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Wallets and returns the data saved in the database.
-     * @param {WalletCreateManyAndReturnArgs} args - Arguments to create many Wallets.
-     * @example
-     * // Create many Wallets
-     * const wallet = await prisma.wallet.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Wallets and only return the `id`
-     * const walletWithIdOnly = await prisma.wallet.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends WalletCreateManyAndReturnArgs>(args?: SelectSubset<T, WalletCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Wallet.
-     * @param {WalletDeleteArgs} args - Arguments to delete one Wallet.
-     * @example
-     * // Delete one Wallet
-     * const Wallet = await prisma.wallet.delete({
-     *   where: {
-     *     // ... filter to delete one Wallet
-     *   }
-     * })
-     * 
-     */
-    delete<T extends WalletDeleteArgs>(args: SelectSubset<T, WalletDeleteArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Wallet.
-     * @param {WalletUpdateArgs} args - Arguments to update one Wallet.
-     * @example
-     * // Update one Wallet
-     * const wallet = await prisma.wallet.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends WalletUpdateArgs>(args: SelectSubset<T, WalletUpdateArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Wallets.
-     * @param {WalletDeleteManyArgs} args - Arguments to filter Wallets to delete.
-     * @example
-     * // Delete a few Wallets
-     * const { count } = await prisma.wallet.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends WalletDeleteManyArgs>(args?: SelectSubset<T, WalletDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Wallets.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {WalletUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Wallets
-     * const wallet = await prisma.wallet.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends WalletUpdateManyArgs>(args: SelectSubset<T, WalletUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Wallets and returns the data updated in the database.
-     * @param {WalletUpdateManyAndReturnArgs} args - Arguments to update many Wallets.
-     * @example
-     * // Update many Wallets
-     * const wallet = await prisma.wallet.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Wallets and only return the `id`
-     * const walletWithIdOnly = await prisma.wallet.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends WalletUpdateManyAndReturnArgs>(args: SelectSubset<T, WalletUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Wallet.
-     * @param {WalletUpsertArgs} args - Arguments to update or create a Wallet.
-     * @example
-     * // Update or create a Wallet
-     * const wallet = await prisma.wallet.upsert({
-     *   create: {
-     *     // ... data to create a Wallet
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Wallet we want to update
-     *   }
-     * })
-     */
-    upsert<T extends WalletUpsertArgs>(args: SelectSubset<T, WalletUpsertArgs<ExtArgs>>): Prisma__WalletClient<$Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Wallets.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {WalletCountArgs} args - Arguments to filter Wallets to count.
-     * @example
-     * // Count the number of Wallets
-     * const count = await prisma.wallet.count({
-     *   where: {
-     *     // ... the filter for the Wallets we want to count
-     *   }
-     * })
-    **/
-    count<T extends WalletCountArgs>(
-      args?: Subset<T, WalletCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], WalletCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Wallet.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {WalletAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends WalletAggregateArgs>(args: Subset<T, WalletAggregateArgs>): Prisma.PrismaPromise<GetWalletAggregateType<T>>
-
-    /**
-     * Group by Wallet.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {WalletGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends WalletGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: WalletGroupByArgs['orderBy'] }
-        : { orderBy?: WalletGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, WalletGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWalletGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Wallet model
-   */
-  readonly fields: WalletFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Wallet.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__WalletClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Wallet model
-   */
-  interface WalletFieldRefs {
-    readonly id: FieldRef<"Wallet", 'String'>
-    readonly userId: FieldRef<"Wallet", 'String'>
-    readonly balance: FieldRef<"Wallet", 'Int'>
-    readonly frozen: FieldRef<"Wallet", 'Int'>
-    readonly version: FieldRef<"Wallet", 'Int'>
-    readonly createdAt: FieldRef<"Wallet", 'DateTime'>
-    readonly updatedAt: FieldRef<"Wallet", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Wallet findUnique
-   */
-  export type WalletFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * Filter, which Wallet to fetch.
-     */
-    where: WalletWhereUniqueInput
-  }
-
-  /**
-   * Wallet findUniqueOrThrow
-   */
-  export type WalletFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * Filter, which Wallet to fetch.
-     */
-    where: WalletWhereUniqueInput
-  }
-
-  /**
-   * Wallet findFirst
-   */
-  export type WalletFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * Filter, which Wallet to fetch.
-     */
-    where?: WalletWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Wallets to fetch.
-     */
-    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Wallets.
-     */
-    cursor?: WalletWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Wallets from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Wallets.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Wallets.
-     */
-    distinct?: WalletScalarFieldEnum | WalletScalarFieldEnum[]
-  }
-
-  /**
-   * Wallet findFirstOrThrow
-   */
-  export type WalletFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * Filter, which Wallet to fetch.
-     */
-    where?: WalletWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Wallets to fetch.
-     */
-    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Wallets.
-     */
-    cursor?: WalletWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Wallets from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Wallets.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Wallets.
-     */
-    distinct?: WalletScalarFieldEnum | WalletScalarFieldEnum[]
-  }
-
-  /**
-   * Wallet findMany
-   */
-  export type WalletFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * Filter, which Wallets to fetch.
-     */
-    where?: WalletWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Wallets to fetch.
-     */
-    orderBy?: WalletOrderByWithRelationInput | WalletOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Wallets.
-     */
-    cursor?: WalletWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Wallets from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Wallets.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Wallets.
-     */
-    distinct?: WalletScalarFieldEnum | WalletScalarFieldEnum[]
-  }
-
-  /**
-   * Wallet create
-   */
-  export type WalletCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Wallet.
-     */
-    data: XOR<WalletCreateInput, WalletUncheckedCreateInput>
-  }
-
-  /**
-   * Wallet createMany
-   */
-  export type WalletCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Wallets.
-     */
-    data: WalletCreateManyInput | WalletCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Wallet createManyAndReturn
-   */
-  export type WalletCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * The data used to create many Wallets.
-     */
-    data: WalletCreateManyInput | WalletCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Wallet update
-   */
-  export type WalletUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Wallet.
-     */
-    data: XOR<WalletUpdateInput, WalletUncheckedUpdateInput>
-    /**
-     * Choose, which Wallet to update.
-     */
-    where: WalletWhereUniqueInput
-  }
-
-  /**
-   * Wallet updateMany
-   */
-  export type WalletUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Wallets.
-     */
-    data: XOR<WalletUpdateManyMutationInput, WalletUncheckedUpdateManyInput>
-    /**
-     * Filter which Wallets to update
-     */
-    where?: WalletWhereInput
-    /**
-     * Limit how many Wallets to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Wallet updateManyAndReturn
-   */
-  export type WalletUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * The data used to update Wallets.
-     */
-    data: XOR<WalletUpdateManyMutationInput, WalletUncheckedUpdateManyInput>
-    /**
-     * Filter which Wallets to update
-     */
-    where?: WalletWhereInput
-    /**
-     * Limit how many Wallets to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Wallet upsert
-   */
-  export type WalletUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Wallet to update in case it exists.
-     */
-    where: WalletWhereUniqueInput
-    /**
-     * In case the Wallet found by the `where` argument doesn't exist, create a new Wallet with this data.
-     */
-    create: XOR<WalletCreateInput, WalletUncheckedCreateInput>
-    /**
-     * In case the Wallet was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<WalletUpdateInput, WalletUncheckedUpdateInput>
-  }
-
-  /**
-   * Wallet delete
-   */
-  export type WalletDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-    /**
-     * Filter which Wallet to delete.
-     */
-    where: WalletWhereUniqueInput
-  }
-
-  /**
-   * Wallet deleteMany
-   */
-  export type WalletDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Wallets to delete
-     */
-    where?: WalletWhereInput
-    /**
-     * Limit how many Wallets to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Wallet without action
-   */
-  export type WalletDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wallet
-     */
-    select?: WalletSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wallet
-     */
-    omit?: WalletOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WalletInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Review
    */
 
@@ -25513,10 +24268,14 @@ export namespace Prisma {
 
   export type LedgerAccountAvgAggregateOutputType = {
     balance: number | null
+    frozen: number | null
+    version: number | null
   }
 
   export type LedgerAccountSumAggregateOutputType = {
     balance: number | null
+    frozen: number | null
+    version: number | null
   }
 
   export type LedgerAccountMinAggregateOutputType = {
@@ -25525,6 +24284,8 @@ export namespace Prisma {
     type: $Enums.LedgerAccountType | null
     userId: string | null
     balance: number | null
+    frozen: number | null
+    version: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -25535,6 +24296,8 @@ export namespace Prisma {
     type: $Enums.LedgerAccountType | null
     userId: string | null
     balance: number | null
+    frozen: number | null
+    version: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -25545,6 +24308,8 @@ export namespace Prisma {
     type: number
     userId: number
     balance: number
+    frozen: number
+    version: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -25553,10 +24318,14 @@ export namespace Prisma {
 
   export type LedgerAccountAvgAggregateInputType = {
     balance?: true
+    frozen?: true
+    version?: true
   }
 
   export type LedgerAccountSumAggregateInputType = {
     balance?: true
+    frozen?: true
+    version?: true
   }
 
   export type LedgerAccountMinAggregateInputType = {
@@ -25565,6 +24334,8 @@ export namespace Prisma {
     type?: true
     userId?: true
     balance?: true
+    frozen?: true
+    version?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -25575,6 +24346,8 @@ export namespace Prisma {
     type?: true
     userId?: true
     balance?: true
+    frozen?: true
+    version?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -25585,6 +24358,8 @@ export namespace Prisma {
     type?: true
     userId?: true
     balance?: true
+    frozen?: true
+    version?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -25682,6 +24457,8 @@ export namespace Prisma {
     type: $Enums.LedgerAccountType
     userId: string | null
     balance: number
+    frozen: number
+    version: number
     createdAt: Date
     updatedAt: Date
     _count: LedgerAccountCountAggregateOutputType | null
@@ -25711,6 +24488,8 @@ export namespace Prisma {
     type?: boolean
     userId?: boolean
     balance?: boolean
+    frozen?: boolean
+    version?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
@@ -25725,6 +24504,8 @@ export namespace Prisma {
     type?: boolean
     userId?: boolean
     balance?: boolean
+    frozen?: boolean
+    version?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
@@ -25736,6 +24517,8 @@ export namespace Prisma {
     type?: boolean
     userId?: boolean
     balance?: boolean
+    frozen?: boolean
+    version?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
@@ -25747,11 +24530,13 @@ export namespace Prisma {
     type?: boolean
     userId?: boolean
     balance?: boolean
+    frozen?: boolean
+    version?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type LedgerAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "userId" | "balance" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
+  export type LedgerAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "userId" | "balance" | "frozen" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
   export type LedgerAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
     debitEntries?: boolean | LedgerAccount$debitEntriesArgs<ExtArgs>
@@ -25778,6 +24563,8 @@ export namespace Prisma {
       type: $Enums.LedgerAccountType
       userId: string | null
       balance: number
+      frozen: number
+      version: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["ledgerAccount"]>
@@ -26211,6 +24998,8 @@ export namespace Prisma {
     readonly type: FieldRef<"LedgerAccount", 'LedgerAccountType'>
     readonly userId: FieldRef<"LedgerAccount", 'String'>
     readonly balance: FieldRef<"LedgerAccount", 'Int'>
+    readonly frozen: FieldRef<"LedgerAccount", 'Int'>
+    readonly version: FieldRef<"LedgerAccount", 'Int'>
     readonly createdAt: FieldRef<"LedgerAccount", 'DateTime'>
     readonly updatedAt: FieldRef<"LedgerAccount", 'DateTime'>
   }
@@ -30146,19 +28935,6 @@ export namespace Prisma {
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
-  export const WalletScalarFieldEnum: {
-    id: 'id',
-    userId: 'userId',
-    balance: 'balance',
-    frozen: 'frozen',
-    version: 'version',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type WalletScalarFieldEnum = (typeof WalletScalarFieldEnum)[keyof typeof WalletScalarFieldEnum]
-
-
   export const ReviewScalarFieldEnum: {
     id: 'id',
     contractId: 'contractId',
@@ -30292,6 +29068,8 @@ export namespace Prisma {
     type: 'type',
     userId: 'userId',
     balance: 'balance',
+    frozen: 'frozen',
+    version: 'version',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -30512,14 +29290,6 @@ export namespace Prisma {
   };
 
   export type MessageOrderByRelevanceFieldEnum = (typeof MessageOrderByRelevanceFieldEnum)[keyof typeof MessageOrderByRelevanceFieldEnum]
-
-
-  export const WalletOrderByRelevanceFieldEnum: {
-    id: 'id',
-    userId: 'userId'
-  };
-
-  export type WalletOrderByRelevanceFieldEnum = (typeof WalletOrderByRelevanceFieldEnum)[keyof typeof WalletOrderByRelevanceFieldEnum]
 
 
   export const ReviewOrderByRelevanceFieldEnum: {
@@ -31005,7 +29775,6 @@ export namespace Prisma {
     artisanContracts?: ContractListRelationFilter
     clientJobs?: JobListRelationFilter
     artisanJobs?: JobListRelationFilter
-    wallet?: XOR<WalletNullableScalarRelationFilter, WalletWhereInput> | null
     sentReviews?: ReviewListRelationFilter
     receivedReviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
@@ -31046,7 +29815,6 @@ export namespace Prisma {
     artisanContracts?: ContractOrderByRelationAggregateInput
     clientJobs?: JobOrderByRelationAggregateInput
     artisanJobs?: JobOrderByRelationAggregateInput
-    wallet?: WalletOrderByWithRelationInput
     sentReviews?: ReviewOrderByRelationAggregateInput
     receivedReviews?: ReviewOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
@@ -31091,7 +29859,6 @@ export namespace Prisma {
     artisanContracts?: ContractListRelationFilter
     clientJobs?: JobListRelationFilter
     artisanJobs?: JobListRelationFilter
-    wallet?: XOR<WalletNullableScalarRelationFilter, WalletWhereInput> | null
     sentReviews?: ReviewListRelationFilter
     receivedReviews?: ReviewListRelationFilter
     notifications?: NotificationListRelationFilter
@@ -32102,74 +30869,6 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
   }
 
-  export type WalletWhereInput = {
-    AND?: WalletWhereInput | WalletWhereInput[]
-    OR?: WalletWhereInput[]
-    NOT?: WalletWhereInput | WalletWhereInput[]
-    id?: StringFilter<"Wallet"> | string
-    userId?: StringFilter<"Wallet"> | string
-    balance?: IntFilter<"Wallet"> | number
-    frozen?: IntFilter<"Wallet"> | number
-    version?: IntFilter<"Wallet"> | number
-    createdAt?: DateTimeFilter<"Wallet"> | Date | string
-    updatedAt?: DateTimeFilter<"Wallet"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }
-
-  export type WalletOrderByWithRelationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    balance?: SortOrder
-    frozen?: SortOrder
-    version?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    user?: UserOrderByWithRelationInput
-    _relevance?: WalletOrderByRelevanceInput
-  }
-
-  export type WalletWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    userId?: string
-    AND?: WalletWhereInput | WalletWhereInput[]
-    OR?: WalletWhereInput[]
-    NOT?: WalletWhereInput | WalletWhereInput[]
-    balance?: IntFilter<"Wallet"> | number
-    frozen?: IntFilter<"Wallet"> | number
-    version?: IntFilter<"Wallet"> | number
-    createdAt?: DateTimeFilter<"Wallet"> | Date | string
-    updatedAt?: DateTimeFilter<"Wallet"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "userId">
-
-  export type WalletOrderByWithAggregationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    balance?: SortOrder
-    frozen?: SortOrder
-    version?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: WalletCountOrderByAggregateInput
-    _avg?: WalletAvgOrderByAggregateInput
-    _max?: WalletMaxOrderByAggregateInput
-    _min?: WalletMinOrderByAggregateInput
-    _sum?: WalletSumOrderByAggregateInput
-  }
-
-  export type WalletScalarWhereWithAggregatesInput = {
-    AND?: WalletScalarWhereWithAggregatesInput | WalletScalarWhereWithAggregatesInput[]
-    OR?: WalletScalarWhereWithAggregatesInput[]
-    NOT?: WalletScalarWhereWithAggregatesInput | WalletScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Wallet"> | string
-    userId?: StringWithAggregatesFilter<"Wallet"> | string
-    balance?: IntWithAggregatesFilter<"Wallet"> | number
-    frozen?: IntWithAggregatesFilter<"Wallet"> | number
-    version?: IntWithAggregatesFilter<"Wallet"> | number
-    createdAt?: DateTimeWithAggregatesFilter<"Wallet"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Wallet"> | Date | string
-  }
-
   export type ReviewWhereInput = {
     AND?: ReviewWhereInput | ReviewWhereInput[]
     OR?: ReviewWhereInput[]
@@ -32834,6 +31533,8 @@ export namespace Prisma {
     type?: EnumLedgerAccountTypeFilter<"LedgerAccount"> | $Enums.LedgerAccountType
     userId?: StringNullableFilter<"LedgerAccount"> | string | null
     balance?: IntFilter<"LedgerAccount"> | number
+    frozen?: IntFilter<"LedgerAccount"> | number
+    version?: IntFilter<"LedgerAccount"> | number
     createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -32847,6 +31548,8 @@ export namespace Prisma {
     type?: SortOrder
     userId?: SortOrderInput | SortOrder
     balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -32864,6 +31567,8 @@ export namespace Prisma {
     name?: StringFilter<"LedgerAccount"> | string
     type?: EnumLedgerAccountTypeFilter<"LedgerAccount"> | $Enums.LedgerAccountType
     balance?: IntFilter<"LedgerAccount"> | number
+    frozen?: IntFilter<"LedgerAccount"> | number
+    version?: IntFilter<"LedgerAccount"> | number
     createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -32877,6 +31582,8 @@ export namespace Prisma {
     type?: SortOrder
     userId?: SortOrderInput | SortOrder
     balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: LedgerAccountCountOrderByAggregateInput
@@ -32895,6 +31602,8 @@ export namespace Prisma {
     type?: EnumLedgerAccountTypeWithAggregatesFilter<"LedgerAccount"> | $Enums.LedgerAccountType
     userId?: StringNullableWithAggregatesFilter<"LedgerAccount"> | string | null
     balance?: IntWithAggregatesFilter<"LedgerAccount"> | number
+    frozen?: IntWithAggregatesFilter<"LedgerAccount"> | number
+    version?: IntWithAggregatesFilter<"LedgerAccount"> | number
     createdAt?: DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
   }
@@ -33132,7 +31841,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -33173,7 +31881,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -33214,7 +31921,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -33255,7 +31961,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -34387,75 +33092,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type WalletCreateInput = {
-    id?: string
-    balance?: number
-    frozen?: number
-    version?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutWalletInput
-  }
-
-  export type WalletUncheckedCreateInput = {
-    id?: string
-    userId: string
-    balance?: number
-    frozen?: number
-    version?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type WalletUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    balance?: IntFieldUpdateOperationsInput | number
-    frozen?: IntFieldUpdateOperationsInput | number
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutWalletNestedInput
-  }
-
-  export type WalletUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    balance?: IntFieldUpdateOperationsInput | number
-    frozen?: IntFieldUpdateOperationsInput | number
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type WalletCreateManyInput = {
-    id?: string
-    userId: string
-    balance?: number
-    frozen?: number
-    version?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type WalletUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    balance?: IntFieldUpdateOperationsInput | number
-    frozen?: IntFieldUpdateOperationsInput | number
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type WalletUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    balance?: IntFieldUpdateOperationsInput | number
-    frozen?: IntFieldUpdateOperationsInput | number
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type ReviewCreateInput = {
     id?: string
     rating: number
@@ -35199,6 +33835,8 @@ export namespace Prisma {
     name: string
     type: $Enums.LedgerAccountType
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
@@ -35212,6 +33850,8 @@ export namespace Prisma {
     type: $Enums.LedgerAccountType
     userId?: string | null
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
@@ -35223,6 +33863,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
@@ -35236,6 +33878,8 @@ export namespace Prisma {
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
@@ -35248,6 +33892,8 @@ export namespace Prisma {
     type: $Enums.LedgerAccountType
     userId?: string | null
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -35257,6 +33903,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35267,6 +33915,8 @@ export namespace Prisma {
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35584,11 +34234,6 @@ export namespace Prisma {
     every?: JobWhereInput
     some?: JobWhereInput
     none?: JobWhereInput
-  }
-
-  export type WalletNullableScalarRelationFilter = {
-    is?: WalletWhereInput | null
-    isNot?: WalletWhereInput | null
   }
 
   export type ReviewListRelationFilter = {
@@ -36797,54 +35442,6 @@ export namespace Prisma {
     _max?: NestedEnumMessageTypeFilter<$PrismaModel>
   }
 
-  export type WalletOrderByRelevanceInput = {
-    fields: WalletOrderByRelevanceFieldEnum | WalletOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
-  export type WalletCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    balance?: SortOrder
-    frozen?: SortOrder
-    version?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type WalletAvgOrderByAggregateInput = {
-    balance?: SortOrder
-    frozen?: SortOrder
-    version?: SortOrder
-  }
-
-  export type WalletMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    balance?: SortOrder
-    frozen?: SortOrder
-    version?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type WalletMinOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    balance?: SortOrder
-    frozen?: SortOrder
-    version?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type WalletSumOrderByAggregateInput = {
-    balance?: SortOrder
-    frozen?: SortOrder
-    version?: SortOrder
-  }
-
   export type ReviewOrderByRelevanceInput = {
     fields: ReviewOrderByRelevanceFieldEnum | ReviewOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -37332,12 +35929,16 @@ export namespace Prisma {
     type?: SortOrder
     userId?: SortOrder
     balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type LedgerAccountAvgOrderByAggregateInput = {
     balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
   }
 
   export type LedgerAccountMaxOrderByAggregateInput = {
@@ -37346,6 +35947,8 @@ export namespace Prisma {
     type?: SortOrder
     userId?: SortOrder
     balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -37356,12 +35959,16 @@ export namespace Prisma {
     type?: SortOrder
     userId?: SortOrder
     balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type LedgerAccountSumOrderByAggregateInput = {
     balance?: SortOrder
+    frozen?: SortOrder
+    version?: SortOrder
   }
 
   export type EnumLedgerAccountTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -37553,12 +36160,6 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
-  export type WalletCreateNestedOneWithoutUserInput = {
-    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
-    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
-    connect?: WalletWhereUniqueInput
-  }
-
   export type ReviewCreateNestedManyWithoutClientInput = {
     create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
     connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
@@ -37667,12 +36268,6 @@ export namespace Prisma {
     connectOrCreate?: JobCreateOrConnectWithoutArtisanInput | JobCreateOrConnectWithoutArtisanInput[]
     createMany?: JobCreateManyArtisanInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
-  }
-
-  export type WalletUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
-    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
-    connect?: WalletWhereUniqueInput
   }
 
   export type ReviewUncheckedCreateNestedManyWithoutClientInput = {
@@ -37868,16 +36463,6 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutArtisanInput | JobUpdateWithWhereUniqueWithoutArtisanInput[]
     updateMany?: JobUpdateManyWithWhereWithoutArtisanInput | JobUpdateManyWithWhereWithoutArtisanInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
-  }
-
-  export type WalletUpdateOneWithoutUserNestedInput = {
-    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
-    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
-    upsert?: WalletUpsertWithoutUserInput
-    disconnect?: WalletWhereInput | boolean
-    delete?: WalletWhereInput | boolean
-    connect?: WalletWhereUniqueInput
-    update?: XOR<XOR<WalletUpdateToOneWithWhereWithoutUserInput, WalletUpdateWithoutUserInput>, WalletUncheckedUpdateWithoutUserInput>
   }
 
   export type ReviewUpdateManyWithoutClientNestedInput = {
@@ -38094,16 +36679,6 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutArtisanInput | JobUpdateWithWhereUniqueWithoutArtisanInput[]
     updateMany?: JobUpdateManyWithWhereWithoutArtisanInput | JobUpdateManyWithWhereWithoutArtisanInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
-  }
-
-  export type WalletUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
-    connectOrCreate?: WalletCreateOrConnectWithoutUserInput
-    upsert?: WalletUpsertWithoutUserInput
-    disconnect?: WalletWhereInput | boolean
-    delete?: WalletWhereInput | boolean
-    connect?: WalletWhereUniqueInput
-    update?: XOR<XOR<WalletUpdateToOneWithWhereWithoutUserInput, WalletUpdateWithoutUserInput>, WalletUncheckedUpdateWithoutUserInput>
   }
 
   export type ReviewUncheckedUpdateManyWithoutClientNestedInput = {
@@ -38932,20 +37507,6 @@ export namespace Prisma {
     upsert?: ConversationUpsertWithoutMessagesInput
     connect?: ConversationWhereUniqueInput
     update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutMessagesInput, ConversationUpdateWithoutMessagesInput>, ConversationUncheckedUpdateWithoutMessagesInput>
-  }
-
-  export type UserCreateNestedOneWithoutWalletInput = {
-    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
-    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserUpdateOneRequiredWithoutWalletNestedInput = {
-    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
-    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
-    upsert?: UserUpsertWithoutWalletInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWalletInput, UserUpdateWithoutWalletInput>, UserUncheckedUpdateWithoutWalletInput>
   }
 
   export type ContractCreateNestedOneWithoutReviewInput = {
@@ -40263,29 +38824,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type WalletCreateWithoutUserInput = {
-    id?: string
-    balance?: number
-    frozen?: number
-    version?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type WalletUncheckedCreateWithoutUserInput = {
-    id?: string
-    balance?: number
-    frozen?: number
-    version?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type WalletCreateOrConnectWithoutUserInput = {
-    where: WalletWhereUniqueInput
-    create: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
-  }
-
   export type ReviewCreateWithoutClientInput = {
     id?: string
     rating: number
@@ -40615,6 +39153,8 @@ export namespace Prisma {
     name: string
     type: $Enums.LedgerAccountType
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
@@ -40626,6 +39166,8 @@ export namespace Prisma {
     name: string
     type: $Enums.LedgerAccountType
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
@@ -40879,35 +39421,6 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutArtisanInput>
   }
 
-  export type WalletUpsertWithoutUserInput = {
-    update: XOR<WalletUpdateWithoutUserInput, WalletUncheckedUpdateWithoutUserInput>
-    create: XOR<WalletCreateWithoutUserInput, WalletUncheckedCreateWithoutUserInput>
-    where?: WalletWhereInput
-  }
-
-  export type WalletUpdateToOneWithWhereWithoutUserInput = {
-    where?: WalletWhereInput
-    data: XOR<WalletUpdateWithoutUserInput, WalletUncheckedUpdateWithoutUserInput>
-  }
-
-  export type WalletUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    balance?: IntFieldUpdateOperationsInput | number
-    frozen?: IntFieldUpdateOperationsInput | number
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type WalletUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    balance?: IntFieldUpdateOperationsInput | number
-    frozen?: IntFieldUpdateOperationsInput | number
-    version?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type ReviewUpsertWithWhereUniqueWithoutClientInput = {
     where: ReviewWhereUniqueInput
     update: XOR<ReviewUpdateWithoutClientInput, ReviewUncheckedUpdateWithoutClientInput>
@@ -41145,6 +39658,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
@@ -41156,6 +39671,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
@@ -41218,7 +39735,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -41258,7 +39774,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -41303,7 +39818,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -41343,7 +39857,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -41510,7 +40023,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -41550,7 +40062,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -41601,7 +40112,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -41641,7 +40151,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -41861,7 +40370,6 @@ export namespace Prisma {
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -41901,7 +40409,6 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -41946,7 +40453,6 @@ export namespace Prisma {
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -41986,7 +40492,6 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -42159,7 +40664,6 @@ export namespace Prisma {
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -42199,7 +40703,6 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -42250,7 +40753,6 @@ export namespace Prisma {
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -42290,7 +40792,6 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -42436,7 +40937,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -42476,7 +40976,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -42532,7 +41031,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -42572,7 +41070,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -42611,7 +41108,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -42651,7 +41147,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -42707,7 +41202,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -42747,7 +41241,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -42838,7 +41331,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -42878,7 +41370,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -42923,7 +41414,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -42963,7 +41453,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -43159,7 +41648,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -43199,7 +41687,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -43250,7 +41737,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -43290,7 +41776,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -43499,7 +41984,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -43539,7 +42023,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -43584,7 +42067,6 @@ export namespace Prisma {
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -43624,7 +42106,6 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -44002,7 +42483,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -44042,7 +42522,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -44093,7 +42572,6 @@ export namespace Prisma {
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -44133,7 +42611,6 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -44600,182 +43077,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserCreateWithoutWalletInput = {
-    id: string
-    name: string
-    email: string
-    passwordHash: string
-    passwordResetTokenHash?: string | null
-    passwordResetTokenExpiresAt?: Date | string | null
-    passwordResetRequestedAt?: Date | string | null
-    role: $Enums.UserRole
-    status: $Enums.UserStatus
-    artisanVerified?: boolean
-    kycVerified?: boolean
-    emailVerified?: boolean
-    kycStatus?: $Enums.KycVerificationStatus
-    paystackRecipientCode?: string | null
-    payoutBankCode?: string | null
-    payoutAccountNumber?: string | null
-    payoutAccountName?: string | null
-    phone?: string | null
-    createdAt: Date | string
-    lastLoginAt?: Date | string | null
-    updatedAt?: Date | string
-    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
-    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
-    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
-    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
-    clientContracts?: ContractCreateNestedManyWithoutClientInput
-    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
-    clientJobs?: JobCreateNestedManyWithoutClientInput
-    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-    transactions?: TransactionCreateNestedManyWithoutUserInput
-    payments?: PaymentCreateNestedManyWithoutUserInput
-    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
-    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
-    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutWalletInput = {
-    id: string
-    name: string
-    email: string
-    passwordHash: string
-    passwordResetTokenHash?: string | null
-    passwordResetTokenExpiresAt?: Date | string | null
-    passwordResetRequestedAt?: Date | string | null
-    role: $Enums.UserRole
-    status: $Enums.UserStatus
-    artisanVerified?: boolean
-    kycVerified?: boolean
-    emailVerified?: boolean
-    kycStatus?: $Enums.KycVerificationStatus
-    paystackRecipientCode?: string | null
-    payoutBankCode?: string | null
-    payoutAccountNumber?: string | null
-    payoutAccountName?: string | null
-    phone?: string | null
-    createdAt: Date | string
-    lastLoginAt?: Date | string | null
-    updatedAt?: Date | string
-    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
-    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
-    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
-    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
-    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
-    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
-    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
-    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
-    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
-    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
-    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutWalletInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
-  }
-
-  export type UserUpsertWithoutWalletInput = {
-    update: XOR<UserUpdateWithoutWalletInput, UserUncheckedUpdateWithoutWalletInput>
-    create: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutWalletInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutWalletInput, UserUncheckedUpdateWithoutWalletInput>
-  }
-
-  export type UserUpdateWithoutWalletInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
-    kycVerified?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
-    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
-    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
-    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
-    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
-    clientContracts?: ContractUpdateManyWithoutClientNestedInput
-    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
-    clientJobs?: JobUpdateManyWithoutClientNestedInput
-    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-    transactions?: TransactionUpdateManyWithoutUserNestedInput
-    payments?: PaymentUpdateManyWithoutUserNestedInput
-    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
-    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
-    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutWalletInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
-    kycVerified?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    kycStatus?: EnumKycVerificationStatusFieldUpdateOperationsInput | $Enums.KycVerificationStatus
-    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
-    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
-    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
-    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
-    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
-    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
-    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
-    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
-    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
-    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
-    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
-  }
-
   export type ContractCreateWithoutReviewInput = {
     id?: string
     amount: number
@@ -44889,7 +43190,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -44929,7 +43229,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -44974,7 +43273,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -45014,7 +43312,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -45159,7 +43456,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -45199,7 +43495,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -45250,7 +43545,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -45290,7 +43584,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -45330,7 +43623,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -45370,7 +43662,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -45426,7 +43717,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -45466,7 +43756,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -45589,7 +43878,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -45629,7 +43917,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -45806,7 +44093,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -45846,7 +44132,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -45901,7 +44186,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -45941,7 +44225,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -45997,7 +44280,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -46037,7 +44319,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -46250,7 +44531,6 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    wallet?: WalletCreateNestedOneWithoutUserInput
     sentReviews?: ReviewCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -46290,7 +44570,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
     receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -46410,7 +44689,6 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -46450,7 +44728,6 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
     receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -46497,6 +44774,8 @@ export namespace Prisma {
     name: string
     type: $Enums.LedgerAccountType
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
@@ -46509,6 +44788,8 @@ export namespace Prisma {
     type: $Enums.LedgerAccountType
     userId?: string | null
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
@@ -46524,6 +44805,8 @@ export namespace Prisma {
     name: string
     type: $Enums.LedgerAccountType
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
@@ -46536,6 +44819,8 @@ export namespace Prisma {
     type: $Enums.LedgerAccountType
     userId?: string | null
     balance?: number
+    frozen?: number
+    version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
@@ -46700,6 +44985,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
@@ -46712,6 +44999,8 @@ export namespace Prisma {
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
@@ -46733,6 +45022,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
@@ -46745,6 +45036,8 @@ export namespace Prisma {
     type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput

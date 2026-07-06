@@ -151,7 +151,7 @@ export class AdminService {
         artisanProfile: {
           select: { bio: true, skills: true, experience: true, portfolio: true, verified: true, rating: true, reviewCount: true, updatedAt: true }
         },
-        wallet: {
+        ledgerAccounts: {
           select: { balance: true, frozen: true, updatedAt: true }
         },
         transactions: {
@@ -213,12 +213,12 @@ export class AdminService {
         createdAt: user.createdAt.toISOString(),
         lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
         updatedAt: user.updatedAt.toISOString(),
-        wallet: user.wallet
+        wallet: user.ledgerAccounts
           ? {
-              balance: user.wallet.balance,
-              frozen: user.wallet.frozen,
-              available: user.wallet.balance - user.wallet.frozen,
-              updatedAt: user.wallet.updatedAt.toISOString(),
+              balance: user.ledgerAccounts.balance,
+              frozen: user.ledgerAccounts.frozen,
+              available: user.ledgerAccounts.balance - user.ledgerAccounts.frozen,
+              updatedAt: user.ledgerAccounts.updatedAt.toISOString(),
             }
           : null,
         artisanProfile: user.artisanProfile

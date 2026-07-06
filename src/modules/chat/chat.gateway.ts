@@ -21,6 +21,7 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { JoinConversationDto } from './dto/join-conversation.dto';
 import { SendSocketMessageDto } from './dto/send-socket-message.dto';
+import { SessionService } from '../../common/services/session.service';
 
 type ChatSocketUser = {
   id: string;
@@ -50,6 +51,7 @@ export class ChatGateway
     @Inject(forwardRef(() => ChatService))
     private readonly chatService: ChatService,
     private readonly jwtService: JwtService,
+    private readonly sessionService: SessionService,
   ) {}
 
   async handleConnection(client: ChatSocket) {
@@ -69,10 +71,20 @@ export class ChatGateway
         email: string;
         role: string;
         purpose?: string;
+        sessionId?: string;
       }>(token);
 
       if (payload.purpose !== 'chat_socket') {
         throw new UnauthorizedException('Invalid socket token.');
+      }
+
+      if (!payload.sessionId) {
+        throw new UnauthorizedException('Session ID is missing.');
+      }
+
+      const session = await this.sessionService.validateSession(payload.sessionId);
+      if (!session || session.userId !== payload.sub) {
+        throw new UnauthorizedException('Session is invalid or expired.');
       }
 
       client.user = {

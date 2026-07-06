@@ -161,7 +161,6 @@ model User {
   artisanContracts  Contract[]      @relation("ArtisanContracts")
   clientJobs        Job[]           @relation("ClientJobs")
   artisanJobs       Job[]           @relation("ArtisanJobs")
-  wallet            Wallet?
   sentReviews       Review[]        @relation("SentReviews")
   receivedReviews   Review[]        @relation("ReceivedReviews")
   notifications     Notification[]
@@ -402,19 +401,6 @@ model Message {
   @@index([senderId, createdAt])
 }
 
-model Wallet {
-  id        String   @id @default(uuid(7))
-  userId    String   @unique
-  balance   Int      @default(0)
-  frozen    Int      @default(0)
-  version   Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model Review {
   id              String   @id @default(uuid(7))
   contractId      String   @unique
@@ -571,6 +557,8 @@ model LedgerAccount {
   type      LedgerAccountType
   userId    String?           @unique
   balance   Int               @default(0)
+  frozen    Int               @default(0)
+  version   Int               @default(1)
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 

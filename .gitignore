@@ -37,4 +37,10 @@ yarn-error.log*
 # Optional npm files
 .npm
 .eslintcache
-.env
+
+# Test outputs and temporary scripts
+test-db.js
+test-*.js
+wallet_test_output.txt
+*.bak
+*.txt

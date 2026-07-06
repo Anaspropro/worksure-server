@@ -5,9 +5,11 @@ import { PrismaModule } from '../../database/prisma.module';
 import { AppConfigModule } from '../../config/app-config.module';
 import { AppCacheModule } from '../../common/cache/cache.module';
 import { MonitoringModule } from '../monitoring/monitoring.module';
+import { BullMQHealthIndicator } from './bullmq-health.indicator';
 
 @Module({
   imports: [TerminusModule, PrismaModule, AppConfigModule, AppCacheModule, MonitoringModule],
   controllers: [HealthController],
+  providers: [BullMQHealthIndicator],
 })
 export class HealthModule {}

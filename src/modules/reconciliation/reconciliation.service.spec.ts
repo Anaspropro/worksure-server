@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { ReconciliationService } from './reconciliation.service';
 import { PrismaService } from '../../database/prisma.service';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
+import { AlertingService } from '../monitoring/alerting.service';
 
 describe('ReconciliationService', () => {
   let service: ReconciliationService;
@@ -22,6 +24,22 @@ describe('ReconciliationService', () => {
               findMany: jest.fn(),
               count: jest.fn(),
             },
+            ledgerAccount: {
+              aggregate: jest.fn(),
+            },
+          },
+        },
+        {
+          provide: PaystackClientService,
+          useValue: {
+            get: jest.fn(),
+          },
+        },
+        {
+          provide: AlertingService,
+          useValue: {
+            sendCriticalAlert: jest.fn(),
+            resolveAlert: jest.fn(),
           },
         },
       ],
@@ -34,6 +52,11 @@ describe('ReconciliationService', () => {
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
     jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
     jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
+
+    // Default mock setup for trial balance queries
+    jest.spyOn(prisma.ledgerAccount, 'aggregate').mockResolvedValue({
+      _sum: { balance: 0 },
+    } as any);
   });
 
   afterEach(() => {
@@ -45,7 +68,7 @@ describe('ReconciliationService', () => {
   });
 
   describe('runReconciliation', () => {
-    it('should report SUCCESS when total obligations match Paystack balance', async () => {
+    it('should report SUCCESS when total obligations match Paystack balance and trial balance is balanced', async () => {
       // Mock the internal obligations query
       const mockTotalObligations = 5000;
       jest.spyOn(prisma.contract, 'aggregate').mockResolvedValue({
@@ -63,16 +86,8 @@ describe('ReconciliationService', () => {
       expect(result.actualPaystackBalance).toBe(mockTotalObligations);
       expect(result.discrepancy).toBe(0);
 
-      // Verify Audit Log was created
-      expect(prisma.auditLog.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
-          action: 'RECONCILIATION_SUCCESS',
-          metadata: expect.objectContaining({
-            totalObligations: mockTotalObligations,
-            actualPaystackBalance: mockTotalObligations,
-          }),
-        }),
-      });
+      // Verify Audit Log was NOT created (success is logged to console/alerting only)
+      expect(prisma.auditLog.create).not.toHaveBeenCalled();
     });
 
     it('should report DISCREPANCY when Paystack balance differs from obligations', async () => {
@@ -102,6 +117,33 @@ describe('ReconciliationService', () => {
             actualPaystackBalance: mockPaystackBalance,
             discrepancy: -100,
           }),
+        }),
+      });
+    });
+
+    it('should report DISCREPANCY and alert when Trial Balance is imbalanced', async () => {
+      const mockTotalObligations = 5000;
+      jest.spyOn(prisma.contract, 'aggregate').mockResolvedValue({
+        _sum: { amount: mockTotalObligations },
+      } as any);
+
+      jest.spyOn(service as any, 'fetchPaystackDedicatedAccountBalance').mockResolvedValue(mockTotalObligations);
+      jest.spyOn(prisma.auditLog, 'create').mockResolvedValue(null as any);
+
+      // Setup imbalance
+      jest.spyOn(prisma.ledgerAccount, 'aggregate').mockResolvedValue({
+        _sum: { balance: 100 }, // Non-zero sum!
+      } as any);
+
+      const result = await service.runReconciliation();
+
+      expect(result.status).toBe('DISCREPANCY');
+      expect(result.trialBalanceStatus).toBe('IMBALANCED');
+      expect(result.trialBalanceSum).toBe(100);
+
+      expect(prisma.auditLog.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          action: 'TRIAL_BALANCE_IMBALANCE',
         }),
       });
     });
