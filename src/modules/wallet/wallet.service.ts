@@ -159,7 +159,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
   }
 
   async ensureWallet(userId: string) {
-    const existingWallet = await this.prisma.wallet.findUnique({
+    const existingWallet = await this.prisma.ledgerAccount.findUnique({
       where: { userId },
     });
 
@@ -167,9 +167,11 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       return existingWallet;
     }
 
-    return this.prisma.wallet.create({
+    return this.prisma.ledgerAccount.create({
       data: {
         id: uuidv7(),
+        name: 'User Wallet',
+        type: 'USER_WALLET',
         userId,
         balance: 0,
         frozen: 0,
@@ -179,7 +181,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
   }
 
   async getWalletBalance(userId: string) {
-    const wallet = await this.prisma.wallet.findUnique({
+    const wallet = await this.prisma.ledgerAccount.findUnique({
       where: { userId },
     });
 
@@ -223,7 +225,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
   }
 
   async createWallet(userId: string) {
-    const existingWallet = await this.prisma.wallet.findUnique({
+    const existingWallet = await this.prisma.ledgerAccount.findUnique({
       where: { userId },
     });
 
@@ -235,9 +237,11 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       };
     }
 
-    const wallet = await this.prisma.wallet.create({
+    const wallet = await this.prisma.ledgerAccount.create({
       data: {
         id: uuidv7(),
+        name: 'User Wallet',
+        type: 'USER_WALLET',
         userId,
         balance: 0,
         frozen: 0,
@@ -314,7 +318,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     const txUserId = transaction.userId;
 
     if (transaction.status === TransactionStatus.COMPLETED) {
-      const wallet = await this.prisma.wallet.findUnique({ where: { userId: txUserId } });
+      const wallet = await this.prisma.ledgerAccount.findUnique({ where: { userId: txUserId } });
       return { message: 'Deposit already verified', balance: wallet?.balance ?? 0, transaction };
     }
 
@@ -336,9 +340,6 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     const verifiedAmount = Math.round(paystackData.amount / 100);
 
-    const wallet = await this.prisma.wallet.findUnique({ where: { userId: txUserId } }) ?? 
-      await this.prisma.wallet.create({ data: { id: uuidv7(), userId: txUserId, balance: 0, frozen: 0, version: 1 } });
-
     const result = await this.prisma.$transaction(async (tx) => {
       const completedTx = await tx.transaction.update({
         where: { id: transaction.id },
@@ -353,18 +354,64 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
         },
       });
 
-      const updatedWallet = await tx.wallet.update({
-        where: { userId: txUserId, version: wallet.version },
+      let externalBank = await tx.ledgerAccount.findFirst({
+        where: { type: 'EXTERNAL_BANK' },
+      });
+      if (!externalBank) {
+        externalBank = await tx.ledgerAccount.create({
+          data: {
+            id: uuidv7(),
+            name: 'External Bank Account',
+            type: 'EXTERNAL_BANK',
+            balance: 0,
+            frozen: 0,
+            version: 1,
+          },
+        });
+      }
+
+      let userWallet = await tx.ledgerAccount.findUnique({
+        where: { userId: txUserId },
+      });
+      if (!userWallet) {
+        userWallet = await tx.ledgerAccount.create({
+          data: {
+            id: uuidv7(),
+            name: 'User Wallet',
+            type: 'USER_WALLET',
+            userId: txUserId,
+            balance: 0,
+            frozen: 0,
+            version: 1,
+          },
+        });
+      }
+
+      const updatedUserWallet = await tx.ledgerAccount.update({
+        where: { id: userWallet.id, version: userWallet.version },
         data: {
-          balance: wallet.balance + verifiedAmount,
-          version: wallet.version + 1,
+          balance: userWallet.balance + verifiedAmount,
+          version: userWallet.version + 1,
         },
       });
 
-      return { wallet: updatedWallet, transaction: completedTx };
+      await tx.ledgerEntry.create({
+        data: {
+          debitAccountId: externalBank.id,
+          creditAccountId: userWallet.id,
+          amount: verifiedAmount,
+          reference,
+          description: `Wallet deposit of ${verifiedAmount} NGN`,
+        },
+      });
+
+      await tx.ledgerAccount.update({
+        where: { id: externalBank.id },
+        data: { balance: { decrement: verifiedAmount } },
+      });
+
+      return { wallet: updatedUserWallet, transaction: completedTx };
     });
-
-
 
     return {
       message: 'Deposit verified successfully',
@@ -390,7 +437,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       });
     }
 
-    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    const wallet = await this.prisma.ledgerAccount.findUnique({ where: { userId } });
     if (!wallet) throw new NotFoundException('Wallet not found');
 
     const availableBalance = wallet.balance - wallet.frozen;
@@ -399,8 +446,8 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
-      const updatedWallet = await tx.wallet.update({
-        where: { userId, version: wallet.version },
+      const updatedWallet = await tx.ledgerAccount.update({
+        where: { id: wallet.id, version: wallet.version },
         data: {
           frozen: wallet.frozen + amount,
           version: wallet.version + 1,
@@ -538,12 +585,12 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       throw new Error('Transfer initiation failed');
     }
 
-    const wallet = await this.prisma.wallet.findUnique({ where: { userId: user.id } });
+    const wallet = await this.prisma.ledgerAccount.findUnique({ where: { userId: user.id } });
     if (!wallet) throw new Error('Wallet not found');
 
     await this.prisma.$transaction(async (tx) => {
-      await tx.wallet.update({
-        where: { userId: user.id, version: wallet.version },
+      const updatedUserWallet = await tx.ledgerAccount.update({
+        where: { id: wallet.id, version: wallet.version },
         data: {
           balance: wallet.balance - payoutAmount,
           frozen: wallet.frozen - payoutAmount,
@@ -563,6 +610,37 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
           },
         },
       });
+
+      let externalBank = await tx.ledgerAccount.findFirst({
+        where: { type: 'EXTERNAL_BANK' },
+      });
+      if (!externalBank) {
+        externalBank = await tx.ledgerAccount.create({
+          data: {
+            id: uuidv7(),
+            name: 'External Bank Account',
+            type: 'EXTERNAL_BANK',
+            balance: 0,
+            frozen: 0,
+            version: 1,
+          },
+        });
+      }
+
+      await tx.ledgerEntry.create({
+        data: {
+          debitAccountId: updatedUserWallet.id,
+          creditAccountId: externalBank.id,
+          amount: payoutAmount,
+          reference: transaction.reference,
+          description: `Wallet withdrawal of ${payoutAmount} NGN`,
+        },
+      });
+
+      await tx.ledgerAccount.update({
+        where: { id: externalBank.id },
+        data: { balance: { increment: payoutAmount } },
+      });
     });
   }
 
@@ -581,7 +659,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     if (!lockToken) throw new BadRequestException('Wallet is currently busy. Please try again.');
 
     try {
-      const wallet = await this.prisma.wallet.findUnique({
+      const wallet = await this.prisma.ledgerAccount.findUnique({
         where: { userId },
       });
 
@@ -595,44 +673,44 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       }
 
       const result = await this.prisma.$transaction(async (tx) => {
-      const updatedWallet = await tx.wallet.update({
-        where: {
-          userId,
-          version: wallet.version,
-        },
-        data: {
-          frozen: wallet.frozen + amount,
-          version: wallet.version + 1,
-        },
-      });
+        const updatedWallet = await tx.ledgerAccount.update({
+          where: {
+            id: wallet.id,
+            version: wallet.version,
+          },
+          data: {
+            frozen: wallet.frozen + amount,
+            version: wallet.version + 1,
+          },
+        });
 
-      const transaction = await tx.transaction.create({
-        data: {
-          id: uuidv7(),
-          userId,
-          type: TransactionType.ESCROW_HOLD,
-          amount: -amount,
-          status: TransactionStatus.COMPLETED,
-          reference,
-          metadata: metadata || { action: 'funds_frozen' },
-          createdAt: new Date(),
-          completedAt: new Date(),
-        },
+        const transaction = await tx.transaction.create({
+          data: {
+            id: uuidv7(),
+            userId,
+            type: TransactionType.ESCROW_HOLD,
+            amount: -amount,
+            status: TransactionStatus.COMPLETED,
+            reference,
+            metadata: metadata || { action: 'funds_frozen' },
+            createdAt: new Date(),
+            completedAt: new Date(),
+          },
+        });
+
+        return {
+          wallet: updatedWallet,
+          transaction,
+        };
       });
 
       return {
-        wallet: updatedWallet,
-        transaction,
+        message: 'Funds frozen successfully',
+        balance: result.wallet.balance,
+        frozen: result.wallet.frozen,
+        available: result.wallet.balance - result.wallet.frozen,
+        transaction: result.transaction,
       };
-    });
-
-    return {
-      message: 'Funds frozen successfully',
-      balance: result.wallet.balance,
-      frozen: result.wallet.frozen,
-      available: result.wallet.balance - result.wallet.frozen,
-      transaction: result.transaction,
-    };
     } finally {
       await this.cacheService.releaseLock(lockKey, lockToken);
     }
@@ -653,7 +731,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     if (!lockToken) throw new BadRequestException('Wallet is currently busy. Please try again.');
 
     try {
-      const wallet = await this.prisma.wallet.findUnique({
+      const wallet = await this.prisma.ledgerAccount.findUnique({
         where: { userId },
       });
 
@@ -666,44 +744,44 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       }
 
       const result = await this.prisma.$transaction(async (tx) => {
-      const updatedWallet = await tx.wallet.update({
-        where: {
-          userId,
-          version: wallet.version,
-        },
-        data: {
-          frozen: wallet.frozen - amount,
-          version: wallet.version + 1,
-        },
-      });
+        const updatedWallet = await tx.ledgerAccount.update({
+          where: {
+            id: wallet.id,
+            version: wallet.version,
+          },
+          data: {
+            frozen: wallet.frozen - amount,
+            version: wallet.version + 1,
+          },
+        });
 
-      const transaction = await tx.transaction.create({
-        data: {
-          id: uuidv7(),
-          userId,
-          type: TransactionType.ESCROW_RELEASE,
-          amount: amount,
-          status: TransactionStatus.COMPLETED,
-          reference,
-          metadata: metadata || { action: 'funds_released' },
-          createdAt: new Date(),
-          completedAt: new Date(),
-        },
+        const transaction = await tx.transaction.create({
+          data: {
+            id: uuidv7(),
+            userId,
+            type: TransactionType.ESCROW_RELEASE,
+            amount: amount,
+            status: TransactionStatus.COMPLETED,
+            reference,
+            metadata: metadata || { action: 'funds_released' },
+            createdAt: new Date(),
+            completedAt: new Date(),
+          },
+        });
+
+        return {
+          wallet: updatedWallet,
+          transaction,
+        };
       });
 
       return {
-        wallet: updatedWallet,
-        transaction,
+        message: 'Funds released successfully',
+        balance: result.wallet.balance,
+        frozen: result.wallet.frozen,
+        available: result.wallet.balance - result.wallet.frozen,
+        transaction: result.transaction,
       };
-    });
-
-    return {
-      message: 'Funds released successfully',
-      balance: result.wallet.balance,
-      frozen: result.wallet.frozen,
-      available: result.wallet.balance - result.wallet.frozen,
-      transaction: result.transaction,
-    };
     } finally {
       await this.cacheService.releaseLock(lockKey, lockToken);
     }
@@ -733,7 +811,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       lockToken2 = await this.cacheService.acquireLock(lockKey2, 10000);
       if (!lockToken2) throw new BadRequestException('Wallets are currently busy. Please try again.');
 
-      const sourceWallet = await this.prisma.wallet.findUnique({
+      const sourceWallet = await this.prisma.ledgerAccount.findUnique({
         where: { userId: sourceUserId },
       });
 
@@ -745,14 +823,16 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
         throw new BadRequestException('Insufficient frozen funds to release');
       }
 
-      let destinationWallet = await this.prisma.wallet.findUnique({
+      let destinationWallet = await this.prisma.ledgerAccount.findUnique({
         where: { userId: destinationUserId },
       });
 
       if (!destinationWallet) {
-        destinationWallet = await this.prisma.wallet.create({
+        destinationWallet = await this.prisma.ledgerAccount.create({
           data: {
             id: uuidv7(),
+            name: 'User Wallet',
+            type: 'USER_WALLET',
             userId: destinationUserId,
             balance: 0,
             frozen: 0,
@@ -762,65 +842,75 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       }
 
       const result = await this.prisma.$transaction(async (tx) => {
-      const updatedSourceWallet = await tx.wallet.update({
-        where: {
-          userId: sourceUserId,
-          version: sourceWallet.version,
-        },
-        data: {
-          balance: sourceWallet.balance - amount,
-          frozen: sourceWallet.frozen - amount,
-          version: sourceWallet.version + 1,
-        },
-      });
+        const updatedSourceWallet = await tx.ledgerAccount.update({
+          where: {
+            id: sourceWallet.id,
+            version: sourceWallet.version,
+          },
+          data: {
+            balance: sourceWallet.balance - amount,
+            frozen: sourceWallet.frozen - amount,
+            version: sourceWallet.version + 1,
+          },
+        });
 
-      const updatedDestinationWallet = await tx.wallet.update({
-        where: {
-          userId: destinationUserId,
-          version: destinationWallet.version,
-        },
-        data: {
-          balance: destinationWallet.balance + amount,
-          version: destinationWallet.version + 1,
-        },
-      });
+        const updatedDestinationWallet = await tx.ledgerAccount.update({
+          where: {
+            id: destinationWallet.id,
+            version: destinationWallet.version,
+          },
+          data: {
+            balance: destinationWallet.balance + amount,
+            version: destinationWallet.version + 1,
+          },
+        });
 
-      const transaction = await tx.transaction.create({
-        data: {
-          id: uuidv7(),
-          userId: destinationUserId,
-          type: TransactionType.ESCROW_RELEASE,
-          amount,
-          status: TransactionStatus.COMPLETED,
-          reference,
-          metadata: metadata || { action: 'escrow_release' },
-          createdAt: new Date(),
-          completedAt: new Date(),
-        },
+        const transaction = await tx.transaction.create({
+          data: {
+            id: uuidv7(),
+            userId: destinationUserId,
+            type: TransactionType.ESCROW_RELEASE,
+            amount,
+            status: TransactionStatus.COMPLETED,
+            reference,
+            metadata: metadata || { action: 'escrow_release' },
+            createdAt: new Date(),
+            completedAt: new Date(),
+          },
+        });
+
+        await tx.ledgerEntry.create({
+          data: {
+            debitAccountId: updatedSourceWallet.id,
+            creditAccountId: updatedDestinationWallet.id,
+            amount,
+            reference,
+            description: `Escrow release of ${amount} NGN to User ${destinationUserId}`,
+          },
+        });
+
+        return {
+          sourceWallet: updatedSourceWallet,
+          destinationWallet: updatedDestinationWallet,
+          transaction,
+        };
       });
 
       return {
-        sourceWallet: updatedSourceWallet,
-        destinationWallet: updatedDestinationWallet,
-        transaction,
+        message: 'Escrow released successfully',
+        source: {
+          balance: result.sourceWallet.balance,
+          frozen: result.sourceWallet.frozen,
+          available: result.sourceWallet.balance - result.sourceWallet.frozen,
+        },
+        destination: {
+          balance: result.destinationWallet.balance,
+          frozen: result.destinationWallet.frozen,
+          available:
+            result.destinationWallet.balance - result.destinationWallet.frozen,
+        },
+        transaction: result.transaction,
       };
-    });
-
-    return {
-      message: 'Escrow released successfully',
-      source: {
-        balance: result.sourceWallet.balance,
-        frozen: result.sourceWallet.frozen,
-        available: result.sourceWallet.balance - result.sourceWallet.frozen,
-      },
-      destination: {
-        balance: result.destinationWallet.balance,
-        frozen: result.destinationWallet.frozen,
-        available:
-          result.destinationWallet.balance - result.destinationWallet.frozen,
-      },
-      transaction: result.transaction,
-    };
     } finally {
       if (lockToken2) await this.cacheService.releaseLock(lockKey2, lockToken2);
       await this.cacheService.releaseLock(lockKey1, lockToken1);
@@ -837,7 +927,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Amount must be positive');
     }
 
-    const wallet = await this.prisma.wallet.findUnique({
+    const wallet = await this.prisma.ledgerAccount.findUnique({
       where: { userId },
     });
 
@@ -851,9 +941,9 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
-      const updatedWallet = await tx.wallet.update({
+      const updatedWallet = await tx.ledgerAccount.update({
         where: {
-          userId,
+          id: wallet.id,
           version: wallet.version,
         },
         data: {
@@ -874,6 +964,37 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
           createdAt: new Date(),
           completedAt: new Date(),
         },
+      });
+
+      let systemFee = await tx.ledgerAccount.findFirst({
+        where: { type: 'SYSTEM_FEE' },
+      });
+      if (!systemFee) {
+        systemFee = await tx.ledgerAccount.create({
+          data: {
+            id: uuidv7(),
+            name: 'System Fee Account',
+            type: 'SYSTEM_FEE',
+            balance: 0,
+            frozen: 0,
+            version: 1,
+          },
+        });
+      }
+
+      await tx.ledgerEntry.create({
+        data: {
+          debitAccountId: updatedWallet.id,
+          creditAccountId: systemFee.id,
+          amount,
+          reference,
+          description: `Platform fee of ${amount} NGN charged`,
+        },
+      });
+
+      await tx.ledgerAccount.update({
+        where: { id: systemFee.id },
+        data: { balance: { increment: amount } },
       });
 
       return {
@@ -918,7 +1039,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     // Parallelise all three independent DB reads to avoid sequential round-trips.
     const [wallet, virtualAccount, transactions, recentTransactions] =
       await Promise.all([
-        this.prisma.wallet.findUnique({ where: { userId } }),
+        this.prisma.ledgerAccount.findUnique({ where: { userId } }),
         this.getCachedVirtualAccount(userId),
         this.prisma.transaction.groupBy({
           by: ['type', 'status'],

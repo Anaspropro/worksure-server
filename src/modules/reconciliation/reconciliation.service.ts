@@ -80,11 +80,52 @@ export class ReconciliationService {
         );
       }
 
+      // 4. Perform Trial Balance integrity check
+      const trialBalanceAggregate = await this.prisma.ledgerAccount.aggregate({
+        _sum: {
+          balance: true
+        }
+      });
+      const trialBalanceSum = trialBalanceAggregate._sum.balance || 0;
+
+      let trialBalanceStatus = 'SUCCESS';
+      if (trialBalanceSum !== 0) {
+        trialBalanceStatus = 'IMBALANCED';
+        this.logger.warn(`Trial balance imbalance detected! Sum: ${trialBalanceSum}`);
+
+        await this.prisma.auditLog.create({
+          data: {
+            action: 'TRIAL_BALANCE_IMBALANCE',
+            entityType: 'REPORT',
+            entityId: 'SYSTEM',
+            performedBy: 'SYSTEM',
+            performedAt: new Date(),
+            metadata: {
+              trialBalanceSum,
+            },
+          },
+        });
+
+        await this.alertingService.sendCriticalAlert(
+          'trial_balance_mismatch',
+          'Trial Balance Imbalance Detected',
+          `The nightly trial balance check failed. The sum of all double-entry ledger accounts is ${trialBalanceSum} NGN instead of 0.`,
+          { trialBalanceSum }
+        );
+      } else {
+        await this.alertingService.resolveAlert(
+          'trial_balance_mismatch',
+          'Trial balance verified successfully. Sum is 0.'
+        );
+      }
+
       return {
-        status: discrepancy === 0 ? 'SUCCESS' : 'DISCREPANCY',
+        status: (discrepancy === 0 && trialBalanceStatus === 'SUCCESS') ? 'SUCCESS' : 'DISCREPANCY',
         totalObligations,
         actualPaystackBalance,
-        discrepancy
+        discrepancy,
+        trialBalanceStatus,
+        trialBalanceSum,
       };
     } catch (error) {
       this.logger.error('Reconciliation Job failed', error);

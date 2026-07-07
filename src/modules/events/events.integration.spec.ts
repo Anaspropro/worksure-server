@@ -57,6 +57,8 @@ describe('Events Integration (Domain Events)', () => {
     eventEmitter = module.get<EventEmitter2>(EventEmitter2);
     notificationListener = module.get<NotificationEventListener>(NotificationEventListener);
     auditListener = module.get<AuditEventListener>(AuditEventListener);
+
+    await module.init();
   });
 
   afterEach(() => {

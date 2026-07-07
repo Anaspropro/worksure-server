@@ -6,6 +6,8 @@ import { JobStatus, UserRole as PrismaUserRole } from '../../generated/prisma';
 import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { v7 as uuidv7 } from 'uuid';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 describe('JobsService', () => {
   let service: JobsService;
   let prisma: PrismaService;
@@ -29,6 +31,13 @@ describe('JobsService', () => {
       providers: [
         JobsService,
         { provide: PrismaService, useValue: mockPrismaService },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
+            emitAsync: jest.fn(),
+          },
+        },
       ],
     }).compile();
 

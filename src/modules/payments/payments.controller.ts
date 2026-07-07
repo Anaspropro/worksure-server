@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { AuthenticatedUser } from '../auth/auth.service';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../../common/constants/roles.constants';
 import {
@@ -27,6 +28,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { PrismaService } from '../../database/prisma.service';
 import { PaymentsService } from './payments.service';
+import { PaystackWebhookService } from './paystack-webhook.service';
 import { WebhookSignatureService } from '../../common/services/webhook-signature.service';
 import {
   ActivateContractDto,
@@ -48,6 +50,7 @@ export class PaymentsController {
     private readonly prisma: PrismaService,
     private readonly paymentsService: PaymentsService,
     private readonly webhookSignatureService: WebhookSignatureService,
+    private readonly paystackWebhookService: PaystackWebhookService,
   ) {}
 
 
@@ -167,7 +170,7 @@ export class PaymentsController {
       };
     }
 
-    const result = await this.paymentsService.processPaystackWebhook(
+    const result = await this.paystackWebhookService.processPaystackWebhook(
       request.body,
     );
     await this.webhookSignatureService.markEventProcessed(eventKey);
@@ -222,13 +225,13 @@ export class PaymentsController {
   @ApiOkResponse({ description: 'Completion recorded successfully.' })
   @Post('complete')
   async completeContract(
-    @CurrentUser() user: { id: string },
+    @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CompleteContractDto,
   ) {
     const result = await this.paymentsService.completeContract(
       dto.contractId,
       user.id,
-      dto.role === 'client',
+      user.role === UserRole.CLIENT,
     );
 
     return {

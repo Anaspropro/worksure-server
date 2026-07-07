@@ -9,6 +9,7 @@ import { AppConfigService } from './config/app-config.service';
 import { configureApp } from './app.setup';
 import { SentryFilter } from './common/filters/sentry.filter';
 import { AlertingService } from './modules/monitoring/alerting.service';
+import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 
 async function bootstrap() {
   Sentry.init({
@@ -37,6 +38,10 @@ async function bootstrap() {
   const appConfigService = app.get(AppConfigService);
 
   configureApp(app);
+
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisIoAdapter);
 
   await app.listen(appConfigService.port);
 }

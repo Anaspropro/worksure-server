@@ -16,6 +16,8 @@ import {
 import { ChatGateway } from './chat.gateway';
 import { SendSocketMessageDto } from './dto/send-socket-message.dto';
 
+import { AuthenticatedUser } from '../auth/auth.service';
+
 type UploadedAttachment = {
   fileUrl: string;
   fileType?: string | null;
@@ -32,12 +34,13 @@ export class ChatService {
     private readonly chatGateway: ChatGateway,
   ) {}
 
-  async issueSocketToken(user: { id: string; email: string; role: string }) {
+  async issueSocketToken(user: AuthenticatedUser) {
     return this.jwtService.signAsync(
       {
         sub: user.id,
         email: user.email,
         role: user.role,
+        sessionId: user.sessionId,
         purpose: 'chat_socket',
       },
       { expiresIn: '10m' },

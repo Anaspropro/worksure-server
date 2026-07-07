@@ -36,6 +36,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
   private readonly refundNamespace = 'refund';
   private escrowWorker: Worker;
 
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly contractsService: ContractsService,
@@ -44,7 +45,9 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     @Inject(forwardRef(() => WalletService))
     private readonly walletService: WalletService,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    // Webhook handlers have been moved to PaystackWebhookService
+  }
 
   onModuleInit() {
     this.escrowWorker = new Worker('escrow-queue', async (job) => {
@@ -66,14 +69,13 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private buildTransferReference(contractId: string) {
+  /**
+   * Generates a unique transaction reference with a specified prefix.
+   * Eliminates duplicated hash generation utility functions.
+   */
+  private buildReference(prefix: 'transfer' | 'refund', contractId: string) {
     const hash = randomBytes(4).toString('hex');
-    return `ws_transfer_${contractId}_${hash}`;
-  }
-
-  private buildRefundReference(contractId: string) {
-    const hash = randomBytes(4).toString('hex');
-    return `ws_refund_${contractId}_${hash}`;
+    return `ws_${prefix}_${contractId}_${hash}`;
   }
 
   private getPlatformFeePercent() {
@@ -81,7 +83,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     return Number.isFinite(raw) && raw >= 0 ? raw : 10;
   }
 
-  private async createFinancialEvent(
+  public async createFinancialEvent(
     prismaClient: Prisma.TransactionClient | PrismaService,
     input: {
       contractId: string;
@@ -103,7 +105,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  private async createAuditLog(
+  public async createAuditLog(
     prismaClient: Prisma.TransactionClient | PrismaService,
     input: {
       action: string;
@@ -592,7 +594,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Calculated payout amount is invalid');
     }
 
-    const reference = this.buildTransferReference(contract.id);
+    const reference = this.buildReference('transfer', contract.id);
     let dbTxId: string | undefined = undefined;
     try {
       await this.prisma.$transaction(async (tx) => {
@@ -775,7 +777,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
       );
     }
 
-    const reference = this.buildRefundReference(contractId);
+    const reference = this.buildReference('refund', contractId);
     const lockKey = `contract:${contractId}:refund`;
     const acquired = await this.idempotency.tryAcquire(
       lockKey,
@@ -861,370 +863,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
   // Duplicate releaseEscrow/releaseEscrowByAdmin implementations removed.
   // The earlier implementations (above) are used.
 
-  async processPaystackWebhook(payload: any) {
-    const event = payload?.event as string | undefined;
 
-    if (!event) {
-      throw new BadRequestException('Webhook event is required');
-    }
-
-    switch (event) {
-      case 'charge.success': {
-        const reference = payload?.data?.reference as string | undefined;
-        if (reference) {
-          if (reference.startsWith('wallet_deposit_')) {
-            await this.walletService.verifyWalletDeposit(null, reference);
-          } else {
-            await this.verifyPaystackPayment(reference);
-          }
-        }
-        return { handled: true, event };
-      }
-
-      case 'transfer.success': {
-        const reference = payload?.data?.reference as string | undefined;
-        const transferCode = payload?.data?.transfer_code as string | undefined;
-        if (!reference) {
-          return { handled: false, event };
-        }
-
-        if (reference.startsWith('payout_req_')) {
-          await this.prisma.transaction.updateMany({
-            where: { reference, type: TransactionType.PAYOUT, status: TransactionStatus.PENDING },
-            data: { status: TransactionStatus.COMPLETED, completedAt: new Date() }
-          });
-          return { handled: true, event };
-        }
-
-
-        await this.prisma.$transaction(async (tx) => {
-          const rawLocks = await tx.$queryRaw<
-            { id: string }[]
-          >`SELECT id FROM "Transaction" WHERE "reference" = ${reference} FOR UPDATE`;
-          if (!rawLocks || rawLocks.length === 0) return;
-
-          const transferTx = await tx.transaction.findFirst({
-            where: { reference, type: TransactionType.TRANSFER },
-          });
-
-          if (transferTx && transferTx.status !== TransactionStatus.COMPLETED) {
-            const contractId =
-              (transferTx.metadata as { contractId?: string } | null)
-                ?.contractId ?? null;
-
-            await tx.transaction.update({
-              where: { id: transferTx.id },
-              data: {
-                status: TransactionStatus.COMPLETED,
-                completedAt: new Date(),
-                metadata: {
-                  ...(typeof transferTx.metadata === 'object' &&
-                  transferTx.metadata !== null
-                    ? transferTx.metadata
-                    : {}),
-                  transferCode: transferCode || null,
-                },
-              },
-            });
-
-            if (contractId) {
-              // DOUBLE-ENTRY LEDGER: Payout Release
-              const metadata = transferTx.metadata as { contractId?: string; platformFee?: number } | null;
-              const platformFee = metadata?.platformFee ?? 0;
-              const payoutAmount = transferTx.amount;
-              const totalAmount = payoutAmount + platformFee;
-
-              let systemEscrow = await tx.ledgerAccount.findFirst({
-                where: { type: 'SYSTEM_ESCROW' },
-              });
-              if (!systemEscrow) {
-                throw new NotFoundException('System escrow account not configured.');
-              }
-
-              let artisanWallet = await tx.ledgerAccount.findUnique({
-                where: { userId: transferTx.userId },
-              });
-              if (!artisanWallet) {
-                artisanWallet = await tx.ledgerAccount.create({
-                  data: {
-                    name: 'Artisan Wallet',
-                    type: 'USER_WALLET',
-                    userId: transferTx.userId,
-                  },
-                });
-              }
-
-              let systemFee = await tx.ledgerAccount.findFirst({
-                where: { type: 'SYSTEM_FEE' },
-              });
-              if (!systemFee) {
-                systemFee = await tx.ledgerAccount.create({
-                  data: {
-                    name: 'System Fee Account',
-                    type: 'SYSTEM_FEE',
-                  },
-                });
-              }
-
-              // Create ledger entries
-              await tx.ledgerEntry.create({
-                data: {
-                  debitAccountId: systemEscrow.id,
-                  creditAccountId: artisanWallet.id,
-                  amount: payoutAmount,
-                  reference,
-                  contractId,
-                  description: `Payout Release to Artisan for Contract ${contractId}`,
-                },
-              });
-
-              if (platformFee > 0) {
-                await tx.ledgerEntry.create({
-                  data: {
-                    debitAccountId: systemEscrow.id,
-                    creditAccountId: systemFee.id,
-                    amount: platformFee,
-                    reference,
-                    contractId,
-                    description: `Platform Fee Deducted for Contract ${contractId}`,
-                  },
-                });
-              }
-
-              // Update account balances
-              await tx.ledgerAccount.update({
-                where: { id: systemEscrow.id },
-                data: { balance: { decrement: totalAmount } },
-              });
-
-              await tx.ledgerAccount.update({
-                where: { id: artisanWallet.id },
-                data: { balance: { increment: payoutAmount } },
-              });
-
-              if (platformFee > 0) {
-                await tx.ledgerAccount.update({
-                  where: { id: systemFee.id },
-                  data: { balance: { increment: platformFee } },
-                });
-              }
-
-              await this.createFinancialEvent(tx, {
-                contractId,
-                type: FinancialEventType.RELEASE_CONFIRMED,
-                amount: transferTx.amount,
-                actorId: transferTx.userId,
-                metadata: {
-                  reference,
-                  transferCode: transferCode || null,
-                },
-              });
-              await this.createAuditLog(tx, {
-                action: 'PAYOUT_CONFIRMED',
-                contractId,
-                actorId: transferTx.userId,
-                metadata: {
-                  reference,
-                  transferCode: transferCode || null,
-                },
-              });
-
-              // Mark contract as paid out INSIDE the transaction — ensures atomicity.
-              await this.contractsService.markPaidOut(contractId);
-
-              const contract = await tx.contract.findUnique({
-                where: { id: contractId },
-                include: { job: true },
-              });
-
-              if (contract) {
-                this.eventEmitter.emit(
-                  DomainEventName.PAYMENT_PROCESSED,
-                  new PaymentReleasedEvent(
-                    transferTx.id, // paymentId or transactionId
-                    contractId,
-                    contract.jobId,
-                    contract.job?.title || 'Job',
-                    contract.artisanId,
-                    Number(payoutAmount)
-                  )
-                );
-              }
-            }
-          }
-        });
-
-        return { handled: true, event };
-      }
-
-      case 'transfer.failed':
-      case 'transfer.reversed': {
-        const reference = payload?.data?.reference as string | undefined;
-        const reason =
-          (payload?.data?.reason as string | undefined) ||
-          (payload?.data?.status as string | undefined);
-
-        if (!reference) {
-          return { handled: false, event };
-        }
-
-        const transferTx = await this.prisma.transaction.findFirst({
-          where: { reference, type: TransactionType.TRANSFER },
-        });
-
-        if (transferTx) {
-          const contractId =
-            (transferTx.metadata as { contractId?: string } | null)
-              ?.contractId ?? null;
-
-          await this.prisma.transaction.update({
-            where: { id: transferTx.id },
-            data: {
-              status: TransactionStatus.FAILED,
-              failedAt: new Date(),
-              failureReason: reason || 'Transfer failed',
-            },
-          });
-
-          if (contractId) {
-            await this.contractsService.recordPayoutFailure(contractId, reason);
-          }
-        }
-
-        return { handled: true, event };
-      }
-
-      case 'refund.processed': {
-        const transactionReference =
-          (payload?.data?.transaction_reference as string | undefined) ||
-          (payload?.data?.transaction?.reference as string | undefined);
-
-        if (!transactionReference) {
-          return { handled: false, event };
-        }
-
-        const payment = await this.prisma.payment.findFirst({
-          where: { paymentReference: transactionReference },
-          orderBy: { createdAt: 'desc' },
-        });
-
-        if (!payment) {
-          return { handled: false, event };
-        }
-
-        await this.prisma.$transaction(async (tx) => {
-          await tx.payment.update({
-            where: { id: payment.id },
-            data: {
-              refundedAt: new Date(),
-              metadata: {
-                refundProcessed: true,
-              },
-            },
-          });
-
-          const refundTx = await tx.transaction.findFirst({
-            where: {
-              type: TransactionType.REFUND,
-              metadata: {
-                path: ['originalReference'],
-                equals: transactionReference,
-              },
-            },
-            orderBy: {
-              createdAt: 'desc',
-            },
-          });
-
-          if (refundTx && refundTx.status !== TransactionStatus.COMPLETED) {
-            await tx.transaction.update({
-              where: { id: refundTx.id },
-              data: {
-                status: TransactionStatus.COMPLETED,
-                completedAt: new Date(),
-              },
-            });
-
-            // DOUBLE-ENTRY LEDGER: Refund Processed
-            let systemEscrow = await tx.ledgerAccount.findFirst({
-              where: { type: 'SYSTEM_ESCROW' },
-            });
-            if (!systemEscrow) {
-              throw new NotFoundException('System escrow account not configured.');
-            }
-
-            let clientWallet = await tx.ledgerAccount.findUnique({
-              where: { userId: payment.userId },
-            });
-            if (!clientWallet) {
-              clientWallet = await tx.ledgerAccount.create({
-                data: {
-                  name: 'Client Wallet',
-                  type: 'USER_WALLET',
-                  userId: payment.userId,
-                },
-              });
-            }
-
-            // Create ledger entry
-            await tx.ledgerEntry.create({
-              data: {
-                debitAccountId: systemEscrow.id,
-                creditAccountId: clientWallet.id,
-                amount: payment.amount,
-                reference: transactionReference,
-                contractId: payment.contractId,
-                paymentId: payment.id,
-                description: `Refund processed for Contract ${payment.contractId}`,
-              },
-            });
-
-            // Update account balances
-            await tx.ledgerAccount.update({
-              where: { id: systemEscrow.id },
-              data: { balance: { decrement: payment.amount } },
-            });
-
-            await tx.ledgerAccount.update({
-              where: { id: clientWallet.id },
-              data: { balance: { increment: payment.amount } },
-            });
-
-            await this.createFinancialEvent(tx, {
-              contractId: payment.contractId,
-              type: FinancialEventType.REFUND_CONFIRMED,
-              amount: payment.amount,
-              actorId: payment.userId,
-              metadata: {
-                transactionReference,
-                merchantNote:
-                  (payload?.data?.merchant_note as string | undefined) ?? null,
-              },
-            });
-
-            await this.createAuditLog(tx, {
-              action: 'REFUND_CONFIRMED',
-              contractId: payment.contractId,
-              actorId: payment.userId,
-              metadata: {
-                transactionReference,
-              },
-            });
-          }
-        });
-
-        await this.contractsService.markRefunded(
-          payment.contractId,
-          payload?.data?.merchant_note as string | undefined,
-        );
-
-        return { handled: true, event };
-      }
-
-      default:
-        return { handled: false, event };
-    }
-  }
 
   async listPayments(
     userId: string,

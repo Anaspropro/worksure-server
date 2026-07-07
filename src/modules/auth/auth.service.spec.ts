@@ -7,6 +7,9 @@ import { SessionService } from '../../common/services/session.service';
 import { UnauthorizedException, ConflictException } from '@nestjs/common';
 import { UserRole, UserStatus } from '../../generated/prisma';
 
+import { PrismaService } from '../../database/prisma.service';
+import { EmailService } from '../../common/services/email.service';
+
 describe('AuthService', () => {
   let service: AuthService;
   let usersService: UsersService;
@@ -48,6 +51,25 @@ describe('AuthService', () => {
         { provide: JwtService, useValue: mockJwtService },
         { provide: AccountLockoutService, useValue: mockAccountLockoutService },
         { provide: SessionService, useValue: mockSessionService },
+        {
+          provide: PrismaService,
+          useValue: {
+            user: {
+              update: jest.fn(),
+            },
+            verificationToken: {
+              findUnique: jest.fn().mockResolvedValue(null),
+              create: jest.fn().mockResolvedValue({}),
+            },
+          },
+        },
+        {
+          provide: EmailService,
+          useValue: {
+            sendEmail: jest.fn(),
+            sendVerificationEmail: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -105,6 +127,7 @@ describe('AuthService', () => {
       passwordHash: 'hashed-password',
       role: UserRole.CLIENT,
       status: UserStatus.ACTIVE,
+      emailVerified: true,
     };
 
     it('should successfully login and return a session token', async () => {

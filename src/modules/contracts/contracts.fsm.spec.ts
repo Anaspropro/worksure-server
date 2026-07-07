@@ -5,6 +5,8 @@ import { ContractStatus } from '../../generated/prisma';
 import { BadRequestException } from '@nestjs/common';
 import { IdempotencyService } from '../../common/services/idempotency.service';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 describe('Contracts FSM (State Machine)', () => {
   let service: ContractsService;
 
@@ -21,6 +23,13 @@ describe('Contracts FSM (State Machine)', () => {
           useValue: {
             checkIdempotency: jest.fn(),
             saveResponse: jest.fn(),
+          },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
+            emitAsync: jest.fn(),
           },
         },
       ],

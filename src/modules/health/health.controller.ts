@@ -5,6 +5,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { AppConfigService } from '../../config/app-config.service';
 import { RedisOptions, Transport } from '@nestjs/microservices';
 import { AlertingService } from '../monitoring/alerting.service';
+import { BullMQHealthIndicator } from './bullmq-health.indicator';
 
 @ApiTags('Health')
 @Controller('health')
@@ -17,6 +18,7 @@ export class HealthController {
     private prisma: PrismaService,
     private configService: AppConfigService,
     private alertingService: AlertingService,
+    private bullmqHealth: BullMQHealthIndicator,
   ) {}
 
   @Get()
@@ -53,6 +55,7 @@ export class HealthController {
           },
         });
       },
+      () => this.bullmqHealth.isHealthy('queues'),
     ]);
 
     try {
@@ -62,6 +65,7 @@ export class HealthController {
       // Send recovery for components if they were previously failing
       this.alertingService.resolveAlert('health_database', 'Database connection restored and healthy.');
       this.alertingService.resolveAlert('health_redis', 'Redis connection restored and healthy.');
+      this.alertingService.resolveAlert('health_queues', 'BullMQ queues restored and healthy.');
       
       return result;
     } catch (e: any) {
@@ -81,6 +85,14 @@ export class HealthController {
             'Redis Connection Failure',
             'The health check endpoint failed to connect to Redis.',
             { details: details.redis }
+          );
+        }
+        if (details.queues?.status === 'down' || details.queues?.status === 'backed_up') {
+          this.alertingService.sendCriticalAlert(
+            'health_queues',
+            'Queue Processing Delay / Down',
+            'The health check endpoint detected that queues are offline or backed up.',
+            { details: details.queues }
           );
         }
       }
