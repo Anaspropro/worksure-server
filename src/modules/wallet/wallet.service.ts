@@ -98,6 +98,25 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       return null;
     }
 
+    const wallet = await this.prisma.ledgerAccount.findUnique({
+      where: { userId },
+    });
+    if (!wallet) {
+      return null;
+    }
+
+    const existingDbAccount = await this.prisma.virtualAccount.findUnique({
+      where: { ledgerAccountId: wallet.id },
+    });
+    if (existingDbAccount) {
+      return {
+        accountNumber: existingDbAccount.accountNumber,
+        accountName: existingDbAccount.accountName,
+        bankName: existingDbAccount.bankName,
+        status: existingDbAccount.status,
+      };
+    }
+
     const user = await this.getWalletOwner(userId);
     if (!user) {
       return null;
@@ -105,6 +124,16 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     const existingAccount = await this.getExistingDedicatedAccount(user.email);
     if (existingAccount) {
+      await this.prisma.virtualAccount.create({
+        data: {
+          id: uuidv7(),
+          ledgerAccountId: wallet.id,
+          accountNumber: existingAccount.accountNumber,
+          accountName: existingAccount.accountName,
+          bankName: existingAccount.bankName,
+          status: existingAccount.status || 'active',
+        },
+      }).catch(err => this.logger.error(`Failed to store existing virtual account: ${err.message}`));
       return existingAccount;
     }
 
@@ -132,15 +161,28 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       { graceful: true },
     );
 
-    return (
-      this.mapDedicatedAccount(assignData?.dedicated_account) ??
+    const mappedAccount = this.mapDedicatedAccount(assignData?.dedicated_account) ??
       this.mapDedicatedAccount(assignData) ?? {
         accountNumber: null,
         accountName: user.name,
         bankName: 'Paystack',
         status: assignData ? 'provisioning' : 'unavailable',
-      }
-    );
+      };
+
+    if (mappedAccount.accountNumber) {
+      await this.prisma.virtualAccount.create({
+        data: {
+          id: uuidv7(),
+          ledgerAccountId: wallet.id,
+          accountNumber: mappedAccount.accountNumber,
+          accountName: mappedAccount.accountName,
+          bankName: mappedAccount.bankName,
+          status: mappedAccount.status || 'active',
+        },
+      }).catch(err => this.logger.error(`Failed to store newly assigned virtual account: ${err.message}`));
+    }
+
+    return mappedAccount;
   }
 
   private async getCachedVirtualAccount(userId: string) {
@@ -167,10 +209,20 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       return existingWallet;
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    const name = user
+      ? user.role === 'CLIENT'
+        ? `Client Wallet - ${user.name}`
+        : `Artisan Wallet - ${user.name}`
+      : 'User Wallet';
+
     return this.prisma.ledgerAccount.create({
       data: {
         id: uuidv7(),
-        name: 'User Wallet',
+        name,
         type: 'USER_WALLET',
         userId,
         balance: 0,
@@ -237,10 +289,20 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       };
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    const name = user
+      ? user.role === 'CLIENT'
+        ? `Client Wallet - ${user.name}`
+        : `Artisan Wallet - ${user.name}`
+      : 'User Wallet';
+
     const wallet = await this.prisma.ledgerAccount.create({
       data: {
         id: uuidv7(),
-        name: 'User Wallet',
+        name,
         type: 'USER_WALLET',
         userId,
         balance: 0,

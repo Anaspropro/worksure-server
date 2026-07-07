@@ -118,6 +118,11 @@ export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTok
  * 
  */
 export type SystemLog = $Result.DefaultSelection<Prisma.$SystemLogPayload>
+/**
+ * Model VirtualAccount
+ * 
+ */
+export type VirtualAccount = $Result.DefaultSelection<Prisma.$VirtualAccountPayload>
 
 /**
  * Enums
@@ -701,6 +706,16 @@ export class PrismaClient<
     * ```
     */
   get systemLog(): Prisma.SystemLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.virtualAccount`: Exposes CRUD operations for the **VirtualAccount** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more VirtualAccounts
+    * const virtualAccounts = await prisma.virtualAccount.findMany()
+    * ```
+    */
+  get virtualAccount(): Prisma.VirtualAccountDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1155,7 +1170,8 @@ export namespace Prisma {
     LedgerAccount: 'LedgerAccount',
     LedgerEntry: 'LedgerEntry',
     VerificationToken: 'VerificationToken',
-    SystemLog: 'SystemLog'
+    SystemLog: 'SystemLog',
+    VirtualAccount: 'VirtualAccount'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1171,7 +1187,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog" | "virtualAccount"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2729,6 +2745,80 @@ export namespace Prisma {
           }
         }
       }
+      VirtualAccount: {
+        payload: Prisma.$VirtualAccountPayload<ExtArgs>
+        fields: Prisma.VirtualAccountFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VirtualAccountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VirtualAccountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>
+          }
+          findFirst: {
+            args: Prisma.VirtualAccountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VirtualAccountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>
+          }
+          findMany: {
+            args: Prisma.VirtualAccountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>[]
+          }
+          create: {
+            args: Prisma.VirtualAccountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>
+          }
+          createMany: {
+            args: Prisma.VirtualAccountCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VirtualAccountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>[]
+          }
+          delete: {
+            args: Prisma.VirtualAccountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>
+          }
+          update: {
+            args: Prisma.VirtualAccountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>
+          }
+          deleteMany: {
+            args: Prisma.VirtualAccountDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VirtualAccountUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VirtualAccountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>[]
+          }
+          upsert: {
+            args: Prisma.VirtualAccountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VirtualAccountPayload>
+          }
+          aggregate: {
+            args: Prisma.VirtualAccountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVirtualAccount>
+          }
+          groupBy: {
+            args: Prisma.VirtualAccountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VirtualAccountGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VirtualAccountCountArgs<ExtArgs>
+            result: $Utils.Optional<VirtualAccountCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2858,6 +2948,7 @@ export namespace Prisma {
     ledgerEntry?: LedgerEntryOmit
     verificationToken?: VerificationTokenOmit
     systemLog?: SystemLogOmit
+    virtualAccount?: VirtualAccountOmit
   }
 
   /* Types for Logging */
@@ -9914,11 +10005,13 @@ export namespace Prisma {
   export type ArtisanProfileAvgAggregateOutputType = {
     rating: number | null
     reviewCount: number | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileSumAggregateOutputType = {
     rating: number | null
     reviewCount: number | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileMinAggregateOutputType = {
@@ -9931,6 +10024,7 @@ export namespace Prisma {
     reviewCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileMaxAggregateOutputType = {
@@ -9943,6 +10037,7 @@ export namespace Prisma {
     reviewCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileCountAggregateOutputType = {
@@ -9957,6 +10052,7 @@ export namespace Prisma {
     reviewCount: number
     createdAt: number
     updatedAt: number
+    platformFeePercent: number
     _all: number
   }
 
@@ -9964,11 +10060,13 @@ export namespace Prisma {
   export type ArtisanProfileAvgAggregateInputType = {
     rating?: true
     reviewCount?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileSumAggregateInputType = {
     rating?: true
     reviewCount?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileMinAggregateInputType = {
@@ -9981,6 +10079,7 @@ export namespace Prisma {
     reviewCount?: true
     createdAt?: true
     updatedAt?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileMaxAggregateInputType = {
@@ -9993,6 +10092,7 @@ export namespace Prisma {
     reviewCount?: true
     createdAt?: true
     updatedAt?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileCountAggregateInputType = {
@@ -10007,6 +10107,7 @@ export namespace Prisma {
     reviewCount?: true
     createdAt?: true
     updatedAt?: true
+    platformFeePercent?: true
     _all?: true
   }
 
@@ -10108,6 +10209,7 @@ export namespace Prisma {
     reviewCount: number
     createdAt: Date
     updatedAt: Date
+    platformFeePercent: number | null
     _count: ArtisanProfileCountAggregateOutputType | null
     _avg: ArtisanProfileAvgAggregateOutputType | null
     _sum: ArtisanProfileSumAggregateOutputType | null
@@ -10141,6 +10243,7 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["artisanProfile"]>
 
@@ -10156,6 +10259,7 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["artisanProfile"]>
 
@@ -10171,6 +10275,7 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["artisanProfile"]>
 
@@ -10186,9 +10291,10 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
   }
 
-  export type ArtisanProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bio" | "skills" | "experience" | "portfolio" | "verified" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["artisanProfile"]>
+  export type ArtisanProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bio" | "skills" | "experience" | "portfolio" | "verified" | "rating" | "reviewCount" | "createdAt" | "updatedAt" | "platformFeePercent", ExtArgs["result"]["artisanProfile"]>
   export type ArtisanProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -10216,6 +10322,7 @@ export namespace Prisma {
       reviewCount: number
       createdAt: Date
       updatedAt: Date
+      platformFeePercent: number | null
     }, ExtArgs["result"]["artisanProfile"]>
     composites: {}
   }
@@ -10651,6 +10758,7 @@ export namespace Prisma {
     readonly reviewCount: FieldRef<"ArtisanProfile", 'Int'>
     readonly createdAt: FieldRef<"ArtisanProfile", 'DateTime'>
     readonly updatedAt: FieldRef<"ArtisanProfile", 'DateTime'>
+    readonly platformFeePercent: FieldRef<"ArtisanProfile", 'Float'>
   }
     
 
@@ -24492,6 +24600,7 @@ export namespace Prisma {
     version?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    virtualAccount?: boolean | LedgerAccount$virtualAccountArgs<ExtArgs>
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
     debitEntries?: boolean | LedgerAccount$debitEntriesArgs<ExtArgs>
     creditEntries?: boolean | LedgerAccount$creditEntriesArgs<ExtArgs>
@@ -24538,6 +24647,7 @@ export namespace Prisma {
 
   export type LedgerAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "userId" | "balance" | "frozen" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
   export type LedgerAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    virtualAccount?: boolean | LedgerAccount$virtualAccountArgs<ExtArgs>
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
     debitEntries?: boolean | LedgerAccount$debitEntriesArgs<ExtArgs>
     creditEntries?: boolean | LedgerAccount$creditEntriesArgs<ExtArgs>
@@ -24553,6 +24663,7 @@ export namespace Prisma {
   export type $LedgerAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "LedgerAccount"
     objects: {
+      virtualAccount: Prisma.$VirtualAccountPayload<ExtArgs> | null
       user: Prisma.$UserPayload<ExtArgs> | null
       debitEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
       creditEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
@@ -24961,6 +25072,7 @@ export namespace Prisma {
    */
   export interface Prisma__LedgerAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    virtualAccount<T extends LedgerAccount$virtualAccountArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccount$virtualAccountArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     user<T extends LedgerAccount$userArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccount$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     debitEntries<T extends LedgerAccount$debitEntriesArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccount$debitEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     creditEntries<T extends LedgerAccount$creditEntriesArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccount$creditEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -25400,6 +25512,25 @@ export namespace Prisma {
      * Limit how many LedgerAccounts to delete.
      */
     limit?: number
+  }
+
+  /**
+   * LedgerAccount.virtualAccount
+   */
+  export type LedgerAccount$virtualAccountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    where?: VirtualAccountWhereInput
   }
 
   /**
@@ -28722,6 +28853,1108 @@ export namespace Prisma {
 
 
   /**
+   * Model VirtualAccount
+   */
+
+  export type AggregateVirtualAccount = {
+    _count: VirtualAccountCountAggregateOutputType | null
+    _min: VirtualAccountMinAggregateOutputType | null
+    _max: VirtualAccountMaxAggregateOutputType | null
+  }
+
+  export type VirtualAccountMinAggregateOutputType = {
+    id: string | null
+    ledgerAccountId: string | null
+    accountNumber: string | null
+    accountName: string | null
+    bankName: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VirtualAccountMaxAggregateOutputType = {
+    id: string | null
+    ledgerAccountId: string | null
+    accountNumber: string | null
+    accountName: string | null
+    bankName: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VirtualAccountCountAggregateOutputType = {
+    id: number
+    ledgerAccountId: number
+    accountNumber: number
+    accountName: number
+    bankName: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type VirtualAccountMinAggregateInputType = {
+    id?: true
+    ledgerAccountId?: true
+    accountNumber?: true
+    accountName?: true
+    bankName?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VirtualAccountMaxAggregateInputType = {
+    id?: true
+    ledgerAccountId?: true
+    accountNumber?: true
+    accountName?: true
+    bankName?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VirtualAccountCountAggregateInputType = {
+    id?: true
+    ledgerAccountId?: true
+    accountNumber?: true
+    accountName?: true
+    bankName?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type VirtualAccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VirtualAccount to aggregate.
+     */
+    where?: VirtualAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VirtualAccounts to fetch.
+     */
+    orderBy?: VirtualAccountOrderByWithRelationInput | VirtualAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VirtualAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VirtualAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VirtualAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned VirtualAccounts
+    **/
+    _count?: true | VirtualAccountCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VirtualAccountMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VirtualAccountMaxAggregateInputType
+  }
+
+  export type GetVirtualAccountAggregateType<T extends VirtualAccountAggregateArgs> = {
+        [P in keyof T & keyof AggregateVirtualAccount]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVirtualAccount[P]>
+      : GetScalarType<T[P], AggregateVirtualAccount[P]>
+  }
+
+
+
+
+  export type VirtualAccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VirtualAccountWhereInput
+    orderBy?: VirtualAccountOrderByWithAggregationInput | VirtualAccountOrderByWithAggregationInput[]
+    by: VirtualAccountScalarFieldEnum[] | VirtualAccountScalarFieldEnum
+    having?: VirtualAccountScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VirtualAccountCountAggregateInputType | true
+    _min?: VirtualAccountMinAggregateInputType
+    _max?: VirtualAccountMaxAggregateInputType
+  }
+
+  export type VirtualAccountGroupByOutputType = {
+    id: string
+    ledgerAccountId: string
+    accountNumber: string | null
+    accountName: string | null
+    bankName: string | null
+    status: string
+    createdAt: Date
+    updatedAt: Date
+    _count: VirtualAccountCountAggregateOutputType | null
+    _min: VirtualAccountMinAggregateOutputType | null
+    _max: VirtualAccountMaxAggregateOutputType | null
+  }
+
+  type GetVirtualAccountGroupByPayload<T extends VirtualAccountGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VirtualAccountGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VirtualAccountGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VirtualAccountGroupByOutputType[P]>
+            : GetScalarType<T[P], VirtualAccountGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VirtualAccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ledgerAccountId?: boolean
+    accountNumber?: boolean
+    accountName?: boolean
+    bankName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ledgerAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["virtualAccount"]>
+
+  export type VirtualAccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ledgerAccountId?: boolean
+    accountNumber?: boolean
+    accountName?: boolean
+    bankName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ledgerAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["virtualAccount"]>
+
+  export type VirtualAccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ledgerAccountId?: boolean
+    accountNumber?: boolean
+    accountName?: boolean
+    bankName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    ledgerAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["virtualAccount"]>
+
+  export type VirtualAccountSelectScalar = {
+    id?: boolean
+    ledgerAccountId?: boolean
+    accountNumber?: boolean
+    accountName?: boolean
+    bankName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type VirtualAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ledgerAccountId" | "accountNumber" | "accountName" | "bankName" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["virtualAccount"]>
+  export type VirtualAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ledgerAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+  }
+  export type VirtualAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ledgerAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+  }
+  export type VirtualAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ledgerAccount?: boolean | LedgerAccountDefaultArgs<ExtArgs>
+  }
+
+  export type $VirtualAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "VirtualAccount"
+    objects: {
+      ledgerAccount: Prisma.$LedgerAccountPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      ledgerAccountId: string
+      accountNumber: string | null
+      accountName: string | null
+      bankName: string | null
+      status: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["virtualAccount"]>
+    composites: {}
+  }
+
+  type VirtualAccountGetPayload<S extends boolean | null | undefined | VirtualAccountDefaultArgs> = $Result.GetResult<Prisma.$VirtualAccountPayload, S>
+
+  type VirtualAccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VirtualAccountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VirtualAccountCountAggregateInputType | true
+    }
+
+  export interface VirtualAccountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VirtualAccount'], meta: { name: 'VirtualAccount' } }
+    /**
+     * Find zero or one VirtualAccount that matches the filter.
+     * @param {VirtualAccountFindUniqueArgs} args - Arguments to find a VirtualAccount
+     * @example
+     * // Get one VirtualAccount
+     * const virtualAccount = await prisma.virtualAccount.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VirtualAccountFindUniqueArgs>(args: SelectSubset<T, VirtualAccountFindUniqueArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one VirtualAccount that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VirtualAccountFindUniqueOrThrowArgs} args - Arguments to find a VirtualAccount
+     * @example
+     * // Get one VirtualAccount
+     * const virtualAccount = await prisma.virtualAccount.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VirtualAccountFindUniqueOrThrowArgs>(args: SelectSubset<T, VirtualAccountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VirtualAccount that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VirtualAccountFindFirstArgs} args - Arguments to find a VirtualAccount
+     * @example
+     * // Get one VirtualAccount
+     * const virtualAccount = await prisma.virtualAccount.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VirtualAccountFindFirstArgs>(args?: SelectSubset<T, VirtualAccountFindFirstArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VirtualAccount that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VirtualAccountFindFirstOrThrowArgs} args - Arguments to find a VirtualAccount
+     * @example
+     * // Get one VirtualAccount
+     * const virtualAccount = await prisma.virtualAccount.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VirtualAccountFindFirstOrThrowArgs>(args?: SelectSubset<T, VirtualAccountFindFirstOrThrowArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more VirtualAccounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VirtualAccountFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VirtualAccounts
+     * const virtualAccounts = await prisma.virtualAccount.findMany()
+     * 
+     * // Get first 10 VirtualAccounts
+     * const virtualAccounts = await prisma.virtualAccount.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const virtualAccountWithIdOnly = await prisma.virtualAccount.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VirtualAccountFindManyArgs>(args?: SelectSubset<T, VirtualAccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a VirtualAccount.
+     * @param {VirtualAccountCreateArgs} args - Arguments to create a VirtualAccount.
+     * @example
+     * // Create one VirtualAccount
+     * const VirtualAccount = await prisma.virtualAccount.create({
+     *   data: {
+     *     // ... data to create a VirtualAccount
+     *   }
+     * })
+     * 
+     */
+    create<T extends VirtualAccountCreateArgs>(args: SelectSubset<T, VirtualAccountCreateArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many VirtualAccounts.
+     * @param {VirtualAccountCreateManyArgs} args - Arguments to create many VirtualAccounts.
+     * @example
+     * // Create many VirtualAccounts
+     * const virtualAccount = await prisma.virtualAccount.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VirtualAccountCreateManyArgs>(args?: SelectSubset<T, VirtualAccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many VirtualAccounts and returns the data saved in the database.
+     * @param {VirtualAccountCreateManyAndReturnArgs} args - Arguments to create many VirtualAccounts.
+     * @example
+     * // Create many VirtualAccounts
+     * const virtualAccount = await prisma.virtualAccount.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many VirtualAccounts and only return the `id`
+     * const virtualAccountWithIdOnly = await prisma.virtualAccount.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VirtualAccountCreateManyAndReturnArgs>(args?: SelectSubset<T, VirtualAccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a VirtualAccount.
+     * @param {VirtualAccountDeleteArgs} args - Arguments to delete one VirtualAccount.
+     * @example
+     * // Delete one VirtualAccount
+     * const VirtualAccount = await prisma.virtualAccount.delete({
+     *   where: {
+     *     // ... filter to delete one VirtualAccount
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VirtualAccountDeleteArgs>(args: SelectSubset<T, VirtualAccountDeleteArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one VirtualAccount.
+     * @param {VirtualAccountUpdateArgs} args - Arguments to update one VirtualAccount.
+     * @example
+     * // Update one VirtualAccount
+     * const virtualAccount = await prisma.virtualAccount.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VirtualAccountUpdateArgs>(args: SelectSubset<T, VirtualAccountUpdateArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more VirtualAccounts.
+     * @param {VirtualAccountDeleteManyArgs} args - Arguments to filter VirtualAccounts to delete.
+     * @example
+     * // Delete a few VirtualAccounts
+     * const { count } = await prisma.virtualAccount.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VirtualAccountDeleteManyArgs>(args?: SelectSubset<T, VirtualAccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VirtualAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VirtualAccountUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VirtualAccounts
+     * const virtualAccount = await prisma.virtualAccount.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VirtualAccountUpdateManyArgs>(args: SelectSubset<T, VirtualAccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VirtualAccounts and returns the data updated in the database.
+     * @param {VirtualAccountUpdateManyAndReturnArgs} args - Arguments to update many VirtualAccounts.
+     * @example
+     * // Update many VirtualAccounts
+     * const virtualAccount = await prisma.virtualAccount.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more VirtualAccounts and only return the `id`
+     * const virtualAccountWithIdOnly = await prisma.virtualAccount.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VirtualAccountUpdateManyAndReturnArgs>(args: SelectSubset<T, VirtualAccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one VirtualAccount.
+     * @param {VirtualAccountUpsertArgs} args - Arguments to update or create a VirtualAccount.
+     * @example
+     * // Update or create a VirtualAccount
+     * const virtualAccount = await prisma.virtualAccount.upsert({
+     *   create: {
+     *     // ... data to create a VirtualAccount
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VirtualAccount we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VirtualAccountUpsertArgs>(args: SelectSubset<T, VirtualAccountUpsertArgs<ExtArgs>>): Prisma__VirtualAccountClient<$Result.GetResult<Prisma.$VirtualAccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of VirtualAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VirtualAccountCountArgs} args - Arguments to filter VirtualAccounts to count.
+     * @example
+     * // Count the number of VirtualAccounts
+     * const count = await prisma.virtualAccount.count({
+     *   where: {
+     *     // ... the filter for the VirtualAccounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends VirtualAccountCountArgs>(
+      args?: Subset<T, VirtualAccountCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VirtualAccountCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a VirtualAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VirtualAccountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VirtualAccountAggregateArgs>(args: Subset<T, VirtualAccountAggregateArgs>): Prisma.PrismaPromise<GetVirtualAccountAggregateType<T>>
+
+    /**
+     * Group by VirtualAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VirtualAccountGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VirtualAccountGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VirtualAccountGroupByArgs['orderBy'] }
+        : { orderBy?: VirtualAccountGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VirtualAccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVirtualAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the VirtualAccount model
+   */
+  readonly fields: VirtualAccountFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for VirtualAccount.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VirtualAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    ledgerAccount<T extends LedgerAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LedgerAccountDefaultArgs<ExtArgs>>): Prisma__LedgerAccountClient<$Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the VirtualAccount model
+   */
+  interface VirtualAccountFieldRefs {
+    readonly id: FieldRef<"VirtualAccount", 'String'>
+    readonly ledgerAccountId: FieldRef<"VirtualAccount", 'String'>
+    readonly accountNumber: FieldRef<"VirtualAccount", 'String'>
+    readonly accountName: FieldRef<"VirtualAccount", 'String'>
+    readonly bankName: FieldRef<"VirtualAccount", 'String'>
+    readonly status: FieldRef<"VirtualAccount", 'String'>
+    readonly createdAt: FieldRef<"VirtualAccount", 'DateTime'>
+    readonly updatedAt: FieldRef<"VirtualAccount", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * VirtualAccount findUnique
+   */
+  export type VirtualAccountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which VirtualAccount to fetch.
+     */
+    where: VirtualAccountWhereUniqueInput
+  }
+
+  /**
+   * VirtualAccount findUniqueOrThrow
+   */
+  export type VirtualAccountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which VirtualAccount to fetch.
+     */
+    where: VirtualAccountWhereUniqueInput
+  }
+
+  /**
+   * VirtualAccount findFirst
+   */
+  export type VirtualAccountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which VirtualAccount to fetch.
+     */
+    where?: VirtualAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VirtualAccounts to fetch.
+     */
+    orderBy?: VirtualAccountOrderByWithRelationInput | VirtualAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VirtualAccounts.
+     */
+    cursor?: VirtualAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VirtualAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VirtualAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VirtualAccounts.
+     */
+    distinct?: VirtualAccountScalarFieldEnum | VirtualAccountScalarFieldEnum[]
+  }
+
+  /**
+   * VirtualAccount findFirstOrThrow
+   */
+  export type VirtualAccountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which VirtualAccount to fetch.
+     */
+    where?: VirtualAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VirtualAccounts to fetch.
+     */
+    orderBy?: VirtualAccountOrderByWithRelationInput | VirtualAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VirtualAccounts.
+     */
+    cursor?: VirtualAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VirtualAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VirtualAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VirtualAccounts.
+     */
+    distinct?: VirtualAccountScalarFieldEnum | VirtualAccountScalarFieldEnum[]
+  }
+
+  /**
+   * VirtualAccount findMany
+   */
+  export type VirtualAccountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which VirtualAccounts to fetch.
+     */
+    where?: VirtualAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VirtualAccounts to fetch.
+     */
+    orderBy?: VirtualAccountOrderByWithRelationInput | VirtualAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing VirtualAccounts.
+     */
+    cursor?: VirtualAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VirtualAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VirtualAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VirtualAccounts.
+     */
+    distinct?: VirtualAccountScalarFieldEnum | VirtualAccountScalarFieldEnum[]
+  }
+
+  /**
+   * VirtualAccount create
+   */
+  export type VirtualAccountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to create a VirtualAccount.
+     */
+    data: XOR<VirtualAccountCreateInput, VirtualAccountUncheckedCreateInput>
+  }
+
+  /**
+   * VirtualAccount createMany
+   */
+  export type VirtualAccountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VirtualAccounts.
+     */
+    data: VirtualAccountCreateManyInput | VirtualAccountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VirtualAccount createManyAndReturn
+   */
+  export type VirtualAccountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * The data used to create many VirtualAccounts.
+     */
+    data: VirtualAccountCreateManyInput | VirtualAccountCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * VirtualAccount update
+   */
+  export type VirtualAccountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to update a VirtualAccount.
+     */
+    data: XOR<VirtualAccountUpdateInput, VirtualAccountUncheckedUpdateInput>
+    /**
+     * Choose, which VirtualAccount to update.
+     */
+    where: VirtualAccountWhereUniqueInput
+  }
+
+  /**
+   * VirtualAccount updateMany
+   */
+  export type VirtualAccountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VirtualAccounts.
+     */
+    data: XOR<VirtualAccountUpdateManyMutationInput, VirtualAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which VirtualAccounts to update
+     */
+    where?: VirtualAccountWhereInput
+    /**
+     * Limit how many VirtualAccounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VirtualAccount updateManyAndReturn
+   */
+  export type VirtualAccountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * The data used to update VirtualAccounts.
+     */
+    data: XOR<VirtualAccountUpdateManyMutationInput, VirtualAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which VirtualAccounts to update
+     */
+    where?: VirtualAccountWhereInput
+    /**
+     * Limit how many VirtualAccounts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * VirtualAccount upsert
+   */
+  export type VirtualAccountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * The filter to search for the VirtualAccount to update in case it exists.
+     */
+    where: VirtualAccountWhereUniqueInput
+    /**
+     * In case the VirtualAccount found by the `where` argument doesn't exist, create a new VirtualAccount with this data.
+     */
+    create: XOR<VirtualAccountCreateInput, VirtualAccountUncheckedCreateInput>
+    /**
+     * In case the VirtualAccount was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VirtualAccountUpdateInput, VirtualAccountUncheckedUpdateInput>
+  }
+
+  /**
+   * VirtualAccount delete
+   */
+  export type VirtualAccountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+    /**
+     * Filter which VirtualAccount to delete.
+     */
+    where: VirtualAccountWhereUniqueInput
+  }
+
+  /**
+   * VirtualAccount deleteMany
+   */
+  export type VirtualAccountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VirtualAccounts to delete
+     */
+    where?: VirtualAccountWhereInput
+    /**
+     * Limit how many VirtualAccounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * VirtualAccount without action
+   */
+  export type VirtualAccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VirtualAccount
+     */
+    select?: VirtualAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VirtualAccount
+     */
+    omit?: VirtualAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VirtualAccountInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -28849,7 +30082,8 @@ export namespace Prisma {
     rating: 'rating',
     reviewCount: 'reviewCount',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    platformFeePercent: 'platformFeePercent'
   };
 
   export type ArtisanProfileScalarFieldEnum = (typeof ArtisanProfileScalarFieldEnum)[keyof typeof ArtisanProfileScalarFieldEnum]
@@ -29114,6 +30348,20 @@ export namespace Prisma {
   };
 
   export type SystemLogScalarFieldEnum = (typeof SystemLogScalarFieldEnum)[keyof typeof SystemLogScalarFieldEnum]
+
+
+  export const VirtualAccountScalarFieldEnum: {
+    id: 'id',
+    ledgerAccountId: 'ledgerAccountId',
+    accountNumber: 'accountNumber',
+    accountName: 'accountName',
+    bankName: 'bankName',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type VirtualAccountScalarFieldEnum = (typeof VirtualAccountScalarFieldEnum)[keyof typeof VirtualAccountScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -29417,6 +30665,18 @@ export namespace Prisma {
   };
 
   export type SystemLogOrderByRelevanceFieldEnum = (typeof SystemLogOrderByRelevanceFieldEnum)[keyof typeof SystemLogOrderByRelevanceFieldEnum]
+
+
+  export const VirtualAccountOrderByRelevanceFieldEnum: {
+    id: 'id',
+    ledgerAccountId: 'ledgerAccountId',
+    accountNumber: 'accountNumber',
+    accountName: 'accountName',
+    bankName: 'bankName',
+    status: 'status'
+  };
+
+  export type VirtualAccountOrderByRelevanceFieldEnum = (typeof VirtualAccountOrderByRelevanceFieldEnum)[keyof typeof VirtualAccountOrderByRelevanceFieldEnum]
 
 
   /**
@@ -30346,6 +31606,7 @@ export namespace Prisma {
     reviewCount?: IntFilter<"ArtisanProfile"> | number
     createdAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
     updatedAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    platformFeePercent?: FloatNullableFilter<"ArtisanProfile"> | number | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -30361,6 +31622,7 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     _relevance?: ArtisanProfileOrderByRelevanceInput
   }
@@ -30380,6 +31642,7 @@ export namespace Prisma {
     reviewCount?: IntFilter<"ArtisanProfile"> | number
     createdAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
     updatedAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    platformFeePercent?: FloatNullableFilter<"ArtisanProfile"> | number | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId">
 
@@ -30395,6 +31658,7 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrderInput | SortOrder
     _count?: ArtisanProfileCountOrderByAggregateInput
     _avg?: ArtisanProfileAvgOrderByAggregateInput
     _max?: ArtisanProfileMaxOrderByAggregateInput
@@ -30417,6 +31681,7 @@ export namespace Prisma {
     reviewCount?: IntWithAggregatesFilter<"ArtisanProfile"> | number
     createdAt?: DateTimeWithAggregatesFilter<"ArtisanProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ArtisanProfile"> | Date | string
+    platformFeePercent?: FloatNullableWithAggregatesFilter<"ArtisanProfile"> | number | null
   }
 
   export type ProposalWhereInput = {
@@ -31537,6 +32802,7 @@ export namespace Prisma {
     version?: IntFilter<"LedgerAccount"> | number
     createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
+    virtualAccount?: XOR<VirtualAccountNullableScalarRelationFilter, VirtualAccountWhereInput> | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     debitEntries?: LedgerEntryListRelationFilter
     creditEntries?: LedgerEntryListRelationFilter
@@ -31552,6 +32818,7 @@ export namespace Prisma {
     version?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    virtualAccount?: VirtualAccountOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     debitEntries?: LedgerEntryOrderByRelationAggregateInput
     creditEntries?: LedgerEntryOrderByRelationAggregateInput
@@ -31571,6 +32838,7 @@ export namespace Prisma {
     version?: IntFilter<"LedgerAccount"> | number
     createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
+    virtualAccount?: XOR<VirtualAccountNullableScalarRelationFilter, VirtualAccountWhereInput> | null
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     debitEntries?: LedgerEntryListRelationFilter
     creditEntries?: LedgerEntryListRelationFilter
@@ -31809,6 +33077,77 @@ export namespace Prisma {
     trace?: StringNullableWithAggregatesFilter<"SystemLog"> | string | null
     metadata?: JsonNullableWithAggregatesFilter<"SystemLog">
     createdAt?: DateTimeWithAggregatesFilter<"SystemLog"> | Date | string
+  }
+
+  export type VirtualAccountWhereInput = {
+    AND?: VirtualAccountWhereInput | VirtualAccountWhereInput[]
+    OR?: VirtualAccountWhereInput[]
+    NOT?: VirtualAccountWhereInput | VirtualAccountWhereInput[]
+    id?: StringFilter<"VirtualAccount"> | string
+    ledgerAccountId?: StringFilter<"VirtualAccount"> | string
+    accountNumber?: StringNullableFilter<"VirtualAccount"> | string | null
+    accountName?: StringNullableFilter<"VirtualAccount"> | string | null
+    bankName?: StringNullableFilter<"VirtualAccount"> | string | null
+    status?: StringFilter<"VirtualAccount"> | string
+    createdAt?: DateTimeFilter<"VirtualAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"VirtualAccount"> | Date | string
+    ledgerAccount?: XOR<LedgerAccountScalarRelationFilter, LedgerAccountWhereInput>
+  }
+
+  export type VirtualAccountOrderByWithRelationInput = {
+    id?: SortOrder
+    ledgerAccountId?: SortOrder
+    accountNumber?: SortOrderInput | SortOrder
+    accountName?: SortOrderInput | SortOrder
+    bankName?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    ledgerAccount?: LedgerAccountOrderByWithRelationInput
+    _relevance?: VirtualAccountOrderByRelevanceInput
+  }
+
+  export type VirtualAccountWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    ledgerAccountId?: string
+    accountNumber?: string
+    AND?: VirtualAccountWhereInput | VirtualAccountWhereInput[]
+    OR?: VirtualAccountWhereInput[]
+    NOT?: VirtualAccountWhereInput | VirtualAccountWhereInput[]
+    accountName?: StringNullableFilter<"VirtualAccount"> | string | null
+    bankName?: StringNullableFilter<"VirtualAccount"> | string | null
+    status?: StringFilter<"VirtualAccount"> | string
+    createdAt?: DateTimeFilter<"VirtualAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"VirtualAccount"> | Date | string
+    ledgerAccount?: XOR<LedgerAccountScalarRelationFilter, LedgerAccountWhereInput>
+  }, "id" | "ledgerAccountId" | "accountNumber">
+
+  export type VirtualAccountOrderByWithAggregationInput = {
+    id?: SortOrder
+    ledgerAccountId?: SortOrder
+    accountNumber?: SortOrderInput | SortOrder
+    accountName?: SortOrderInput | SortOrder
+    bankName?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: VirtualAccountCountOrderByAggregateInput
+    _max?: VirtualAccountMaxOrderByAggregateInput
+    _min?: VirtualAccountMinOrderByAggregateInput
+  }
+
+  export type VirtualAccountScalarWhereWithAggregatesInput = {
+    AND?: VirtualAccountScalarWhereWithAggregatesInput | VirtualAccountScalarWhereWithAggregatesInput[]
+    OR?: VirtualAccountScalarWhereWithAggregatesInput[]
+    NOT?: VirtualAccountScalarWhereWithAggregatesInput | VirtualAccountScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"VirtualAccount"> | string
+    ledgerAccountId?: StringWithAggregatesFilter<"VirtualAccount"> | string
+    accountNumber?: StringNullableWithAggregatesFilter<"VirtualAccount"> | string | null
+    accountName?: StringNullableWithAggregatesFilter<"VirtualAccount"> | string | null
+    bankName?: StringNullableWithAggregatesFilter<"VirtualAccount"> | string | null
+    status?: StringWithAggregatesFilter<"VirtualAccount"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"VirtualAccount"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"VirtualAccount"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -32507,6 +33846,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
     user: UserCreateNestedOneWithoutArtisanProfileInput
   }
 
@@ -32522,6 +33862,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileUpdateInput = {
@@ -32535,6 +33876,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
     user?: UserUpdateOneRequiredWithoutArtisanProfileNestedInput
   }
 
@@ -32550,6 +33892,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ArtisanProfileCreateManyInput = {
@@ -32564,6 +33907,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileUpdateManyMutationInput = {
@@ -32577,6 +33921,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ArtisanProfileUncheckedUpdateManyInput = {
@@ -32591,6 +33936,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ProposalCreateInput = {
@@ -33839,6 +35185,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountCreateNestedOneWithoutLedgerAccountInput
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
     debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
     creditEntries?: LedgerEntryCreateNestedManyWithoutCreditAccountInput
@@ -33854,6 +35201,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountUncheckedCreateNestedOneWithoutLedgerAccountInput
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
     creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
   }
@@ -33867,6 +35215,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUpdateOneWithoutLedgerAccountNestedInput
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
     debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
     creditEntries?: LedgerEntryUpdateManyWithoutCreditAccountNestedInput
@@ -33882,6 +35231,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUncheckedUpdateOneWithoutLedgerAccountNestedInput
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
     creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
   }
@@ -34125,6 +35475,82 @@ export namespace Prisma {
     trace?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VirtualAccountCreateInput = {
+    id?: string
+    accountNumber?: string | null
+    accountName?: string | null
+    bankName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ledgerAccount: LedgerAccountCreateNestedOneWithoutVirtualAccountInput
+  }
+
+  export type VirtualAccountUncheckedCreateInput = {
+    id?: string
+    ledgerAccountId: string
+    accountNumber?: string | null
+    accountName?: string | null
+    bankName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VirtualAccountUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    accountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ledgerAccount?: LedgerAccountUpdateOneRequiredWithoutVirtualAccountNestedInput
+  }
+
+  export type VirtualAccountUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    accountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VirtualAccountCreateManyInput = {
+    id?: string
+    ledgerAccountId: string
+    accountNumber?: string | null
+    accountName?: string | null
+    bankName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VirtualAccountUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    accountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VirtualAccountUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    accountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -35022,11 +36448,13 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileAvgOrderByAggregateInput = {
     rating?: SortOrder
     reviewCount?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileMaxOrderByAggregateInput = {
@@ -35039,6 +36467,7 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileMinOrderByAggregateInput = {
@@ -35051,11 +36480,13 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileSumOrderByAggregateInput = {
     rating?: SortOrder
     reviewCount?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -35917,6 +37348,11 @@ export namespace Prisma {
     not?: NestedEnumLedgerAccountTypeFilter<$PrismaModel> | $Enums.LedgerAccountType
   }
 
+  export type VirtualAccountNullableScalarRelationFilter = {
+    is?: VirtualAccountWhereInput | null
+    isNot?: VirtualAccountWhereInput | null
+  }
+
   export type LedgerAccountOrderByRelevanceInput = {
     fields: LedgerAccountOrderByRelevanceFieldEnum | LedgerAccountOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -36103,6 +37539,45 @@ export namespace Prisma {
     message?: SortOrder
     trace?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type VirtualAccountOrderByRelevanceInput = {
+    fields: VirtualAccountOrderByRelevanceFieldEnum | VirtualAccountOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type VirtualAccountCountOrderByAggregateInput = {
+    id?: SortOrder
+    ledgerAccountId?: SortOrder
+    accountNumber?: SortOrder
+    accountName?: SortOrder
+    bankName?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VirtualAccountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ledgerAccountId?: SortOrder
+    accountNumber?: SortOrder
+    accountName?: SortOrder
+    bankName?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VirtualAccountMinOrderByAggregateInput = {
+    id?: SortOrder
+    ledgerAccountId?: SortOrder
+    accountNumber?: SortOrder
+    accountName?: SortOrder
+    bankName?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ArtisanProfileCreateNestedOneWithoutUserInput = {
@@ -37683,6 +39158,12 @@ export namespace Prisma {
     update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutFinancialEventsInput, ContractUpdateWithoutFinancialEventsInput>, ContractUncheckedUpdateWithoutFinancialEventsInput>
   }
 
+  export type VirtualAccountCreateNestedOneWithoutLedgerAccountInput = {
+    create?: XOR<VirtualAccountCreateWithoutLedgerAccountInput, VirtualAccountUncheckedCreateWithoutLedgerAccountInput>
+    connectOrCreate?: VirtualAccountCreateOrConnectWithoutLedgerAccountInput
+    connect?: VirtualAccountWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutLedgerAccountsInput = {
     create?: XOR<UserCreateWithoutLedgerAccountsInput, UserUncheckedCreateWithoutLedgerAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutLedgerAccountsInput
@@ -37703,6 +39184,12 @@ export namespace Prisma {
     connect?: LedgerEntryWhereUniqueInput | LedgerEntryWhereUniqueInput[]
   }
 
+  export type VirtualAccountUncheckedCreateNestedOneWithoutLedgerAccountInput = {
+    create?: XOR<VirtualAccountCreateWithoutLedgerAccountInput, VirtualAccountUncheckedCreateWithoutLedgerAccountInput>
+    connectOrCreate?: VirtualAccountCreateOrConnectWithoutLedgerAccountInput
+    connect?: VirtualAccountWhereUniqueInput
+  }
+
   export type LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput = {
     create?: XOR<LedgerEntryCreateWithoutDebitAccountInput, LedgerEntryUncheckedCreateWithoutDebitAccountInput> | LedgerEntryCreateWithoutDebitAccountInput[] | LedgerEntryUncheckedCreateWithoutDebitAccountInput[]
     connectOrCreate?: LedgerEntryCreateOrConnectWithoutDebitAccountInput | LedgerEntryCreateOrConnectWithoutDebitAccountInput[]
@@ -37719,6 +39206,16 @@ export namespace Prisma {
 
   export type EnumLedgerAccountTypeFieldUpdateOperationsInput = {
     set?: $Enums.LedgerAccountType
+  }
+
+  export type VirtualAccountUpdateOneWithoutLedgerAccountNestedInput = {
+    create?: XOR<VirtualAccountCreateWithoutLedgerAccountInput, VirtualAccountUncheckedCreateWithoutLedgerAccountInput>
+    connectOrCreate?: VirtualAccountCreateOrConnectWithoutLedgerAccountInput
+    upsert?: VirtualAccountUpsertWithoutLedgerAccountInput
+    disconnect?: VirtualAccountWhereInput | boolean
+    delete?: VirtualAccountWhereInput | boolean
+    connect?: VirtualAccountWhereUniqueInput
+    update?: XOR<XOR<VirtualAccountUpdateToOneWithWhereWithoutLedgerAccountInput, VirtualAccountUpdateWithoutLedgerAccountInput>, VirtualAccountUncheckedUpdateWithoutLedgerAccountInput>
   }
 
   export type UserUpdateOneWithoutLedgerAccountsNestedInput = {
@@ -37757,6 +39254,16 @@ export namespace Prisma {
     update?: LedgerEntryUpdateWithWhereUniqueWithoutCreditAccountInput | LedgerEntryUpdateWithWhereUniqueWithoutCreditAccountInput[]
     updateMany?: LedgerEntryUpdateManyWithWhereWithoutCreditAccountInput | LedgerEntryUpdateManyWithWhereWithoutCreditAccountInput[]
     deleteMany?: LedgerEntryScalarWhereInput | LedgerEntryScalarWhereInput[]
+  }
+
+  export type VirtualAccountUncheckedUpdateOneWithoutLedgerAccountNestedInput = {
+    create?: XOR<VirtualAccountCreateWithoutLedgerAccountInput, VirtualAccountUncheckedCreateWithoutLedgerAccountInput>
+    connectOrCreate?: VirtualAccountCreateOrConnectWithoutLedgerAccountInput
+    upsert?: VirtualAccountUpsertWithoutLedgerAccountInput
+    disconnect?: VirtualAccountWhereInput | boolean
+    delete?: VirtualAccountWhereInput | boolean
+    connect?: VirtualAccountWhereUniqueInput
+    update?: XOR<XOR<VirtualAccountUpdateToOneWithWhereWithoutLedgerAccountInput, VirtualAccountUpdateWithoutLedgerAccountInput>, VirtualAccountUncheckedUpdateWithoutLedgerAccountInput>
   }
 
   export type LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput = {
@@ -37845,6 +39352,20 @@ export namespace Prisma {
     delete?: PaymentWhereInput | boolean
     connect?: PaymentWhereUniqueInput
     update?: XOR<XOR<PaymentUpdateToOneWithWhereWithoutLedgerEntriesInput, PaymentUpdateWithoutLedgerEntriesInput>, PaymentUncheckedUpdateWithoutLedgerEntriesInput>
+  }
+
+  export type LedgerAccountCreateNestedOneWithoutVirtualAccountInput = {
+    create?: XOR<LedgerAccountCreateWithoutVirtualAccountInput, LedgerAccountUncheckedCreateWithoutVirtualAccountInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutVirtualAccountInput
+    connect?: LedgerAccountWhereUniqueInput
+  }
+
+  export type LedgerAccountUpdateOneRequiredWithoutVirtualAccountNestedInput = {
+    create?: XOR<LedgerAccountCreateWithoutVirtualAccountInput, LedgerAccountUncheckedCreateWithoutVirtualAccountInput>
+    connectOrCreate?: LedgerAccountCreateOrConnectWithoutVirtualAccountInput
+    upsert?: LedgerAccountUpsertWithoutVirtualAccountInput
+    connect?: LedgerAccountWhereUniqueInput
+    update?: XOR<XOR<LedgerAccountUpdateToOneWithWhereWithoutVirtualAccountInput, LedgerAccountUpdateWithoutVirtualAccountInput>, LedgerAccountUncheckedUpdateWithoutVirtualAccountInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -38414,6 +39935,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileUncheckedCreateWithoutUserInput = {
@@ -38427,6 +39949,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileCreateOrConnectWithoutUserInput = {
@@ -39157,6 +40680,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountCreateNestedOneWithoutLedgerAccountInput
     debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
     creditEntries?: LedgerEntryCreateNestedManyWithoutCreditAccountInput
   }
@@ -39170,6 +40694,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountUncheckedCreateNestedOneWithoutLedgerAccountInput
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
     creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
   }
@@ -39201,6 +40726,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ArtisanProfileUncheckedUpdateWithoutUserInput = {
@@ -39214,6 +40740,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type KycDocumentUpsertWithWhereUniqueWithoutUserInput = {
@@ -39662,6 +41189,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUpdateOneWithoutLedgerAccountNestedInput
     debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
     creditEntries?: LedgerEntryUpdateManyWithoutCreditAccountNestedInput
   }
@@ -39675,6 +41203,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUncheckedUpdateOneWithoutLedgerAccountNestedInput
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
     creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
   }
@@ -44501,6 +46030,31 @@ export namespace Prisma {
     disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
+  export type VirtualAccountCreateWithoutLedgerAccountInput = {
+    id?: string
+    accountNumber?: string | null
+    accountName?: string | null
+    bankName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VirtualAccountUncheckedCreateWithoutLedgerAccountInput = {
+    id?: string
+    accountNumber?: string | null
+    accountName?: string | null
+    bankName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VirtualAccountCreateOrConnectWithoutLedgerAccountInput = {
+    where: VirtualAccountWhereUniqueInput
+    create: XOR<VirtualAccountCreateWithoutLedgerAccountInput, VirtualAccountUncheckedCreateWithoutLedgerAccountInput>
+  }
+
   export type UserCreateWithoutLedgerAccountsInput = {
     id: string
     name: string
@@ -44648,6 +46202,37 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type VirtualAccountUpsertWithoutLedgerAccountInput = {
+    update: XOR<VirtualAccountUpdateWithoutLedgerAccountInput, VirtualAccountUncheckedUpdateWithoutLedgerAccountInput>
+    create: XOR<VirtualAccountCreateWithoutLedgerAccountInput, VirtualAccountUncheckedCreateWithoutLedgerAccountInput>
+    where?: VirtualAccountWhereInput
+  }
+
+  export type VirtualAccountUpdateToOneWithWhereWithoutLedgerAccountInput = {
+    where?: VirtualAccountWhereInput
+    data: XOR<VirtualAccountUpdateWithoutLedgerAccountInput, VirtualAccountUncheckedUpdateWithoutLedgerAccountInput>
+  }
+
+  export type VirtualAccountUpdateWithoutLedgerAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    accountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VirtualAccountUncheckedUpdateWithoutLedgerAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    accountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    accountName?: NullableStringFieldUpdateOperationsInput | string | null
+    bankName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserUpsertWithoutLedgerAccountsInput = {
     update: XOR<UserUpdateWithoutLedgerAccountsInput, UserUncheckedUpdateWithoutLedgerAccountsInput>
     create: XOR<UserCreateWithoutLedgerAccountsInput, UserUncheckedCreateWithoutLedgerAccountsInput>
@@ -44778,6 +46363,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountCreateNestedOneWithoutLedgerAccountInput
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
     creditEntries?: LedgerEntryCreateNestedManyWithoutCreditAccountInput
   }
@@ -44792,6 +46378,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountUncheckedCreateNestedOneWithoutLedgerAccountInput
     creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
   }
 
@@ -44809,6 +46396,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountCreateNestedOneWithoutLedgerAccountInput
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
     debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
   }
@@ -44823,6 +46411,7 @@ export namespace Prisma {
     version?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    virtualAccount?: VirtualAccountUncheckedCreateNestedOneWithoutLedgerAccountInput
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
   }
 
@@ -44989,6 +46578,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUpdateOneWithoutLedgerAccountNestedInput
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
     creditEntries?: LedgerEntryUpdateManyWithoutCreditAccountNestedInput
   }
@@ -45003,6 +46593,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUncheckedUpdateOneWithoutLedgerAccountNestedInput
     creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
   }
 
@@ -45026,6 +46617,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUpdateOneWithoutLedgerAccountNestedInput
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
     debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
   }
@@ -45040,6 +46632,7 @@ export namespace Prisma {
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    virtualAccount?: VirtualAccountUncheckedUpdateOneWithoutLedgerAccountNestedInput
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
   }
 
@@ -45191,6 +46784,78 @@ export namespace Prisma {
     verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type LedgerAccountCreateWithoutVirtualAccountInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    balance?: number
+    frozen?: number
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutLedgerAccountsInput
+    debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
+    creditEntries?: LedgerEntryCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountUncheckedCreateWithoutVirtualAccountInput = {
+    id?: string
+    name: string
+    type: $Enums.LedgerAccountType
+    userId?: string | null
+    balance?: number
+    frozen?: number
+    version?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
+    creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
+  }
+
+  export type LedgerAccountCreateOrConnectWithoutVirtualAccountInput = {
+    where: LedgerAccountWhereUniqueInput
+    create: XOR<LedgerAccountCreateWithoutVirtualAccountInput, LedgerAccountUncheckedCreateWithoutVirtualAccountInput>
+  }
+
+  export type LedgerAccountUpsertWithoutVirtualAccountInput = {
+    update: XOR<LedgerAccountUpdateWithoutVirtualAccountInput, LedgerAccountUncheckedUpdateWithoutVirtualAccountInput>
+    create: XOR<LedgerAccountCreateWithoutVirtualAccountInput, LedgerAccountUncheckedCreateWithoutVirtualAccountInput>
+    where?: LedgerAccountWhereInput
+  }
+
+  export type LedgerAccountUpdateToOneWithWhereWithoutVirtualAccountInput = {
+    where?: LedgerAccountWhereInput
+    data: XOR<LedgerAccountUpdateWithoutVirtualAccountInput, LedgerAccountUncheckedUpdateWithoutVirtualAccountInput>
+  }
+
+  export type LedgerAccountUpdateWithoutVirtualAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutLedgerAccountsNestedInput
+    debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
+    creditEntries?: LedgerEntryUpdateManyWithoutCreditAccountNestedInput
+  }
+
+  export type LedgerAccountUncheckedUpdateWithoutVirtualAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    balance?: IntFieldUpdateOperationsInput | number
+    frozen?: IntFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
+    creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
   }
 
   export type KycDocumentCreateManyUserInput = {

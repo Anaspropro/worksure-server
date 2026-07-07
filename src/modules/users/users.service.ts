@@ -30,23 +30,45 @@ export class UsersService {
     });
   }
 
-  createUser(input: {
+  async createUser(input: {
     name: string;
     email: string;
     passwordHash: string;
     role: UserRole;
   }) {
-    return this.prisma.user.create({
-      data: {
-        id: uuidv7(),
-        name: input.name.trim(),
-        email: input.email.toLowerCase().trim(),
-        passwordHash: input.passwordHash,
-        role: input.role,
-        status: UserStatus.ACTIVE,
-        artisanVerified: false,
-        createdAt: new Date(),
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          id: uuidv7(),
+          name: input.name.trim(),
+          email: input.email.toLowerCase().trim(),
+          passwordHash: input.passwordHash,
+          role: input.role,
+          status: UserStatus.ACTIVE,
+          artisanVerified: false,
+          createdAt: new Date(),
+        },
+      });
+
+      if (input.role === UserRole.CLIENT || input.role === UserRole.ARTISAN) {
+        const walletName = input.role === UserRole.CLIENT
+          ? `Client Wallet - ${input.name.trim()}`
+          : `Artisan Wallet - ${input.name.trim()}`;
+        
+        await tx.ledgerAccount.create({
+          data: {
+            id: uuidv7(),
+            name: walletName,
+            type: 'USER_WALLET',
+            userId: user.id,
+            balance: 0,
+            frozen: 0,
+            version: 1,
+          },
+        });
+      }
+
+      return user;
     });
   }
 

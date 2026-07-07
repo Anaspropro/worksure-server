@@ -30,12 +30,13 @@ import { UserRole } from '../../common/constants/roles.constants';
 
 @ApiTags('wallet')
 @Controller('wallet')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class WalletController {
   constructor(private readonly walletService: WalletService) {}
 
   @Get('balance')
+  @Roles(UserRole.CLIENT, UserRole.ARTISAN)
   @ApiOperation({ summary: 'Get wallet balance' })
   @ApiResponse({
     status: 200,
@@ -50,6 +51,7 @@ export class WalletController {
   }
 
   @Get('transactions')
+  @Roles(UserRole.CLIENT, UserRole.ARTISAN)
   @ApiOperation({ summary: 'Get wallet transactions' })
   @ApiResponse({
     status: 200,
@@ -72,6 +74,7 @@ export class WalletController {
   }
 
   @Get('summary')
+  @Roles(UserRole.CLIENT, UserRole.ARTISAN)
   @ApiOperation({ summary: 'Get wallet summary' })
   @ApiResponse({
     status: 200,
@@ -86,6 +89,7 @@ export class WalletController {
   }
 
   @Get('transactions/:transactionId')
+  @Roles(UserRole.CLIENT, UserRole.ARTISAN)
   @ApiOperation({ summary: 'Get transaction details' })
   @ApiResponse({
     status: 200,
@@ -106,6 +110,7 @@ export class WalletController {
   }
 
   @Post('create')
+  @Roles(UserRole.CLIENT, UserRole.ARTISAN)
   @ApiOperation({ summary: 'Create a wallet for the user' })
   @ApiResponse({ status: 201, description: 'Wallet created successfully' })
   async createWallet(@CurrentUser() user: AuthenticatedUser) {
@@ -120,6 +125,7 @@ export class WalletController {
   }
 
   @Post('deposit/init')
+  @Roles(UserRole.CLIENT)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Initialize wallet deposit via Paystack' })
   @ApiResponse({ status: 200, description: 'Checkout initialized' })
@@ -138,6 +144,7 @@ export class WalletController {
   }
 
   @Post('deposit/verify')
+  @Roles(UserRole.CLIENT)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify wallet deposit via Paystack reference' })
   @ApiResponse({ status: 200, description: 'Deposit verified successfully' })
@@ -155,6 +162,7 @@ export class WalletController {
   }
 
   @Post('payout/request')
+  @Roles(UserRole.ARTISAN)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Request wallet payout to bank account' })
   @ApiResponse({ status: 200, description: 'Payout requested successfully' })
@@ -173,7 +181,6 @@ export class WalletController {
   }
 
   @Post('payout/process')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Process pending payout request (Admin only)' })
@@ -192,6 +199,7 @@ export class WalletController {
   }
 
   @Post('freeze-funds')
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Freeze funds in wallet' })
   @ApiResponse({ status: 200, description: 'Funds frozen successfully' })
@@ -210,6 +218,7 @@ export class WalletController {
   }
 
   @Post('unfreeze-funds')
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Unfreeze funds in wallet' })
   @ApiResponse({ status: 200, description: 'Funds released successfully' })
