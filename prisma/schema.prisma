@@ -562,10 +562,10 @@ model LedgerAccount {
   balance   Int               @default(0)
   frozen    Int               @default(0)
   version   Int               @default(1)
+  metadata  Json?
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
-  virtualAccount VirtualAccount?
   user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   debitEntries  LedgerEntry[] @relation("DebitAccount")
   creditEntries LedgerEntry[] @relation("CreditAccount")
@@ -616,17 +616,4 @@ model SystemLog {
 
   @@index([level, createdAt])
   @@index([context, createdAt])
-}
-
-model VirtualAccount {
-  id              String         @id @default(uuid(7))
-  ledgerAccountId String         @unique
-  accountNumber   String?        @unique
-  accountName     String?
-  bankName        String?
-  status          String         @default("active")
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-
-  ledgerAccount   LedgerAccount  @relation(fields: [ledgerAccountId], references: [id], onDelete: Cascade)
 }

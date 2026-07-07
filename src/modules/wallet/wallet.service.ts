@@ -105,16 +105,16 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       return null;
     }
 
-    const existingDbAccount = await this.prisma.virtualAccount.findUnique({
-      where: { ledgerAccountId: wallet.id },
-    });
-    if (existingDbAccount) {
-      return {
-        accountNumber: existingDbAccount.accountNumber,
-        accountName: existingDbAccount.accountName,
-        bankName: existingDbAccount.bankName,
-        status: existingDbAccount.status,
-      };
+    if (wallet.metadata && typeof wallet.metadata === 'object') {
+      const meta = wallet.metadata as any;
+      if (meta.accountNumber) {
+        return {
+          accountNumber: meta.accountNumber,
+          accountName: meta.accountName,
+          bankName: meta.bankName,
+          status: meta.status,
+        };
+      }
     }
 
     const user = await this.getWalletOwner(userId);
@@ -124,16 +124,10 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     const existingAccount = await this.getExistingDedicatedAccount(user.email);
     if (existingAccount) {
-      await this.prisma.virtualAccount.create({
-        data: {
-          id: uuidv7(),
-          ledgerAccountId: wallet.id,
-          accountNumber: existingAccount.accountNumber,
-          accountName: existingAccount.accountName,
-          bankName: existingAccount.bankName,
-          status: existingAccount.status || 'active',
-        },
-      }).catch(err => this.logger.error(`Failed to store existing virtual account: ${err.message}`));
+      await this.prisma.ledgerAccount.update({
+        where: { id: wallet.id },
+        data: { metadata: existingAccount as any },
+      }).catch(err => this.logger.error(`Failed to store existing virtual account in metadata: ${err.message}`));
       return existingAccount;
     }
 
@@ -170,16 +164,10 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       };
 
     if (mappedAccount.accountNumber) {
-      await this.prisma.virtualAccount.create({
-        data: {
-          id: uuidv7(),
-          ledgerAccountId: wallet.id,
-          accountNumber: mappedAccount.accountNumber,
-          accountName: mappedAccount.accountName,
-          bankName: mappedAccount.bankName,
-          status: mappedAccount.status || 'active',
-        },
-      }).catch(err => this.logger.error(`Failed to store newly assigned virtual account: ${err.message}`));
+      await this.prisma.ledgerAccount.update({
+        where: { id: wallet.id },
+        data: { metadata: mappedAccount as any },
+      }).catch(err => this.logger.error(`Failed to store newly assigned virtual account in metadata: ${err.message}`));
     }
 
     return mappedAccount;

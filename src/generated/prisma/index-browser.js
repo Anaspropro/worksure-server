@@ -405,6 +405,7 @@ exports.Prisma.LedgerAccountScalarFieldEnum = {
   balance: 'balance',
   frozen: 'frozen',
   version: 'version',
+  metadata: 'metadata',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -437,17 +438,6 @@ exports.Prisma.SystemLogScalarFieldEnum = {
   trace: 'trace',
   metadata: 'metadata',
   createdAt: 'createdAt'
-};
-
-exports.Prisma.VirtualAccountScalarFieldEnum = {
-  id: 'id',
-  ledgerAccountId: 'ledgerAccountId',
-  accountNumber: 'accountNumber',
-  accountName: 'accountName',
-  bankName: 'bankName',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -671,15 +661,6 @@ exports.Prisma.SystemLogOrderByRelevanceFieldEnum = {
   message: 'message',
   trace: 'trace'
 };
-
-exports.Prisma.VirtualAccountOrderByRelevanceFieldEnum = {
-  id: 'id',
-  ledgerAccountId: 'ledgerAccountId',
-  accountNumber: 'accountNumber',
-  accountName: 'accountName',
-  bankName: 'bankName',
-  status: 'status'
-};
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
   CLIENT: 'CLIENT',
@@ -829,8 +810,7 @@ exports.Prisma.ModelName = {
   LedgerAccount: 'LedgerAccount',
   LedgerEntry: 'LedgerEntry',
   VerificationToken: 'VerificationToken',
-  SystemLog: 'SystemLog',
-  VirtualAccount: 'VirtualAccount'
+  SystemLog: 'SystemLog'
 };
 
 /**

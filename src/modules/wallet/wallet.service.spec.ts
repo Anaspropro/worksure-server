@@ -25,11 +25,6 @@ describe('WalletService', () => {
       count: jest.fn(),
       findUnique: jest.fn(),
     },
-    virtualAccount: {
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-    },
     user: {
       findUnique: jest.fn(),
     },
