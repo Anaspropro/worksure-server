@@ -98,6 +98,25 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       return null;
     }
 
+    const wallet = await this.prisma.ledgerAccount.findUnique({
+      where: { userId },
+    });
+    if (!wallet) {
+      return null;
+    }
+
+    if (wallet.metadata && typeof wallet.metadata === 'object') {
+      const meta = wallet.metadata as any;
+      if (meta.accountNumber) {
+        return {
+          accountNumber: meta.accountNumber,
+          accountName: meta.accountName,
+          bankName: meta.bankName,
+          status: meta.status,
+        };
+      }
+    }
+
     const user = await this.getWalletOwner(userId);
     if (!user) {
       return null;
@@ -105,6 +124,10 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     const existingAccount = await this.getExistingDedicatedAccount(user.email);
     if (existingAccount) {
+      await this.prisma.ledgerAccount.update({
+        where: { id: wallet.id },
+        data: { metadata: existingAccount as any },
+      }).catch(err => this.logger.error(`Failed to store existing virtual account in metadata: ${err.message}`));
       return existingAccount;
     }
 
@@ -132,15 +155,22 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       { graceful: true },
     );
 
-    return (
-      this.mapDedicatedAccount(assignData?.dedicated_account) ??
+    const mappedAccount = this.mapDedicatedAccount(assignData?.dedicated_account) ??
       this.mapDedicatedAccount(assignData) ?? {
         accountNumber: null,
         accountName: user.name,
         bankName: 'Paystack',
         status: assignData ? 'provisioning' : 'unavailable',
-      }
-    );
+      };
+
+    if (mappedAccount.accountNumber) {
+      await this.prisma.ledgerAccount.update({
+        where: { id: wallet.id },
+        data: { metadata: mappedAccount as any },
+      }).catch(err => this.logger.error(`Failed to store newly assigned virtual account in metadata: ${err.message}`));
+    }
+
+    return mappedAccount;
   }
 
   private async getCachedVirtualAccount(userId: string) {
@@ -167,10 +197,20 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       return existingWallet;
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    const name = user
+      ? user.role === 'CLIENT'
+        ? `Client Wallet - ${user.name}`
+        : `Artisan Wallet - ${user.name}`
+      : 'User Wallet';
+
     return this.prisma.ledgerAccount.create({
       data: {
         id: uuidv7(),
-        name: 'User Wallet',
+        name,
         type: 'USER_WALLET',
         userId,
         balance: 0,
@@ -237,10 +277,20 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       };
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    const name = user
+      ? user.role === 'CLIENT'
+        ? `Client Wallet - ${user.name}`
+        : `Artisan Wallet - ${user.name}`
+      : 'User Wallet';
+
     const wallet = await this.prisma.ledgerAccount.create({
       data: {
         id: uuidv7(),
-        name: 'User Wallet',
+        name,
         type: 'USER_WALLET',
         userId,
         balance: 0,

@@ -186,7 +186,10 @@ export class AnalyticsService {
             this.prisma.job.count({ where: { flagged: true } }),
             this.prisma.user.count({ where: { role: UserRole.ARTISAN, artisanVerified: false } }),
             this.prisma.contract.count({ where: { status: 'READY_FOR_PAYOUT' } }),
-            this.prisma.wallet.aggregate({ _sum: { balance: true } }),
+            this.prisma.ledgerAccount.aggregate({
+              where: { type: 'USER_WALLET' },
+              _sum: { balance: true },
+            }),
             this.prisma.contract.aggregate({
               where: { status: { in: escrowStatuses as any } },
               _sum: { amount: true },

@@ -9914,11 +9914,13 @@ export namespace Prisma {
   export type ArtisanProfileAvgAggregateOutputType = {
     rating: number | null
     reviewCount: number | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileSumAggregateOutputType = {
     rating: number | null
     reviewCount: number | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileMinAggregateOutputType = {
@@ -9931,6 +9933,7 @@ export namespace Prisma {
     reviewCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileMaxAggregateOutputType = {
@@ -9943,6 +9946,7 @@ export namespace Prisma {
     reviewCount: number | null
     createdAt: Date | null
     updatedAt: Date | null
+    platformFeePercent: number | null
   }
 
   export type ArtisanProfileCountAggregateOutputType = {
@@ -9957,6 +9961,7 @@ export namespace Prisma {
     reviewCount: number
     createdAt: number
     updatedAt: number
+    platformFeePercent: number
     _all: number
   }
 
@@ -9964,11 +9969,13 @@ export namespace Prisma {
   export type ArtisanProfileAvgAggregateInputType = {
     rating?: true
     reviewCount?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileSumAggregateInputType = {
     rating?: true
     reviewCount?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileMinAggregateInputType = {
@@ -9981,6 +9988,7 @@ export namespace Prisma {
     reviewCount?: true
     createdAt?: true
     updatedAt?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileMaxAggregateInputType = {
@@ -9993,6 +10001,7 @@ export namespace Prisma {
     reviewCount?: true
     createdAt?: true
     updatedAt?: true
+    platformFeePercent?: true
   }
 
   export type ArtisanProfileCountAggregateInputType = {
@@ -10007,6 +10016,7 @@ export namespace Prisma {
     reviewCount?: true
     createdAt?: true
     updatedAt?: true
+    platformFeePercent?: true
     _all?: true
   }
 
@@ -10108,6 +10118,7 @@ export namespace Prisma {
     reviewCount: number
     createdAt: Date
     updatedAt: Date
+    platformFeePercent: number | null
     _count: ArtisanProfileCountAggregateOutputType | null
     _avg: ArtisanProfileAvgAggregateOutputType | null
     _sum: ArtisanProfileSumAggregateOutputType | null
@@ -10141,6 +10152,7 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["artisanProfile"]>
 
@@ -10156,6 +10168,7 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["artisanProfile"]>
 
@@ -10171,6 +10184,7 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["artisanProfile"]>
 
@@ -10186,9 +10200,10 @@ export namespace Prisma {
     reviewCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    platformFeePercent?: boolean
   }
 
-  export type ArtisanProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bio" | "skills" | "experience" | "portfolio" | "verified" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["artisanProfile"]>
+  export type ArtisanProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bio" | "skills" | "experience" | "portfolio" | "verified" | "rating" | "reviewCount" | "createdAt" | "updatedAt" | "platformFeePercent", ExtArgs["result"]["artisanProfile"]>
   export type ArtisanProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -10216,6 +10231,7 @@ export namespace Prisma {
       reviewCount: number
       createdAt: Date
       updatedAt: Date
+      platformFeePercent: number | null
     }, ExtArgs["result"]["artisanProfile"]>
     composites: {}
   }
@@ -10651,6 +10667,7 @@ export namespace Prisma {
     readonly reviewCount: FieldRef<"ArtisanProfile", 'Int'>
     readonly createdAt: FieldRef<"ArtisanProfile", 'DateTime'>
     readonly updatedAt: FieldRef<"ArtisanProfile", 'DateTime'>
+    readonly platformFeePercent: FieldRef<"ArtisanProfile", 'Float'>
   }
     
 
@@ -24310,6 +24327,7 @@ export namespace Prisma {
     balance: number
     frozen: number
     version: number
+    metadata: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -24360,6 +24378,7 @@ export namespace Prisma {
     balance?: true
     frozen?: true
     version?: true
+    metadata?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -24459,6 +24478,7 @@ export namespace Prisma {
     balance: number
     frozen: number
     version: number
+    metadata: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: LedgerAccountCountAggregateOutputType | null
@@ -24490,6 +24510,7 @@ export namespace Prisma {
     balance?: boolean
     frozen?: boolean
     version?: boolean
+    metadata?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
@@ -24506,6 +24527,7 @@ export namespace Prisma {
     balance?: boolean
     frozen?: boolean
     version?: boolean
+    metadata?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
@@ -24519,6 +24541,7 @@ export namespace Prisma {
     balance?: boolean
     frozen?: boolean
     version?: boolean
+    metadata?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
@@ -24532,11 +24555,12 @@ export namespace Prisma {
     balance?: boolean
     frozen?: boolean
     version?: boolean
+    metadata?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type LedgerAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "userId" | "balance" | "frozen" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
+  export type LedgerAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "userId" | "balance" | "frozen" | "version" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
   export type LedgerAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | LedgerAccount$userArgs<ExtArgs>
     debitEntries?: boolean | LedgerAccount$debitEntriesArgs<ExtArgs>
@@ -24565,6 +24589,7 @@ export namespace Prisma {
       balance: number
       frozen: number
       version: number
+      metadata: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["ledgerAccount"]>
@@ -25000,6 +25025,7 @@ export namespace Prisma {
     readonly balance: FieldRef<"LedgerAccount", 'Int'>
     readonly frozen: FieldRef<"LedgerAccount", 'Int'>
     readonly version: FieldRef<"LedgerAccount", 'Int'>
+    readonly metadata: FieldRef<"LedgerAccount", 'Json'>
     readonly createdAt: FieldRef<"LedgerAccount", 'DateTime'>
     readonly updatedAt: FieldRef<"LedgerAccount", 'DateTime'>
   }
@@ -28849,7 +28875,8 @@ export namespace Prisma {
     rating: 'rating',
     reviewCount: 'reviewCount',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    platformFeePercent: 'platformFeePercent'
   };
 
   export type ArtisanProfileScalarFieldEnum = (typeof ArtisanProfileScalarFieldEnum)[keyof typeof ArtisanProfileScalarFieldEnum]
@@ -29070,6 +29097,7 @@ export namespace Prisma {
     balance: 'balance',
     frozen: 'frozen',
     version: 'version',
+    metadata: 'metadata',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -30346,6 +30374,7 @@ export namespace Prisma {
     reviewCount?: IntFilter<"ArtisanProfile"> | number
     createdAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
     updatedAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    platformFeePercent?: FloatNullableFilter<"ArtisanProfile"> | number | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -30361,6 +30390,7 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     _relevance?: ArtisanProfileOrderByRelevanceInput
   }
@@ -30380,6 +30410,7 @@ export namespace Prisma {
     reviewCount?: IntFilter<"ArtisanProfile"> | number
     createdAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
     updatedAt?: DateTimeFilter<"ArtisanProfile"> | Date | string
+    platformFeePercent?: FloatNullableFilter<"ArtisanProfile"> | number | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId">
 
@@ -30395,6 +30426,7 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrderInput | SortOrder
     _count?: ArtisanProfileCountOrderByAggregateInput
     _avg?: ArtisanProfileAvgOrderByAggregateInput
     _max?: ArtisanProfileMaxOrderByAggregateInput
@@ -30417,6 +30449,7 @@ export namespace Prisma {
     reviewCount?: IntWithAggregatesFilter<"ArtisanProfile"> | number
     createdAt?: DateTimeWithAggregatesFilter<"ArtisanProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ArtisanProfile"> | Date | string
+    platformFeePercent?: FloatNullableWithAggregatesFilter<"ArtisanProfile"> | number | null
   }
 
   export type ProposalWhereInput = {
@@ -31535,6 +31568,7 @@ export namespace Prisma {
     balance?: IntFilter<"LedgerAccount"> | number
     frozen?: IntFilter<"LedgerAccount"> | number
     version?: IntFilter<"LedgerAccount"> | number
+    metadata?: JsonNullableFilter<"LedgerAccount">
     createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -31550,6 +31584,7 @@ export namespace Prisma {
     balance?: SortOrder
     frozen?: SortOrder
     version?: SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -31569,6 +31604,7 @@ export namespace Prisma {
     balance?: IntFilter<"LedgerAccount"> | number
     frozen?: IntFilter<"LedgerAccount"> | number
     version?: IntFilter<"LedgerAccount"> | number
+    metadata?: JsonNullableFilter<"LedgerAccount">
     createdAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeFilter<"LedgerAccount"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -31584,6 +31620,7 @@ export namespace Prisma {
     balance?: SortOrder
     frozen?: SortOrder
     version?: SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: LedgerAccountCountOrderByAggregateInput
@@ -31604,6 +31641,7 @@ export namespace Prisma {
     balance?: IntWithAggregatesFilter<"LedgerAccount"> | number
     frozen?: IntWithAggregatesFilter<"LedgerAccount"> | number
     version?: IntWithAggregatesFilter<"LedgerAccount"> | number
+    metadata?: JsonNullableWithAggregatesFilter<"LedgerAccount">
     createdAt?: DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
   }
@@ -32507,6 +32545,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
     user: UserCreateNestedOneWithoutArtisanProfileInput
   }
 
@@ -32522,6 +32561,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileUpdateInput = {
@@ -32535,6 +32575,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
     user?: UserUpdateOneRequiredWithoutArtisanProfileNestedInput
   }
 
@@ -32550,6 +32591,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ArtisanProfileCreateManyInput = {
@@ -32564,6 +32606,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileUpdateManyMutationInput = {
@@ -32577,6 +32620,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ArtisanProfileUncheckedUpdateManyInput = {
@@ -32591,6 +32635,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ProposalCreateInput = {
@@ -33837,6 +33882,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
@@ -33852,6 +33898,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
@@ -33865,6 +33912,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
@@ -33880,6 +33928,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
@@ -33894,6 +33943,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33905,6 +33955,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33917,6 +33968,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35022,11 +35074,13 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileAvgOrderByAggregateInput = {
     rating?: SortOrder
     reviewCount?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileMaxOrderByAggregateInput = {
@@ -35039,6 +35093,7 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileMinOrderByAggregateInput = {
@@ -35051,11 +35106,13 @@ export namespace Prisma {
     reviewCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type ArtisanProfileSumOrderByAggregateInput = {
     rating?: SortOrder
     reviewCount?: SortOrder
+    platformFeePercent?: SortOrder
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -35931,6 +35988,7 @@ export namespace Prisma {
     balance?: SortOrder
     frozen?: SortOrder
     version?: SortOrder
+    metadata?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -38414,6 +38472,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileUncheckedCreateWithoutUserInput = {
@@ -38427,6 +38486,7 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    platformFeePercent?: number | null
   }
 
   export type ArtisanProfileCreateOrConnectWithoutUserInput = {
@@ -39155,6 +39215,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryCreateNestedManyWithoutDebitAccountInput
@@ -39168,6 +39229,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
@@ -39201,6 +39263,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ArtisanProfileUncheckedUpdateWithoutUserInput = {
@@ -39214,6 +39277,7 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    platformFeePercent?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type KycDocumentUpsertWithWhereUniqueWithoutUserInput = {
@@ -39660,6 +39724,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUpdateManyWithoutDebitAccountNestedInput
@@ -39673,6 +39738,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput
@@ -44776,6 +44842,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
@@ -44790,6 +44857,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creditEntries?: LedgerEntryUncheckedCreateNestedManyWithoutCreditAccountInput
@@ -44807,6 +44875,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutLedgerAccountsInput
@@ -44821,6 +44890,7 @@ export namespace Prisma {
     balance?: number
     frozen?: number
     version?: number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     debitEntries?: LedgerEntryUncheckedCreateNestedManyWithoutDebitAccountInput
@@ -44987,6 +45057,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
@@ -45001,6 +45072,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creditEntries?: LedgerEntryUncheckedUpdateManyWithoutCreditAccountNestedInput
@@ -45024,6 +45096,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutLedgerAccountsNestedInput
@@ -45038,6 +45111,7 @@ export namespace Prisma {
     balance?: IntFieldUpdateOperationsInput | number
     frozen?: IntFieldUpdateOperationsInput | number
     version?: IntFieldUpdateOperationsInput | number
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     debitEntries?: LedgerEntryUncheckedUpdateManyWithoutDebitAccountNestedInput

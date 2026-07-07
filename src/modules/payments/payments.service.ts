@@ -83,6 +83,17 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     return Number.isFinite(raw) && raw >= 0 ? raw : 10;
   }
 
+  public async getArtisanPlatformFeePercent(artisanId: string): Promise<number> {
+    const profile = await this.prisma.artisanProfile.findUnique({
+      where: { userId: artisanId },
+      select: { platformFeePercent: true },
+    });
+    if (profile?.platformFeePercent !== null && profile?.platformFeePercent !== undefined) {
+      return profile.platformFeePercent;
+    }
+    return this.getPlatformFeePercent();
+  }
+
   public async createFinancialEvent(
     prismaClient: Prisma.TransactionClient | PrismaService,
     input: {
@@ -585,8 +596,9 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     const recipientCode = await this.ensureTransferRecipient(
       contract.artisanId,
     );
+    const feePercent = await this.getArtisanPlatformFeePercent(contract.artisanId);
     const platformFee = Math.floor(
-      (contract.amount * this.getPlatformFeePercent()) / 100,
+      (contract.amount * feePercent) / 100,
     );
     const payoutAmount = contract.amount - platformFee;
 

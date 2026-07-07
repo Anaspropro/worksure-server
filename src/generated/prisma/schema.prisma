@@ -270,17 +270,18 @@ model Transaction {
 }
 
 model ArtisanProfile {
-  id          String   @id @default(uuid(7))
-  userId      String   @unique
-  bio         String?
-  skills      Json     @default("[]")
-  experience  String?
-  portfolio   Json     @default("[]")
-  verified    Boolean  @default(false)
-  rating      Float?   @default(0)
-  reviewCount Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String   @id @default(uuid(7))
+  userId             String   @unique
+  bio                String?
+  skills             Json     @default("[]")
+  experience         String?
+  portfolio          Json     @default("[]")
+  verified           Boolean  @default(false)
+  rating             Float?   @default(0)
+  reviewCount        Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  platformFeePercent Float?
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -559,6 +560,7 @@ model LedgerAccount {
   balance   Int               @default(0)
   frozen    Int               @default(0)
   version   Int               @default(1)
+  metadata  Json?
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 

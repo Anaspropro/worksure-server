@@ -219,7 +219,8 @@ exports.Prisma.ArtisanProfileScalarFieldEnum = {
   rating: 'rating',
   reviewCount: 'reviewCount',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  platformFeePercent: 'platformFeePercent'
 };
 
 exports.Prisma.ProposalScalarFieldEnum = {
@@ -404,6 +405,7 @@ exports.Prisma.LedgerAccountScalarFieldEnum = {
   balance: 'balance',
   frozen: 'frozen',
   version: 'version',
+  metadata: 'metadata',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
