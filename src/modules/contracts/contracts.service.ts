@@ -358,7 +358,7 @@ export class ContractsService {
         where: {
           jobId: proposal.jobId,
           id: { not: proposalId },
-          status: 'PENDING',
+          status: { in: ['SUBMITTED', 'VIEWED', 'SHORTLISTED', 'DRAFT'] },
         },
       });
 
@@ -367,7 +367,7 @@ export class ContractsService {
           where: {
             jobId: proposal.jobId,
             id: { not: proposalId },
-            status: 'PENDING',
+            status: { in: ['SUBMITTED', 'VIEWED', 'SHORTLISTED', 'DRAFT'] },
           },
           data: { status: 'REJECTED' },
         });

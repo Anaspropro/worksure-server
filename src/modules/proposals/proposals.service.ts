@@ -13,6 +13,7 @@ import {
   UpdateProposalDto,
   ProposalResponseDto,
   ProposalListQueryDto,
+  ProposalComparisonItemDto,
 } from './dto/create-proposal.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DomainEventName, ProposalSubmittedEvent, ProposalAcceptedEvent } from '../../common/events/domain.events';
@@ -116,15 +117,59 @@ export class ProposalsService {
       );
     }
 
+    if (createDto.attachments) {
+      for (const file of createDto.attachments) {
+        if (file.fileType.startsWith('image/') && file.fileSize > 100 * 1024) {
+          throw new BadRequestException(`Image ${file.fileName} exceeds 100kB limit`);
+        } else if (!file.fileType.startsWith('image/') && file.fileSize > 50 * 1024) {
+          throw new BadRequestException(`Document ${file.fileName} exceeds 50kB limit`);
+        }
+      }
+    }
+
+    const artisan = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      include: { artisanProfile: true }
+    });
+
+    const proposalId = uuidv7();
     const proposal = await this.prisma.proposal.create({
       data: {
-        id: uuidv7(),
+        id: proposalId,
         jobId: createDto.jobId,
         artisanId: user.id,
         clientId: job.clientId,
         message: createDto.message,
         amount: createDto.amount,
-        status: ProposalStatus.PENDING,
+        estimatedDuration: createDto.estimatedDuration,
+        status: ProposalStatus.SUBMITTED,
+        jobSnapshotTitle: job.title,
+        jobSnapshotBudget: job.budget,
+        jobSnapshotCategory: job.category,
+        jobSnapshotLocation: job.location,
+        artisanSnapshotName: artisan?.name,
+        artisanSnapshotAvatarUrl: undefined, // Needs proper avatarUrl from user model if available
+        artisanSnapshotVerificationStatus: artisan?.artisanProfile?.verified,
+        artisanSnapshotRating: artisan?.artisanProfile?.rating,
+        artisanSnapshotCompletedJobs: 0, // Should come from stats
+        artisanSnapshotResponseRate: undefined, // Should come from stats
+        attachments: {
+          create: createDto.attachments?.map(a => ({
+            id: uuidv7(),
+            fileUrl: a.fileUrl,
+            fileName: a.fileName,
+            fileType: a.fileType,
+            fileSize: a.fileSize,
+          })) || []
+        },
+        timelineEvents: {
+          create: {
+            id: uuidv7(),
+            status: ProposalStatus.SUBMITTED,
+            actorId: user.id,
+            notes: 'Proposal submitted',
+          }
+        }
       },
       include: {
         job: {
@@ -138,6 +183,7 @@ export class ProposalsService {
         },
         client: { select: { id: true, name: true, email: true } },
         artisan: { select: { id: true, name: true, email: true } },
+        attachments: true,
       },
     });
 
@@ -339,7 +385,12 @@ export class ProposalsService {
       this.ensureJobOwnerOrAdmin(user, existingProposal.job.clientId);
     }
 
-    if (existingProposal.status !== ProposalStatus.PENDING) {
+    if (
+      existingProposal.status !== ProposalStatus.SUBMITTED &&
+      existingProposal.status !== ProposalStatus.VIEWED &&
+      existingProposal.status !== ProposalStatus.SHORTLISTED &&
+      existingProposal.status !== ProposalStatus.DRAFT
+    ) {
       throw new BadRequestException('Can only accept pending proposals');
     }
 
@@ -441,12 +492,50 @@ export class ProposalsService {
       jobId: proposal.jobId,
       message: proposal.message,
       amount: proposal.amount,
+      estimatedDuration: proposal.estimatedDuration,
       status: proposal.status,
       createdAt: proposal.createdAt.toISOString(),
       updatedAt: proposal.updatedAt.toISOString(),
       job: proposal.job,
       client: proposal.client,
       artisan: proposal.artisan,
+      attachments: proposal.attachments || [],
     };
+  }
+
+  async compareProposals(jobId: string): Promise<ProposalComparisonItemDto[]> {
+    const proposals = await this.prisma.proposal.findMany({
+      where: {
+        jobId,
+        status: { in: [ProposalStatus.SUBMITTED, ProposalStatus.VIEWED, ProposalStatus.SHORTLISTED] },
+      },
+      include: {
+        artisan: {
+          include: {
+            artisanProfile: true,
+          },
+        },
+        attachments: true,
+      },
+    });
+
+    if (!proposals.length) {
+      return [];
+    }
+
+    return proposals.map((p) => ({
+      id: p.id,
+      artisanName: p.artisanSnapshotName || p.artisan.name,
+      artisanAvatarUrl: p.artisanSnapshotAvatarUrl || undefined,
+      rating: p.artisanSnapshotRating || p.artisan.artisanProfile?.rating || 0,
+      verificationStatus: p.artisanSnapshotVerificationStatus ?? (p.artisan.artisanProfile?.verified || false),
+      bid: p.amount,
+      duration: p.estimatedDuration || undefined,
+      coverLetterPreview: p.message.substring(0, 100),
+      attachmentCount: p.attachments.length,
+      completionRate: p.artisanSnapshotCompletedJobs ? (p.artisanSnapshotCompletedJobs / Math.max(p.artisanSnapshotCompletedJobs, 1)) * 100 : undefined,
+      responseTime: p.artisanSnapshotResponseRate || undefined,
+      recommended: false, // Add AI recommendation logic here later
+    }));
   }
 }

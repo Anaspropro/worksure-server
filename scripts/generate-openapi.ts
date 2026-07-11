@@ -22,6 +22,7 @@ async function generateOpenApi() {
   console.log(`OpenAPI specification generated at: ${outputPath}`);
   
   await app.close();
+  process.exit(0);
 }
 
 generateOpenApi().catch((err) => {

@@ -38,9 +38,13 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
 
 
   constructor(
+    @Inject(forwardRef(() => PrismaService))
     private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => ContractsService))
     private readonly contractsService: ContractsService,
+    @Inject(forwardRef(() => PaystackClientService))
     private readonly paystackClient: PaystackClientService,
+    @Inject(forwardRef(() => IdempotencyService))
     private readonly idempotency: IdempotencyService,
     @Inject(forwardRef(() => WalletService))
     private readonly walletService: WalletService,

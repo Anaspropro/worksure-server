@@ -49,6 +49,21 @@ export type ArtisanProfile = $Result.DefaultSelection<Prisma.$ArtisanProfilePayl
  */
 export type Proposal = $Result.DefaultSelection<Prisma.$ProposalPayload>
 /**
+ * Model ProposalAttachment
+ * 
+ */
+export type ProposalAttachment = $Result.DefaultSelection<Prisma.$ProposalAttachmentPayload>
+/**
+ * Model ProposalTimelineEvent
+ * 
+ */
+export type ProposalTimelineEvent = $Result.DefaultSelection<Prisma.$ProposalTimelineEventPayload>
+/**
+ * Model ProposalDecision
+ * 
+ */
+export type ProposalDecision = $Result.DefaultSelection<Prisma.$ProposalDecisionPayload>
+/**
  * Model Contract
  * 
  */
@@ -118,6 +133,16 @@ export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTok
  * 
  */
 export type SystemLog = $Result.DefaultSelection<Prisma.$SystemLogPayload>
+/**
+ * Model Category
+ * 
+ */
+export type Category = $Result.DefaultSelection<Prisma.$CategoryPayload>
+/**
+ * Model Skill
+ * 
+ */
+export type Skill = $Result.DefaultSelection<Prisma.$SkillPayload>
 
 /**
  * Enums
@@ -167,10 +192,15 @@ export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
 
 
 export const ProposalStatus: {
-  PENDING: 'PENDING',
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  VIEWED: 'VIEWED',
+  SHORTLISTED: 'SHORTLISTED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
-  WITHDRAWN: 'WITHDRAWN'
+  WITHDRAWN: 'WITHDRAWN',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
 };
 
 export type ProposalStatus = (typeof ProposalStatus)[keyof typeof ProposalStatus]
@@ -563,6 +593,36 @@ export class PrismaClient<
   get proposal(): Prisma.ProposalDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.proposalAttachment`: Exposes CRUD operations for the **ProposalAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProposalAttachments
+    * const proposalAttachments = await prisma.proposalAttachment.findMany()
+    * ```
+    */
+  get proposalAttachment(): Prisma.ProposalAttachmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.proposalTimelineEvent`: Exposes CRUD operations for the **ProposalTimelineEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProposalTimelineEvents
+    * const proposalTimelineEvents = await prisma.proposalTimelineEvent.findMany()
+    * ```
+    */
+  get proposalTimelineEvent(): Prisma.ProposalTimelineEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.proposalDecision`: Exposes CRUD operations for the **ProposalDecision** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProposalDecisions
+    * const proposalDecisions = await prisma.proposalDecision.findMany()
+    * ```
+    */
+  get proposalDecision(): Prisma.ProposalDecisionDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.contract`: Exposes CRUD operations for the **Contract** model.
     * Example usage:
     * ```ts
@@ -701,6 +761,26 @@ export class PrismaClient<
     * ```
     */
   get systemLog(): Prisma.SystemLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.category`: Exposes CRUD operations for the **Category** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Categories
+    * const categories = await prisma.category.findMany()
+    * ```
+    */
+  get category(): Prisma.CategoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.skill`: Exposes CRUD operations for the **Skill** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Skills
+    * const skills = await prisma.skill.findMany()
+    * ```
+    */
+  get skill(): Prisma.SkillDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1142,6 +1222,9 @@ export namespace Prisma {
     Transaction: 'Transaction',
     ArtisanProfile: 'ArtisanProfile',
     Proposal: 'Proposal',
+    ProposalAttachment: 'ProposalAttachment',
+    ProposalTimelineEvent: 'ProposalTimelineEvent',
+    ProposalDecision: 'ProposalDecision',
     Contract: 'Contract',
     Conversation: 'Conversation',
     Message: 'Message',
@@ -1155,7 +1238,9 @@ export namespace Prisma {
     LedgerAccount: 'LedgerAccount',
     LedgerEntry: 'LedgerEntry',
     VerificationToken: 'VerificationToken',
-    SystemLog: 'SystemLog'
+    SystemLog: 'SystemLog',
+    Category: 'Category',
+    Skill: 'Skill'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1171,7 +1256,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "contract" | "conversation" | "message" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog"
+      modelProps: "user" | "dispute" | "disputeHistory" | "job" | "transaction" | "artisanProfile" | "proposal" | "proposalAttachment" | "proposalTimelineEvent" | "proposalDecision" | "contract" | "conversation" | "message" | "review" | "notification" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog" | "category" | "skill"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1690,6 +1775,228 @@ export namespace Prisma {
           count: {
             args: Prisma.ProposalCountArgs<ExtArgs>
             result: $Utils.Optional<ProposalCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProposalAttachment: {
+        payload: Prisma.$ProposalAttachmentPayload<ExtArgs>
+        fields: Prisma.ProposalAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProposalAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProposalAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.ProposalAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProposalAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.ProposalAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.ProposalAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.ProposalAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProposalAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.ProposalAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>
+          }
+          update: {
+            args: Prisma.ProposalAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProposalAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProposalAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProposalAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProposalAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.ProposalAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProposalAttachment>
+          }
+          groupBy: {
+            args: Prisma.ProposalAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProposalAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProposalAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<ProposalAttachmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProposalTimelineEvent: {
+        payload: Prisma.$ProposalTimelineEventPayload<ExtArgs>
+        fields: Prisma.ProposalTimelineEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProposalTimelineEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProposalTimelineEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>
+          }
+          findFirst: {
+            args: Prisma.ProposalTimelineEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProposalTimelineEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>
+          }
+          findMany: {
+            args: Prisma.ProposalTimelineEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>[]
+          }
+          create: {
+            args: Prisma.ProposalTimelineEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>
+          }
+          createMany: {
+            args: Prisma.ProposalTimelineEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProposalTimelineEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>[]
+          }
+          delete: {
+            args: Prisma.ProposalTimelineEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>
+          }
+          update: {
+            args: Prisma.ProposalTimelineEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProposalTimelineEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProposalTimelineEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProposalTimelineEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProposalTimelineEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalTimelineEventPayload>
+          }
+          aggregate: {
+            args: Prisma.ProposalTimelineEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProposalTimelineEvent>
+          }
+          groupBy: {
+            args: Prisma.ProposalTimelineEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProposalTimelineEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProposalTimelineEventCountArgs<ExtArgs>
+            result: $Utils.Optional<ProposalTimelineEventCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProposalDecision: {
+        payload: Prisma.$ProposalDecisionPayload<ExtArgs>
+        fields: Prisma.ProposalDecisionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProposalDecisionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProposalDecisionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>
+          }
+          findFirst: {
+            args: Prisma.ProposalDecisionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProposalDecisionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>
+          }
+          findMany: {
+            args: Prisma.ProposalDecisionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>[]
+          }
+          create: {
+            args: Prisma.ProposalDecisionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>
+          }
+          createMany: {
+            args: Prisma.ProposalDecisionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProposalDecisionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>[]
+          }
+          delete: {
+            args: Prisma.ProposalDecisionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>
+          }
+          update: {
+            args: Prisma.ProposalDecisionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProposalDecisionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProposalDecisionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProposalDecisionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProposalDecisionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProposalDecisionPayload>
+          }
+          aggregate: {
+            args: Prisma.ProposalDecisionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProposalDecision>
+          }
+          groupBy: {
+            args: Prisma.ProposalDecisionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProposalDecisionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProposalDecisionCountArgs<ExtArgs>
+            result: $Utils.Optional<ProposalDecisionCountAggregateOutputType> | number
           }
         }
       }
@@ -2729,6 +3036,154 @@ export namespace Prisma {
           }
         }
       }
+      Category: {
+        payload: Prisma.$CategoryPayload<ExtArgs>
+        fields: Prisma.CategoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CategoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CategoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
+          }
+          findFirst: {
+            args: Prisma.CategoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CategoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
+          }
+          findMany: {
+            args: Prisma.CategoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>[]
+          }
+          create: {
+            args: Prisma.CategoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
+          }
+          createMany: {
+            args: Prisma.CategoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CategoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>[]
+          }
+          delete: {
+            args: Prisma.CategoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
+          }
+          update: {
+            args: Prisma.CategoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.CategoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CategoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CategoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.CategoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
+          }
+          aggregate: {
+            args: Prisma.CategoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCategory>
+          }
+          groupBy: {
+            args: Prisma.CategoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CategoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CategoryCountArgs<ExtArgs>
+            result: $Utils.Optional<CategoryCountAggregateOutputType> | number
+          }
+        }
+      }
+      Skill: {
+        payload: Prisma.$SkillPayload<ExtArgs>
+        fields: Prisma.SkillFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SkillFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SkillFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          findFirst: {
+            args: Prisma.SkillFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SkillFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          findMany: {
+            args: Prisma.SkillFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
+          }
+          create: {
+            args: Prisma.SkillCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          createMany: {
+            args: Prisma.SkillCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SkillCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
+          }
+          delete: {
+            args: Prisma.SkillDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          update: {
+            args: Prisma.SkillUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          deleteMany: {
+            args: Prisma.SkillDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SkillUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SkillUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>[]
+          }
+          upsert: {
+            args: Prisma.SkillUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SkillPayload>
+          }
+          aggregate: {
+            args: Prisma.SkillAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSkill>
+          }
+          groupBy: {
+            args: Prisma.SkillGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SkillGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SkillCountArgs<ExtArgs>
+            result: $Utils.Optional<SkillCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2844,6 +3299,9 @@ export namespace Prisma {
     transaction?: TransactionOmit
     artisanProfile?: ArtisanProfileOmit
     proposal?: ProposalOmit
+    proposalAttachment?: ProposalAttachmentOmit
+    proposalTimelineEvent?: ProposalTimelineEventOmit
+    proposalDecision?: ProposalDecisionOmit
     contract?: ContractOmit
     conversation?: ConversationOmit
     message?: MessageOmit
@@ -2858,6 +3316,8 @@ export namespace Prisma {
     ledgerEntry?: LedgerEntryOmit
     verificationToken?: VerificationTokenOmit
     systemLog?: SystemLogOmit
+    category?: CategoryOmit
+    skill?: SkillOmit
   }
 
   /* Types for Logging */
@@ -3144,6 +3604,46 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ProposalCountOutputType
+   */
+
+  export type ProposalCountOutputType = {
+    attachments: number
+    timelineEvents: number
+  }
+
+  export type ProposalCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attachments?: boolean | ProposalCountOutputTypeCountAttachmentsArgs
+    timelineEvents?: boolean | ProposalCountOutputTypeCountTimelineEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProposalCountOutputType without action
+   */
+  export type ProposalCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalCountOutputType
+     */
+    select?: ProposalCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProposalCountOutputType without action
+   */
+  export type ProposalCountOutputTypeCountAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalAttachmentWhereInput
+  }
+
+  /**
+   * ProposalCountOutputType without action
+   */
+  export type ProposalCountOutputTypeCountTimelineEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalTimelineEventWhereInput
+  }
+
+
+  /**
    * Count Type ContractCountOutputType
    */
 
@@ -3300,6 +3800,37 @@ export namespace Prisma {
    */
   export type LedgerAccountCountOutputTypeCountCreditEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: LedgerEntryWhereInput
+  }
+
+
+  /**
+   * Count Type CategoryCountOutputType
+   */
+
+  export type CategoryCountOutputType = {
+    skills: number
+  }
+
+  export type CategoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    skills?: boolean | CategoryCountOutputTypeCountSkillsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CategoryCountOutputType without action
+   */
+  export type CategoryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CategoryCountOutputType
+     */
+    select?: CategoryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CategoryCountOutputType without action
+   */
+  export type CategoryCountOutputTypeCountSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillWhereInput
   }
 
 
@@ -11101,10 +11632,22 @@ export namespace Prisma {
 
   export type ProposalAvgAggregateOutputType = {
     amount: number | null
+    version: number | null
+    jobSnapshotBudget: number | null
+    artisanSnapshotRating: number | null
+    artisanSnapshotCompletedJobs: number | null
+    artisanSnapshotResponseRate: number | null
+    shortlistPriority: number | null
   }
 
   export type ProposalSumAggregateOutputType = {
     amount: number | null
+    version: number | null
+    jobSnapshotBudget: number | null
+    artisanSnapshotRating: number | null
+    artisanSnapshotCompletedJobs: number | null
+    artisanSnapshotResponseRate: number | null
+    shortlistPriority: number | null
   }
 
   export type ProposalMinAggregateOutputType = {
@@ -11114,7 +11657,25 @@ export namespace Prisma {
     clientId: string | null
     amount: number | null
     message: string | null
+    estimatedDuration: string | null
     status: $Enums.ProposalStatus | null
+    version: number | null
+    jobSnapshotTitle: string | null
+    jobSnapshotBudget: number | null
+    jobSnapshotType: string | null
+    jobSnapshotCategory: string | null
+    jobSnapshotLocation: string | null
+    jobSnapshotCurrency: string | null
+    artisanSnapshotName: string | null
+    artisanSnapshotAvatarUrl: string | null
+    artisanSnapshotVerificationStatus: boolean | null
+    artisanSnapshotRating: number | null
+    artisanSnapshotCompletedJobs: number | null
+    artisanSnapshotResponseRate: number | null
+    shortlistedAt: Date | null
+    shortlistedBy: string | null
+    shortlistPriority: number | null
+    expiresAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11126,7 +11687,25 @@ export namespace Prisma {
     clientId: string | null
     amount: number | null
     message: string | null
+    estimatedDuration: string | null
     status: $Enums.ProposalStatus | null
+    version: number | null
+    jobSnapshotTitle: string | null
+    jobSnapshotBudget: number | null
+    jobSnapshotType: string | null
+    jobSnapshotCategory: string | null
+    jobSnapshotLocation: string | null
+    jobSnapshotCurrency: string | null
+    artisanSnapshotName: string | null
+    artisanSnapshotAvatarUrl: string | null
+    artisanSnapshotVerificationStatus: boolean | null
+    artisanSnapshotRating: number | null
+    artisanSnapshotCompletedJobs: number | null
+    artisanSnapshotResponseRate: number | null
+    shortlistedAt: Date | null
+    shortlistedBy: string | null
+    shortlistPriority: number | null
+    expiresAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11138,7 +11717,25 @@ export namespace Prisma {
     clientId: number
     amount: number
     message: number
+    estimatedDuration: number
     status: number
+    version: number
+    jobSnapshotTitle: number
+    jobSnapshotBudget: number
+    jobSnapshotType: number
+    jobSnapshotCategory: number
+    jobSnapshotLocation: number
+    jobSnapshotCurrency: number
+    artisanSnapshotName: number
+    artisanSnapshotAvatarUrl: number
+    artisanSnapshotVerificationStatus: number
+    artisanSnapshotRating: number
+    artisanSnapshotCompletedJobs: number
+    artisanSnapshotResponseRate: number
+    shortlistedAt: number
+    shortlistedBy: number
+    shortlistPriority: number
+    expiresAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -11147,10 +11744,22 @@ export namespace Prisma {
 
   export type ProposalAvgAggregateInputType = {
     amount?: true
+    version?: true
+    jobSnapshotBudget?: true
+    artisanSnapshotRating?: true
+    artisanSnapshotCompletedJobs?: true
+    artisanSnapshotResponseRate?: true
+    shortlistPriority?: true
   }
 
   export type ProposalSumAggregateInputType = {
     amount?: true
+    version?: true
+    jobSnapshotBudget?: true
+    artisanSnapshotRating?: true
+    artisanSnapshotCompletedJobs?: true
+    artisanSnapshotResponseRate?: true
+    shortlistPriority?: true
   }
 
   export type ProposalMinAggregateInputType = {
@@ -11160,7 +11769,25 @@ export namespace Prisma {
     clientId?: true
     amount?: true
     message?: true
+    estimatedDuration?: true
     status?: true
+    version?: true
+    jobSnapshotTitle?: true
+    jobSnapshotBudget?: true
+    jobSnapshotType?: true
+    jobSnapshotCategory?: true
+    jobSnapshotLocation?: true
+    jobSnapshotCurrency?: true
+    artisanSnapshotName?: true
+    artisanSnapshotAvatarUrl?: true
+    artisanSnapshotVerificationStatus?: true
+    artisanSnapshotRating?: true
+    artisanSnapshotCompletedJobs?: true
+    artisanSnapshotResponseRate?: true
+    shortlistedAt?: true
+    shortlistedBy?: true
+    shortlistPriority?: true
+    expiresAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11172,7 +11799,25 @@ export namespace Prisma {
     clientId?: true
     amount?: true
     message?: true
+    estimatedDuration?: true
     status?: true
+    version?: true
+    jobSnapshotTitle?: true
+    jobSnapshotBudget?: true
+    jobSnapshotType?: true
+    jobSnapshotCategory?: true
+    jobSnapshotLocation?: true
+    jobSnapshotCurrency?: true
+    artisanSnapshotName?: true
+    artisanSnapshotAvatarUrl?: true
+    artisanSnapshotVerificationStatus?: true
+    artisanSnapshotRating?: true
+    artisanSnapshotCompletedJobs?: true
+    artisanSnapshotResponseRate?: true
+    shortlistedAt?: true
+    shortlistedBy?: true
+    shortlistPriority?: true
+    expiresAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -11184,7 +11829,25 @@ export namespace Prisma {
     clientId?: true
     amount?: true
     message?: true
+    estimatedDuration?: true
     status?: true
+    version?: true
+    jobSnapshotTitle?: true
+    jobSnapshotBudget?: true
+    jobSnapshotType?: true
+    jobSnapshotCategory?: true
+    jobSnapshotLocation?: true
+    jobSnapshotCurrency?: true
+    artisanSnapshotName?: true
+    artisanSnapshotAvatarUrl?: true
+    artisanSnapshotVerificationStatus?: true
+    artisanSnapshotRating?: true
+    artisanSnapshotCompletedJobs?: true
+    artisanSnapshotResponseRate?: true
+    shortlistedAt?: true
+    shortlistedBy?: true
+    shortlistPriority?: true
+    expiresAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -11283,7 +11946,25 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration: string | null
     status: $Enums.ProposalStatus
+    version: number
+    jobSnapshotTitle: string | null
+    jobSnapshotBudget: number | null
+    jobSnapshotType: string | null
+    jobSnapshotCategory: string | null
+    jobSnapshotLocation: string | null
+    jobSnapshotCurrency: string | null
+    artisanSnapshotName: string | null
+    artisanSnapshotAvatarUrl: string | null
+    artisanSnapshotVerificationStatus: boolean | null
+    artisanSnapshotRating: number | null
+    artisanSnapshotCompletedJobs: number | null
+    artisanSnapshotResponseRate: number | null
+    shortlistedAt: Date | null
+    shortlistedBy: string | null
+    shortlistPriority: number | null
+    expiresAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: ProposalCountAggregateOutputType | null
@@ -11314,13 +11995,35 @@ export namespace Prisma {
     clientId?: boolean
     amount?: boolean
     message?: boolean
+    estimatedDuration?: boolean
     status?: boolean
+    version?: boolean
+    jobSnapshotTitle?: boolean
+    jobSnapshotBudget?: boolean
+    jobSnapshotType?: boolean
+    jobSnapshotCategory?: boolean
+    jobSnapshotLocation?: boolean
+    jobSnapshotCurrency?: boolean
+    artisanSnapshotName?: boolean
+    artisanSnapshotAvatarUrl?: boolean
+    artisanSnapshotVerificationStatus?: boolean
+    artisanSnapshotRating?: boolean
+    artisanSnapshotCompletedJobs?: boolean
+    artisanSnapshotResponseRate?: boolean
+    shortlistedAt?: boolean
+    shortlistedBy?: boolean
+    shortlistPriority?: boolean
+    expiresAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     contract?: boolean | Proposal$contractArgs<ExtArgs>
+    attachments?: boolean | Proposal$attachmentsArgs<ExtArgs>
+    timelineEvents?: boolean | Proposal$timelineEventsArgs<ExtArgs>
+    decision?: boolean | Proposal$decisionArgs<ExtArgs>
+    _count?: boolean | ProposalCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["proposal"]>
 
   export type ProposalSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11330,7 +12033,25 @@ export namespace Prisma {
     clientId?: boolean
     amount?: boolean
     message?: boolean
+    estimatedDuration?: boolean
     status?: boolean
+    version?: boolean
+    jobSnapshotTitle?: boolean
+    jobSnapshotBudget?: boolean
+    jobSnapshotType?: boolean
+    jobSnapshotCategory?: boolean
+    jobSnapshotLocation?: boolean
+    jobSnapshotCurrency?: boolean
+    artisanSnapshotName?: boolean
+    artisanSnapshotAvatarUrl?: boolean
+    artisanSnapshotVerificationStatus?: boolean
+    artisanSnapshotRating?: boolean
+    artisanSnapshotCompletedJobs?: boolean
+    artisanSnapshotResponseRate?: boolean
+    shortlistedAt?: boolean
+    shortlistedBy?: boolean
+    shortlistPriority?: boolean
+    expiresAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -11345,7 +12066,25 @@ export namespace Prisma {
     clientId?: boolean
     amount?: boolean
     message?: boolean
+    estimatedDuration?: boolean
     status?: boolean
+    version?: boolean
+    jobSnapshotTitle?: boolean
+    jobSnapshotBudget?: boolean
+    jobSnapshotType?: boolean
+    jobSnapshotCategory?: boolean
+    jobSnapshotLocation?: boolean
+    jobSnapshotCurrency?: boolean
+    artisanSnapshotName?: boolean
+    artisanSnapshotAvatarUrl?: boolean
+    artisanSnapshotVerificationStatus?: boolean
+    artisanSnapshotRating?: boolean
+    artisanSnapshotCompletedJobs?: boolean
+    artisanSnapshotResponseRate?: boolean
+    shortlistedAt?: boolean
+    shortlistedBy?: boolean
+    shortlistPriority?: boolean
+    expiresAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -11360,17 +12099,39 @@ export namespace Prisma {
     clientId?: boolean
     amount?: boolean
     message?: boolean
+    estimatedDuration?: boolean
     status?: boolean
+    version?: boolean
+    jobSnapshotTitle?: boolean
+    jobSnapshotBudget?: boolean
+    jobSnapshotType?: boolean
+    jobSnapshotCategory?: boolean
+    jobSnapshotLocation?: boolean
+    jobSnapshotCurrency?: boolean
+    artisanSnapshotName?: boolean
+    artisanSnapshotAvatarUrl?: boolean
+    artisanSnapshotVerificationStatus?: boolean
+    artisanSnapshotRating?: boolean
+    artisanSnapshotCompletedJobs?: boolean
+    artisanSnapshotResponseRate?: boolean
+    shortlistedAt?: boolean
+    shortlistedBy?: boolean
+    shortlistPriority?: boolean
+    expiresAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProposalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "artisanId" | "clientId" | "amount" | "message" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["proposal"]>
+  export type ProposalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "artisanId" | "clientId" | "amount" | "message" | "estimatedDuration" | "status" | "version" | "jobSnapshotTitle" | "jobSnapshotBudget" | "jobSnapshotType" | "jobSnapshotCategory" | "jobSnapshotLocation" | "jobSnapshotCurrency" | "artisanSnapshotName" | "artisanSnapshotAvatarUrl" | "artisanSnapshotVerificationStatus" | "artisanSnapshotRating" | "artisanSnapshotCompletedJobs" | "artisanSnapshotResponseRate" | "shortlistedAt" | "shortlistedBy" | "shortlistPriority" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["proposal"]>
   export type ProposalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
     contract?: boolean | Proposal$contractArgs<ExtArgs>
+    attachments?: boolean | Proposal$attachmentsArgs<ExtArgs>
+    timelineEvents?: boolean | Proposal$timelineEventsArgs<ExtArgs>
+    decision?: boolean | Proposal$decisionArgs<ExtArgs>
+    _count?: boolean | ProposalCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProposalIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -11390,6 +12151,9 @@ export namespace Prisma {
       artisan: Prisma.$UserPayload<ExtArgs>
       client: Prisma.$UserPayload<ExtArgs>
       contract: Prisma.$ContractPayload<ExtArgs> | null
+      attachments: Prisma.$ProposalAttachmentPayload<ExtArgs>[]
+      timelineEvents: Prisma.$ProposalTimelineEventPayload<ExtArgs>[]
+      decision: Prisma.$ProposalDecisionPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11398,7 +12162,25 @@ export namespace Prisma {
       clientId: string
       amount: number
       message: string
+      estimatedDuration: string | null
       status: $Enums.ProposalStatus
+      version: number
+      jobSnapshotTitle: string | null
+      jobSnapshotBudget: number | null
+      jobSnapshotType: string | null
+      jobSnapshotCategory: string | null
+      jobSnapshotLocation: string | null
+      jobSnapshotCurrency: string | null
+      artisanSnapshotName: string | null
+      artisanSnapshotAvatarUrl: string | null
+      artisanSnapshotVerificationStatus: boolean | null
+      artisanSnapshotRating: number | null
+      artisanSnapshotCompletedJobs: number | null
+      artisanSnapshotResponseRate: number | null
+      shortlistedAt: Date | null
+      shortlistedBy: string | null
+      shortlistPriority: number | null
+      expiresAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["proposal"]>
@@ -11799,6 +12581,9 @@ export namespace Prisma {
     artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     contract<T extends Proposal$contractArgs<ExtArgs> = {}>(args?: Subset<T, Proposal$contractArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    attachments<T extends Proposal$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Proposal$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    timelineEvents<T extends Proposal$timelineEventsArgs<ExtArgs> = {}>(args?: Subset<T, Proposal$timelineEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    decision<T extends Proposal$decisionArgs<ExtArgs> = {}>(args?: Subset<T, Proposal$decisionArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11834,7 +12619,25 @@ export namespace Prisma {
     readonly clientId: FieldRef<"Proposal", 'String'>
     readonly amount: FieldRef<"Proposal", 'Int'>
     readonly message: FieldRef<"Proposal", 'String'>
+    readonly estimatedDuration: FieldRef<"Proposal", 'String'>
     readonly status: FieldRef<"Proposal", 'ProposalStatus'>
+    readonly version: FieldRef<"Proposal", 'Int'>
+    readonly jobSnapshotTitle: FieldRef<"Proposal", 'String'>
+    readonly jobSnapshotBudget: FieldRef<"Proposal", 'Int'>
+    readonly jobSnapshotType: FieldRef<"Proposal", 'String'>
+    readonly jobSnapshotCategory: FieldRef<"Proposal", 'String'>
+    readonly jobSnapshotLocation: FieldRef<"Proposal", 'String'>
+    readonly jobSnapshotCurrency: FieldRef<"Proposal", 'String'>
+    readonly artisanSnapshotName: FieldRef<"Proposal", 'String'>
+    readonly artisanSnapshotAvatarUrl: FieldRef<"Proposal", 'String'>
+    readonly artisanSnapshotVerificationStatus: FieldRef<"Proposal", 'Boolean'>
+    readonly artisanSnapshotRating: FieldRef<"Proposal", 'Float'>
+    readonly artisanSnapshotCompletedJobs: FieldRef<"Proposal", 'Int'>
+    readonly artisanSnapshotResponseRate: FieldRef<"Proposal", 'Float'>
+    readonly shortlistedAt: FieldRef<"Proposal", 'DateTime'>
+    readonly shortlistedBy: FieldRef<"Proposal", 'String'>
+    readonly shortlistPriority: FieldRef<"Proposal", 'Int'>
+    readonly expiresAt: FieldRef<"Proposal", 'DateTime'>
     readonly createdAt: FieldRef<"Proposal", 'DateTime'>
     readonly updatedAt: FieldRef<"Proposal", 'DateTime'>
   }
@@ -12257,6 +13060,73 @@ export namespace Prisma {
   }
 
   /**
+   * Proposal.attachments
+   */
+  export type Proposal$attachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    where?: ProposalAttachmentWhereInput
+    orderBy?: ProposalAttachmentOrderByWithRelationInput | ProposalAttachmentOrderByWithRelationInput[]
+    cursor?: ProposalAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProposalAttachmentScalarFieldEnum | ProposalAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal.timelineEvents
+   */
+  export type Proposal$timelineEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    where?: ProposalTimelineEventWhereInput
+    orderBy?: ProposalTimelineEventOrderByWithRelationInput | ProposalTimelineEventOrderByWithRelationInput[]
+    cursor?: ProposalTimelineEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProposalTimelineEventScalarFieldEnum | ProposalTimelineEventScalarFieldEnum[]
+  }
+
+  /**
+   * Proposal.decision
+   */
+  export type Proposal$decisionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    where?: ProposalDecisionWhereInput
+  }
+
+  /**
    * Proposal without action
    */
   export type ProposalDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12272,6 +13142,3281 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProposalInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProposalAttachment
+   */
+
+  export type AggregateProposalAttachment = {
+    _count: ProposalAttachmentCountAggregateOutputType | null
+    _avg: ProposalAttachmentAvgAggregateOutputType | null
+    _sum: ProposalAttachmentSumAggregateOutputType | null
+    _min: ProposalAttachmentMinAggregateOutputType | null
+    _max: ProposalAttachmentMaxAggregateOutputType | null
+  }
+
+  export type ProposalAttachmentAvgAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type ProposalAttachmentSumAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type ProposalAttachmentMinAggregateOutputType = {
+    id: string | null
+    proposalId: string | null
+    fileUrl: string | null
+    fileName: string | null
+    fileType: string | null
+    fileSize: number | null
+    uploadedAt: Date | null
+  }
+
+  export type ProposalAttachmentMaxAggregateOutputType = {
+    id: string | null
+    proposalId: string | null
+    fileUrl: string | null
+    fileName: string | null
+    fileType: string | null
+    fileSize: number | null
+    uploadedAt: Date | null
+  }
+
+  export type ProposalAttachmentCountAggregateOutputType = {
+    id: number
+    proposalId: number
+    fileUrl: number
+    fileName: number
+    fileType: number
+    fileSize: number
+    uploadedAt: number
+    _all: number
+  }
+
+
+  export type ProposalAttachmentAvgAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type ProposalAttachmentSumAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type ProposalAttachmentMinAggregateInputType = {
+    id?: true
+    proposalId?: true
+    fileUrl?: true
+    fileName?: true
+    fileType?: true
+    fileSize?: true
+    uploadedAt?: true
+  }
+
+  export type ProposalAttachmentMaxAggregateInputType = {
+    id?: true
+    proposalId?: true
+    fileUrl?: true
+    fileName?: true
+    fileType?: true
+    fileSize?: true
+    uploadedAt?: true
+  }
+
+  export type ProposalAttachmentCountAggregateInputType = {
+    id?: true
+    proposalId?: true
+    fileUrl?: true
+    fileName?: true
+    fileType?: true
+    fileSize?: true
+    uploadedAt?: true
+    _all?: true
+  }
+
+  export type ProposalAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProposalAttachment to aggregate.
+     */
+    where?: ProposalAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalAttachments to fetch.
+     */
+    orderBy?: ProposalAttachmentOrderByWithRelationInput | ProposalAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProposalAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProposalAttachments
+    **/
+    _count?: true | ProposalAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProposalAttachmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProposalAttachmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProposalAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProposalAttachmentMaxAggregateInputType
+  }
+
+  export type GetProposalAttachmentAggregateType<T extends ProposalAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateProposalAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProposalAttachment[P]>
+      : GetScalarType<T[P], AggregateProposalAttachment[P]>
+  }
+
+
+
+
+  export type ProposalAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalAttachmentWhereInput
+    orderBy?: ProposalAttachmentOrderByWithAggregationInput | ProposalAttachmentOrderByWithAggregationInput[]
+    by: ProposalAttachmentScalarFieldEnum[] | ProposalAttachmentScalarFieldEnum
+    having?: ProposalAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProposalAttachmentCountAggregateInputType | true
+    _avg?: ProposalAttachmentAvgAggregateInputType
+    _sum?: ProposalAttachmentSumAggregateInputType
+    _min?: ProposalAttachmentMinAggregateInputType
+    _max?: ProposalAttachmentMaxAggregateInputType
+  }
+
+  export type ProposalAttachmentGroupByOutputType = {
+    id: string
+    proposalId: string
+    fileUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+    uploadedAt: Date
+    _count: ProposalAttachmentCountAggregateOutputType | null
+    _avg: ProposalAttachmentAvgAggregateOutputType | null
+    _sum: ProposalAttachmentSumAggregateOutputType | null
+    _min: ProposalAttachmentMinAggregateOutputType | null
+    _max: ProposalAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetProposalAttachmentGroupByPayload<T extends ProposalAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProposalAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProposalAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProposalAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], ProposalAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProposalAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    uploadedAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalAttachment"]>
+
+  export type ProposalAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    uploadedAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalAttachment"]>
+
+  export type ProposalAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    uploadedAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalAttachment"]>
+
+  export type ProposalAttachmentSelectScalar = {
+    id?: boolean
+    proposalId?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileType?: boolean
+    fileSize?: boolean
+    uploadedAt?: boolean
+  }
+
+  export type ProposalAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proposalId" | "fileUrl" | "fileName" | "fileType" | "fileSize" | "uploadedAt", ExtArgs["result"]["proposalAttachment"]>
+  export type ProposalAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+  export type ProposalAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+  export type ProposalAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+
+  export type $ProposalAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProposalAttachment"
+    objects: {
+      proposal: Prisma.$ProposalPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      proposalId: string
+      fileUrl: string
+      fileName: string
+      fileType: string
+      fileSize: number
+      uploadedAt: Date
+    }, ExtArgs["result"]["proposalAttachment"]>
+    composites: {}
+  }
+
+  type ProposalAttachmentGetPayload<S extends boolean | null | undefined | ProposalAttachmentDefaultArgs> = $Result.GetResult<Prisma.$ProposalAttachmentPayload, S>
+
+  type ProposalAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProposalAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProposalAttachmentCountAggregateInputType | true
+    }
+
+  export interface ProposalAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProposalAttachment'], meta: { name: 'ProposalAttachment' } }
+    /**
+     * Find zero or one ProposalAttachment that matches the filter.
+     * @param {ProposalAttachmentFindUniqueArgs} args - Arguments to find a ProposalAttachment
+     * @example
+     * // Get one ProposalAttachment
+     * const proposalAttachment = await prisma.proposalAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProposalAttachmentFindUniqueArgs>(args: SelectSubset<T, ProposalAttachmentFindUniqueArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProposalAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProposalAttachmentFindUniqueOrThrowArgs} args - Arguments to find a ProposalAttachment
+     * @example
+     * // Get one ProposalAttachment
+     * const proposalAttachment = await prisma.proposalAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProposalAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, ProposalAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProposalAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAttachmentFindFirstArgs} args - Arguments to find a ProposalAttachment
+     * @example
+     * // Get one ProposalAttachment
+     * const proposalAttachment = await prisma.proposalAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProposalAttachmentFindFirstArgs>(args?: SelectSubset<T, ProposalAttachmentFindFirstArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProposalAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAttachmentFindFirstOrThrowArgs} args - Arguments to find a ProposalAttachment
+     * @example
+     * // Get one ProposalAttachment
+     * const proposalAttachment = await prisma.proposalAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProposalAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, ProposalAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProposalAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProposalAttachments
+     * const proposalAttachments = await prisma.proposalAttachment.findMany()
+     * 
+     * // Get first 10 ProposalAttachments
+     * const proposalAttachments = await prisma.proposalAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const proposalAttachmentWithIdOnly = await prisma.proposalAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProposalAttachmentFindManyArgs>(args?: SelectSubset<T, ProposalAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProposalAttachment.
+     * @param {ProposalAttachmentCreateArgs} args - Arguments to create a ProposalAttachment.
+     * @example
+     * // Create one ProposalAttachment
+     * const ProposalAttachment = await prisma.proposalAttachment.create({
+     *   data: {
+     *     // ... data to create a ProposalAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProposalAttachmentCreateArgs>(args: SelectSubset<T, ProposalAttachmentCreateArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProposalAttachments.
+     * @param {ProposalAttachmentCreateManyArgs} args - Arguments to create many ProposalAttachments.
+     * @example
+     * // Create many ProposalAttachments
+     * const proposalAttachment = await prisma.proposalAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProposalAttachmentCreateManyArgs>(args?: SelectSubset<T, ProposalAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProposalAttachments and returns the data saved in the database.
+     * @param {ProposalAttachmentCreateManyAndReturnArgs} args - Arguments to create many ProposalAttachments.
+     * @example
+     * // Create many ProposalAttachments
+     * const proposalAttachment = await prisma.proposalAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProposalAttachments and only return the `id`
+     * const proposalAttachmentWithIdOnly = await prisma.proposalAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProposalAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, ProposalAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProposalAttachment.
+     * @param {ProposalAttachmentDeleteArgs} args - Arguments to delete one ProposalAttachment.
+     * @example
+     * // Delete one ProposalAttachment
+     * const ProposalAttachment = await prisma.proposalAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one ProposalAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProposalAttachmentDeleteArgs>(args: SelectSubset<T, ProposalAttachmentDeleteArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProposalAttachment.
+     * @param {ProposalAttachmentUpdateArgs} args - Arguments to update one ProposalAttachment.
+     * @example
+     * // Update one ProposalAttachment
+     * const proposalAttachment = await prisma.proposalAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProposalAttachmentUpdateArgs>(args: SelectSubset<T, ProposalAttachmentUpdateArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProposalAttachments.
+     * @param {ProposalAttachmentDeleteManyArgs} args - Arguments to filter ProposalAttachments to delete.
+     * @example
+     * // Delete a few ProposalAttachments
+     * const { count } = await prisma.proposalAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProposalAttachmentDeleteManyArgs>(args?: SelectSubset<T, ProposalAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProposalAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProposalAttachments
+     * const proposalAttachment = await prisma.proposalAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProposalAttachmentUpdateManyArgs>(args: SelectSubset<T, ProposalAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProposalAttachments and returns the data updated in the database.
+     * @param {ProposalAttachmentUpdateManyAndReturnArgs} args - Arguments to update many ProposalAttachments.
+     * @example
+     * // Update many ProposalAttachments
+     * const proposalAttachment = await prisma.proposalAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProposalAttachments and only return the `id`
+     * const proposalAttachmentWithIdOnly = await prisma.proposalAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProposalAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, ProposalAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProposalAttachment.
+     * @param {ProposalAttachmentUpsertArgs} args - Arguments to update or create a ProposalAttachment.
+     * @example
+     * // Update or create a ProposalAttachment
+     * const proposalAttachment = await prisma.proposalAttachment.upsert({
+     *   create: {
+     *     // ... data to create a ProposalAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProposalAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProposalAttachmentUpsertArgs>(args: SelectSubset<T, ProposalAttachmentUpsertArgs<ExtArgs>>): Prisma__ProposalAttachmentClient<$Result.GetResult<Prisma.$ProposalAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProposalAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAttachmentCountArgs} args - Arguments to filter ProposalAttachments to count.
+     * @example
+     * // Count the number of ProposalAttachments
+     * const count = await prisma.proposalAttachment.count({
+     *   where: {
+     *     // ... the filter for the ProposalAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProposalAttachmentCountArgs>(
+      args?: Subset<T, ProposalAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProposalAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProposalAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProposalAttachmentAggregateArgs>(args: Subset<T, ProposalAttachmentAggregateArgs>): Prisma.PrismaPromise<GetProposalAttachmentAggregateType<T>>
+
+    /**
+     * Group by ProposalAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProposalAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProposalAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: ProposalAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProposalAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProposalAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProposalAttachment model
+   */
+  readonly fields: ProposalAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProposalAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProposalAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    proposal<T extends ProposalDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProposalDefaultArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProposalAttachment model
+   */
+  interface ProposalAttachmentFieldRefs {
+    readonly id: FieldRef<"ProposalAttachment", 'String'>
+    readonly proposalId: FieldRef<"ProposalAttachment", 'String'>
+    readonly fileUrl: FieldRef<"ProposalAttachment", 'String'>
+    readonly fileName: FieldRef<"ProposalAttachment", 'String'>
+    readonly fileType: FieldRef<"ProposalAttachment", 'String'>
+    readonly fileSize: FieldRef<"ProposalAttachment", 'Int'>
+    readonly uploadedAt: FieldRef<"ProposalAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProposalAttachment findUnique
+   */
+  export type ProposalAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalAttachment to fetch.
+     */
+    where: ProposalAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProposalAttachment findUniqueOrThrow
+   */
+  export type ProposalAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalAttachment to fetch.
+     */
+    where: ProposalAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProposalAttachment findFirst
+   */
+  export type ProposalAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalAttachment to fetch.
+     */
+    where?: ProposalAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalAttachments to fetch.
+     */
+    orderBy?: ProposalAttachmentOrderByWithRelationInput | ProposalAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProposalAttachments.
+     */
+    cursor?: ProposalAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalAttachments.
+     */
+    distinct?: ProposalAttachmentScalarFieldEnum | ProposalAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalAttachment findFirstOrThrow
+   */
+  export type ProposalAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalAttachment to fetch.
+     */
+    where?: ProposalAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalAttachments to fetch.
+     */
+    orderBy?: ProposalAttachmentOrderByWithRelationInput | ProposalAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProposalAttachments.
+     */
+    cursor?: ProposalAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalAttachments.
+     */
+    distinct?: ProposalAttachmentScalarFieldEnum | ProposalAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalAttachment findMany
+   */
+  export type ProposalAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalAttachments to fetch.
+     */
+    where?: ProposalAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalAttachments to fetch.
+     */
+    orderBy?: ProposalAttachmentOrderByWithRelationInput | ProposalAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProposalAttachments.
+     */
+    cursor?: ProposalAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalAttachments.
+     */
+    distinct?: ProposalAttachmentScalarFieldEnum | ProposalAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalAttachment create
+   */
+  export type ProposalAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProposalAttachment.
+     */
+    data: XOR<ProposalAttachmentCreateInput, ProposalAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * ProposalAttachment createMany
+   */
+  export type ProposalAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProposalAttachments.
+     */
+    data: ProposalAttachmentCreateManyInput | ProposalAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProposalAttachment createManyAndReturn
+   */
+  export type ProposalAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProposalAttachments.
+     */
+    data: ProposalAttachmentCreateManyInput | ProposalAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProposalAttachment update
+   */
+  export type ProposalAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProposalAttachment.
+     */
+    data: XOR<ProposalAttachmentUpdateInput, ProposalAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which ProposalAttachment to update.
+     */
+    where: ProposalAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProposalAttachment updateMany
+   */
+  export type ProposalAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProposalAttachments.
+     */
+    data: XOR<ProposalAttachmentUpdateManyMutationInput, ProposalAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which ProposalAttachments to update
+     */
+    where?: ProposalAttachmentWhereInput
+    /**
+     * Limit how many ProposalAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProposalAttachment updateManyAndReturn
+   */
+  export type ProposalAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update ProposalAttachments.
+     */
+    data: XOR<ProposalAttachmentUpdateManyMutationInput, ProposalAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which ProposalAttachments to update
+     */
+    where?: ProposalAttachmentWhereInput
+    /**
+     * Limit how many ProposalAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProposalAttachment upsert
+   */
+  export type ProposalAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProposalAttachment to update in case it exists.
+     */
+    where: ProposalAttachmentWhereUniqueInput
+    /**
+     * In case the ProposalAttachment found by the `where` argument doesn't exist, create a new ProposalAttachment with this data.
+     */
+    create: XOR<ProposalAttachmentCreateInput, ProposalAttachmentUncheckedCreateInput>
+    /**
+     * In case the ProposalAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProposalAttachmentUpdateInput, ProposalAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * ProposalAttachment delete
+   */
+  export type ProposalAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which ProposalAttachment to delete.
+     */
+    where: ProposalAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProposalAttachment deleteMany
+   */
+  export type ProposalAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProposalAttachments to delete
+     */
+    where?: ProposalAttachmentWhereInput
+    /**
+     * Limit how many ProposalAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProposalAttachment without action
+   */
+  export type ProposalAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalAttachment
+     */
+    select?: ProposalAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalAttachment
+     */
+    omit?: ProposalAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalAttachmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProposalTimelineEvent
+   */
+
+  export type AggregateProposalTimelineEvent = {
+    _count: ProposalTimelineEventCountAggregateOutputType | null
+    _min: ProposalTimelineEventMinAggregateOutputType | null
+    _max: ProposalTimelineEventMaxAggregateOutputType | null
+  }
+
+  export type ProposalTimelineEventMinAggregateOutputType = {
+    id: string | null
+    proposalId: string | null
+    status: $Enums.ProposalStatus | null
+    actorId: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type ProposalTimelineEventMaxAggregateOutputType = {
+    id: string | null
+    proposalId: string | null
+    status: $Enums.ProposalStatus | null
+    actorId: string | null
+    notes: string | null
+    createdAt: Date | null
+  }
+
+  export type ProposalTimelineEventCountAggregateOutputType = {
+    id: number
+    proposalId: number
+    status: number
+    actorId: number
+    notes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ProposalTimelineEventMinAggregateInputType = {
+    id?: true
+    proposalId?: true
+    status?: true
+    actorId?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type ProposalTimelineEventMaxAggregateInputType = {
+    id?: true
+    proposalId?: true
+    status?: true
+    actorId?: true
+    notes?: true
+    createdAt?: true
+  }
+
+  export type ProposalTimelineEventCountAggregateInputType = {
+    id?: true
+    proposalId?: true
+    status?: true
+    actorId?: true
+    notes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ProposalTimelineEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProposalTimelineEvent to aggregate.
+     */
+    where?: ProposalTimelineEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalTimelineEvents to fetch.
+     */
+    orderBy?: ProposalTimelineEventOrderByWithRelationInput | ProposalTimelineEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProposalTimelineEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalTimelineEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalTimelineEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProposalTimelineEvents
+    **/
+    _count?: true | ProposalTimelineEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProposalTimelineEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProposalTimelineEventMaxAggregateInputType
+  }
+
+  export type GetProposalTimelineEventAggregateType<T extends ProposalTimelineEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateProposalTimelineEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProposalTimelineEvent[P]>
+      : GetScalarType<T[P], AggregateProposalTimelineEvent[P]>
+  }
+
+
+
+
+  export type ProposalTimelineEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalTimelineEventWhereInput
+    orderBy?: ProposalTimelineEventOrderByWithAggregationInput | ProposalTimelineEventOrderByWithAggregationInput[]
+    by: ProposalTimelineEventScalarFieldEnum[] | ProposalTimelineEventScalarFieldEnum
+    having?: ProposalTimelineEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProposalTimelineEventCountAggregateInputType | true
+    _min?: ProposalTimelineEventMinAggregateInputType
+    _max?: ProposalTimelineEventMaxAggregateInputType
+  }
+
+  export type ProposalTimelineEventGroupByOutputType = {
+    id: string
+    proposalId: string
+    status: $Enums.ProposalStatus
+    actorId: string
+    notes: string | null
+    createdAt: Date
+    _count: ProposalTimelineEventCountAggregateOutputType | null
+    _min: ProposalTimelineEventMinAggregateOutputType | null
+    _max: ProposalTimelineEventMaxAggregateOutputType | null
+  }
+
+  type GetProposalTimelineEventGroupByPayload<T extends ProposalTimelineEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProposalTimelineEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProposalTimelineEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProposalTimelineEventGroupByOutputType[P]>
+            : GetScalarType<T[P], ProposalTimelineEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProposalTimelineEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    status?: boolean
+    actorId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalTimelineEvent"]>
+
+  export type ProposalTimelineEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    status?: boolean
+    actorId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalTimelineEvent"]>
+
+  export type ProposalTimelineEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    status?: boolean
+    actorId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalTimelineEvent"]>
+
+  export type ProposalTimelineEventSelectScalar = {
+    id?: boolean
+    proposalId?: boolean
+    status?: boolean
+    actorId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+  }
+
+  export type ProposalTimelineEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proposalId" | "status" | "actorId" | "notes" | "createdAt", ExtArgs["result"]["proposalTimelineEvent"]>
+  export type ProposalTimelineEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+  export type ProposalTimelineEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+  export type ProposalTimelineEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+
+  export type $ProposalTimelineEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProposalTimelineEvent"
+    objects: {
+      proposal: Prisma.$ProposalPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      proposalId: string
+      status: $Enums.ProposalStatus
+      actorId: string
+      notes: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["proposalTimelineEvent"]>
+    composites: {}
+  }
+
+  type ProposalTimelineEventGetPayload<S extends boolean | null | undefined | ProposalTimelineEventDefaultArgs> = $Result.GetResult<Prisma.$ProposalTimelineEventPayload, S>
+
+  type ProposalTimelineEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProposalTimelineEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProposalTimelineEventCountAggregateInputType | true
+    }
+
+  export interface ProposalTimelineEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProposalTimelineEvent'], meta: { name: 'ProposalTimelineEvent' } }
+    /**
+     * Find zero or one ProposalTimelineEvent that matches the filter.
+     * @param {ProposalTimelineEventFindUniqueArgs} args - Arguments to find a ProposalTimelineEvent
+     * @example
+     * // Get one ProposalTimelineEvent
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProposalTimelineEventFindUniqueArgs>(args: SelectSubset<T, ProposalTimelineEventFindUniqueArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProposalTimelineEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProposalTimelineEventFindUniqueOrThrowArgs} args - Arguments to find a ProposalTimelineEvent
+     * @example
+     * // Get one ProposalTimelineEvent
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProposalTimelineEventFindUniqueOrThrowArgs>(args: SelectSubset<T, ProposalTimelineEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProposalTimelineEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalTimelineEventFindFirstArgs} args - Arguments to find a ProposalTimelineEvent
+     * @example
+     * // Get one ProposalTimelineEvent
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProposalTimelineEventFindFirstArgs>(args?: SelectSubset<T, ProposalTimelineEventFindFirstArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProposalTimelineEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalTimelineEventFindFirstOrThrowArgs} args - Arguments to find a ProposalTimelineEvent
+     * @example
+     * // Get one ProposalTimelineEvent
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProposalTimelineEventFindFirstOrThrowArgs>(args?: SelectSubset<T, ProposalTimelineEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProposalTimelineEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalTimelineEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProposalTimelineEvents
+     * const proposalTimelineEvents = await prisma.proposalTimelineEvent.findMany()
+     * 
+     * // Get first 10 ProposalTimelineEvents
+     * const proposalTimelineEvents = await prisma.proposalTimelineEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const proposalTimelineEventWithIdOnly = await prisma.proposalTimelineEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProposalTimelineEventFindManyArgs>(args?: SelectSubset<T, ProposalTimelineEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProposalTimelineEvent.
+     * @param {ProposalTimelineEventCreateArgs} args - Arguments to create a ProposalTimelineEvent.
+     * @example
+     * // Create one ProposalTimelineEvent
+     * const ProposalTimelineEvent = await prisma.proposalTimelineEvent.create({
+     *   data: {
+     *     // ... data to create a ProposalTimelineEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProposalTimelineEventCreateArgs>(args: SelectSubset<T, ProposalTimelineEventCreateArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProposalTimelineEvents.
+     * @param {ProposalTimelineEventCreateManyArgs} args - Arguments to create many ProposalTimelineEvents.
+     * @example
+     * // Create many ProposalTimelineEvents
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProposalTimelineEventCreateManyArgs>(args?: SelectSubset<T, ProposalTimelineEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProposalTimelineEvents and returns the data saved in the database.
+     * @param {ProposalTimelineEventCreateManyAndReturnArgs} args - Arguments to create many ProposalTimelineEvents.
+     * @example
+     * // Create many ProposalTimelineEvents
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProposalTimelineEvents and only return the `id`
+     * const proposalTimelineEventWithIdOnly = await prisma.proposalTimelineEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProposalTimelineEventCreateManyAndReturnArgs>(args?: SelectSubset<T, ProposalTimelineEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProposalTimelineEvent.
+     * @param {ProposalTimelineEventDeleteArgs} args - Arguments to delete one ProposalTimelineEvent.
+     * @example
+     * // Delete one ProposalTimelineEvent
+     * const ProposalTimelineEvent = await prisma.proposalTimelineEvent.delete({
+     *   where: {
+     *     // ... filter to delete one ProposalTimelineEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProposalTimelineEventDeleteArgs>(args: SelectSubset<T, ProposalTimelineEventDeleteArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProposalTimelineEvent.
+     * @param {ProposalTimelineEventUpdateArgs} args - Arguments to update one ProposalTimelineEvent.
+     * @example
+     * // Update one ProposalTimelineEvent
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProposalTimelineEventUpdateArgs>(args: SelectSubset<T, ProposalTimelineEventUpdateArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProposalTimelineEvents.
+     * @param {ProposalTimelineEventDeleteManyArgs} args - Arguments to filter ProposalTimelineEvents to delete.
+     * @example
+     * // Delete a few ProposalTimelineEvents
+     * const { count } = await prisma.proposalTimelineEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProposalTimelineEventDeleteManyArgs>(args?: SelectSubset<T, ProposalTimelineEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProposalTimelineEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalTimelineEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProposalTimelineEvents
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProposalTimelineEventUpdateManyArgs>(args: SelectSubset<T, ProposalTimelineEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProposalTimelineEvents and returns the data updated in the database.
+     * @param {ProposalTimelineEventUpdateManyAndReturnArgs} args - Arguments to update many ProposalTimelineEvents.
+     * @example
+     * // Update many ProposalTimelineEvents
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProposalTimelineEvents and only return the `id`
+     * const proposalTimelineEventWithIdOnly = await prisma.proposalTimelineEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProposalTimelineEventUpdateManyAndReturnArgs>(args: SelectSubset<T, ProposalTimelineEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProposalTimelineEvent.
+     * @param {ProposalTimelineEventUpsertArgs} args - Arguments to update or create a ProposalTimelineEvent.
+     * @example
+     * // Update or create a ProposalTimelineEvent
+     * const proposalTimelineEvent = await prisma.proposalTimelineEvent.upsert({
+     *   create: {
+     *     // ... data to create a ProposalTimelineEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProposalTimelineEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProposalTimelineEventUpsertArgs>(args: SelectSubset<T, ProposalTimelineEventUpsertArgs<ExtArgs>>): Prisma__ProposalTimelineEventClient<$Result.GetResult<Prisma.$ProposalTimelineEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProposalTimelineEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalTimelineEventCountArgs} args - Arguments to filter ProposalTimelineEvents to count.
+     * @example
+     * // Count the number of ProposalTimelineEvents
+     * const count = await prisma.proposalTimelineEvent.count({
+     *   where: {
+     *     // ... the filter for the ProposalTimelineEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProposalTimelineEventCountArgs>(
+      args?: Subset<T, ProposalTimelineEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProposalTimelineEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProposalTimelineEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalTimelineEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProposalTimelineEventAggregateArgs>(args: Subset<T, ProposalTimelineEventAggregateArgs>): Prisma.PrismaPromise<GetProposalTimelineEventAggregateType<T>>
+
+    /**
+     * Group by ProposalTimelineEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalTimelineEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProposalTimelineEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProposalTimelineEventGroupByArgs['orderBy'] }
+        : { orderBy?: ProposalTimelineEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProposalTimelineEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProposalTimelineEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProposalTimelineEvent model
+   */
+  readonly fields: ProposalTimelineEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProposalTimelineEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProposalTimelineEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    proposal<T extends ProposalDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProposalDefaultArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProposalTimelineEvent model
+   */
+  interface ProposalTimelineEventFieldRefs {
+    readonly id: FieldRef<"ProposalTimelineEvent", 'String'>
+    readonly proposalId: FieldRef<"ProposalTimelineEvent", 'String'>
+    readonly status: FieldRef<"ProposalTimelineEvent", 'ProposalStatus'>
+    readonly actorId: FieldRef<"ProposalTimelineEvent", 'String'>
+    readonly notes: FieldRef<"ProposalTimelineEvent", 'String'>
+    readonly createdAt: FieldRef<"ProposalTimelineEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProposalTimelineEvent findUnique
+   */
+  export type ProposalTimelineEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalTimelineEvent to fetch.
+     */
+    where: ProposalTimelineEventWhereUniqueInput
+  }
+
+  /**
+   * ProposalTimelineEvent findUniqueOrThrow
+   */
+  export type ProposalTimelineEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalTimelineEvent to fetch.
+     */
+    where: ProposalTimelineEventWhereUniqueInput
+  }
+
+  /**
+   * ProposalTimelineEvent findFirst
+   */
+  export type ProposalTimelineEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalTimelineEvent to fetch.
+     */
+    where?: ProposalTimelineEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalTimelineEvents to fetch.
+     */
+    orderBy?: ProposalTimelineEventOrderByWithRelationInput | ProposalTimelineEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProposalTimelineEvents.
+     */
+    cursor?: ProposalTimelineEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalTimelineEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalTimelineEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalTimelineEvents.
+     */
+    distinct?: ProposalTimelineEventScalarFieldEnum | ProposalTimelineEventScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalTimelineEvent findFirstOrThrow
+   */
+  export type ProposalTimelineEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalTimelineEvent to fetch.
+     */
+    where?: ProposalTimelineEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalTimelineEvents to fetch.
+     */
+    orderBy?: ProposalTimelineEventOrderByWithRelationInput | ProposalTimelineEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProposalTimelineEvents.
+     */
+    cursor?: ProposalTimelineEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalTimelineEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalTimelineEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalTimelineEvents.
+     */
+    distinct?: ProposalTimelineEventScalarFieldEnum | ProposalTimelineEventScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalTimelineEvent findMany
+   */
+  export type ProposalTimelineEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalTimelineEvents to fetch.
+     */
+    where?: ProposalTimelineEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalTimelineEvents to fetch.
+     */
+    orderBy?: ProposalTimelineEventOrderByWithRelationInput | ProposalTimelineEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProposalTimelineEvents.
+     */
+    cursor?: ProposalTimelineEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalTimelineEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalTimelineEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalTimelineEvents.
+     */
+    distinct?: ProposalTimelineEventScalarFieldEnum | ProposalTimelineEventScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalTimelineEvent create
+   */
+  export type ProposalTimelineEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProposalTimelineEvent.
+     */
+    data: XOR<ProposalTimelineEventCreateInput, ProposalTimelineEventUncheckedCreateInput>
+  }
+
+  /**
+   * ProposalTimelineEvent createMany
+   */
+  export type ProposalTimelineEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProposalTimelineEvents.
+     */
+    data: ProposalTimelineEventCreateManyInput | ProposalTimelineEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProposalTimelineEvent createManyAndReturn
+   */
+  export type ProposalTimelineEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProposalTimelineEvents.
+     */
+    data: ProposalTimelineEventCreateManyInput | ProposalTimelineEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProposalTimelineEvent update
+   */
+  export type ProposalTimelineEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProposalTimelineEvent.
+     */
+    data: XOR<ProposalTimelineEventUpdateInput, ProposalTimelineEventUncheckedUpdateInput>
+    /**
+     * Choose, which ProposalTimelineEvent to update.
+     */
+    where: ProposalTimelineEventWhereUniqueInput
+  }
+
+  /**
+   * ProposalTimelineEvent updateMany
+   */
+  export type ProposalTimelineEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProposalTimelineEvents.
+     */
+    data: XOR<ProposalTimelineEventUpdateManyMutationInput, ProposalTimelineEventUncheckedUpdateManyInput>
+    /**
+     * Filter which ProposalTimelineEvents to update
+     */
+    where?: ProposalTimelineEventWhereInput
+    /**
+     * Limit how many ProposalTimelineEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProposalTimelineEvent updateManyAndReturn
+   */
+  export type ProposalTimelineEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * The data used to update ProposalTimelineEvents.
+     */
+    data: XOR<ProposalTimelineEventUpdateManyMutationInput, ProposalTimelineEventUncheckedUpdateManyInput>
+    /**
+     * Filter which ProposalTimelineEvents to update
+     */
+    where?: ProposalTimelineEventWhereInput
+    /**
+     * Limit how many ProposalTimelineEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProposalTimelineEvent upsert
+   */
+  export type ProposalTimelineEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProposalTimelineEvent to update in case it exists.
+     */
+    where: ProposalTimelineEventWhereUniqueInput
+    /**
+     * In case the ProposalTimelineEvent found by the `where` argument doesn't exist, create a new ProposalTimelineEvent with this data.
+     */
+    create: XOR<ProposalTimelineEventCreateInput, ProposalTimelineEventUncheckedCreateInput>
+    /**
+     * In case the ProposalTimelineEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProposalTimelineEventUpdateInput, ProposalTimelineEventUncheckedUpdateInput>
+  }
+
+  /**
+   * ProposalTimelineEvent delete
+   */
+  export type ProposalTimelineEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+    /**
+     * Filter which ProposalTimelineEvent to delete.
+     */
+    where: ProposalTimelineEventWhereUniqueInput
+  }
+
+  /**
+   * ProposalTimelineEvent deleteMany
+   */
+  export type ProposalTimelineEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProposalTimelineEvents to delete
+     */
+    where?: ProposalTimelineEventWhereInput
+    /**
+     * Limit how many ProposalTimelineEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProposalTimelineEvent without action
+   */
+  export type ProposalTimelineEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalTimelineEvent
+     */
+    select?: ProposalTimelineEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalTimelineEvent
+     */
+    omit?: ProposalTimelineEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalTimelineEventInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProposalDecision
+   */
+
+  export type AggregateProposalDecision = {
+    _count: ProposalDecisionCountAggregateOutputType | null
+    _min: ProposalDecisionMinAggregateOutputType | null
+    _max: ProposalDecisionMaxAggregateOutputType | null
+  }
+
+  export type ProposalDecisionMinAggregateOutputType = {
+    id: string | null
+    proposalId: string | null
+    decision: string | null
+    decidedBy: string | null
+    reason: string | null
+    decidedAt: Date | null
+  }
+
+  export type ProposalDecisionMaxAggregateOutputType = {
+    id: string | null
+    proposalId: string | null
+    decision: string | null
+    decidedBy: string | null
+    reason: string | null
+    decidedAt: Date | null
+  }
+
+  export type ProposalDecisionCountAggregateOutputType = {
+    id: number
+    proposalId: number
+    decision: number
+    decidedBy: number
+    reason: number
+    decidedAt: number
+    _all: number
+  }
+
+
+  export type ProposalDecisionMinAggregateInputType = {
+    id?: true
+    proposalId?: true
+    decision?: true
+    decidedBy?: true
+    reason?: true
+    decidedAt?: true
+  }
+
+  export type ProposalDecisionMaxAggregateInputType = {
+    id?: true
+    proposalId?: true
+    decision?: true
+    decidedBy?: true
+    reason?: true
+    decidedAt?: true
+  }
+
+  export type ProposalDecisionCountAggregateInputType = {
+    id?: true
+    proposalId?: true
+    decision?: true
+    decidedBy?: true
+    reason?: true
+    decidedAt?: true
+    _all?: true
+  }
+
+  export type ProposalDecisionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProposalDecision to aggregate.
+     */
+    where?: ProposalDecisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalDecisions to fetch.
+     */
+    orderBy?: ProposalDecisionOrderByWithRelationInput | ProposalDecisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProposalDecisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalDecisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalDecisions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProposalDecisions
+    **/
+    _count?: true | ProposalDecisionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProposalDecisionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProposalDecisionMaxAggregateInputType
+  }
+
+  export type GetProposalDecisionAggregateType<T extends ProposalDecisionAggregateArgs> = {
+        [P in keyof T & keyof AggregateProposalDecision]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProposalDecision[P]>
+      : GetScalarType<T[P], AggregateProposalDecision[P]>
+  }
+
+
+
+
+  export type ProposalDecisionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalDecisionWhereInput
+    orderBy?: ProposalDecisionOrderByWithAggregationInput | ProposalDecisionOrderByWithAggregationInput[]
+    by: ProposalDecisionScalarFieldEnum[] | ProposalDecisionScalarFieldEnum
+    having?: ProposalDecisionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProposalDecisionCountAggregateInputType | true
+    _min?: ProposalDecisionMinAggregateInputType
+    _max?: ProposalDecisionMaxAggregateInputType
+  }
+
+  export type ProposalDecisionGroupByOutputType = {
+    id: string
+    proposalId: string
+    decision: string
+    decidedBy: string
+    reason: string | null
+    decidedAt: Date
+    _count: ProposalDecisionCountAggregateOutputType | null
+    _min: ProposalDecisionMinAggregateOutputType | null
+    _max: ProposalDecisionMaxAggregateOutputType | null
+  }
+
+  type GetProposalDecisionGroupByPayload<T extends ProposalDecisionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProposalDecisionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProposalDecisionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProposalDecisionGroupByOutputType[P]>
+            : GetScalarType<T[P], ProposalDecisionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProposalDecisionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    decision?: boolean
+    decidedBy?: boolean
+    reason?: boolean
+    decidedAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalDecision"]>
+
+  export type ProposalDecisionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    decision?: boolean
+    decidedBy?: boolean
+    reason?: boolean
+    decidedAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalDecision"]>
+
+  export type ProposalDecisionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    proposalId?: boolean
+    decision?: boolean
+    decidedBy?: boolean
+    reason?: boolean
+    decidedAt?: boolean
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["proposalDecision"]>
+
+  export type ProposalDecisionSelectScalar = {
+    id?: boolean
+    proposalId?: boolean
+    decision?: boolean
+    decidedBy?: boolean
+    reason?: boolean
+    decidedAt?: boolean
+  }
+
+  export type ProposalDecisionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "proposalId" | "decision" | "decidedBy" | "reason" | "decidedAt", ExtArgs["result"]["proposalDecision"]>
+  export type ProposalDecisionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+  export type ProposalDecisionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+  export type ProposalDecisionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    proposal?: boolean | ProposalDefaultArgs<ExtArgs>
+  }
+
+  export type $ProposalDecisionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProposalDecision"
+    objects: {
+      proposal: Prisma.$ProposalPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      proposalId: string
+      decision: string
+      decidedBy: string
+      reason: string | null
+      decidedAt: Date
+    }, ExtArgs["result"]["proposalDecision"]>
+    composites: {}
+  }
+
+  type ProposalDecisionGetPayload<S extends boolean | null | undefined | ProposalDecisionDefaultArgs> = $Result.GetResult<Prisma.$ProposalDecisionPayload, S>
+
+  type ProposalDecisionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProposalDecisionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProposalDecisionCountAggregateInputType | true
+    }
+
+  export interface ProposalDecisionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProposalDecision'], meta: { name: 'ProposalDecision' } }
+    /**
+     * Find zero or one ProposalDecision that matches the filter.
+     * @param {ProposalDecisionFindUniqueArgs} args - Arguments to find a ProposalDecision
+     * @example
+     * // Get one ProposalDecision
+     * const proposalDecision = await prisma.proposalDecision.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProposalDecisionFindUniqueArgs>(args: SelectSubset<T, ProposalDecisionFindUniqueArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProposalDecision that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProposalDecisionFindUniqueOrThrowArgs} args - Arguments to find a ProposalDecision
+     * @example
+     * // Get one ProposalDecision
+     * const proposalDecision = await prisma.proposalDecision.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProposalDecisionFindUniqueOrThrowArgs>(args: SelectSubset<T, ProposalDecisionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProposalDecision that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalDecisionFindFirstArgs} args - Arguments to find a ProposalDecision
+     * @example
+     * // Get one ProposalDecision
+     * const proposalDecision = await prisma.proposalDecision.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProposalDecisionFindFirstArgs>(args?: SelectSubset<T, ProposalDecisionFindFirstArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProposalDecision that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalDecisionFindFirstOrThrowArgs} args - Arguments to find a ProposalDecision
+     * @example
+     * // Get one ProposalDecision
+     * const proposalDecision = await prisma.proposalDecision.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProposalDecisionFindFirstOrThrowArgs>(args?: SelectSubset<T, ProposalDecisionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProposalDecisions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalDecisionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProposalDecisions
+     * const proposalDecisions = await prisma.proposalDecision.findMany()
+     * 
+     * // Get first 10 ProposalDecisions
+     * const proposalDecisions = await prisma.proposalDecision.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const proposalDecisionWithIdOnly = await prisma.proposalDecision.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProposalDecisionFindManyArgs>(args?: SelectSubset<T, ProposalDecisionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProposalDecision.
+     * @param {ProposalDecisionCreateArgs} args - Arguments to create a ProposalDecision.
+     * @example
+     * // Create one ProposalDecision
+     * const ProposalDecision = await prisma.proposalDecision.create({
+     *   data: {
+     *     // ... data to create a ProposalDecision
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProposalDecisionCreateArgs>(args: SelectSubset<T, ProposalDecisionCreateArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProposalDecisions.
+     * @param {ProposalDecisionCreateManyArgs} args - Arguments to create many ProposalDecisions.
+     * @example
+     * // Create many ProposalDecisions
+     * const proposalDecision = await prisma.proposalDecision.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProposalDecisionCreateManyArgs>(args?: SelectSubset<T, ProposalDecisionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProposalDecisions and returns the data saved in the database.
+     * @param {ProposalDecisionCreateManyAndReturnArgs} args - Arguments to create many ProposalDecisions.
+     * @example
+     * // Create many ProposalDecisions
+     * const proposalDecision = await prisma.proposalDecision.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProposalDecisions and only return the `id`
+     * const proposalDecisionWithIdOnly = await prisma.proposalDecision.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProposalDecisionCreateManyAndReturnArgs>(args?: SelectSubset<T, ProposalDecisionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProposalDecision.
+     * @param {ProposalDecisionDeleteArgs} args - Arguments to delete one ProposalDecision.
+     * @example
+     * // Delete one ProposalDecision
+     * const ProposalDecision = await prisma.proposalDecision.delete({
+     *   where: {
+     *     // ... filter to delete one ProposalDecision
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProposalDecisionDeleteArgs>(args: SelectSubset<T, ProposalDecisionDeleteArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProposalDecision.
+     * @param {ProposalDecisionUpdateArgs} args - Arguments to update one ProposalDecision.
+     * @example
+     * // Update one ProposalDecision
+     * const proposalDecision = await prisma.proposalDecision.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProposalDecisionUpdateArgs>(args: SelectSubset<T, ProposalDecisionUpdateArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProposalDecisions.
+     * @param {ProposalDecisionDeleteManyArgs} args - Arguments to filter ProposalDecisions to delete.
+     * @example
+     * // Delete a few ProposalDecisions
+     * const { count } = await prisma.proposalDecision.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProposalDecisionDeleteManyArgs>(args?: SelectSubset<T, ProposalDecisionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProposalDecisions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalDecisionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProposalDecisions
+     * const proposalDecision = await prisma.proposalDecision.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProposalDecisionUpdateManyArgs>(args: SelectSubset<T, ProposalDecisionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProposalDecisions and returns the data updated in the database.
+     * @param {ProposalDecisionUpdateManyAndReturnArgs} args - Arguments to update many ProposalDecisions.
+     * @example
+     * // Update many ProposalDecisions
+     * const proposalDecision = await prisma.proposalDecision.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProposalDecisions and only return the `id`
+     * const proposalDecisionWithIdOnly = await prisma.proposalDecision.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProposalDecisionUpdateManyAndReturnArgs>(args: SelectSubset<T, ProposalDecisionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProposalDecision.
+     * @param {ProposalDecisionUpsertArgs} args - Arguments to update or create a ProposalDecision.
+     * @example
+     * // Update or create a ProposalDecision
+     * const proposalDecision = await prisma.proposalDecision.upsert({
+     *   create: {
+     *     // ... data to create a ProposalDecision
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProposalDecision we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProposalDecisionUpsertArgs>(args: SelectSubset<T, ProposalDecisionUpsertArgs<ExtArgs>>): Prisma__ProposalDecisionClient<$Result.GetResult<Prisma.$ProposalDecisionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProposalDecisions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalDecisionCountArgs} args - Arguments to filter ProposalDecisions to count.
+     * @example
+     * // Count the number of ProposalDecisions
+     * const count = await prisma.proposalDecision.count({
+     *   where: {
+     *     // ... the filter for the ProposalDecisions we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProposalDecisionCountArgs>(
+      args?: Subset<T, ProposalDecisionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProposalDecisionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProposalDecision.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalDecisionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProposalDecisionAggregateArgs>(args: Subset<T, ProposalDecisionAggregateArgs>): Prisma.PrismaPromise<GetProposalDecisionAggregateType<T>>
+
+    /**
+     * Group by ProposalDecision.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProposalDecisionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProposalDecisionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProposalDecisionGroupByArgs['orderBy'] }
+        : { orderBy?: ProposalDecisionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProposalDecisionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProposalDecisionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProposalDecision model
+   */
+  readonly fields: ProposalDecisionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProposalDecision.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProposalDecisionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    proposal<T extends ProposalDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProposalDefaultArgs<ExtArgs>>): Prisma__ProposalClient<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProposalDecision model
+   */
+  interface ProposalDecisionFieldRefs {
+    readonly id: FieldRef<"ProposalDecision", 'String'>
+    readonly proposalId: FieldRef<"ProposalDecision", 'String'>
+    readonly decision: FieldRef<"ProposalDecision", 'String'>
+    readonly decidedBy: FieldRef<"ProposalDecision", 'String'>
+    readonly reason: FieldRef<"ProposalDecision", 'String'>
+    readonly decidedAt: FieldRef<"ProposalDecision", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProposalDecision findUnique
+   */
+  export type ProposalDecisionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalDecision to fetch.
+     */
+    where: ProposalDecisionWhereUniqueInput
+  }
+
+  /**
+   * ProposalDecision findUniqueOrThrow
+   */
+  export type ProposalDecisionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalDecision to fetch.
+     */
+    where: ProposalDecisionWhereUniqueInput
+  }
+
+  /**
+   * ProposalDecision findFirst
+   */
+  export type ProposalDecisionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalDecision to fetch.
+     */
+    where?: ProposalDecisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalDecisions to fetch.
+     */
+    orderBy?: ProposalDecisionOrderByWithRelationInput | ProposalDecisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProposalDecisions.
+     */
+    cursor?: ProposalDecisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalDecisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalDecisions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalDecisions.
+     */
+    distinct?: ProposalDecisionScalarFieldEnum | ProposalDecisionScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalDecision findFirstOrThrow
+   */
+  export type ProposalDecisionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalDecision to fetch.
+     */
+    where?: ProposalDecisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalDecisions to fetch.
+     */
+    orderBy?: ProposalDecisionOrderByWithRelationInput | ProposalDecisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProposalDecisions.
+     */
+    cursor?: ProposalDecisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalDecisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalDecisions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalDecisions.
+     */
+    distinct?: ProposalDecisionScalarFieldEnum | ProposalDecisionScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalDecision findMany
+   */
+  export type ProposalDecisionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * Filter, which ProposalDecisions to fetch.
+     */
+    where?: ProposalDecisionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProposalDecisions to fetch.
+     */
+    orderBy?: ProposalDecisionOrderByWithRelationInput | ProposalDecisionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProposalDecisions.
+     */
+    cursor?: ProposalDecisionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProposalDecisions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProposalDecisions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProposalDecisions.
+     */
+    distinct?: ProposalDecisionScalarFieldEnum | ProposalDecisionScalarFieldEnum[]
+  }
+
+  /**
+   * ProposalDecision create
+   */
+  export type ProposalDecisionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProposalDecision.
+     */
+    data: XOR<ProposalDecisionCreateInput, ProposalDecisionUncheckedCreateInput>
+  }
+
+  /**
+   * ProposalDecision createMany
+   */
+  export type ProposalDecisionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProposalDecisions.
+     */
+    data: ProposalDecisionCreateManyInput | ProposalDecisionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProposalDecision createManyAndReturn
+   */
+  export type ProposalDecisionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProposalDecisions.
+     */
+    data: ProposalDecisionCreateManyInput | ProposalDecisionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProposalDecision update
+   */
+  export type ProposalDecisionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProposalDecision.
+     */
+    data: XOR<ProposalDecisionUpdateInput, ProposalDecisionUncheckedUpdateInput>
+    /**
+     * Choose, which ProposalDecision to update.
+     */
+    where: ProposalDecisionWhereUniqueInput
+  }
+
+  /**
+   * ProposalDecision updateMany
+   */
+  export type ProposalDecisionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProposalDecisions.
+     */
+    data: XOR<ProposalDecisionUpdateManyMutationInput, ProposalDecisionUncheckedUpdateManyInput>
+    /**
+     * Filter which ProposalDecisions to update
+     */
+    where?: ProposalDecisionWhereInput
+    /**
+     * Limit how many ProposalDecisions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProposalDecision updateManyAndReturn
+   */
+  export type ProposalDecisionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * The data used to update ProposalDecisions.
+     */
+    data: XOR<ProposalDecisionUpdateManyMutationInput, ProposalDecisionUncheckedUpdateManyInput>
+    /**
+     * Filter which ProposalDecisions to update
+     */
+    where?: ProposalDecisionWhereInput
+    /**
+     * Limit how many ProposalDecisions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProposalDecision upsert
+   */
+  export type ProposalDecisionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProposalDecision to update in case it exists.
+     */
+    where: ProposalDecisionWhereUniqueInput
+    /**
+     * In case the ProposalDecision found by the `where` argument doesn't exist, create a new ProposalDecision with this data.
+     */
+    create: XOR<ProposalDecisionCreateInput, ProposalDecisionUncheckedCreateInput>
+    /**
+     * In case the ProposalDecision was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProposalDecisionUpdateInput, ProposalDecisionUncheckedUpdateInput>
+  }
+
+  /**
+   * ProposalDecision delete
+   */
+  export type ProposalDecisionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
+    /**
+     * Filter which ProposalDecision to delete.
+     */
+    where: ProposalDecisionWhereUniqueInput
+  }
+
+  /**
+   * ProposalDecision deleteMany
+   */
+  export type ProposalDecisionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProposalDecisions to delete
+     */
+    where?: ProposalDecisionWhereInput
+    /**
+     * Limit how many ProposalDecisions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProposalDecision without action
+   */
+  export type ProposalDecisionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProposalDecision
+     */
+    select?: ProposalDecisionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProposalDecision
+     */
+    omit?: ProposalDecisionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProposalDecisionInclude<ExtArgs> | null
   }
 
 
@@ -28748,6 +32893,2183 @@ export namespace Prisma {
 
 
   /**
+   * Model Category
+   */
+
+  export type AggregateCategory = {
+    _count: CategoryCountAggregateOutputType | null
+    _min: CategoryMinAggregateOutputType | null
+    _max: CategoryMaxAggregateOutputType | null
+  }
+
+  export type CategoryMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    isPopular: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CategoryMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    isPopular: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CategoryCountAggregateOutputType = {
+    id: number
+    name: number
+    slug: number
+    isPopular: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CategoryMinAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    isPopular?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CategoryMaxAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    isPopular?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CategoryCountAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    isPopular?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CategoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Category to aggregate.
+     */
+    where?: CategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Categories to fetch.
+     */
+    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Categories
+    **/
+    _count?: true | CategoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CategoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CategoryMaxAggregateInputType
+  }
+
+  export type GetCategoryAggregateType<T extends CategoryAggregateArgs> = {
+        [P in keyof T & keyof AggregateCategory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCategory[P]>
+      : GetScalarType<T[P], AggregateCategory[P]>
+  }
+
+
+
+
+  export type CategoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CategoryWhereInput
+    orderBy?: CategoryOrderByWithAggregationInput | CategoryOrderByWithAggregationInput[]
+    by: CategoryScalarFieldEnum[] | CategoryScalarFieldEnum
+    having?: CategoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CategoryCountAggregateInputType | true
+    _min?: CategoryMinAggregateInputType
+    _max?: CategoryMaxAggregateInputType
+  }
+
+  export type CategoryGroupByOutputType = {
+    id: string
+    name: string
+    slug: string
+    isPopular: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: CategoryCountAggregateOutputType | null
+    _min: CategoryMinAggregateOutputType | null
+    _max: CategoryMaxAggregateOutputType | null
+  }
+
+  type GetCategoryGroupByPayload<T extends CategoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CategoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CategoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CategoryGroupByOutputType[P]>
+            : GetScalarType<T[P], CategoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CategorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isPopular?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    skills?: boolean | Category$skillsArgs<ExtArgs>
+    _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["category"]>
+
+  export type CategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isPopular?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["category"]>
+
+  export type CategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isPopular?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["category"]>
+
+  export type CategorySelectScalar = {
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    isPopular?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "isPopular" | "createdAt" | "updatedAt", ExtArgs["result"]["category"]>
+  export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    skills?: boolean | Category$skillsArgs<ExtArgs>
+    _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type CategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $CategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Category"
+    objects: {
+      skills: Prisma.$SkillPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      slug: string
+      isPopular: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["category"]>
+    composites: {}
+  }
+
+  type CategoryGetPayload<S extends boolean | null | undefined | CategoryDefaultArgs> = $Result.GetResult<Prisma.$CategoryPayload, S>
+
+  type CategoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CategoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CategoryCountAggregateInputType | true
+    }
+
+  export interface CategoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Category'], meta: { name: 'Category' } }
+    /**
+     * Find zero or one Category that matches the filter.
+     * @param {CategoryFindUniqueArgs} args - Arguments to find a Category
+     * @example
+     * // Get one Category
+     * const category = await prisma.category.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CategoryFindUniqueArgs>(args: SelectSubset<T, CategoryFindUniqueArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Category that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CategoryFindUniqueOrThrowArgs} args - Arguments to find a Category
+     * @example
+     * // Get one Category
+     * const category = await prisma.category.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CategoryFindUniqueOrThrowArgs>(args: SelectSubset<T, CategoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Category that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CategoryFindFirstArgs} args - Arguments to find a Category
+     * @example
+     * // Get one Category
+     * const category = await prisma.category.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CategoryFindFirstArgs>(args?: SelectSubset<T, CategoryFindFirstArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Category that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CategoryFindFirstOrThrowArgs} args - Arguments to find a Category
+     * @example
+     * // Get one Category
+     * const category = await prisma.category.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CategoryFindFirstOrThrowArgs>(args?: SelectSubset<T, CategoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Categories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CategoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Categories
+     * const categories = await prisma.category.findMany()
+     * 
+     * // Get first 10 Categories
+     * const categories = await prisma.category.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const categoryWithIdOnly = await prisma.category.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CategoryFindManyArgs>(args?: SelectSubset<T, CategoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Category.
+     * @param {CategoryCreateArgs} args - Arguments to create a Category.
+     * @example
+     * // Create one Category
+     * const Category = await prisma.category.create({
+     *   data: {
+     *     // ... data to create a Category
+     *   }
+     * })
+     * 
+     */
+    create<T extends CategoryCreateArgs>(args: SelectSubset<T, CategoryCreateArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Categories.
+     * @param {CategoryCreateManyArgs} args - Arguments to create many Categories.
+     * @example
+     * // Create many Categories
+     * const category = await prisma.category.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CategoryCreateManyArgs>(args?: SelectSubset<T, CategoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Categories and returns the data saved in the database.
+     * @param {CategoryCreateManyAndReturnArgs} args - Arguments to create many Categories.
+     * @example
+     * // Create many Categories
+     * const category = await prisma.category.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Categories and only return the `id`
+     * const categoryWithIdOnly = await prisma.category.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CategoryCreateManyAndReturnArgs>(args?: SelectSubset<T, CategoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Category.
+     * @param {CategoryDeleteArgs} args - Arguments to delete one Category.
+     * @example
+     * // Delete one Category
+     * const Category = await prisma.category.delete({
+     *   where: {
+     *     // ... filter to delete one Category
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CategoryDeleteArgs>(args: SelectSubset<T, CategoryDeleteArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Category.
+     * @param {CategoryUpdateArgs} args - Arguments to update one Category.
+     * @example
+     * // Update one Category
+     * const category = await prisma.category.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CategoryUpdateArgs>(args: SelectSubset<T, CategoryUpdateArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Categories.
+     * @param {CategoryDeleteManyArgs} args - Arguments to filter Categories to delete.
+     * @example
+     * // Delete a few Categories
+     * const { count } = await prisma.category.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CategoryDeleteManyArgs>(args?: SelectSubset<T, CategoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CategoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Categories
+     * const category = await prisma.category.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CategoryUpdateManyArgs>(args: SelectSubset<T, CategoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Categories and returns the data updated in the database.
+     * @param {CategoryUpdateManyAndReturnArgs} args - Arguments to update many Categories.
+     * @example
+     * // Update many Categories
+     * const category = await prisma.category.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Categories and only return the `id`
+     * const categoryWithIdOnly = await prisma.category.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CategoryUpdateManyAndReturnArgs>(args: SelectSubset<T, CategoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Category.
+     * @param {CategoryUpsertArgs} args - Arguments to update or create a Category.
+     * @example
+     * // Update or create a Category
+     * const category = await prisma.category.upsert({
+     *   create: {
+     *     // ... data to create a Category
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Category we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CategoryUpsertArgs>(args: SelectSubset<T, CategoryUpsertArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CategoryCountArgs} args - Arguments to filter Categories to count.
+     * @example
+     * // Count the number of Categories
+     * const count = await prisma.category.count({
+     *   where: {
+     *     // ... the filter for the Categories we want to count
+     *   }
+     * })
+    **/
+    count<T extends CategoryCountArgs>(
+      args?: Subset<T, CategoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CategoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Category.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CategoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CategoryAggregateArgs>(args: Subset<T, CategoryAggregateArgs>): Prisma.PrismaPromise<GetCategoryAggregateType<T>>
+
+    /**
+     * Group by Category.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CategoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CategoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CategoryGroupByArgs['orderBy'] }
+        : { orderBy?: CategoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CategoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCategoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Category model
+   */
+  readonly fields: CategoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Category.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    skills<T extends Category$skillsArgs<ExtArgs> = {}>(args?: Subset<T, Category$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Category model
+   */
+  interface CategoryFieldRefs {
+    readonly id: FieldRef<"Category", 'String'>
+    readonly name: FieldRef<"Category", 'String'>
+    readonly slug: FieldRef<"Category", 'String'>
+    readonly isPopular: FieldRef<"Category", 'Boolean'>
+    readonly createdAt: FieldRef<"Category", 'DateTime'>
+    readonly updatedAt: FieldRef<"Category", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Category findUnique
+   */
+  export type CategoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which Category to fetch.
+     */
+    where: CategoryWhereUniqueInput
+  }
+
+  /**
+   * Category findUniqueOrThrow
+   */
+  export type CategoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which Category to fetch.
+     */
+    where: CategoryWhereUniqueInput
+  }
+
+  /**
+   * Category findFirst
+   */
+  export type CategoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which Category to fetch.
+     */
+    where?: CategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Categories to fetch.
+     */
+    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Categories.
+     */
+    cursor?: CategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Categories.
+     */
+    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
+  }
+
+  /**
+   * Category findFirstOrThrow
+   */
+  export type CategoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which Category to fetch.
+     */
+    where?: CategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Categories to fetch.
+     */
+    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Categories.
+     */
+    cursor?: CategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Categories.
+     */
+    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
+  }
+
+  /**
+   * Category findMany
+   */
+  export type CategoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * Filter, which Categories to fetch.
+     */
+    where?: CategoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Categories to fetch.
+     */
+    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Categories.
+     */
+    cursor?: CategoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Categories.
+     */
+    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
+  }
+
+  /**
+   * Category create
+   */
+  export type CategoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Category.
+     */
+    data: XOR<CategoryCreateInput, CategoryUncheckedCreateInput>
+  }
+
+  /**
+   * Category createMany
+   */
+  export type CategoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Categories.
+     */
+    data: CategoryCreateManyInput | CategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Category createManyAndReturn
+   */
+  export type CategoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many Categories.
+     */
+    data: CategoryCreateManyInput | CategoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Category update
+   */
+  export type CategoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Category.
+     */
+    data: XOR<CategoryUpdateInput, CategoryUncheckedUpdateInput>
+    /**
+     * Choose, which Category to update.
+     */
+    where: CategoryWhereUniqueInput
+  }
+
+  /**
+   * Category updateMany
+   */
+  export type CategoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Categories.
+     */
+    data: XOR<CategoryUpdateManyMutationInput, CategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which Categories to update
+     */
+    where?: CategoryWhereInput
+    /**
+     * Limit how many Categories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Category updateManyAndReturn
+   */
+  export type CategoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * The data used to update Categories.
+     */
+    data: XOR<CategoryUpdateManyMutationInput, CategoryUncheckedUpdateManyInput>
+    /**
+     * Filter which Categories to update
+     */
+    where?: CategoryWhereInput
+    /**
+     * Limit how many Categories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Category upsert
+   */
+  export type CategoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Category to update in case it exists.
+     */
+    where: CategoryWhereUniqueInput
+    /**
+     * In case the Category found by the `where` argument doesn't exist, create a new Category with this data.
+     */
+    create: XOR<CategoryCreateInput, CategoryUncheckedCreateInput>
+    /**
+     * In case the Category was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CategoryUpdateInput, CategoryUncheckedUpdateInput>
+  }
+
+  /**
+   * Category delete
+   */
+  export type CategoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    /**
+     * Filter which Category to delete.
+     */
+    where: CategoryWhereUniqueInput
+  }
+
+  /**
+   * Category deleteMany
+   */
+  export type CategoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Categories to delete
+     */
+    where?: CategoryWhereInput
+    /**
+     * Limit how many Categories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Category.skills
+   */
+  export type Category$skillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    where?: SkillWhereInput
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    cursor?: SkillWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Category without action
+   */
+  export type CategoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Skill
+   */
+
+  export type AggregateSkill = {
+    _count: SkillCountAggregateOutputType | null
+    _min: SkillMinAggregateOutputType | null
+    _max: SkillMaxAggregateOutputType | null
+  }
+
+  export type SkillMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    categoryId: string | null
+    isTrending: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SkillMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    slug: string | null
+    categoryId: string | null
+    isTrending: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SkillCountAggregateOutputType = {
+    id: number
+    name: number
+    slug: number
+    categoryId: number
+    isTrending: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SkillMinAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    categoryId?: true
+    isTrending?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillMaxAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    categoryId?: true
+    isTrending?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SkillCountAggregateInputType = {
+    id?: true
+    name?: true
+    slug?: true
+    categoryId?: true
+    isTrending?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SkillAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Skill to aggregate.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Skills
+    **/
+    _count?: true | SkillCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SkillMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SkillMaxAggregateInputType
+  }
+
+  export type GetSkillAggregateType<T extends SkillAggregateArgs> = {
+        [P in keyof T & keyof AggregateSkill]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSkill[P]>
+      : GetScalarType<T[P], AggregateSkill[P]>
+  }
+
+
+
+
+  export type SkillGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillWhereInput
+    orderBy?: SkillOrderByWithAggregationInput | SkillOrderByWithAggregationInput[]
+    by: SkillScalarFieldEnum[] | SkillScalarFieldEnum
+    having?: SkillScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SkillCountAggregateInputType | true
+    _min?: SkillMinAggregateInputType
+    _max?: SkillMaxAggregateInputType
+  }
+
+  export type SkillGroupByOutputType = {
+    id: string
+    name: string
+    slug: string
+    categoryId: string
+    isTrending: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: SkillCountAggregateOutputType | null
+    _min: SkillMinAggregateOutputType | null
+    _max: SkillMaxAggregateOutputType | null
+  }
+
+  type GetSkillGroupByPayload<T extends SkillGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SkillGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SkillGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SkillGroupByOutputType[P]>
+            : GetScalarType<T[P], SkillGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SkillSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    categoryId?: boolean
+    isTrending?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    categoryId?: boolean
+    isTrending?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    categoryId?: boolean
+    isTrending?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["skill"]>
+
+  export type SkillSelectScalar = {
+    id?: boolean
+    name?: boolean
+    slug?: boolean
+    categoryId?: boolean
+    isTrending?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SkillOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "categoryId" | "isTrending" | "createdAt" | "updatedAt", ExtArgs["result"]["skill"]>
+  export type SkillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }
+  export type SkillIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }
+  export type SkillIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }
+
+  export type $SkillPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Skill"
+    objects: {
+      category: Prisma.$CategoryPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      slug: string
+      categoryId: string
+      isTrending: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["skill"]>
+    composites: {}
+  }
+
+  type SkillGetPayload<S extends boolean | null | undefined | SkillDefaultArgs> = $Result.GetResult<Prisma.$SkillPayload, S>
+
+  type SkillCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SkillFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SkillCountAggregateInputType | true
+    }
+
+  export interface SkillDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Skill'], meta: { name: 'Skill' } }
+    /**
+     * Find zero or one Skill that matches the filter.
+     * @param {SkillFindUniqueArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SkillFindUniqueArgs>(args: SelectSubset<T, SkillFindUniqueArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Skill that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SkillFindUniqueOrThrowArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SkillFindUniqueOrThrowArgs>(args: SelectSubset<T, SkillFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Skill that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindFirstArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SkillFindFirstArgs>(args?: SelectSubset<T, SkillFindFirstArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Skill that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindFirstOrThrowArgs} args - Arguments to find a Skill
+     * @example
+     * // Get one Skill
+     * const skill = await prisma.skill.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SkillFindFirstOrThrowArgs>(args?: SelectSubset<T, SkillFindFirstOrThrowArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Skills that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Skills
+     * const skills = await prisma.skill.findMany()
+     * 
+     * // Get first 10 Skills
+     * const skills = await prisma.skill.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const skillWithIdOnly = await prisma.skill.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SkillFindManyArgs>(args?: SelectSubset<T, SkillFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Skill.
+     * @param {SkillCreateArgs} args - Arguments to create a Skill.
+     * @example
+     * // Create one Skill
+     * const Skill = await prisma.skill.create({
+     *   data: {
+     *     // ... data to create a Skill
+     *   }
+     * })
+     * 
+     */
+    create<T extends SkillCreateArgs>(args: SelectSubset<T, SkillCreateArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Skills.
+     * @param {SkillCreateManyArgs} args - Arguments to create many Skills.
+     * @example
+     * // Create many Skills
+     * const skill = await prisma.skill.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SkillCreateManyArgs>(args?: SelectSubset<T, SkillCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Skills and returns the data saved in the database.
+     * @param {SkillCreateManyAndReturnArgs} args - Arguments to create many Skills.
+     * @example
+     * // Create many Skills
+     * const skill = await prisma.skill.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Skills and only return the `id`
+     * const skillWithIdOnly = await prisma.skill.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SkillCreateManyAndReturnArgs>(args?: SelectSubset<T, SkillCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Skill.
+     * @param {SkillDeleteArgs} args - Arguments to delete one Skill.
+     * @example
+     * // Delete one Skill
+     * const Skill = await prisma.skill.delete({
+     *   where: {
+     *     // ... filter to delete one Skill
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SkillDeleteArgs>(args: SelectSubset<T, SkillDeleteArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Skill.
+     * @param {SkillUpdateArgs} args - Arguments to update one Skill.
+     * @example
+     * // Update one Skill
+     * const skill = await prisma.skill.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SkillUpdateArgs>(args: SelectSubset<T, SkillUpdateArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Skills.
+     * @param {SkillDeleteManyArgs} args - Arguments to filter Skills to delete.
+     * @example
+     * // Delete a few Skills
+     * const { count } = await prisma.skill.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SkillDeleteManyArgs>(args?: SelectSubset<T, SkillDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Skills.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Skills
+     * const skill = await prisma.skill.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SkillUpdateManyArgs>(args: SelectSubset<T, SkillUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Skills and returns the data updated in the database.
+     * @param {SkillUpdateManyAndReturnArgs} args - Arguments to update many Skills.
+     * @example
+     * // Update many Skills
+     * const skill = await prisma.skill.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Skills and only return the `id`
+     * const skillWithIdOnly = await prisma.skill.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SkillUpdateManyAndReturnArgs>(args: SelectSubset<T, SkillUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Skill.
+     * @param {SkillUpsertArgs} args - Arguments to update or create a Skill.
+     * @example
+     * // Update or create a Skill
+     * const skill = await prisma.skill.upsert({
+     *   create: {
+     *     // ... data to create a Skill
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Skill we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SkillUpsertArgs>(args: SelectSubset<T, SkillUpsertArgs<ExtArgs>>): Prisma__SkillClient<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Skills.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillCountArgs} args - Arguments to filter Skills to count.
+     * @example
+     * // Count the number of Skills
+     * const count = await prisma.skill.count({
+     *   where: {
+     *     // ... the filter for the Skills we want to count
+     *   }
+     * })
+    **/
+    count<T extends SkillCountArgs>(
+      args?: Subset<T, SkillCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SkillCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Skill.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SkillAggregateArgs>(args: Subset<T, SkillAggregateArgs>): Prisma.PrismaPromise<GetSkillAggregateType<T>>
+
+    /**
+     * Group by Skill.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SkillGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SkillGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SkillGroupByArgs['orderBy'] }
+        : { orderBy?: SkillGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SkillGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSkillGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Skill model
+   */
+  readonly fields: SkillFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Skill.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SkillClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    category<T extends CategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategoryDefaultArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Skill model
+   */
+  interface SkillFieldRefs {
+    readonly id: FieldRef<"Skill", 'String'>
+    readonly name: FieldRef<"Skill", 'String'>
+    readonly slug: FieldRef<"Skill", 'String'>
+    readonly categoryId: FieldRef<"Skill", 'String'>
+    readonly isTrending: FieldRef<"Skill", 'Boolean'>
+    readonly createdAt: FieldRef<"Skill", 'DateTime'>
+    readonly updatedAt: FieldRef<"Skill", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Skill findUnique
+   */
+  export type SkillFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill findUniqueOrThrow
+   */
+  export type SkillFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill findFirst
+   */
+  export type SkillFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill findFirstOrThrow
+   */
+  export type SkillFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skill to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill findMany
+   */
+  export type SkillFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter, which Skills to fetch.
+     */
+    where?: SkillWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Skills to fetch.
+     */
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Skills.
+     */
+    cursor?: SkillWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Skills from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Skills.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Skills.
+     */
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+  }
+
+  /**
+   * Skill create
+   */
+  export type SkillCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Skill.
+     */
+    data: XOR<SkillCreateInput, SkillUncheckedCreateInput>
+  }
+
+  /**
+   * Skill createMany
+   */
+  export type SkillCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Skills.
+     */
+    data: SkillCreateManyInput | SkillCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Skill createManyAndReturn
+   */
+  export type SkillCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * The data used to create many Skills.
+     */
+    data: SkillCreateManyInput | SkillCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Skill update
+   */
+  export type SkillUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Skill.
+     */
+    data: XOR<SkillUpdateInput, SkillUncheckedUpdateInput>
+    /**
+     * Choose, which Skill to update.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill updateMany
+   */
+  export type SkillUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Skills.
+     */
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyInput>
+    /**
+     * Filter which Skills to update
+     */
+    where?: SkillWhereInput
+    /**
+     * Limit how many Skills to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Skill updateManyAndReturn
+   */
+  export type SkillUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * The data used to update Skills.
+     */
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyInput>
+    /**
+     * Filter which Skills to update
+     */
+    where?: SkillWhereInput
+    /**
+     * Limit how many Skills to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Skill upsert
+   */
+  export type SkillUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Skill to update in case it exists.
+     */
+    where: SkillWhereUniqueInput
+    /**
+     * In case the Skill found by the `where` argument doesn't exist, create a new Skill with this data.
+     */
+    create: XOR<SkillCreateInput, SkillUncheckedCreateInput>
+    /**
+     * In case the Skill was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SkillUpdateInput, SkillUncheckedUpdateInput>
+  }
+
+  /**
+   * Skill delete
+   */
+  export type SkillDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+    /**
+     * Filter which Skill to delete.
+     */
+    where: SkillWhereUniqueInput
+  }
+
+  /**
+   * Skill deleteMany
+   */
+  export type SkillDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Skills to delete
+     */
+    where?: SkillWhereInput
+    /**
+     * Limit how many Skills to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Skill without action
+   */
+  export type SkillDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Skill
+     */
+    select?: SkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Skill
+     */
+    omit?: SkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SkillInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -28889,12 +35211,67 @@ export namespace Prisma {
     clientId: 'clientId',
     amount: 'amount',
     message: 'message',
+    estimatedDuration: 'estimatedDuration',
     status: 'status',
+    version: 'version',
+    jobSnapshotTitle: 'jobSnapshotTitle',
+    jobSnapshotBudget: 'jobSnapshotBudget',
+    jobSnapshotType: 'jobSnapshotType',
+    jobSnapshotCategory: 'jobSnapshotCategory',
+    jobSnapshotLocation: 'jobSnapshotLocation',
+    jobSnapshotCurrency: 'jobSnapshotCurrency',
+    artisanSnapshotName: 'artisanSnapshotName',
+    artisanSnapshotAvatarUrl: 'artisanSnapshotAvatarUrl',
+    artisanSnapshotVerificationStatus: 'artisanSnapshotVerificationStatus',
+    artisanSnapshotRating: 'artisanSnapshotRating',
+    artisanSnapshotCompletedJobs: 'artisanSnapshotCompletedJobs',
+    artisanSnapshotResponseRate: 'artisanSnapshotResponseRate',
+    shortlistedAt: 'shortlistedAt',
+    shortlistedBy: 'shortlistedBy',
+    shortlistPriority: 'shortlistPriority',
+    expiresAt: 'expiresAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type ProposalScalarFieldEnum = (typeof ProposalScalarFieldEnum)[keyof typeof ProposalScalarFieldEnum]
+
+
+  export const ProposalAttachmentScalarFieldEnum: {
+    id: 'id',
+    proposalId: 'proposalId',
+    fileUrl: 'fileUrl',
+    fileName: 'fileName',
+    fileType: 'fileType',
+    fileSize: 'fileSize',
+    uploadedAt: 'uploadedAt'
+  };
+
+  export type ProposalAttachmentScalarFieldEnum = (typeof ProposalAttachmentScalarFieldEnum)[keyof typeof ProposalAttachmentScalarFieldEnum]
+
+
+  export const ProposalTimelineEventScalarFieldEnum: {
+    id: 'id',
+    proposalId: 'proposalId',
+    status: 'status',
+    actorId: 'actorId',
+    notes: 'notes',
+    createdAt: 'createdAt'
+  };
+
+  export type ProposalTimelineEventScalarFieldEnum = (typeof ProposalTimelineEventScalarFieldEnum)[keyof typeof ProposalTimelineEventScalarFieldEnum]
+
+
+  export const ProposalDecisionScalarFieldEnum: {
+    id: 'id',
+    proposalId: 'proposalId',
+    decision: 'decision',
+    decidedBy: 'decidedBy',
+    reason: 'reason',
+    decidedAt: 'decidedAt'
+  };
+
+  export type ProposalDecisionScalarFieldEnum = (typeof ProposalDecisionScalarFieldEnum)[keyof typeof ProposalDecisionScalarFieldEnum]
 
 
   export const ContractScalarFieldEnum: {
@@ -29144,6 +35521,31 @@ export namespace Prisma {
   export type SystemLogScalarFieldEnum = (typeof SystemLogScalarFieldEnum)[keyof typeof SystemLogScalarFieldEnum]
 
 
+  export const CategoryScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug',
+    isPopular: 'isPopular',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+  export const SkillScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug',
+    categoryId: 'categoryId',
+    isTrending: 'isTrending',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -29273,10 +35675,51 @@ export namespace Prisma {
     jobId: 'jobId',
     artisanId: 'artisanId',
     clientId: 'clientId',
-    message: 'message'
+    message: 'message',
+    estimatedDuration: 'estimatedDuration',
+    jobSnapshotTitle: 'jobSnapshotTitle',
+    jobSnapshotType: 'jobSnapshotType',
+    jobSnapshotCategory: 'jobSnapshotCategory',
+    jobSnapshotLocation: 'jobSnapshotLocation',
+    jobSnapshotCurrency: 'jobSnapshotCurrency',
+    artisanSnapshotName: 'artisanSnapshotName',
+    artisanSnapshotAvatarUrl: 'artisanSnapshotAvatarUrl',
+    shortlistedBy: 'shortlistedBy'
   };
 
   export type ProposalOrderByRelevanceFieldEnum = (typeof ProposalOrderByRelevanceFieldEnum)[keyof typeof ProposalOrderByRelevanceFieldEnum]
+
+
+  export const ProposalAttachmentOrderByRelevanceFieldEnum: {
+    id: 'id',
+    proposalId: 'proposalId',
+    fileUrl: 'fileUrl',
+    fileName: 'fileName',
+    fileType: 'fileType'
+  };
+
+  export type ProposalAttachmentOrderByRelevanceFieldEnum = (typeof ProposalAttachmentOrderByRelevanceFieldEnum)[keyof typeof ProposalAttachmentOrderByRelevanceFieldEnum]
+
+
+  export const ProposalTimelineEventOrderByRelevanceFieldEnum: {
+    id: 'id',
+    proposalId: 'proposalId',
+    actorId: 'actorId',
+    notes: 'notes'
+  };
+
+  export type ProposalTimelineEventOrderByRelevanceFieldEnum = (typeof ProposalTimelineEventOrderByRelevanceFieldEnum)[keyof typeof ProposalTimelineEventOrderByRelevanceFieldEnum]
+
+
+  export const ProposalDecisionOrderByRelevanceFieldEnum: {
+    id: 'id',
+    proposalId: 'proposalId',
+    decision: 'decision',
+    decidedBy: 'decidedBy',
+    reason: 'reason'
+  };
+
+  export type ProposalDecisionOrderByRelevanceFieldEnum = (typeof ProposalDecisionOrderByRelevanceFieldEnum)[keyof typeof ProposalDecisionOrderByRelevanceFieldEnum]
 
 
   export const ContractOrderByRelevanceFieldEnum: {
@@ -29445,6 +35888,25 @@ export namespace Prisma {
   };
 
   export type SystemLogOrderByRelevanceFieldEnum = (typeof SystemLogOrderByRelevanceFieldEnum)[keyof typeof SystemLogOrderByRelevanceFieldEnum]
+
+
+  export const CategoryOrderByRelevanceFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug'
+  };
+
+  export type CategoryOrderByRelevanceFieldEnum = (typeof CategoryOrderByRelevanceFieldEnum)[keyof typeof CategoryOrderByRelevanceFieldEnum]
+
+
+  export const SkillOrderByRelevanceFieldEnum: {
+    id: 'id',
+    name: 'name',
+    slug: 'slug',
+    categoryId: 'categoryId'
+  };
+
+  export type SkillOrderByRelevanceFieldEnum = (typeof SkillOrderByRelevanceFieldEnum)[keyof typeof SkillOrderByRelevanceFieldEnum]
 
 
   /**
@@ -30462,13 +36924,34 @@ export namespace Prisma {
     clientId?: StringFilter<"Proposal"> | string
     amount?: IntFilter<"Proposal"> | number
     message?: StringFilter<"Proposal"> | string
+    estimatedDuration?: StringNullableFilter<"Proposal"> | string | null
     status?: EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
+    version?: IntFilter<"Proposal"> | number
+    jobSnapshotTitle?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotBudget?: IntNullableFilter<"Proposal"> | number | null
+    jobSnapshotType?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotCategory?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotLocation?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotCurrency?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotName?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotAvatarUrl?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotVerificationStatus?: BoolNullableFilter<"Proposal"> | boolean | null
+    artisanSnapshotRating?: FloatNullableFilter<"Proposal"> | number | null
+    artisanSnapshotCompletedJobs?: IntNullableFilter<"Proposal"> | number | null
+    artisanSnapshotResponseRate?: FloatNullableFilter<"Proposal"> | number | null
+    shortlistedAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
+    shortlistedBy?: StringNullableFilter<"Proposal"> | string | null
+    shortlistPriority?: IntNullableFilter<"Proposal"> | number | null
+    expiresAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
     createdAt?: DateTimeFilter<"Proposal"> | Date | string
     updatedAt?: DateTimeFilter<"Proposal"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    attachments?: ProposalAttachmentListRelationFilter
+    timelineEvents?: ProposalTimelineEventListRelationFilter
+    decision?: XOR<ProposalDecisionNullableScalarRelationFilter, ProposalDecisionWhereInput> | null
   }
 
   export type ProposalOrderByWithRelationInput = {
@@ -30478,13 +36961,34 @@ export namespace Prisma {
     clientId?: SortOrder
     amount?: SortOrder
     message?: SortOrder
+    estimatedDuration?: SortOrderInput | SortOrder
     status?: SortOrder
+    version?: SortOrder
+    jobSnapshotTitle?: SortOrderInput | SortOrder
+    jobSnapshotBudget?: SortOrderInput | SortOrder
+    jobSnapshotType?: SortOrderInput | SortOrder
+    jobSnapshotCategory?: SortOrderInput | SortOrder
+    jobSnapshotLocation?: SortOrderInput | SortOrder
+    jobSnapshotCurrency?: SortOrderInput | SortOrder
+    artisanSnapshotName?: SortOrderInput | SortOrder
+    artisanSnapshotAvatarUrl?: SortOrderInput | SortOrder
+    artisanSnapshotVerificationStatus?: SortOrderInput | SortOrder
+    artisanSnapshotRating?: SortOrderInput | SortOrder
+    artisanSnapshotCompletedJobs?: SortOrderInput | SortOrder
+    artisanSnapshotResponseRate?: SortOrderInput | SortOrder
+    shortlistedAt?: SortOrderInput | SortOrder
+    shortlistedBy?: SortOrderInput | SortOrder
+    shortlistPriority?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     job?: JobOrderByWithRelationInput
     artisan?: UserOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
     contract?: ContractOrderByWithRelationInput
+    attachments?: ProposalAttachmentOrderByRelationAggregateInput
+    timelineEvents?: ProposalTimelineEventOrderByRelationAggregateInput
+    decision?: ProposalDecisionOrderByWithRelationInput
     _relevance?: ProposalOrderByRelevanceInput
   }
 
@@ -30499,13 +37003,34 @@ export namespace Prisma {
     clientId?: StringFilter<"Proposal"> | string
     amount?: IntFilter<"Proposal"> | number
     message?: StringFilter<"Proposal"> | string
+    estimatedDuration?: StringNullableFilter<"Proposal"> | string | null
     status?: EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
+    version?: IntFilter<"Proposal"> | number
+    jobSnapshotTitle?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotBudget?: IntNullableFilter<"Proposal"> | number | null
+    jobSnapshotType?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotCategory?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotLocation?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotCurrency?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotName?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotAvatarUrl?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotVerificationStatus?: BoolNullableFilter<"Proposal"> | boolean | null
+    artisanSnapshotRating?: FloatNullableFilter<"Proposal"> | number | null
+    artisanSnapshotCompletedJobs?: IntNullableFilter<"Proposal"> | number | null
+    artisanSnapshotResponseRate?: FloatNullableFilter<"Proposal"> | number | null
+    shortlistedAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
+    shortlistedBy?: StringNullableFilter<"Proposal"> | string | null
+    shortlistPriority?: IntNullableFilter<"Proposal"> | number | null
+    expiresAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
     createdAt?: DateTimeFilter<"Proposal"> | Date | string
     updatedAt?: DateTimeFilter<"Proposal"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    attachments?: ProposalAttachmentListRelationFilter
+    timelineEvents?: ProposalTimelineEventListRelationFilter
+    decision?: XOR<ProposalDecisionNullableScalarRelationFilter, ProposalDecisionWhereInput> | null
   }, "id" | "jobId_artisanId">
 
   export type ProposalOrderByWithAggregationInput = {
@@ -30515,7 +37040,25 @@ export namespace Prisma {
     clientId?: SortOrder
     amount?: SortOrder
     message?: SortOrder
+    estimatedDuration?: SortOrderInput | SortOrder
     status?: SortOrder
+    version?: SortOrder
+    jobSnapshotTitle?: SortOrderInput | SortOrder
+    jobSnapshotBudget?: SortOrderInput | SortOrder
+    jobSnapshotType?: SortOrderInput | SortOrder
+    jobSnapshotCategory?: SortOrderInput | SortOrder
+    jobSnapshotLocation?: SortOrderInput | SortOrder
+    jobSnapshotCurrency?: SortOrderInput | SortOrder
+    artisanSnapshotName?: SortOrderInput | SortOrder
+    artisanSnapshotAvatarUrl?: SortOrderInput | SortOrder
+    artisanSnapshotVerificationStatus?: SortOrderInput | SortOrder
+    artisanSnapshotRating?: SortOrderInput | SortOrder
+    artisanSnapshotCompletedJobs?: SortOrderInput | SortOrder
+    artisanSnapshotResponseRate?: SortOrderInput | SortOrder
+    shortlistedAt?: SortOrderInput | SortOrder
+    shortlistedBy?: SortOrderInput | SortOrder
+    shortlistPriority?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProposalCountOrderByAggregateInput
@@ -30535,9 +37078,217 @@ export namespace Prisma {
     clientId?: StringWithAggregatesFilter<"Proposal"> | string
     amount?: IntWithAggregatesFilter<"Proposal"> | number
     message?: StringWithAggregatesFilter<"Proposal"> | string
+    estimatedDuration?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
     status?: EnumProposalStatusWithAggregatesFilter<"Proposal"> | $Enums.ProposalStatus
+    version?: IntWithAggregatesFilter<"Proposal"> | number
+    jobSnapshotTitle?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    jobSnapshotBudget?: IntNullableWithAggregatesFilter<"Proposal"> | number | null
+    jobSnapshotType?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    jobSnapshotCategory?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    jobSnapshotLocation?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    jobSnapshotCurrency?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    artisanSnapshotName?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    artisanSnapshotAvatarUrl?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    artisanSnapshotVerificationStatus?: BoolNullableWithAggregatesFilter<"Proposal"> | boolean | null
+    artisanSnapshotRating?: FloatNullableWithAggregatesFilter<"Proposal"> | number | null
+    artisanSnapshotCompletedJobs?: IntNullableWithAggregatesFilter<"Proposal"> | number | null
+    artisanSnapshotResponseRate?: FloatNullableWithAggregatesFilter<"Proposal"> | number | null
+    shortlistedAt?: DateTimeNullableWithAggregatesFilter<"Proposal"> | Date | string | null
+    shortlistedBy?: StringNullableWithAggregatesFilter<"Proposal"> | string | null
+    shortlistPriority?: IntNullableWithAggregatesFilter<"Proposal"> | number | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"Proposal"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Proposal"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Proposal"> | Date | string
+  }
+
+  export type ProposalAttachmentWhereInput = {
+    AND?: ProposalAttachmentWhereInput | ProposalAttachmentWhereInput[]
+    OR?: ProposalAttachmentWhereInput[]
+    NOT?: ProposalAttachmentWhereInput | ProposalAttachmentWhereInput[]
+    id?: StringFilter<"ProposalAttachment"> | string
+    proposalId?: StringFilter<"ProposalAttachment"> | string
+    fileUrl?: StringFilter<"ProposalAttachment"> | string
+    fileName?: StringFilter<"ProposalAttachment"> | string
+    fileType?: StringFilter<"ProposalAttachment"> | string
+    fileSize?: IntFilter<"ProposalAttachment"> | number
+    uploadedAt?: DateTimeFilter<"ProposalAttachment"> | Date | string
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+  }
+
+  export type ProposalAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    uploadedAt?: SortOrder
+    proposal?: ProposalOrderByWithRelationInput
+    _relevance?: ProposalAttachmentOrderByRelevanceInput
+  }
+
+  export type ProposalAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProposalAttachmentWhereInput | ProposalAttachmentWhereInput[]
+    OR?: ProposalAttachmentWhereInput[]
+    NOT?: ProposalAttachmentWhereInput | ProposalAttachmentWhereInput[]
+    proposalId?: StringFilter<"ProposalAttachment"> | string
+    fileUrl?: StringFilter<"ProposalAttachment"> | string
+    fileName?: StringFilter<"ProposalAttachment"> | string
+    fileType?: StringFilter<"ProposalAttachment"> | string
+    fileSize?: IntFilter<"ProposalAttachment"> | number
+    uploadedAt?: DateTimeFilter<"ProposalAttachment"> | Date | string
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+  }, "id">
+
+  export type ProposalAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    uploadedAt?: SortOrder
+    _count?: ProposalAttachmentCountOrderByAggregateInput
+    _avg?: ProposalAttachmentAvgOrderByAggregateInput
+    _max?: ProposalAttachmentMaxOrderByAggregateInput
+    _min?: ProposalAttachmentMinOrderByAggregateInput
+    _sum?: ProposalAttachmentSumOrderByAggregateInput
+  }
+
+  export type ProposalAttachmentScalarWhereWithAggregatesInput = {
+    AND?: ProposalAttachmentScalarWhereWithAggregatesInput | ProposalAttachmentScalarWhereWithAggregatesInput[]
+    OR?: ProposalAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: ProposalAttachmentScalarWhereWithAggregatesInput | ProposalAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProposalAttachment"> | string
+    proposalId?: StringWithAggregatesFilter<"ProposalAttachment"> | string
+    fileUrl?: StringWithAggregatesFilter<"ProposalAttachment"> | string
+    fileName?: StringWithAggregatesFilter<"ProposalAttachment"> | string
+    fileType?: StringWithAggregatesFilter<"ProposalAttachment"> | string
+    fileSize?: IntWithAggregatesFilter<"ProposalAttachment"> | number
+    uploadedAt?: DateTimeWithAggregatesFilter<"ProposalAttachment"> | Date | string
+  }
+
+  export type ProposalTimelineEventWhereInput = {
+    AND?: ProposalTimelineEventWhereInput | ProposalTimelineEventWhereInput[]
+    OR?: ProposalTimelineEventWhereInput[]
+    NOT?: ProposalTimelineEventWhereInput | ProposalTimelineEventWhereInput[]
+    id?: StringFilter<"ProposalTimelineEvent"> | string
+    proposalId?: StringFilter<"ProposalTimelineEvent"> | string
+    status?: EnumProposalStatusFilter<"ProposalTimelineEvent"> | $Enums.ProposalStatus
+    actorId?: StringFilter<"ProposalTimelineEvent"> | string
+    notes?: StringNullableFilter<"ProposalTimelineEvent"> | string | null
+    createdAt?: DateTimeFilter<"ProposalTimelineEvent"> | Date | string
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+  }
+
+  export type ProposalTimelineEventOrderByWithRelationInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    status?: SortOrder
+    actorId?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    proposal?: ProposalOrderByWithRelationInput
+    _relevance?: ProposalTimelineEventOrderByRelevanceInput
+  }
+
+  export type ProposalTimelineEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProposalTimelineEventWhereInput | ProposalTimelineEventWhereInput[]
+    OR?: ProposalTimelineEventWhereInput[]
+    NOT?: ProposalTimelineEventWhereInput | ProposalTimelineEventWhereInput[]
+    proposalId?: StringFilter<"ProposalTimelineEvent"> | string
+    status?: EnumProposalStatusFilter<"ProposalTimelineEvent"> | $Enums.ProposalStatus
+    actorId?: StringFilter<"ProposalTimelineEvent"> | string
+    notes?: StringNullableFilter<"ProposalTimelineEvent"> | string | null
+    createdAt?: DateTimeFilter<"ProposalTimelineEvent"> | Date | string
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+  }, "id">
+
+  export type ProposalTimelineEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    status?: SortOrder
+    actorId?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ProposalTimelineEventCountOrderByAggregateInput
+    _max?: ProposalTimelineEventMaxOrderByAggregateInput
+    _min?: ProposalTimelineEventMinOrderByAggregateInput
+  }
+
+  export type ProposalTimelineEventScalarWhereWithAggregatesInput = {
+    AND?: ProposalTimelineEventScalarWhereWithAggregatesInput | ProposalTimelineEventScalarWhereWithAggregatesInput[]
+    OR?: ProposalTimelineEventScalarWhereWithAggregatesInput[]
+    NOT?: ProposalTimelineEventScalarWhereWithAggregatesInput | ProposalTimelineEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProposalTimelineEvent"> | string
+    proposalId?: StringWithAggregatesFilter<"ProposalTimelineEvent"> | string
+    status?: EnumProposalStatusWithAggregatesFilter<"ProposalTimelineEvent"> | $Enums.ProposalStatus
+    actorId?: StringWithAggregatesFilter<"ProposalTimelineEvent"> | string
+    notes?: StringNullableWithAggregatesFilter<"ProposalTimelineEvent"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ProposalTimelineEvent"> | Date | string
+  }
+
+  export type ProposalDecisionWhereInput = {
+    AND?: ProposalDecisionWhereInput | ProposalDecisionWhereInput[]
+    OR?: ProposalDecisionWhereInput[]
+    NOT?: ProposalDecisionWhereInput | ProposalDecisionWhereInput[]
+    id?: StringFilter<"ProposalDecision"> | string
+    proposalId?: StringFilter<"ProposalDecision"> | string
+    decision?: StringFilter<"ProposalDecision"> | string
+    decidedBy?: StringFilter<"ProposalDecision"> | string
+    reason?: StringNullableFilter<"ProposalDecision"> | string | null
+    decidedAt?: DateTimeFilter<"ProposalDecision"> | Date | string
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+  }
+
+  export type ProposalDecisionOrderByWithRelationInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    decision?: SortOrder
+    decidedBy?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    decidedAt?: SortOrder
+    proposal?: ProposalOrderByWithRelationInput
+    _relevance?: ProposalDecisionOrderByRelevanceInput
+  }
+
+  export type ProposalDecisionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    proposalId?: string
+    AND?: ProposalDecisionWhereInput | ProposalDecisionWhereInput[]
+    OR?: ProposalDecisionWhereInput[]
+    NOT?: ProposalDecisionWhereInput | ProposalDecisionWhereInput[]
+    decision?: StringFilter<"ProposalDecision"> | string
+    decidedBy?: StringFilter<"ProposalDecision"> | string
+    reason?: StringNullableFilter<"ProposalDecision"> | string | null
+    decidedAt?: DateTimeFilter<"ProposalDecision"> | Date | string
+    proposal?: XOR<ProposalScalarRelationFilter, ProposalWhereInput>
+  }, "id" | "proposalId">
+
+  export type ProposalDecisionOrderByWithAggregationInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    decision?: SortOrder
+    decidedBy?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    decidedAt?: SortOrder
+    _count?: ProposalDecisionCountOrderByAggregateInput
+    _max?: ProposalDecisionMaxOrderByAggregateInput
+    _min?: ProposalDecisionMinOrderByAggregateInput
+  }
+
+  export type ProposalDecisionScalarWhereWithAggregatesInput = {
+    AND?: ProposalDecisionScalarWhereWithAggregatesInput | ProposalDecisionScalarWhereWithAggregatesInput[]
+    OR?: ProposalDecisionScalarWhereWithAggregatesInput[]
+    NOT?: ProposalDecisionScalarWhereWithAggregatesInput | ProposalDecisionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProposalDecision"> | string
+    proposalId?: StringWithAggregatesFilter<"ProposalDecision"> | string
+    decision?: StringWithAggregatesFilter<"ProposalDecision"> | string
+    decidedBy?: StringWithAggregatesFilter<"ProposalDecision"> | string
+    reason?: StringNullableWithAggregatesFilter<"ProposalDecision"> | string | null
+    decidedAt?: DateTimeWithAggregatesFilter<"ProposalDecision"> | Date | string
   }
 
   export type ContractWhereInput = {
@@ -31849,6 +38600,134 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"SystemLog"> | Date | string
   }
 
+  export type CategoryWhereInput = {
+    AND?: CategoryWhereInput | CategoryWhereInput[]
+    OR?: CategoryWhereInput[]
+    NOT?: CategoryWhereInput | CategoryWhereInput[]
+    id?: StringFilter<"Category"> | string
+    name?: StringFilter<"Category"> | string
+    slug?: StringFilter<"Category"> | string
+    isPopular?: BoolFilter<"Category"> | boolean
+    createdAt?: DateTimeFilter<"Category"> | Date | string
+    updatedAt?: DateTimeFilter<"Category"> | Date | string
+    skills?: SkillListRelationFilter
+  }
+
+  export type CategoryOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isPopular?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    skills?: SkillOrderByRelationAggregateInput
+    _relevance?: CategoryOrderByRelevanceInput
+  }
+
+  export type CategoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    slug?: string
+    AND?: CategoryWhereInput | CategoryWhereInput[]
+    OR?: CategoryWhereInput[]
+    NOT?: CategoryWhereInput | CategoryWhereInput[]
+    isPopular?: BoolFilter<"Category"> | boolean
+    createdAt?: DateTimeFilter<"Category"> | Date | string
+    updatedAt?: DateTimeFilter<"Category"> | Date | string
+    skills?: SkillListRelationFilter
+  }, "id" | "name" | "slug">
+
+  export type CategoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isPopular?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CategoryCountOrderByAggregateInput
+    _max?: CategoryMaxOrderByAggregateInput
+    _min?: CategoryMinOrderByAggregateInput
+  }
+
+  export type CategoryScalarWhereWithAggregatesInput = {
+    AND?: CategoryScalarWhereWithAggregatesInput | CategoryScalarWhereWithAggregatesInput[]
+    OR?: CategoryScalarWhereWithAggregatesInput[]
+    NOT?: CategoryScalarWhereWithAggregatesInput | CategoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Category"> | string
+    name?: StringWithAggregatesFilter<"Category"> | string
+    slug?: StringWithAggregatesFilter<"Category"> | string
+    isPopular?: BoolWithAggregatesFilter<"Category"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
+  }
+
+  export type SkillWhereInput = {
+    AND?: SkillWhereInput | SkillWhereInput[]
+    OR?: SkillWhereInput[]
+    NOT?: SkillWhereInput | SkillWhereInput[]
+    id?: StringFilter<"Skill"> | string
+    name?: StringFilter<"Skill"> | string
+    slug?: StringFilter<"Skill"> | string
+    categoryId?: StringFilter<"Skill"> | string
+    isTrending?: BoolFilter<"Skill"> | boolean
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+    category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+  }
+
+  export type SkillOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    categoryId?: SortOrder
+    isTrending?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    category?: CategoryOrderByWithRelationInput
+    _relevance?: SkillOrderByRelevanceInput
+  }
+
+  export type SkillWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    slug?: string
+    name_categoryId?: SkillNameCategoryIdCompoundUniqueInput
+    AND?: SkillWhereInput | SkillWhereInput[]
+    OR?: SkillWhereInput[]
+    NOT?: SkillWhereInput | SkillWhereInput[]
+    name?: StringFilter<"Skill"> | string
+    categoryId?: StringFilter<"Skill"> | string
+    isTrending?: BoolFilter<"Skill"> | boolean
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+    category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+  }, "id" | "slug" | "name_categoryId">
+
+  export type SkillOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    categoryId?: SortOrder
+    isTrending?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SkillCountOrderByAggregateInput
+    _max?: SkillMaxOrderByAggregateInput
+    _min?: SkillMinOrderByAggregateInput
+  }
+
+  export type SkillScalarWhereWithAggregatesInput = {
+    AND?: SkillScalarWhereWithAggregatesInput | SkillScalarWhereWithAggregatesInput[]
+    OR?: SkillScalarWhereWithAggregatesInput[]
+    NOT?: SkillScalarWhereWithAggregatesInput | SkillScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Skill"> | string
+    name?: StringWithAggregatesFilter<"Skill"> | string
+    slug?: StringWithAggregatesFilter<"Skill"> | string
+    categoryId?: StringWithAggregatesFilter<"Skill"> | string
+    isTrending?: BoolWithAggregatesFilter<"Skill"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Skill"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     name: string
@@ -32642,13 +39521,34 @@ export namespace Prisma {
     id?: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutProposalsInput
     artisan: UserCreateNestedOneWithoutSentProposalsInput
     client: UserCreateNestedOneWithoutReceivedProposalsInput
     contract?: ContractCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalUncheckedCreateInput = {
@@ -32658,23 +39558,65 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutProposalsNestedInput
     artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
     client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
     contract?: ContractUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateInput = {
@@ -32684,10 +39626,31 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalCreateManyInput = {
@@ -32697,7 +39660,25 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -32706,7 +39687,25 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32718,9 +39717,220 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalAttachmentCreateInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+    uploadedAt?: Date | string
+    proposal: ProposalCreateNestedOneWithoutAttachmentsInput
+  }
+
+  export type ProposalAttachmentUncheckedCreateInput = {
+    id?: string
+    proposalId: string
+    fileUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+    uploadedAt?: Date | string
+  }
+
+  export type ProposalAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    proposal?: ProposalUpdateOneRequiredWithoutAttachmentsNestedInput
+  }
+
+  export type ProposalAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalAttachmentCreateManyInput = {
+    id?: string
+    proposalId: string
+    fileUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+    uploadedAt?: Date | string
+  }
+
+  export type ProposalAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalTimelineEventCreateInput = {
+    id?: string
+    status: $Enums.ProposalStatus
+    actorId: string
+    notes?: string | null
+    createdAt?: Date | string
+    proposal: ProposalCreateNestedOneWithoutTimelineEventsInput
+  }
+
+  export type ProposalTimelineEventUncheckedCreateInput = {
+    id?: string
+    proposalId: string
+    status: $Enums.ProposalStatus
+    actorId: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProposalTimelineEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    actorId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    proposal?: ProposalUpdateOneRequiredWithoutTimelineEventsNestedInput
+  }
+
+  export type ProposalTimelineEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    actorId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalTimelineEventCreateManyInput = {
+    id?: string
+    proposalId: string
+    status: $Enums.ProposalStatus
+    actorId: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProposalTimelineEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    actorId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalTimelineEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    actorId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalDecisionCreateInput = {
+    id?: string
+    decision: string
+    decidedBy: string
+    reason?: string | null
+    decidedAt?: Date | string
+    proposal: ProposalCreateNestedOneWithoutDecisionInput
+  }
+
+  export type ProposalDecisionUncheckedCreateInput = {
+    id?: string
+    proposalId: string
+    decision: string
+    decidedBy: string
+    reason?: string | null
+    decidedAt?: Date | string
+  }
+
+  export type ProposalDecisionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: StringFieldUpdateOperationsInput | string
+    decidedBy?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    decidedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    proposal?: ProposalUpdateOneRequiredWithoutDecisionNestedInput
+  }
+
+  export type ProposalDecisionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    decision?: StringFieldUpdateOperationsInput | string
+    decidedBy?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    decidedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalDecisionCreateManyInput = {
+    id?: string
+    proposalId: string
+    decision: string
+    decidedBy: string
+    reason?: string | null
+    decidedAt?: Date | string
+  }
+
+  export type ProposalDecisionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: StringFieldUpdateOperationsInput | string
+    decidedBy?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    decidedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalDecisionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    decision?: StringFieldUpdateOperationsInput | string
+    decidedBy?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    decidedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ContractCreateInput = {
@@ -34179,6 +41389,142 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CategoryCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    isPopular?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    skills?: SkillCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryUncheckedCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    isPopular?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    skills?: SkillUncheckedCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isPopular?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skills?: SkillUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isPopular?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skills?: SkillUncheckedUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryCreateManyInput = {
+    id?: string
+    name: string
+    slug: string
+    isPopular?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CategoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isPopular?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CategoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isPopular?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    isTrending?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    category: CategoryCreateNestedOneWithoutSkillsInput
+  }
+
+  export type SkillUncheckedCreateInput = {
+    id?: string
+    name: string
+    slug: string
+    categoryId: string
+    isTrending?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isTrending?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: CategoryUpdateOneRequiredWithoutSkillsNestedInput
+  }
+
+  export type SkillUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    isTrending?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillCreateManyInput = {
+    id?: string
+    name: string
+    slug: string
+    categoryId: string
+    isTrending?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isTrending?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    isTrending?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -35138,9 +42484,39 @@ export namespace Prisma {
     not?: NestedEnumProposalStatusFilter<$PrismaModel> | $Enums.ProposalStatus
   }
 
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type JobScalarRelationFilter = {
     is?: JobWhereInput
     isNot?: JobWhereInput
+  }
+
+  export type ProposalAttachmentListRelationFilter = {
+    every?: ProposalAttachmentWhereInput
+    some?: ProposalAttachmentWhereInput
+    none?: ProposalAttachmentWhereInput
+  }
+
+  export type ProposalTimelineEventListRelationFilter = {
+    every?: ProposalTimelineEventWhereInput
+    some?: ProposalTimelineEventWhereInput
+    none?: ProposalTimelineEventWhereInput
+  }
+
+  export type ProposalDecisionNullableScalarRelationFilter = {
+    is?: ProposalDecisionWhereInput | null
+    isNot?: ProposalDecisionWhereInput | null
+  }
+
+  export type ProposalAttachmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProposalTimelineEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ProposalOrderByRelevanceInput = {
@@ -35161,13 +42537,37 @@ export namespace Prisma {
     clientId?: SortOrder
     amount?: SortOrder
     message?: SortOrder
+    estimatedDuration?: SortOrder
     status?: SortOrder
+    version?: SortOrder
+    jobSnapshotTitle?: SortOrder
+    jobSnapshotBudget?: SortOrder
+    jobSnapshotType?: SortOrder
+    jobSnapshotCategory?: SortOrder
+    jobSnapshotLocation?: SortOrder
+    jobSnapshotCurrency?: SortOrder
+    artisanSnapshotName?: SortOrder
+    artisanSnapshotAvatarUrl?: SortOrder
+    artisanSnapshotVerificationStatus?: SortOrder
+    artisanSnapshotRating?: SortOrder
+    artisanSnapshotCompletedJobs?: SortOrder
+    artisanSnapshotResponseRate?: SortOrder
+    shortlistedAt?: SortOrder
+    shortlistedBy?: SortOrder
+    shortlistPriority?: SortOrder
+    expiresAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ProposalAvgOrderByAggregateInput = {
     amount?: SortOrder
+    version?: SortOrder
+    jobSnapshotBudget?: SortOrder
+    artisanSnapshotRating?: SortOrder
+    artisanSnapshotCompletedJobs?: SortOrder
+    artisanSnapshotResponseRate?: SortOrder
+    shortlistPriority?: SortOrder
   }
 
   export type ProposalMaxOrderByAggregateInput = {
@@ -35177,7 +42577,25 @@ export namespace Prisma {
     clientId?: SortOrder
     amount?: SortOrder
     message?: SortOrder
+    estimatedDuration?: SortOrder
     status?: SortOrder
+    version?: SortOrder
+    jobSnapshotTitle?: SortOrder
+    jobSnapshotBudget?: SortOrder
+    jobSnapshotType?: SortOrder
+    jobSnapshotCategory?: SortOrder
+    jobSnapshotLocation?: SortOrder
+    jobSnapshotCurrency?: SortOrder
+    artisanSnapshotName?: SortOrder
+    artisanSnapshotAvatarUrl?: SortOrder
+    artisanSnapshotVerificationStatus?: SortOrder
+    artisanSnapshotRating?: SortOrder
+    artisanSnapshotCompletedJobs?: SortOrder
+    artisanSnapshotResponseRate?: SortOrder
+    shortlistedAt?: SortOrder
+    shortlistedBy?: SortOrder
+    shortlistPriority?: SortOrder
+    expiresAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -35189,13 +42607,37 @@ export namespace Prisma {
     clientId?: SortOrder
     amount?: SortOrder
     message?: SortOrder
+    estimatedDuration?: SortOrder
     status?: SortOrder
+    version?: SortOrder
+    jobSnapshotTitle?: SortOrder
+    jobSnapshotBudget?: SortOrder
+    jobSnapshotType?: SortOrder
+    jobSnapshotCategory?: SortOrder
+    jobSnapshotLocation?: SortOrder
+    jobSnapshotCurrency?: SortOrder
+    artisanSnapshotName?: SortOrder
+    artisanSnapshotAvatarUrl?: SortOrder
+    artisanSnapshotVerificationStatus?: SortOrder
+    artisanSnapshotRating?: SortOrder
+    artisanSnapshotCompletedJobs?: SortOrder
+    artisanSnapshotResponseRate?: SortOrder
+    shortlistedAt?: SortOrder
+    shortlistedBy?: SortOrder
+    shortlistPriority?: SortOrder
+    expiresAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ProposalSumOrderByAggregateInput = {
     amount?: SortOrder
+    version?: SortOrder
+    jobSnapshotBudget?: SortOrder
+    artisanSnapshotRating?: SortOrder
+    artisanSnapshotCompletedJobs?: SortOrder
+    artisanSnapshotResponseRate?: SortOrder
+    shortlistPriority?: SortOrder
   }
 
   export type EnumProposalStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -35208,16 +42650,134 @@ export namespace Prisma {
     _max?: NestedEnumProposalStatusFilter<$PrismaModel>
   }
 
-  export type EnumContractStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumContractStatusFilter<$PrismaModel> | $Enums.ContractStatus
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type ProposalScalarRelationFilter = {
     is?: ProposalWhereInput
     isNot?: ProposalWhereInput
+  }
+
+  export type ProposalAttachmentOrderByRelevanceInput = {
+    fields: ProposalAttachmentOrderByRelevanceFieldEnum | ProposalAttachmentOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ProposalAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    uploadedAt?: SortOrder
+  }
+
+  export type ProposalAttachmentAvgOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
+  export type ProposalAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    uploadedAt?: SortOrder
+  }
+
+  export type ProposalAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileType?: SortOrder
+    fileSize?: SortOrder
+    uploadedAt?: SortOrder
+  }
+
+  export type ProposalAttachmentSumOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
+  export type ProposalTimelineEventOrderByRelevanceInput = {
+    fields: ProposalTimelineEventOrderByRelevanceFieldEnum | ProposalTimelineEventOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ProposalTimelineEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    status?: SortOrder
+    actorId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProposalTimelineEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    status?: SortOrder
+    actorId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProposalTimelineEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    status?: SortOrder
+    actorId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProposalDecisionOrderByRelevanceInput = {
+    fields: ProposalDecisionOrderByRelevanceFieldEnum | ProposalDecisionOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ProposalDecisionCountOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    decision?: SortOrder
+    decidedBy?: SortOrder
+    reason?: SortOrder
+    decidedAt?: SortOrder
+  }
+
+  export type ProposalDecisionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    decision?: SortOrder
+    decidedBy?: SortOrder
+    reason?: SortOrder
+    decidedAt?: SortOrder
+  }
+
+  export type ProposalDecisionMinOrderByAggregateInput = {
+    id?: SortOrder
+    proposalId?: SortOrder
+    decision?: SortOrder
+    decidedBy?: SortOrder
+    reason?: SortOrder
+    decidedAt?: SortOrder
+  }
+
+  export type EnumContractStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ContractStatus | EnumContractStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ContractStatus[] | ListEnumContractStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumContractStatusFilter<$PrismaModel> | $Enums.ContractStatus
   }
 
   export type ConversationNullableScalarRelationFilter = {
@@ -36161,6 +43721,95 @@ export namespace Prisma {
     message?: SortOrder
     trace?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type SkillListRelationFilter = {
+    every?: SkillWhereInput
+    some?: SkillWhereInput
+    none?: SkillWhereInput
+  }
+
+  export type SkillOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CategoryOrderByRelevanceInput = {
+    fields: CategoryOrderByRelevanceFieldEnum | CategoryOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type CategoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isPopular?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CategoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isPopular?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CategoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    isPopular?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CategoryScalarRelationFilter = {
+    is?: CategoryWhereInput
+    isNot?: CategoryWhereInput
+  }
+
+  export type SkillOrderByRelevanceInput = {
+    fields: SkillOrderByRelevanceFieldEnum | SkillOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type SkillNameCategoryIdCompoundUniqueInput = {
+    name: string
+    categoryId: string
+  }
+
+  export type SkillCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    categoryId?: SortOrder
+    isTrending?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    categoryId?: SortOrder
+    isTrending?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SkillMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    categoryId?: SortOrder
+    isTrending?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ArtisanProfileCreateNestedOneWithoutUserInput = {
@@ -37147,14 +44796,58 @@ export namespace Prisma {
     connect?: ContractWhereUniqueInput
   }
 
+  export type ProposalAttachmentCreateNestedManyWithoutProposalInput = {
+    create?: XOR<ProposalAttachmentCreateWithoutProposalInput, ProposalAttachmentUncheckedCreateWithoutProposalInput> | ProposalAttachmentCreateWithoutProposalInput[] | ProposalAttachmentUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalAttachmentCreateOrConnectWithoutProposalInput | ProposalAttachmentCreateOrConnectWithoutProposalInput[]
+    createMany?: ProposalAttachmentCreateManyProposalInputEnvelope
+    connect?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+  }
+
+  export type ProposalTimelineEventCreateNestedManyWithoutProposalInput = {
+    create?: XOR<ProposalTimelineEventCreateWithoutProposalInput, ProposalTimelineEventUncheckedCreateWithoutProposalInput> | ProposalTimelineEventCreateWithoutProposalInput[] | ProposalTimelineEventUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalTimelineEventCreateOrConnectWithoutProposalInput | ProposalTimelineEventCreateOrConnectWithoutProposalInput[]
+    createMany?: ProposalTimelineEventCreateManyProposalInputEnvelope
+    connect?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+  }
+
+  export type ProposalDecisionCreateNestedOneWithoutProposalInput = {
+    create?: XOR<ProposalDecisionCreateWithoutProposalInput, ProposalDecisionUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ProposalDecisionCreateOrConnectWithoutProposalInput
+    connect?: ProposalDecisionWhereUniqueInput
+  }
+
   export type ContractUncheckedCreateNestedOneWithoutProposalInput = {
     create?: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
     connectOrCreate?: ContractCreateOrConnectWithoutProposalInput
     connect?: ContractWhereUniqueInput
   }
 
+  export type ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput = {
+    create?: XOR<ProposalAttachmentCreateWithoutProposalInput, ProposalAttachmentUncheckedCreateWithoutProposalInput> | ProposalAttachmentCreateWithoutProposalInput[] | ProposalAttachmentUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalAttachmentCreateOrConnectWithoutProposalInput | ProposalAttachmentCreateOrConnectWithoutProposalInput[]
+    createMany?: ProposalAttachmentCreateManyProposalInputEnvelope
+    connect?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+  }
+
+  export type ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput = {
+    create?: XOR<ProposalTimelineEventCreateWithoutProposalInput, ProposalTimelineEventUncheckedCreateWithoutProposalInput> | ProposalTimelineEventCreateWithoutProposalInput[] | ProposalTimelineEventUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalTimelineEventCreateOrConnectWithoutProposalInput | ProposalTimelineEventCreateOrConnectWithoutProposalInput[]
+    createMany?: ProposalTimelineEventCreateManyProposalInputEnvelope
+    connect?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+  }
+
+  export type ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput = {
+    create?: XOR<ProposalDecisionCreateWithoutProposalInput, ProposalDecisionUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ProposalDecisionCreateOrConnectWithoutProposalInput
+    connect?: ProposalDecisionWhereUniqueInput
+  }
+
   export type EnumProposalStatusFieldUpdateOperationsInput = {
     set?: $Enums.ProposalStatus
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
   }
 
   export type JobUpdateOneRequiredWithoutProposalsNestedInput = {
@@ -37191,6 +44884,44 @@ export namespace Prisma {
     update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutProposalInput, ContractUpdateWithoutProposalInput>, ContractUncheckedUpdateWithoutProposalInput>
   }
 
+  export type ProposalAttachmentUpdateManyWithoutProposalNestedInput = {
+    create?: XOR<ProposalAttachmentCreateWithoutProposalInput, ProposalAttachmentUncheckedCreateWithoutProposalInput> | ProposalAttachmentCreateWithoutProposalInput[] | ProposalAttachmentUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalAttachmentCreateOrConnectWithoutProposalInput | ProposalAttachmentCreateOrConnectWithoutProposalInput[]
+    upsert?: ProposalAttachmentUpsertWithWhereUniqueWithoutProposalInput | ProposalAttachmentUpsertWithWhereUniqueWithoutProposalInput[]
+    createMany?: ProposalAttachmentCreateManyProposalInputEnvelope
+    set?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    disconnect?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    delete?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    connect?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    update?: ProposalAttachmentUpdateWithWhereUniqueWithoutProposalInput | ProposalAttachmentUpdateWithWhereUniqueWithoutProposalInput[]
+    updateMany?: ProposalAttachmentUpdateManyWithWhereWithoutProposalInput | ProposalAttachmentUpdateManyWithWhereWithoutProposalInput[]
+    deleteMany?: ProposalAttachmentScalarWhereInput | ProposalAttachmentScalarWhereInput[]
+  }
+
+  export type ProposalTimelineEventUpdateManyWithoutProposalNestedInput = {
+    create?: XOR<ProposalTimelineEventCreateWithoutProposalInput, ProposalTimelineEventUncheckedCreateWithoutProposalInput> | ProposalTimelineEventCreateWithoutProposalInput[] | ProposalTimelineEventUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalTimelineEventCreateOrConnectWithoutProposalInput | ProposalTimelineEventCreateOrConnectWithoutProposalInput[]
+    upsert?: ProposalTimelineEventUpsertWithWhereUniqueWithoutProposalInput | ProposalTimelineEventUpsertWithWhereUniqueWithoutProposalInput[]
+    createMany?: ProposalTimelineEventCreateManyProposalInputEnvelope
+    set?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    disconnect?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    delete?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    connect?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    update?: ProposalTimelineEventUpdateWithWhereUniqueWithoutProposalInput | ProposalTimelineEventUpdateWithWhereUniqueWithoutProposalInput[]
+    updateMany?: ProposalTimelineEventUpdateManyWithWhereWithoutProposalInput | ProposalTimelineEventUpdateManyWithWhereWithoutProposalInput[]
+    deleteMany?: ProposalTimelineEventScalarWhereInput | ProposalTimelineEventScalarWhereInput[]
+  }
+
+  export type ProposalDecisionUpdateOneWithoutProposalNestedInput = {
+    create?: XOR<ProposalDecisionCreateWithoutProposalInput, ProposalDecisionUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ProposalDecisionCreateOrConnectWithoutProposalInput
+    upsert?: ProposalDecisionUpsertWithoutProposalInput
+    disconnect?: ProposalDecisionWhereInput | boolean
+    delete?: ProposalDecisionWhereInput | boolean
+    connect?: ProposalDecisionWhereUniqueInput
+    update?: XOR<XOR<ProposalDecisionUpdateToOneWithWhereWithoutProposalInput, ProposalDecisionUpdateWithoutProposalInput>, ProposalDecisionUncheckedUpdateWithoutProposalInput>
+  }
+
   export type ContractUncheckedUpdateOneWithoutProposalNestedInput = {
     create?: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
     connectOrCreate?: ContractCreateOrConnectWithoutProposalInput
@@ -37199,6 +44930,86 @@ export namespace Prisma {
     delete?: ContractWhereInput | boolean
     connect?: ContractWhereUniqueInput
     update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutProposalInput, ContractUpdateWithoutProposalInput>, ContractUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput = {
+    create?: XOR<ProposalAttachmentCreateWithoutProposalInput, ProposalAttachmentUncheckedCreateWithoutProposalInput> | ProposalAttachmentCreateWithoutProposalInput[] | ProposalAttachmentUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalAttachmentCreateOrConnectWithoutProposalInput | ProposalAttachmentCreateOrConnectWithoutProposalInput[]
+    upsert?: ProposalAttachmentUpsertWithWhereUniqueWithoutProposalInput | ProposalAttachmentUpsertWithWhereUniqueWithoutProposalInput[]
+    createMany?: ProposalAttachmentCreateManyProposalInputEnvelope
+    set?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    disconnect?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    delete?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    connect?: ProposalAttachmentWhereUniqueInput | ProposalAttachmentWhereUniqueInput[]
+    update?: ProposalAttachmentUpdateWithWhereUniqueWithoutProposalInput | ProposalAttachmentUpdateWithWhereUniqueWithoutProposalInput[]
+    updateMany?: ProposalAttachmentUpdateManyWithWhereWithoutProposalInput | ProposalAttachmentUpdateManyWithWhereWithoutProposalInput[]
+    deleteMany?: ProposalAttachmentScalarWhereInput | ProposalAttachmentScalarWhereInput[]
+  }
+
+  export type ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput = {
+    create?: XOR<ProposalTimelineEventCreateWithoutProposalInput, ProposalTimelineEventUncheckedCreateWithoutProposalInput> | ProposalTimelineEventCreateWithoutProposalInput[] | ProposalTimelineEventUncheckedCreateWithoutProposalInput[]
+    connectOrCreate?: ProposalTimelineEventCreateOrConnectWithoutProposalInput | ProposalTimelineEventCreateOrConnectWithoutProposalInput[]
+    upsert?: ProposalTimelineEventUpsertWithWhereUniqueWithoutProposalInput | ProposalTimelineEventUpsertWithWhereUniqueWithoutProposalInput[]
+    createMany?: ProposalTimelineEventCreateManyProposalInputEnvelope
+    set?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    disconnect?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    delete?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    connect?: ProposalTimelineEventWhereUniqueInput | ProposalTimelineEventWhereUniqueInput[]
+    update?: ProposalTimelineEventUpdateWithWhereUniqueWithoutProposalInput | ProposalTimelineEventUpdateWithWhereUniqueWithoutProposalInput[]
+    updateMany?: ProposalTimelineEventUpdateManyWithWhereWithoutProposalInput | ProposalTimelineEventUpdateManyWithWhereWithoutProposalInput[]
+    deleteMany?: ProposalTimelineEventScalarWhereInput | ProposalTimelineEventScalarWhereInput[]
+  }
+
+  export type ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput = {
+    create?: XOR<ProposalDecisionCreateWithoutProposalInput, ProposalDecisionUncheckedCreateWithoutProposalInput>
+    connectOrCreate?: ProposalDecisionCreateOrConnectWithoutProposalInput
+    upsert?: ProposalDecisionUpsertWithoutProposalInput
+    disconnect?: ProposalDecisionWhereInput | boolean
+    delete?: ProposalDecisionWhereInput | boolean
+    connect?: ProposalDecisionWhereUniqueInput
+    update?: XOR<XOR<ProposalDecisionUpdateToOneWithWhereWithoutProposalInput, ProposalDecisionUpdateWithoutProposalInput>, ProposalDecisionUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type ProposalCreateNestedOneWithoutAttachmentsInput = {
+    create?: XOR<ProposalCreateWithoutAttachmentsInput, ProposalUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutAttachmentsInput
+    connect?: ProposalWhereUniqueInput
+  }
+
+  export type ProposalUpdateOneRequiredWithoutAttachmentsNestedInput = {
+    create?: XOR<ProposalCreateWithoutAttachmentsInput, ProposalUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutAttachmentsInput
+    upsert?: ProposalUpsertWithoutAttachmentsInput
+    connect?: ProposalWhereUniqueInput
+    update?: XOR<XOR<ProposalUpdateToOneWithWhereWithoutAttachmentsInput, ProposalUpdateWithoutAttachmentsInput>, ProposalUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type ProposalCreateNestedOneWithoutTimelineEventsInput = {
+    create?: XOR<ProposalCreateWithoutTimelineEventsInput, ProposalUncheckedCreateWithoutTimelineEventsInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutTimelineEventsInput
+    connect?: ProposalWhereUniqueInput
+  }
+
+  export type ProposalUpdateOneRequiredWithoutTimelineEventsNestedInput = {
+    create?: XOR<ProposalCreateWithoutTimelineEventsInput, ProposalUncheckedCreateWithoutTimelineEventsInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutTimelineEventsInput
+    upsert?: ProposalUpsertWithoutTimelineEventsInput
+    connect?: ProposalWhereUniqueInput
+    update?: XOR<XOR<ProposalUpdateToOneWithWhereWithoutTimelineEventsInput, ProposalUpdateWithoutTimelineEventsInput>, ProposalUncheckedUpdateWithoutTimelineEventsInput>
+  }
+
+  export type ProposalCreateNestedOneWithoutDecisionInput = {
+    create?: XOR<ProposalCreateWithoutDecisionInput, ProposalUncheckedCreateWithoutDecisionInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutDecisionInput
+    connect?: ProposalWhereUniqueInput
+  }
+
+  export type ProposalUpdateOneRequiredWithoutDecisionNestedInput = {
+    create?: XOR<ProposalCreateWithoutDecisionInput, ProposalUncheckedCreateWithoutDecisionInput>
+    connectOrCreate?: ProposalCreateOrConnectWithoutDecisionInput
+    upsert?: ProposalUpsertWithoutDecisionInput
+    connect?: ProposalWhereUniqueInput
+    update?: XOR<XOR<ProposalUpdateToOneWithWhereWithoutDecisionInput, ProposalUpdateWithoutDecisionInput>, ProposalUncheckedUpdateWithoutDecisionInput>
   }
 
   export type JobCreateNestedOneWithoutContractInput = {
@@ -37905,6 +45716,62 @@ export namespace Prisma {
     update?: XOR<XOR<PaymentUpdateToOneWithWhereWithoutLedgerEntriesInput, PaymentUpdateWithoutLedgerEntriesInput>, PaymentUncheckedUpdateWithoutLedgerEntriesInput>
   }
 
+  export type SkillCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<SkillCreateWithoutCategoryInput, SkillUncheckedCreateWithoutCategoryInput> | SkillCreateWithoutCategoryInput[] | SkillUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutCategoryInput | SkillCreateOrConnectWithoutCategoryInput[]
+    createMany?: SkillCreateManyCategoryInputEnvelope
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+  }
+
+  export type SkillUncheckedCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<SkillCreateWithoutCategoryInput, SkillUncheckedCreateWithoutCategoryInput> | SkillCreateWithoutCategoryInput[] | SkillUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutCategoryInput | SkillCreateOrConnectWithoutCategoryInput[]
+    createMany?: SkillCreateManyCategoryInputEnvelope
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+  }
+
+  export type SkillUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<SkillCreateWithoutCategoryInput, SkillUncheckedCreateWithoutCategoryInput> | SkillCreateWithoutCategoryInput[] | SkillUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutCategoryInput | SkillCreateOrConnectWithoutCategoryInput[]
+    upsert?: SkillUpsertWithWhereUniqueWithoutCategoryInput | SkillUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: SkillCreateManyCategoryInputEnvelope
+    set?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    disconnect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    delete?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    update?: SkillUpdateWithWhereUniqueWithoutCategoryInput | SkillUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: SkillUpdateManyWithWhereWithoutCategoryInput | SkillUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: SkillScalarWhereInput | SkillScalarWhereInput[]
+  }
+
+  export type SkillUncheckedUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<SkillCreateWithoutCategoryInput, SkillUncheckedCreateWithoutCategoryInput> | SkillCreateWithoutCategoryInput[] | SkillUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutCategoryInput | SkillCreateOrConnectWithoutCategoryInput[]
+    upsert?: SkillUpsertWithWhereUniqueWithoutCategoryInput | SkillUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: SkillCreateManyCategoryInputEnvelope
+    set?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    disconnect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    delete?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    update?: SkillUpdateWithWhereUniqueWithoutCategoryInput | SkillUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: SkillUpdateManyWithWhereWithoutCategoryInput | SkillUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: SkillScalarWhereInput | SkillScalarWhereInput[]
+  }
+
+  export type CategoryCreateNestedOneWithoutSkillsInput = {
+    create?: XOR<CategoryCreateWithoutSkillsInput, CategoryUncheckedCreateWithoutSkillsInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutSkillsInput
+    connect?: CategoryWhereUniqueInput
+  }
+
+  export type CategoryUpdateOneRequiredWithoutSkillsNestedInput = {
+    create?: XOR<CategoryCreateWithoutSkillsInput, CategoryUncheckedCreateWithoutSkillsInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutSkillsInput
+    upsert?: CategoryUpsertWithoutSkillsInput
+    connect?: CategoryWhereUniqueInput
+    update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutSkillsInput, CategoryUpdateWithoutSkillsInput>, CategoryUncheckedUpdateWithoutSkillsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -38315,6 +46182,11 @@ export namespace Prisma {
     not?: NestedEnumProposalStatusFilter<$PrismaModel> | $Enums.ProposalStatus
   }
 
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type NestedEnumProposalStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ProposalStatus | EnumProposalStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ProposalStatus[] | ListEnumProposalStatusFieldRefInput<$PrismaModel>
@@ -38323,6 +46195,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumProposalStatusFilter<$PrismaModel>
     _max?: NestedEnumProposalStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumContractStatusFilter<$PrismaModel = never> = {
@@ -38532,12 +46412,33 @@ export namespace Prisma {
     id?: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutProposalsInput
     client: UserCreateNestedOneWithoutReceivedProposalsInput
     contract?: ContractCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalUncheckedCreateWithoutArtisanInput = {
@@ -38546,10 +46447,31 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalCreateOrConnectWithoutArtisanInput = {
@@ -38566,12 +46488,33 @@ export namespace Prisma {
     id?: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutProposalsInput
     artisan: UserCreateNestedOneWithoutSentProposalsInput
     contract?: ContractCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalUncheckedCreateWithoutClientInput = {
@@ -38580,10 +46523,31 @@ export namespace Prisma {
     artisanId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalCreateOrConnectWithoutClientInput = {
@@ -39338,7 +47302,25 @@ export namespace Prisma {
     clientId?: StringFilter<"Proposal"> | string
     amount?: IntFilter<"Proposal"> | number
     message?: StringFilter<"Proposal"> | string
+    estimatedDuration?: StringNullableFilter<"Proposal"> | string | null
     status?: EnumProposalStatusFilter<"Proposal"> | $Enums.ProposalStatus
+    version?: IntFilter<"Proposal"> | number
+    jobSnapshotTitle?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotBudget?: IntNullableFilter<"Proposal"> | number | null
+    jobSnapshotType?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotCategory?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotLocation?: StringNullableFilter<"Proposal"> | string | null
+    jobSnapshotCurrency?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotName?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotAvatarUrl?: StringNullableFilter<"Proposal"> | string | null
+    artisanSnapshotVerificationStatus?: BoolNullableFilter<"Proposal"> | boolean | null
+    artisanSnapshotRating?: FloatNullableFilter<"Proposal"> | number | null
+    artisanSnapshotCompletedJobs?: IntNullableFilter<"Proposal"> | number | null
+    artisanSnapshotResponseRate?: FloatNullableFilter<"Proposal"> | number | null
+    shortlistedAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
+    shortlistedBy?: StringNullableFilter<"Proposal"> | string | null
+    shortlistPriority?: IntNullableFilter<"Proposal"> | number | null
+    expiresAt?: DateTimeNullableFilter<"Proposal"> | Date | string | null
     createdAt?: DateTimeFilter<"Proposal"> | Date | string
     updatedAt?: DateTimeFilter<"Proposal"> | Date | string
   }
@@ -40660,12 +48642,33 @@ export namespace Prisma {
     id?: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     artisan: UserCreateNestedOneWithoutSentProposalsInput
     client: UserCreateNestedOneWithoutReceivedProposalsInput
     contract?: ContractCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalUncheckedCreateWithoutJobInput = {
@@ -40674,10 +48677,31 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalCreateOrConnectWithoutJobInput = {
@@ -41617,6 +49641,81 @@ export namespace Prisma {
     create: XOR<ContractCreateWithoutProposalInput, ContractUncheckedCreateWithoutProposalInput>
   }
 
+  export type ProposalAttachmentCreateWithoutProposalInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+    uploadedAt?: Date | string
+  }
+
+  export type ProposalAttachmentUncheckedCreateWithoutProposalInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+    uploadedAt?: Date | string
+  }
+
+  export type ProposalAttachmentCreateOrConnectWithoutProposalInput = {
+    where: ProposalAttachmentWhereUniqueInput
+    create: XOR<ProposalAttachmentCreateWithoutProposalInput, ProposalAttachmentUncheckedCreateWithoutProposalInput>
+  }
+
+  export type ProposalAttachmentCreateManyProposalInputEnvelope = {
+    data: ProposalAttachmentCreateManyProposalInput | ProposalAttachmentCreateManyProposalInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProposalTimelineEventCreateWithoutProposalInput = {
+    id?: string
+    status: $Enums.ProposalStatus
+    actorId: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProposalTimelineEventUncheckedCreateWithoutProposalInput = {
+    id?: string
+    status: $Enums.ProposalStatus
+    actorId: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProposalTimelineEventCreateOrConnectWithoutProposalInput = {
+    where: ProposalTimelineEventWhereUniqueInput
+    create: XOR<ProposalTimelineEventCreateWithoutProposalInput, ProposalTimelineEventUncheckedCreateWithoutProposalInput>
+  }
+
+  export type ProposalTimelineEventCreateManyProposalInputEnvelope = {
+    data: ProposalTimelineEventCreateManyProposalInput | ProposalTimelineEventCreateManyProposalInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProposalDecisionCreateWithoutProposalInput = {
+    id?: string
+    decision: string
+    decidedBy: string
+    reason?: string | null
+    decidedAt?: Date | string
+  }
+
+  export type ProposalDecisionUncheckedCreateWithoutProposalInput = {
+    id?: string
+    decision: string
+    decidedBy: string
+    reason?: string | null
+    decidedAt?: Date | string
+  }
+
+  export type ProposalDecisionCreateOrConnectWithoutProposalInput = {
+    where: ProposalDecisionWhereUniqueInput
+    create: XOR<ProposalDecisionCreateWithoutProposalInput, ProposalDecisionUncheckedCreateWithoutProposalInput>
+  }
+
   export type JobUpsertWithoutProposalsInput = {
     update: XOR<JobUpdateWithoutProposalsInput, JobUncheckedUpdateWithoutProposalsInput>
     create: XOR<JobCreateWithoutProposalsInput, JobUncheckedCreateWithoutProposalsInput>
@@ -41941,6 +50040,534 @@ export namespace Prisma {
     disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
   }
 
+  export type ProposalAttachmentUpsertWithWhereUniqueWithoutProposalInput = {
+    where: ProposalAttachmentWhereUniqueInput
+    update: XOR<ProposalAttachmentUpdateWithoutProposalInput, ProposalAttachmentUncheckedUpdateWithoutProposalInput>
+    create: XOR<ProposalAttachmentCreateWithoutProposalInput, ProposalAttachmentUncheckedCreateWithoutProposalInput>
+  }
+
+  export type ProposalAttachmentUpdateWithWhereUniqueWithoutProposalInput = {
+    where: ProposalAttachmentWhereUniqueInput
+    data: XOR<ProposalAttachmentUpdateWithoutProposalInput, ProposalAttachmentUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type ProposalAttachmentUpdateManyWithWhereWithoutProposalInput = {
+    where: ProposalAttachmentScalarWhereInput
+    data: XOR<ProposalAttachmentUpdateManyMutationInput, ProposalAttachmentUncheckedUpdateManyWithoutProposalInput>
+  }
+
+  export type ProposalAttachmentScalarWhereInput = {
+    AND?: ProposalAttachmentScalarWhereInput | ProposalAttachmentScalarWhereInput[]
+    OR?: ProposalAttachmentScalarWhereInput[]
+    NOT?: ProposalAttachmentScalarWhereInput | ProposalAttachmentScalarWhereInput[]
+    id?: StringFilter<"ProposalAttachment"> | string
+    proposalId?: StringFilter<"ProposalAttachment"> | string
+    fileUrl?: StringFilter<"ProposalAttachment"> | string
+    fileName?: StringFilter<"ProposalAttachment"> | string
+    fileType?: StringFilter<"ProposalAttachment"> | string
+    fileSize?: IntFilter<"ProposalAttachment"> | number
+    uploadedAt?: DateTimeFilter<"ProposalAttachment"> | Date | string
+  }
+
+  export type ProposalTimelineEventUpsertWithWhereUniqueWithoutProposalInput = {
+    where: ProposalTimelineEventWhereUniqueInput
+    update: XOR<ProposalTimelineEventUpdateWithoutProposalInput, ProposalTimelineEventUncheckedUpdateWithoutProposalInput>
+    create: XOR<ProposalTimelineEventCreateWithoutProposalInput, ProposalTimelineEventUncheckedCreateWithoutProposalInput>
+  }
+
+  export type ProposalTimelineEventUpdateWithWhereUniqueWithoutProposalInput = {
+    where: ProposalTimelineEventWhereUniqueInput
+    data: XOR<ProposalTimelineEventUpdateWithoutProposalInput, ProposalTimelineEventUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type ProposalTimelineEventUpdateManyWithWhereWithoutProposalInput = {
+    where: ProposalTimelineEventScalarWhereInput
+    data: XOR<ProposalTimelineEventUpdateManyMutationInput, ProposalTimelineEventUncheckedUpdateManyWithoutProposalInput>
+  }
+
+  export type ProposalTimelineEventScalarWhereInput = {
+    AND?: ProposalTimelineEventScalarWhereInput | ProposalTimelineEventScalarWhereInput[]
+    OR?: ProposalTimelineEventScalarWhereInput[]
+    NOT?: ProposalTimelineEventScalarWhereInput | ProposalTimelineEventScalarWhereInput[]
+    id?: StringFilter<"ProposalTimelineEvent"> | string
+    proposalId?: StringFilter<"ProposalTimelineEvent"> | string
+    status?: EnumProposalStatusFilter<"ProposalTimelineEvent"> | $Enums.ProposalStatus
+    actorId?: StringFilter<"ProposalTimelineEvent"> | string
+    notes?: StringNullableFilter<"ProposalTimelineEvent"> | string | null
+    createdAt?: DateTimeFilter<"ProposalTimelineEvent"> | Date | string
+  }
+
+  export type ProposalDecisionUpsertWithoutProposalInput = {
+    update: XOR<ProposalDecisionUpdateWithoutProposalInput, ProposalDecisionUncheckedUpdateWithoutProposalInput>
+    create: XOR<ProposalDecisionCreateWithoutProposalInput, ProposalDecisionUncheckedCreateWithoutProposalInput>
+    where?: ProposalDecisionWhereInput
+  }
+
+  export type ProposalDecisionUpdateToOneWithWhereWithoutProposalInput = {
+    where?: ProposalDecisionWhereInput
+    data: XOR<ProposalDecisionUpdateWithoutProposalInput, ProposalDecisionUncheckedUpdateWithoutProposalInput>
+  }
+
+  export type ProposalDecisionUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: StringFieldUpdateOperationsInput | string
+    decidedBy?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    decidedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalDecisionUncheckedUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: StringFieldUpdateOperationsInput | string
+    decidedBy?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    decidedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalCreateWithoutAttachmentsInput = {
+    id?: string
+    amount: number
+    message: string
+    estimatedDuration?: string | null
+    status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutProposalsInput
+    artisan: UserCreateNestedOneWithoutSentProposalsInput
+    client: UserCreateNestedOneWithoutReceivedProposalsInput
+    contract?: ContractCreateNestedOneWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalUncheckedCreateWithoutAttachmentsInput = {
+    id?: string
+    jobId: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    estimatedDuration?: string | null
+    status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalCreateOrConnectWithoutAttachmentsInput = {
+    where: ProposalWhereUniqueInput
+    create: XOR<ProposalCreateWithoutAttachmentsInput, ProposalUncheckedCreateWithoutAttachmentsInput>
+  }
+
+  export type ProposalUpsertWithoutAttachmentsInput = {
+    update: XOR<ProposalUpdateWithoutAttachmentsInput, ProposalUncheckedUpdateWithoutAttachmentsInput>
+    create: XOR<ProposalCreateWithoutAttachmentsInput, ProposalUncheckedCreateWithoutAttachmentsInput>
+    where?: ProposalWhereInput
+  }
+
+  export type ProposalUpdateToOneWithWhereWithoutAttachmentsInput = {
+    where?: ProposalWhereInput
+    data: XOR<ProposalUpdateWithoutAttachmentsInput, ProposalUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type ProposalUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutProposalsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
+    client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+    contract?: ContractUpdateOneWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalCreateWithoutTimelineEventsInput = {
+    id?: string
+    amount: number
+    message: string
+    estimatedDuration?: string | null
+    status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutProposalsInput
+    artisan: UserCreateNestedOneWithoutSentProposalsInput
+    client: UserCreateNestedOneWithoutReceivedProposalsInput
+    contract?: ContractCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalUncheckedCreateWithoutTimelineEventsInput = {
+    id?: string
+    jobId: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    estimatedDuration?: string | null
+    status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput
+  }
+
+  export type ProposalCreateOrConnectWithoutTimelineEventsInput = {
+    where: ProposalWhereUniqueInput
+    create: XOR<ProposalCreateWithoutTimelineEventsInput, ProposalUncheckedCreateWithoutTimelineEventsInput>
+  }
+
+  export type ProposalUpsertWithoutTimelineEventsInput = {
+    update: XOR<ProposalUpdateWithoutTimelineEventsInput, ProposalUncheckedUpdateWithoutTimelineEventsInput>
+    create: XOR<ProposalCreateWithoutTimelineEventsInput, ProposalUncheckedCreateWithoutTimelineEventsInput>
+    where?: ProposalWhereInput
+  }
+
+  export type ProposalUpdateToOneWithWhereWithoutTimelineEventsInput = {
+    where?: ProposalWhereInput
+    data: XOR<ProposalUpdateWithoutTimelineEventsInput, ProposalUncheckedUpdateWithoutTimelineEventsInput>
+  }
+
+  export type ProposalUpdateWithoutTimelineEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutProposalsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
+    client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+    contract?: ContractUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateWithoutTimelineEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput
+  }
+
+  export type ProposalCreateWithoutDecisionInput = {
+    id?: string
+    amount: number
+    message: string
+    estimatedDuration?: string | null
+    status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutProposalsInput
+    artisan: UserCreateNestedOneWithoutSentProposalsInput
+    client: UserCreateNestedOneWithoutReceivedProposalsInput
+    contract?: ContractCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventCreateNestedManyWithoutProposalInput
+  }
+
+  export type ProposalUncheckedCreateWithoutDecisionInput = {
+    id?: string
+    jobId: string
+    artisanId: string
+    clientId: string
+    amount: number
+    message: string
+    estimatedDuration?: string | null
+    status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract?: ContractUncheckedCreateNestedOneWithoutProposalInput
+    attachments?: ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput
+  }
+
+  export type ProposalCreateOrConnectWithoutDecisionInput = {
+    where: ProposalWhereUniqueInput
+    create: XOR<ProposalCreateWithoutDecisionInput, ProposalUncheckedCreateWithoutDecisionInput>
+  }
+
+  export type ProposalUpsertWithoutDecisionInput = {
+    update: XOR<ProposalUpdateWithoutDecisionInput, ProposalUncheckedUpdateWithoutDecisionInput>
+    create: XOR<ProposalCreateWithoutDecisionInput, ProposalUncheckedCreateWithoutDecisionInput>
+    where?: ProposalWhereInput
+  }
+
+  export type ProposalUpdateToOneWithWhereWithoutDecisionInput = {
+    where?: ProposalWhereInput
+    data: XOR<ProposalUpdateWithoutDecisionInput, ProposalUncheckedUpdateWithoutDecisionInput>
+  }
+
+  export type ProposalUpdateWithoutDecisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutProposalsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
+    client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+    contract?: ContractUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUpdateManyWithoutProposalNestedInput
+  }
+
+  export type ProposalUncheckedUpdateWithoutDecisionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput
+  }
+
   export type JobCreateWithoutContractInput = {
     id?: string
     title: string
@@ -41996,12 +50623,33 @@ export namespace Prisma {
     id?: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutProposalsInput
     artisan: UserCreateNestedOneWithoutSentProposalsInput
     client: UserCreateNestedOneWithoutReceivedProposalsInput
+    attachments?: ProposalAttachmentCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalUncheckedCreateWithoutContractInput = {
@@ -42011,9 +50659,30 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    attachments?: ProposalAttachmentUncheckedCreateNestedManyWithoutProposalInput
+    timelineEvents?: ProposalTimelineEventUncheckedCreateNestedManyWithoutProposalInput
+    decision?: ProposalDecisionUncheckedCreateNestedOneWithoutProposalInput
   }
 
   export type ProposalCreateOrConnectWithoutContractInput = {
@@ -42489,12 +51158,33 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutProposalsNestedInput
     artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
     client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
+    attachments?: ProposalAttachmentUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateWithoutContractInput = {
@@ -42504,9 +51194,30 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attachments?: ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput
   }
 
   export type UserUpsertWithoutClientContractsInput = {
@@ -45267,6 +53978,115 @@ export namespace Prisma {
     refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type SkillCreateWithoutCategoryInput = {
+    id?: string
+    name: string
+    slug: string
+    isTrending?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillUncheckedCreateWithoutCategoryInput = {
+    id?: string
+    name: string
+    slug: string
+    isTrending?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillCreateOrConnectWithoutCategoryInput = {
+    where: SkillWhereUniqueInput
+    create: XOR<SkillCreateWithoutCategoryInput, SkillUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type SkillCreateManyCategoryInputEnvelope = {
+    data: SkillCreateManyCategoryInput | SkillCreateManyCategoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SkillUpsertWithWhereUniqueWithoutCategoryInput = {
+    where: SkillWhereUniqueInput
+    update: XOR<SkillUpdateWithoutCategoryInput, SkillUncheckedUpdateWithoutCategoryInput>
+    create: XOR<SkillCreateWithoutCategoryInput, SkillUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type SkillUpdateWithWhereUniqueWithoutCategoryInput = {
+    where: SkillWhereUniqueInput
+    data: XOR<SkillUpdateWithoutCategoryInput, SkillUncheckedUpdateWithoutCategoryInput>
+  }
+
+  export type SkillUpdateManyWithWhereWithoutCategoryInput = {
+    where: SkillScalarWhereInput
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyWithoutCategoryInput>
+  }
+
+  export type SkillScalarWhereInput = {
+    AND?: SkillScalarWhereInput | SkillScalarWhereInput[]
+    OR?: SkillScalarWhereInput[]
+    NOT?: SkillScalarWhereInput | SkillScalarWhereInput[]
+    id?: StringFilter<"Skill"> | string
+    name?: StringFilter<"Skill"> | string
+    slug?: StringFilter<"Skill"> | string
+    categoryId?: StringFilter<"Skill"> | string
+    isTrending?: BoolFilter<"Skill"> | boolean
+    createdAt?: DateTimeFilter<"Skill"> | Date | string
+    updatedAt?: DateTimeFilter<"Skill"> | Date | string
+  }
+
+  export type CategoryCreateWithoutSkillsInput = {
+    id?: string
+    name: string
+    slug: string
+    isPopular?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CategoryUncheckedCreateWithoutSkillsInput = {
+    id?: string
+    name: string
+    slug: string
+    isPopular?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CategoryCreateOrConnectWithoutSkillsInput = {
+    where: CategoryWhereUniqueInput
+    create: XOR<CategoryCreateWithoutSkillsInput, CategoryUncheckedCreateWithoutSkillsInput>
+  }
+
+  export type CategoryUpsertWithoutSkillsInput = {
+    update: XOR<CategoryUpdateWithoutSkillsInput, CategoryUncheckedUpdateWithoutSkillsInput>
+    create: XOR<CategoryCreateWithoutSkillsInput, CategoryUncheckedCreateWithoutSkillsInput>
+    where?: CategoryWhereInput
+  }
+
+  export type CategoryUpdateToOneWithWhereWithoutSkillsInput = {
+    where?: CategoryWhereInput
+    data: XOR<CategoryUpdateWithoutSkillsInput, CategoryUncheckedUpdateWithoutSkillsInput>
+  }
+
+  export type CategoryUpdateWithoutSkillsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isPopular?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CategoryUncheckedUpdateWithoutSkillsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isPopular?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type KycDocumentCreateManyUserInput = {
     id?: string
     documentType: $Enums.KycDocumentType
@@ -45285,7 +54105,25 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -45296,7 +54134,25 @@ export namespace Prisma {
     artisanId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -45573,12 +54429,33 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutProposalsNestedInput
     client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
     contract?: ContractUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateWithoutArtisanInput = {
@@ -45587,10 +54464,31 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateManyWithoutArtisanInput = {
@@ -45599,7 +54497,25 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -45608,12 +54524,33 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutProposalsNestedInput
     artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
     contract?: ContractUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateWithoutClientInput = {
@@ -45622,10 +54559,31 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateManyWithoutClientInput = {
@@ -45634,7 +54592,25 @@ export namespace Prisma {
     artisanId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46411,7 +55387,25 @@ export namespace Prisma {
     clientId: string
     amount: number
     message: string
+    estimatedDuration?: string | null
     status?: $Enums.ProposalStatus
+    version?: number
+    jobSnapshotTitle?: string | null
+    jobSnapshotBudget?: number | null
+    jobSnapshotType?: string | null
+    jobSnapshotCategory?: string | null
+    jobSnapshotLocation?: string | null
+    jobSnapshotCurrency?: string | null
+    artisanSnapshotName?: string | null
+    artisanSnapshotAvatarUrl?: string | null
+    artisanSnapshotVerificationStatus?: boolean | null
+    artisanSnapshotRating?: number | null
+    artisanSnapshotCompletedJobs?: number | null
+    artisanSnapshotResponseRate?: number | null
+    shortlistedAt?: Date | string | null
+    shortlistedBy?: string | null
+    shortlistPriority?: number | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -46420,12 +55414,33 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     artisan?: UserUpdateOneRequiredWithoutSentProposalsNestedInput
     client?: UserUpdateOneRequiredWithoutReceivedProposalsNestedInput
     contract?: ContractUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateWithoutJobInput = {
@@ -46434,10 +55449,31 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     contract?: ContractUncheckedUpdateOneWithoutProposalNestedInput
+    attachments?: ProposalAttachmentUncheckedUpdateManyWithoutProposalNestedInput
+    timelineEvents?: ProposalTimelineEventUncheckedUpdateManyWithoutProposalNestedInput
+    decision?: ProposalDecisionUncheckedUpdateOneWithoutProposalNestedInput
   }
 
   export type ProposalUncheckedUpdateManyWithoutJobInput = {
@@ -46446,9 +55482,95 @@ export namespace Prisma {
     clientId?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
     message?: StringFieldUpdateOperationsInput | string
+    estimatedDuration?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    version?: IntFieldUpdateOperationsInput | number
+    jobSnapshotTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotBudget?: NullableIntFieldUpdateOperationsInput | number | null
+    jobSnapshotType?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    jobSnapshotCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotName?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    artisanSnapshotVerificationStatus?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    artisanSnapshotRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    artisanSnapshotCompletedJobs?: NullableIntFieldUpdateOperationsInput | number | null
+    artisanSnapshotResponseRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    shortlistedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortlistedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    shortlistPriority?: NullableIntFieldUpdateOperationsInput | number | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalAttachmentCreateManyProposalInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileType: string
+    fileSize: number
+    uploadedAt?: Date | string
+  }
+
+  export type ProposalTimelineEventCreateManyProposalInput = {
+    id?: string
+    status: $Enums.ProposalStatus
+    actorId: string
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ProposalAttachmentUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalAttachmentUncheckedUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalAttachmentUncheckedUpdateManyWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileType?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalTimelineEventUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    actorId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalTimelineEventUncheckedUpdateWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    actorId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProposalTimelineEventUncheckedUpdateManyWithoutProposalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumProposalStatusFieldUpdateOperationsInput | $Enums.ProposalStatus
+    actorId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentCreateManyContractInput = {
@@ -46881,6 +56003,42 @@ export namespace Prisma {
     reference?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillCreateManyCategoryInput = {
+    id?: string
+    name: string
+    slug: string
+    isTrending?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SkillUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isTrending?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillUncheckedUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isTrending?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillUncheckedUpdateManyWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isTrending?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

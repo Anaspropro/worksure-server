@@ -27,7 +27,9 @@ export class PaystackWebhookService {
   private readonly webhookHandlers: Record<string, (payload: any) => Promise<{ handled: boolean; event: string }>>;
 
   constructor(
+    @Inject(forwardRef(() => PrismaService))
     private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => ContractsService))
     private readonly contractsService: ContractsService,
     @Inject(forwardRef(() => WalletService))
     private readonly walletService: WalletService,

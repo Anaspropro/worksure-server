@@ -79,6 +79,28 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         emailVerified: true,
         createdAt: new Date('2026-01-01T00:00:00.000Z'),
       },
+      {
+        id: uuidv4(),
+        name: 'Test Client',
+        email: 'test.client@worksure.dev',
+        passwordHash: adminPasswordHash, // Use same AdminPass123
+        role: 'CLIENT',
+        status: 'ACTIVE',
+        artisanVerified: false,
+        emailVerified: true,
+        createdAt: new Date(),
+      },
+      {
+        id: uuidv4(),
+        name: 'Test Artisan',
+        email: 'test.artisan@worksure.dev',
+        passwordHash: adminPasswordHash, // Use same AdminPass123
+        role: 'ARTISAN',
+        status: 'ACTIVE',
+        artisanVerified: true, // Artisan is verified
+        emailVerified: true,
+        createdAt: new Date(),
+      },
     ],
   });
 }
