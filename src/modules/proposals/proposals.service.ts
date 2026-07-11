@@ -117,7 +117,7 @@ export class ProposalsService {
       );
     }
 
-    if (createDto.attachments) {
+    if (!createDto.isDraft && createDto.attachments) {
       for (const file of createDto.attachments) {
         if (file.fileType.startsWith('image/') && file.fileSize > 100 * 1024) {
           throw new BadRequestException(`Image ${file.fileName} exceeds 100kB limit`);
@@ -142,7 +142,7 @@ export class ProposalsService {
         message: createDto.message,
         amount: createDto.amount,
         estimatedDuration: createDto.estimatedDuration,
-        status: ProposalStatus.SUBMITTED,
+        status: createDto.isDraft ? ProposalStatus.DRAFT : ProposalStatus.SUBMITTED,
         jobSnapshotTitle: job.title,
         jobSnapshotBudget: job.budget,
         jobSnapshotCategory: job.category,
@@ -165,9 +165,9 @@ export class ProposalsService {
         timelineEvents: {
           create: {
             id: uuidv7(),
-            status: ProposalStatus.SUBMITTED,
+            status: createDto.isDraft ? ProposalStatus.DRAFT : ProposalStatus.SUBMITTED,
             actorId: user.id,
-            notes: 'Proposal submitted',
+            notes: createDto.isDraft ? 'Proposal drafted' : 'Proposal submitted',
           }
         }
       },
@@ -187,10 +187,12 @@ export class ProposalsService {
       },
     });
 
-    this.eventEmitter.emit(
-      DomainEventName.PROPOSAL_SUBMITTED,
-      new ProposalSubmittedEvent(proposal.id, proposal.jobId, proposal.job.title, proposal.artisanId, proposal.clientId)
-    );
+    if (!createDto.isDraft) {
+      this.eventEmitter.emit(
+        DomainEventName.PROPOSAL_SUBMITTED,
+        new ProposalSubmittedEvent(proposal.id, proposal.jobId, proposal.job.title, proposal.artisanId, proposal.clientId)
+      );
+    }
 
     return this.formatProposalResponse(proposal);
   }
