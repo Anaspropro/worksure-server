@@ -35,7 +35,7 @@ export function createPrismaAdapter(databaseUrl?: string) {
     : undefined;
 
   return {
-    adapter: pool ? new PrismaPg(pool) : undefined,
+    adapter: pool ? new PrismaPg(pool as any) : undefined,
     pool,
   };
 }
