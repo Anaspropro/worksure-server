@@ -23,6 +23,7 @@ import { UsersModule } from './modules/users/users.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { KycModule } from './modules/kyc/kyc.module';
+import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { AppConfigModule } from './config/app-config.module';
 import { PrismaModule } from './database/prisma.module';
 import { AuditModule } from './modules/audit/audit.module';
@@ -131,6 +132,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     ReconciliationModule,
     AnalyticsModule,
     QueueModule,
+    TaxonomyModule,
   ],
   controllers: [AppController],
   providers: [

@@ -37,10 +37,15 @@ enum JobStatus {
 }
 
 enum ProposalStatus {
-  PENDING
+  DRAFT
+  SUBMITTED
+  VIEWED
+  SHORTLISTED
   ACCEPTED
   REJECTED
   WITHDRAWN
+  EXPIRED
+  CANCELLED
 }
 
 enum ContractStatus {
@@ -291,15 +296,42 @@ model ArtisanProfile {
 }
 
 model Proposal {
-  id        String         @id @default(uuid(7))
-  jobId     String
-  artisanId String
-  clientId  String
-  amount    Int
-  message   String
-  status    ProposalStatus @default(PENDING)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id                String         @id @default(uuid(7))
+  jobId             String
+  artisanId         String
+  clientId          String
+  amount            Int
+  message           String
+  estimatedDuration String?
+  status            ProposalStatus @default(DRAFT)
+  version           Int            @default(1)
+
+  // Job Snapshot
+  jobSnapshotTitle    String?
+  jobSnapshotBudget   Int?
+  jobSnapshotType     String?
+  jobSnapshotCategory String?
+  jobSnapshotLocation String?
+  jobSnapshotCurrency String? @default("NGN")
+
+  // Artisan Snapshot
+  artisanSnapshotName               String?
+  artisanSnapshotAvatarUrl          String?
+  artisanSnapshotVerificationStatus Boolean?
+  artisanSnapshotRating             Float?
+  artisanSnapshotCompletedJobs      Int?
+  artisanSnapshotResponseRate       Float?
+
+  // Shortlist Metadata
+  shortlistedAt     DateTime?
+  shortlistedBy     String?
+  shortlistPriority Int?
+
+  // Expiration
+  expiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   job      Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
@@ -307,9 +339,53 @@ model Proposal {
   client   User      @relation("ReceivedProposals", fields: [clientId], references: [id])
   contract Contract?
 
+  attachments    ProposalAttachment[]
+  timelineEvents ProposalTimelineEvent[]
+  decision       ProposalDecision?
+
   @@unique([jobId, artisanId])
   @@index([jobId, status])
   @@index([artisanId, status])
+}
+
+model ProposalAttachment {
+  id         String   @id @default(uuid(7))
+  proposalId String
+  fileUrl    String
+  fileName   String
+  fileType   String
+  fileSize   Int
+  uploadedAt DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@index([proposalId])
+}
+
+model ProposalTimelineEvent {
+  id         String         @id @default(uuid(7))
+  proposalId String
+  status     ProposalStatus
+  actorId    String
+  notes      String?
+  createdAt  DateTime       @default(now())
+
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@index([proposalId, createdAt])
+}
+
+model ProposalDecision {
+  id         String   @id @default(uuid(7))
+  proposalId String   @unique
+  decision   String
+  decidedBy  String
+  reason     String?
+  decidedAt  DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@index([proposalId])
 }
 
 model Contract {
@@ -614,4 +690,30 @@ model SystemLog {
 
   @@index([level, createdAt])
   @@index([context, createdAt])
+}
+
+model Category {
+  id        String   @id @default(uuid(7))
+  name      String   @unique
+  slug      String   @unique
+  isPopular Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skills Skill[]
+}
+
+model Skill {
+  id         String   @id @default(uuid(7))
+  name       String
+  slug       String   @unique
+  categoryId String
+  isTrending Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([name, categoryId])
+  @@index([categoryId])
 }

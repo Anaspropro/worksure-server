@@ -31,6 +31,7 @@ import {
   ProposalResponseDto,
   ProposalListQueryDto,
   ProposalActionDto,
+  ProposalComparisonItemDto,
 } from './dto/create-proposal.dto';
 import { $Enums, ProposalStatus } from '../../generated/prisma';
 import { ProposalsService } from './proposals.service';
@@ -56,7 +57,7 @@ export class ProposalsController {
   }
 
   @ApiOperation({ summary: 'List proposals with filtering and pagination' })
-  @ApiOkResponse({ description: 'Proposals retrieved successfully.' })
+  @ApiOkResponse({ description: 'Proposals retrieved successfully.', type: [ProposalResponseDto] })
   @ApiQuery({ name: 'status', required: false, enum: ProposalStatus })
   @ApiQuery({ name: 'jobId', required: false })
   @ApiQuery({ name: 'clientId', required: false })
@@ -70,7 +71,7 @@ export class ProposalsController {
   }
 
   @ApiOperation({ summary: 'Get proposal by ID' })
-  @ApiOkResponse({ description: 'Proposal retrieved successfully.' })
+  @ApiOkResponse({ description: 'Proposal retrieved successfully.', type: ProposalResponseDto })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
   @ApiParam({ name: 'id', description: 'Proposal ID' })
   @Get(':id')
@@ -78,9 +79,18 @@ export class ProposalsController {
     return this.proposalsService.getProposal(id);
   }
 
+  @ApiOperation({ summary: 'Compare proposals for a job' })
+  @ApiOkResponse({ description: 'Proposals compared successfully.', type: [ProposalComparisonItemDto] })
+  @ApiNotFoundResponse({ description: 'Job not found.' })
+  @ApiParam({ name: 'jobId', description: 'Job ID' })
+  @Get('job/:jobId/compare')
+  async compareProposals(@Param('jobId') jobId: string) {
+    return this.proposalsService.compareProposals(jobId);
+  }
+
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Update proposal' })
-  @ApiOkResponse({ description: 'Proposal updated successfully.' })
+  @ApiOkResponse({ description: 'Proposal updated successfully.', type: ProposalResponseDto })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -111,7 +121,7 @@ export class ProposalsController {
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Accept proposal' })
-  @ApiOkResponse({ description: 'Proposal accepted successfully.' })
+  @ApiOkResponse({ description: 'Proposal accepted successfully.', type: ProposalResponseDto })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -126,7 +136,7 @@ export class ProposalsController {
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Reject proposal' })
-  @ApiOkResponse({ description: 'Proposal rejected successfully.' })
+  @ApiOkResponse({ description: 'Proposal rejected successfully.', type: ProposalResponseDto })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @UseGuards(JwtAuthGuard, RolesGuard)

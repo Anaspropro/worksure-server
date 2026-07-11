@@ -230,9 +230,55 @@ exports.Prisma.ProposalScalarFieldEnum = {
   clientId: 'clientId',
   amount: 'amount',
   message: 'message',
+  estimatedDuration: 'estimatedDuration',
   status: 'status',
+  version: 'version',
+  jobSnapshotTitle: 'jobSnapshotTitle',
+  jobSnapshotBudget: 'jobSnapshotBudget',
+  jobSnapshotType: 'jobSnapshotType',
+  jobSnapshotCategory: 'jobSnapshotCategory',
+  jobSnapshotLocation: 'jobSnapshotLocation',
+  jobSnapshotCurrency: 'jobSnapshotCurrency',
+  artisanSnapshotName: 'artisanSnapshotName',
+  artisanSnapshotAvatarUrl: 'artisanSnapshotAvatarUrl',
+  artisanSnapshotVerificationStatus: 'artisanSnapshotVerificationStatus',
+  artisanSnapshotRating: 'artisanSnapshotRating',
+  artisanSnapshotCompletedJobs: 'artisanSnapshotCompletedJobs',
+  artisanSnapshotResponseRate: 'artisanSnapshotResponseRate',
+  shortlistedAt: 'shortlistedAt',
+  shortlistedBy: 'shortlistedBy',
+  shortlistPriority: 'shortlistPriority',
+  expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProposalAttachmentScalarFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  fileType: 'fileType',
+  fileSize: 'fileSize',
+  uploadedAt: 'uploadedAt'
+};
+
+exports.Prisma.ProposalTimelineEventScalarFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  status: 'status',
+  actorId: 'actorId',
+  notes: 'notes',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProposalDecisionScalarFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  decision: 'decision',
+  decidedBy: 'decidedBy',
+  reason: 'reason',
+  decidedAt: 'decidedAt'
 };
 
 exports.Prisma.ContractScalarFieldEnum = {
@@ -440,6 +486,25 @@ exports.Prisma.SystemLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  isPopular: 'isPopular',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SkillScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  categoryId: 'categoryId',
+  isTrending: 'isTrending',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -533,7 +598,39 @@ exports.Prisma.ProposalOrderByRelevanceFieldEnum = {
   jobId: 'jobId',
   artisanId: 'artisanId',
   clientId: 'clientId',
-  message: 'message'
+  message: 'message',
+  estimatedDuration: 'estimatedDuration',
+  jobSnapshotTitle: 'jobSnapshotTitle',
+  jobSnapshotType: 'jobSnapshotType',
+  jobSnapshotCategory: 'jobSnapshotCategory',
+  jobSnapshotLocation: 'jobSnapshotLocation',
+  jobSnapshotCurrency: 'jobSnapshotCurrency',
+  artisanSnapshotName: 'artisanSnapshotName',
+  artisanSnapshotAvatarUrl: 'artisanSnapshotAvatarUrl',
+  shortlistedBy: 'shortlistedBy'
+};
+
+exports.Prisma.ProposalAttachmentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  fileType: 'fileType'
+};
+
+exports.Prisma.ProposalTimelineEventOrderByRelevanceFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  actorId: 'actorId',
+  notes: 'notes'
+};
+
+exports.Prisma.ProposalDecisionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  proposalId: 'proposalId',
+  decision: 'decision',
+  decidedBy: 'decidedBy',
+  reason: 'reason'
 };
 
 exports.Prisma.ContractOrderByRelevanceFieldEnum = {
@@ -661,6 +758,19 @@ exports.Prisma.SystemLogOrderByRelevanceFieldEnum = {
   message: 'message',
   trace: 'trace'
 };
+
+exports.Prisma.CategoryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug'
+};
+
+exports.Prisma.SkillOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  categoryId: 'categoryId'
+};
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
   CLIENT: 'CLIENT',
@@ -716,10 +826,15 @@ exports.TransactionStatus = exports.$Enums.TransactionStatus = {
 };
 
 exports.ProposalStatus = exports.$Enums.ProposalStatus = {
-  PENDING: 'PENDING',
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  VIEWED: 'VIEWED',
+  SHORTLISTED: 'SHORTLISTED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
-  WITHDRAWN: 'WITHDRAWN'
+  WITHDRAWN: 'WITHDRAWN',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.ContractStatus = exports.$Enums.ContractStatus = {
@@ -797,6 +912,9 @@ exports.Prisma.ModelName = {
   Transaction: 'Transaction',
   ArtisanProfile: 'ArtisanProfile',
   Proposal: 'Proposal',
+  ProposalAttachment: 'ProposalAttachment',
+  ProposalTimelineEvent: 'ProposalTimelineEvent',
+  ProposalDecision: 'ProposalDecision',
   Contract: 'Contract',
   Conversation: 'Conversation',
   Message: 'Message',
@@ -810,7 +928,9 @@ exports.Prisma.ModelName = {
   LedgerAccount: 'LedgerAccount',
   LedgerEntry: 'LedgerEntry',
   VerificationToken: 'VerificationToken',
-  SystemLog: 'SystemLog'
+  SystemLog: 'SystemLog',
+  Category: 'Category',
+  Skill: 'Skill'
 };
 
 /**
