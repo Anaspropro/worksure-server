@@ -23,5 +23,6 @@
     "strictPropertyInitialization": false,
     "useUnknownInCatchVariables": false,
     "esModuleInterop": true
-  }
+  },
+  "include": ["src/**/*"]
 }
