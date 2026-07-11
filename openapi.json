@@ -916,14 +916,6 @@
             }
           },
           {
-            "name": "role",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "cursor",
             "required": true,
             "in": "query",
@@ -1368,15 +1360,6 @@
         "operationId": "AdminController_generateReports",
         "parameters": [
           {
-            "name": "reportType",
-            "required": false,
-            "in": "query",
-            "description": "Report type to generate",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "month",
             "required": false,
             "in": "query",
@@ -1384,6 +1367,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "reportType",
+            "required": false,
+            "in": "query",
+            "description": "Report type to generate",
+            "schema": {}
           }
         ],
         "responses": {
@@ -1900,16 +1890,7 @@
       },
       "get": {
         "operationId": "ContractsController_getUserContracts",
-        "parameters": [
-          {
-            "name": "status",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Contracts retrieved successfully"
@@ -2467,7 +2448,8 @@
                 "OPEN",
                 "RESOLVED"
               ],
-              "type": "string"
+              "type": "string",
+              "$ref": "#/components/schemas/Object"
             }
           },
           {
@@ -2837,7 +2819,8 @@
                 "COMPLETED",
                 "FORCE_CLOSED"
               ],
-              "type": "string"
+              "type": "string",
+              "$ref": "#/components/schemas/Object"
             }
           },
           {
@@ -3100,7 +3083,8 @@
                 "EXPIRED",
                 "CANCELLED"
               ],
-              "type": "string"
+              "type": "string",
+              "$ref": "#/components/schemas/Object"
             }
           },
           {
@@ -4662,15 +4646,19 @@
           "description"
         ]
       },
+      "Object": {
+        "type": "object",
+        "properties": {}
+      },
       "UpdateDisputeDto": {
         "type": "object",
         "properties": {
           "status": {
-            "type": "string",
+            "type": "object",
             "description": "Dispute status"
           },
           "resolutionDecision": {
-            "type": "string",
+            "type": "object",
             "description": "Resolution decision"
           },
           "resolutionNotes": {
@@ -4770,7 +4758,7 @@
             "description": "Job deadline"
           },
           "status": {
-            "type": "string",
+            "type": "object",
             "description": "Job status"
           },
           "requirements": {
@@ -4831,6 +4819,10 @@
             "items": {
               "$ref": "#/components/schemas/ProposalAttachmentDto"
             }
+          },
+          "isDraft": {
+            "type": "boolean",
+            "description": "Save as draft"
           }
         },
         "required": [
@@ -4942,7 +4934,18 @@
           },
           "status": {
             "type": "string",
-            "description": "Proposal status"
+            "description": "Proposal status",
+            "enum": [
+              "DRAFT",
+              "SUBMITTED",
+              "VIEWED",
+              "SHORTLISTED",
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN",
+              "EXPIRED",
+              "CANCELLED"
+            ]
           },
           "createdAt": {
             "type": "string",

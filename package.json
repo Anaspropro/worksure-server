@@ -27,7 +27,7 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:status": "prisma migrate status",
     "prisma:seed": "tsx prisma/seed.ts",
-    "export:openapi": "tsx scripts/generate-openapi.ts"
+    "export:openapi": "ts-node scripts/generate-openapi.ts"
   },
   "dependencies": {
     "@keyv/redis": "^5.1.6",
@@ -118,7 +118,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
@@ -140,5 +140,17 @@
     "moduleNameMapper": {
       "^uuid$": "<rootDir>/../test/mocks/uuid.js"
     }
+  },
+  "allowScripts": {
+    "@prisma/engines@7.8.0": true,
+    "@scarf/scarf@1.4.0": true,
+    "@sentry/node-cpu-profiler@2.4.2": true,
+    "@swc/core@1.15.43": true,
+    "bcrypt@6.0.0": true,
+    "esbuild@0.28.1": true,
+    "msgpackr-extract@3.0.4": true,
+    "prisma@7.8.0": true,
+    "protobufjs@7.6.4": true,
+    "ssh2@1.17.0": true
   }
 }

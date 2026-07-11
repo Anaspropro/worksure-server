@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsEnum } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsEnum, IsBoolean } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { ProposalStatus } from '../../../generated/prisma';
@@ -42,6 +42,11 @@ export class CreateProposalDto {
   @ApiPropertyOptional({ description: 'Attachments', type: [ProposalAttachmentDto] })
   @IsOptional()
   attachments?: ProposalAttachmentDto[];
+
+  @ApiPropertyOptional({ description: 'Save as draft' })
+  @IsOptional()
+  @IsBoolean()
+  isDraft?: boolean;
 }
 
 export class UpdateProposalDto {
@@ -103,7 +108,7 @@ export class ProposalResponseDto {
   @ApiPropertyOptional({ description: 'Estimated duration' })
   estimatedDuration?: string;
 
-  @ApiProperty({ description: 'Proposal status' })
+  @ApiProperty({ description: 'Proposal status', enum: ProposalStatus })
   status: ProposalStatus;
 
   @ApiProperty({ description: 'Creation date' })
