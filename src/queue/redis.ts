@@ -5,30 +5,32 @@ import * as dotenv from 'dotenv';
 dotenv.config({ override: true });
 
 const redisUrl = process.env.REDIS_URL;
+const useRedis = process.env.USE_REDIS !== 'false' && !!redisUrl;
 
-if (!redisUrl) {
-  throw new Error('REDIS_URL environment variable is missing');
+export let redisConnection: Redis;
+
+if (useRedis) {
+  console.log('[Redis] Initializing real Redis connection to:', redisUrl);
+  redisConnection = new Redis(redisUrl!, {
+    maxRetriesPerRequest: null,
+    family: 0,
+    tls: {
+      rejectUnauthorized: false
+    },
+    enableReadyCheck: false,
+    connectTimeout: 20000,
+  });
+
+  redisConnection.on('error', (err) => {
+    console.error('[Redis] Connection error:', err);
+  });
+
+  redisConnection.on('connect', () => {
+    console.log('[Redis] Connected successfully');
+  });
+} else {
+  console.log('[Redis] USE_REDIS is false or REDIS_URL is missing. Using in-memory ioredis-mock.');
+  const RedisMock = require('ioredis-mock');
+  redisConnection = new RedisMock() as unknown as Redis;
 }
 
-/**
- * Shared Redis connection for BullMQ
- * maxRetriesPerRequest MUST be set to null for BullMQ to function correctly.
- */
-export const redisConnection = new Redis(redisUrl, {
-  maxRetriesPerRequest: null,
-  // Optimal settings for Upstash / remote serverless Redis
-  family: 0,
-  tls: {
-    rejectUnauthorized: false
-  },
-  enableReadyCheck: false,
-  connectTimeout: 20000,
-});
-
-redisConnection.on('error', (err) => {
-  console.error('[Redis] Connection error:', err);
-});
-
-redisConnection.on('connect', () => {
-  console.log('[Redis] Connected successfully');
-});
