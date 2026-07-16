@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { Resend } from 'resend';
 import { AppConfigService } from '../../config/app-config.service';
 
@@ -7,7 +7,14 @@ export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private resend: Resend | null = null;
 
-  constructor(private readonly configService: AppConfigService) {
+  constructor(
+    @Inject(AppConfigService)
+    private readonly configService: AppConfigService,
+  ) {
+    if (!this.configService) {
+      this.logger.error('AppConfigService was not injected successfully!');
+      return;
+    }
     const apiKey = this.configService.resendApiKey;
     if (apiKey) {
       this.resend = new Resend(apiKey);
