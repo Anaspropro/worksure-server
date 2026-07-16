@@ -14,6 +14,11 @@ export enum DomainEventName {
   CONTRACT_COMPLETED = 'contract.completed',
   CONTRACT_CANCELLED = 'contract.cancelled',
 
+  // Deliverable Events
+  DELIVERABLE_SUBMITTED = 'deliverable.submitted',
+  DELIVERABLE_APPROVED = 'deliverable.approved',
+  DELIVERABLE_REVISION_REQUESTED = 'deliverable.revision_requested',
+
   // Payment Events
   PAYMENT_PROCESSED = 'payment.processed',
   PAYMENT_FAILED = 'payment.failed',

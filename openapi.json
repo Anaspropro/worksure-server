@@ -916,6 +916,14 @@
             }
           },
           {
+            "name": "role",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "cursor",
             "required": true,
             "in": "query",
@@ -1360,6 +1368,15 @@
         "operationId": "AdminController_generateReports",
         "parameters": [
           {
+            "name": "reportType",
+            "required": false,
+            "in": "query",
+            "description": "Report type to generate",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "month",
             "required": false,
             "in": "query",
@@ -1367,13 +1384,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "reportType",
-            "required": false,
-            "in": "query",
-            "description": "Report type to generate",
-            "schema": {}
           }
         ],
         "responses": {
@@ -1498,6 +1508,122 @@
           }
         ],
         "summary": "Get system contract statistics",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/taxonomy/suggestions": {
+      "get": {
+        "operationId": "AdminController_getCategorySuggestions",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by PENDING, APPROVED, REJECTED",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all category suggestions",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/taxonomy/suggestions/{id}/approve": {
+      "patch": {
+        "operationId": "AdminController_approveCategorySuggestion",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Suggestion identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Approve a category suggestion",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/taxonomy/suggestions/{id}/reject": {
+      "patch": {
+        "operationId": "AdminController_rejectCategorySuggestion",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Suggestion identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectSuggestionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reject a category suggestion",
         "tags": [
           "admin"
         ]
@@ -1890,7 +2016,16 @@
       },
       "get": {
         "operationId": "ContractsController_getUserContracts",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Contracts retrieved successfully"
@@ -2448,8 +2583,7 @@
                 "OPEN",
                 "RESOLVED"
               ],
-              "type": "string",
-              "$ref": "#/components/schemas/Object"
+              "type": "string"
             }
           },
           {
@@ -2649,6 +2783,182 @@
         ]
       }
     },
+    "/verification/status": {
+      "get": {
+        "operationId": "VerificationController_getStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationStatusResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current verification status (Marketplace & Financial)",
+        "tags": [
+          "verification"
+        ]
+      }
+    },
+    "/verification/marketplace/submit": {
+      "post": {
+        "operationId": "VerificationController_submitMarketplace",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Submit for marketplace review",
+        "tags": [
+          "verification"
+        ]
+      }
+    },
+    "/verification/financial/initiate": {
+      "post": {
+        "operationId": "VerificationController_initiateFinancial",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialVerificationInitiateResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Initiate financial verification with provider",
+        "tags": [
+          "verification"
+        ]
+      }
+    },
+    "/webhooks/verification/paystack": {
+      "post": {
+        "operationId": "VerificationWebhookController_handlePaystackWebhook",
+        "parameters": [
+          {
+            "name": "x-paystack-signature",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Paystack identity verification webhook",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/admin/verification/marketplace/pending": {
+      "get": {
+        "operationId": "AdminVerificationController_getPending",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get pending marketplace verifications",
+        "tags": [
+          "admin-verification"
+        ]
+      }
+    },
+    "/admin/verification/marketplace/{userId}/approve": {
+      "post": {
+        "operationId": "AdminVerificationController_approveMarketplace",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Approve artisan marketplace verification",
+        "tags": [
+          "admin-verification"
+        ]
+      }
+    },
+    "/admin/verification/marketplace/{userId}/reject": {
+      "post": {
+        "operationId": "AdminVerificationController_rejectMarketplace",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reject artisan marketplace verification",
+        "tags": [
+          "admin-verification"
+        ]
+      }
+    },
     "/artisan/profile": {
       "post": {
         "operationId": "ArtisanController_createArtisanProfile",
@@ -2819,8 +3129,7 @@
                 "COMPLETED",
                 "FORCE_CLOSED"
               ],
-              "type": "string",
-              "$ref": "#/components/schemas/Object"
+              "type": "string"
             }
           },
           {
@@ -3083,8 +3392,7 @@
                 "EXPIRED",
                 "CANCELLED"
               ],
-              "type": "string",
-              "$ref": "#/components/schemas/Object"
+              "type": "string"
             }
           },
           {
@@ -3895,66 +4203,6 @@
         ]
       }
     },
-    "/kyc/verify-identity": {
-      "post": {
-        "operationId": "KycController_verifyIdentity",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Verify user identity via Paystack BVN match",
-        "tags": [
-          "kyc"
-        ]
-      }
-    },
-    "/kyc/upload": {
-      "post": {
-        "operationId": "KycController_uploadDocument",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Upload a KYC document via direct Cloudinary URL",
-        "tags": [
-          "kyc"
-        ]
-      }
-    },
-    "/kyc/status": {
-      "get": {
-        "operationId": "KycController_getStatus",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get current KYC status",
-        "tags": [
-          "kyc"
-        ]
-      }
-    },
     "/admin/audit": {
       "get": {
         "operationId": "AuditController_getAuditLogs",
@@ -4201,6 +4449,38 @@
           "taxonomy"
         ]
       }
+    },
+    "/taxonomy/suggest": {
+      "post": {
+        "operationId": "TaxonomyController_suggestCategory",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuggestCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategorySuggestionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Suggest a new category",
+        "tags": [
+          "taxonomy"
+        ]
+      }
     }
   },
   "info": {
@@ -4434,6 +4714,14 @@
           }
         }
       },
+      "RejectSuggestionDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "PaymentFundContractDto": {
         "type": "object",
         "properties": {
@@ -4646,19 +4934,15 @@
           "description"
         ]
       },
-      "Object": {
-        "type": "object",
-        "properties": {}
-      },
       "UpdateDisputeDto": {
         "type": "object",
         "properties": {
           "status": {
-            "type": "object",
+            "type": "string",
             "description": "Dispute status"
           },
           "resolutionDecision": {
-            "type": "object",
+            "type": "string",
             "description": "Resolution decision"
           },
           "resolutionNotes": {
@@ -4670,6 +4954,77 @@
             "description": "Resolver ID"
           }
         }
+      },
+      "VerificationStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "marketplaceStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_SUBMITTED",
+              "PENDING_REVIEW",
+              "UNDER_REVIEW",
+              "APPROVED",
+              "REJECTED",
+              "RESUBMISSION_REQUIRED",
+              "SUSPENDED"
+            ]
+          },
+          "marketplaceApprovedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "marketplaceRejectedReason": {
+            "type": "string"
+          },
+          "financialStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_STARTED",
+              "PENDING",
+              "PROCESSING",
+              "VERIFIED",
+              "FAILED",
+              "EXPIRED",
+              "RETRY_REQUIRED"
+            ]
+          },
+          "financialVerifiedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "financialFailureReason": {
+            "type": "string"
+          },
+          "isPayoutEligible": {
+            "type": "boolean",
+            "description": "Derived payout eligibility"
+          }
+        },
+        "required": [
+          "marketplaceStatus",
+          "marketplaceApprovedAt",
+          "marketplaceRejectedReason",
+          "financialStatus",
+          "financialVerifiedAt",
+          "financialFailureReason",
+          "isPayoutEligible"
+        ]
+      },
+      "FinancialVerificationInitiateResponseDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "reference"
+        ]
       },
       "CreateArtisanProfileDto": {
         "type": "object",
@@ -4758,7 +5113,7 @@
             "description": "Job deadline"
           },
           "status": {
-            "type": "object",
+            "type": "string",
             "description": "Job status"
           },
           "requirements": {
@@ -5257,6 +5612,59 @@
           "slug",
           "categoryId",
           "isTrending",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "SuggestCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CategorySuggestionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "suggestedByUserId": {
+            "type": "string"
+          },
+          "rejectionReason": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status",
+          "suggestedByUserId",
           "createdAt",
           "updatedAt"
         ]

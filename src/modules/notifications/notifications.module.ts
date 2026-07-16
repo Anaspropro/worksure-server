@@ -5,11 +5,22 @@ import { NotificationsController } from './notifications.controller';
 import { AuthModule } from '../auth/auth.module';
 import { NotificationsGateway } from './notifications.gateway';
 import { NotificationTemplateService } from './notification-template.service';
+import { DiscordWebhookService } from './discord-webhook.service';
 
 @Module({
   imports: [PrismaModule, forwardRef(() => AuthModule)],
   controllers: [NotificationsController],
-  providers: [NotificationsService, NotificationsGateway, NotificationTemplateService],
-  exports: [NotificationsService, NotificationsGateway, NotificationTemplateService],
+  providers: [
+    NotificationsService,
+    NotificationsGateway,
+    NotificationTemplateService,
+    DiscordWebhookService,
+  ],
+  exports: [
+    NotificationsService,
+    NotificationsGateway,
+    NotificationTemplateService,
+    DiscordWebhookService,
+  ],
 })
 export class NotificationsModule {}

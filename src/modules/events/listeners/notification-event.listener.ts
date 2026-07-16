@@ -14,6 +14,8 @@ import { NotificationTemplateService } from '../../notifications/notification-te
 import { QueueService } from '../../queue/queue.service';
 import { NotificationType, NotificationPriority } from '../../notifications/dto/notification.dto';
 
+import { DiscordWebhookService } from '../../notifications/discord-webhook.service';
+
 @Injectable()
 export class NotificationEventListener {
   private readonly logger = new Logger(NotificationEventListener.name);
@@ -22,6 +24,7 @@ export class NotificationEventListener {
     private readonly notificationsService: NotificationsService,
     private readonly templateService: NotificationTemplateService,
     private readonly queueService: QueueService,
+    private readonly discordWebhookService: DiscordWebhookService,
   ) {}
 
   private async dispatch(
@@ -57,6 +60,18 @@ export class NotificationEventListener {
           subject: content.emailSubject,
           body: content.emailBody,
         });
+      }
+
+      // 3. Discord Webhook for critical events
+      const criticalEvents = [
+        DomainEventName.DISPUTE_RAISED,
+        DomainEventName.CONTRACT_FUNDED,
+        DomainEventName.PAYMENT_PROCESSED,
+      ];
+      if (criticalEvents.includes(eventName)) {
+        await this.discordWebhookService.sendNotification(
+          `**${eventName}**\n${content.title}: ${content.message}`
+        );
       }
     } catch (error) {
       // Isolate failures so they don't crash the event emitter loop
@@ -139,6 +154,45 @@ export class NotificationEventListener {
       event.disputeId,
       'DISPUTE',
       `/disputes/${event.disputeId}`
+    );
+  }
+
+  @OnEvent(DomainEventName.DELIVERABLE_SUBMITTED)
+  async handleDeliverableSubmitted(event: any) {
+    await this.dispatch(
+      DomainEventName.DELIVERABLE_SUBMITTED,
+      event.clientId, // Notify the client
+      { contractId: event.contractId }, // We could fetch more details or pass them in the event
+      NotificationType.DELIVERABLE_SUBMITTED,
+      event.deliverableId,
+      'DELIVERABLE',
+      `/contracts/${event.contractId}/deliverables`
+    );
+  }
+
+  @OnEvent(DomainEventName.DELIVERABLE_APPROVED)
+  async handleDeliverableApproved(event: any) {
+    await this.dispatch(
+      DomainEventName.DELIVERABLE_APPROVED,
+      event.artisanId, // Notify the artisan
+      { contractId: event.contractId },
+      NotificationType.DELIVERABLE_APPROVED,
+      event.deliverableId,
+      'DELIVERABLE',
+      `/contracts/${event.contractId}/deliverables`
+    );
+  }
+
+  @OnEvent(DomainEventName.DELIVERABLE_REVISION_REQUESTED)
+  async handleDeliverableRevisionRequested(event: any) {
+    await this.dispatch(
+      DomainEventName.DELIVERABLE_REVISION_REQUESTED,
+      event.artisanId, // Notify the artisan
+      { contractId: event.contractId },
+      NotificationType.DELIVERABLE_REVISION_REQUESTED,
+      event.deliverableId,
+      'DELIVERABLE',
+      `/contracts/${event.contractId}/deliverables`
     );
   }
 }

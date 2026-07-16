@@ -13,7 +13,7 @@ import {
 } from '../../generated/prisma';
 
 import { IdempotencyService } from '../../common/services/idempotency.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { ContractFundedEvent, DomainEventName } from '../../common/events/domain.events';
 
 @Injectable()
@@ -631,6 +631,35 @@ export class ContractsService {
         },
       );
     });
+  }
+
+  @OnEvent(DomainEventName.DELIVERABLE_APPROVED)
+  async handleDeliverableApproved(event: any) {
+    const { contractId, clientId } = event;
+    const contract = await this.findContractMetadata(contractId);
+    if (!contract || contract.clientId !== clientId) {
+      return; // Invalid or unauthorized
+    }
+
+    // When the deliverable is approved by the client, we automatically transition the contract to READY_FOR_PAYOUT
+    if (contract.status === ContractStatus.IN_PROGRESS || contract.status === ContractStatus.CLIENT_CONFIRMED) {
+      await this.prisma.$transaction(async (tx) => {
+        await this.transitionContractStatusWithClient(
+          tx,
+          contractId,
+          ContractStatus.READY_FOR_PAYOUT,
+          {
+            clientConfirmedCompletion: true,
+            artisanConfirmedCompletion: true,
+          },
+          {
+            actorId: 'system',
+            action: 'DELIVERABLE_APPROVED_COMPLETION',
+            source: 'deliverables.approved',
+          }
+        );
+      });
+    }
   }
 
   async assertReadyForPayout(contractId: string) {

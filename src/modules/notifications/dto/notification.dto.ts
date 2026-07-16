@@ -25,6 +25,9 @@ export enum NotificationType {
   REVIEW_RECEIVED = 'review_received',
   MESSAGE_RECEIVED = 'message_received',
   SYSTEM_UPDATE = 'system_update',
+  DELIVERABLE_SUBMITTED = 'deliverable_submitted',
+  DELIVERABLE_APPROVED = 'deliverable_approved',
+  DELIVERABLE_REVISION_REQUESTED = 'deliverable_revision_requested',
 }
 
 export enum NotificationPriority {

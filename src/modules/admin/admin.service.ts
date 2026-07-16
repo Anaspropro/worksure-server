@@ -1121,5 +1121,43 @@ export class AdminService {
 
   private nextIdentifier(): string {
     return uuidv7();
+  async getSystemConfig() {
+    const configs = await this.prisma.systemConfig.findMany({
+      orderBy: { key: 'asc' },
+    });
+    return { data: configs };
+  }
+
+  async updateSystemConfig(key: string, value: any, actor: AdminActor, description?: string) {
+    const config = await this.prisma.systemConfig.upsert({
+      where: { key },
+      update: {
+        value,
+        description: description ?? undefined,
+        updatedBy: actor.id,
+      },
+      create: {
+        id: uuidv7(),
+        key,
+        value,
+        description,
+        updatedBy: actor.id,
+      },
+    });
+
+    await this.logAction(
+      'CONFIG_UPDATED',
+      AuditEntityType.USER,
+      'SYSTEM',
+      actor,
+      {
+        key,
+        value,
+      },
+    );
+
+    await this.cacheService.invalidatePattern('*admin/config*');
+    return { data: config };
   }
 }
+

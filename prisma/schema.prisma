@@ -14,6 +14,17 @@ enum UserRole {
   ARTISAN
 }
 
+enum AdminRole {
+  SUPER_ADMIN
+  OPERATIONS_MANAGER
+  FINANCE_ADMIN
+  DISPUTE_ADMIN
+  VERIFICATION_ADMIN
+  SUPPORT_ADMIN
+  CONTENT_MODERATOR
+  ANALYTICS_ADMIN
+}
+
 enum UserStatus {
   ACTIVE
   BANNED
@@ -21,12 +32,20 @@ enum UserStatus {
 
 enum DisputeStatus {
   OPEN
+  UNDER_REVIEW
+  EVIDENCE_COLLECTION
+  AWAITING_RESPONSE
+  ADMIN_INVESTIGATION
+  DECISION_PENDING
   RESOLVED
+  CLOSED
 }
 
 enum DisputeDecision {
-  REFUND_CLIENT
-  PAY_ARTISAN
+  CLIENT_WINS
+  ARTISAN_WINS
+  SPLIT_DECISION
+  CANCELLED
 }
 
 enum JobStatus {
@@ -127,27 +146,19 @@ enum PaymentStatus {
   FAILED
 }
 
-enum KycVerificationStatus {
-  UNVERIFIED
-  PENDING
-  VERIFIED
-  REJECTED
-}
-
 model User {
-  id                          String                @id
+  id                          String     @id
   name                        String
-  email                       String                @unique
+  email                       String     @unique
   passwordHash                String
-  passwordResetTokenHash      String?               @unique
+  passwordResetTokenHash      String?    @unique
   passwordResetTokenExpiresAt DateTime?
   passwordResetRequestedAt    DateTime?
   role                        UserRole
+  adminRoles                  AdminRole[]
   status                      UserStatus
-  artisanVerified             Boolean               @default(false)
-  kycVerified                 Boolean               @default(false)
-  emailVerified               Boolean               @default(false)
-  kycStatus                   KycVerificationStatus @default(UNVERIFIED)
+  artisanVerified             Boolean    @default(false)
+  emailVerified               Boolean    @default(false)
   paystackRecipientCode       String?
   payoutBankCode              String?
   payoutAccountNumber         String?
@@ -155,67 +166,95 @@ model User {
   phone                       String?
   createdAt                   DateTime
   lastLoginAt                 DateTime?
-  updatedAt                   DateTime              @updatedAt
+  updatedAt                   DateTime   @updatedAt
 
   // Relations
-  artisanProfile    ArtisanProfile?
-  kycDocuments      KycDocument[]
-  sentProposals     Proposal[]      @relation("SentProposals")
-  receivedProposals Proposal[]      @relation("ReceivedProposals")
-  clientContracts   Contract[]      @relation("ClientContracts")
-  artisanContracts  Contract[]      @relation("ArtisanContracts")
-  clientJobs        Job[]           @relation("ClientJobs")
-  artisanJobs       Job[]           @relation("ArtisanJobs")
-  sentReviews       Review[]        @relation("SentReviews")
-  receivedReviews   Review[]        @relation("ReceivedReviews")
-  notifications     Notification[]
-  transactions      Transaction[]
-  payments          Payment[]       @relation("UserPayments")
-  clientDisputes    Dispute[]       @relation("ClientDisputes")
-  artisanDisputes   Dispute[]       @relation("ArtisanDisputes")
-  ledgerAccounts    LedgerAccount?
+  artisanProfile      ArtisanProfile?
+  artisanVerification ArtisanVerification?
+  kycDocuments        KycDocument[]
+  sentProposals       Proposal[]           @relation("SentProposals")
+  receivedProposals   Proposal[]           @relation("ReceivedProposals")
+  clientContracts     Contract[]           @relation("ClientContracts")
+  artisanContracts    Contract[]           @relation("ArtisanContracts")
+  clientJobs          Job[]                @relation("ClientJobs")
+  artisanJobs         Job[]                @relation("ArtisanJobs")
+  sentReviews         Review[]             @relation("SentReviews")
+  receivedReviews     Review[]             @relation("ReceivedReviews")
+  notifications       Notification[]
+  transactions        Transaction[]
+  payments            Payment[]            @relation("UserPayments")
+  clientDisputes      Dispute[]            @relation("ClientDisputes")
+  artisanDisputes     Dispute[]            @relation("ArtisanDisputes")
+  ledgerAccounts      LedgerAccount?
+  suggestedCategories CategorySuggestion[] @relation("SuggestedCategories")
+  reviewedCategories  CategorySuggestion[] @relation("ReviewedCategories")
+  revisionRequests    RevisionRequest[]
 }
 
 model Dispute {
-  id                 String           @id
-  contractId         String?
-  jobId              String?
+  id                 String            @id @default(uuid(7))
+  contractId         String            @unique
+  initiatorId        String
   clientId           String
   artisanId          String
   amount             Int
-  status             DisputeStatus
-  evidenceImages     Json
-  evidenceVideos     Json
-  evidenceMessages   Json
+  status             DisputeStatus     @default(OPEN)
+  reason             String
+  description        String
   resolutionDecision DisputeDecision?
+  resolutionSplit    Json?
   resolvedAt         DateTime?
   resolvedBy         String?
   resolutionNotes    String?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
   history            DisputeHistory[]
+  evidence           DisputeEvidence[]
 
   // Relations
-  client   User      @relation("ClientDisputes", fields: [clientId], references: [id])
-  artisan  User      @relation("ArtisanDisputes", fields: [artisanId], references: [id])
-  contract Contract? @relation(fields: [contractId], references: [id])
+  client   User     @relation("ClientDisputes", fields: [clientId], references: [id])
+  artisan  User     @relation("ArtisanDisputes", fields: [artisanId], references: [id])
+  contract Contract @relation(fields: [contractId], references: [id])
 
   @@index([clientId, status])
   @@index([artisanId, status])
   @@index([contractId])
-  @@index([jobId])
 }
 
 model DisputeHistory {
-  id        String   @id
+  id        String   @id @default(uuid(7))
   disputeId String
   action    String
-  at        DateTime
+  at        DateTime @default(now())
   by        String
   notes     String?
+  metadata  Json?
   dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
 
   @@index([disputeId, at])
+}
+
+enum EvidenceType {
+  IMAGE
+  VIDEO
+  PDF
+  MESSAGE_REFERENCE
+  DELIVERABLE_REFERENCE
+  OTHER
+}
+
+model DisputeEvidence {
+  id          String       @id @default(uuid(7))
+  disputeId   String
+  submittedBy String
+  type        EvidenceType
+  url         String?
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+
+  dispute Dispute @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+
+  @@index([disputeId])
 }
 
 model Job {
@@ -275,17 +314,17 @@ model Transaction {
 }
 
 model ArtisanProfile {
-  id          String   @id @default(uuid(7))
-  userId      String   @unique
-  bio         String?
-  skills      Json     @default("[]")
-  experience  String?
-  portfolio   Json     @default("[]")
-  verified    Boolean  @default(false)
-  rating      Float?   @default(0)
-  reviewCount Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String   @id @default(uuid(7))
+  userId             String   @unique
+  bio                String?
+  skills             Json     @default("[]")
+  experience         String?
+  portfolio          Json     @default("[]")
+  verified           Boolean  @default(false)
+  rating             Float?   @default(0)
+  reviewCount        Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
   platformFeePercent Float?
 
   // Relations
@@ -296,52 +335,52 @@ model ArtisanProfile {
 }
 
 model Proposal {
-  id                                  String         @id @default(uuid(7))
-  jobId                               String
-  artisanId                           String
-  clientId                            String
-  amount                              Int
-  message                             String
-  estimatedDuration                   String?
-  status                              ProposalStatus @default(DRAFT)
-  version                             Int            @default(1)
-  
+  id                String         @id @default(uuid(7))
+  jobId             String
+  artisanId         String
+  clientId          String
+  amount            Int
+  message           String
+  estimatedDuration String?
+  status            ProposalStatus @default(DRAFT)
+  version           Int            @default(1)
+
   // Job Snapshot
-  jobSnapshotTitle                    String?
-  jobSnapshotBudget                   Int?
-  jobSnapshotType                     String?
-  jobSnapshotCategory                 String?
-  jobSnapshotLocation                 String?
-  jobSnapshotCurrency                 String?        @default("NGN")
+  jobSnapshotTitle    String?
+  jobSnapshotBudget   Int?
+  jobSnapshotType     String?
+  jobSnapshotCategory String?
+  jobSnapshotLocation String?
+  jobSnapshotCurrency String? @default("NGN")
 
   // Artisan Snapshot
-  artisanSnapshotName                 String?
-  artisanSnapshotAvatarUrl            String?
-  artisanSnapshotVerificationStatus   Boolean?
-  artisanSnapshotRating               Float?
-  artisanSnapshotCompletedJobs        Int?
-  artisanSnapshotResponseRate         Float?
+  artisanSnapshotName               String?
+  artisanSnapshotAvatarUrl          String?
+  artisanSnapshotVerificationStatus Boolean?
+  artisanSnapshotRating             Float?
+  artisanSnapshotCompletedJobs      Int?
+  artisanSnapshotResponseRate       Float?
 
   // Shortlist Metadata
-  shortlistedAt                       DateTime?
-  shortlistedBy                       String?
-  shortlistPriority                   Int?
+  shortlistedAt     DateTime?
+  shortlistedBy     String?
+  shortlistPriority Int?
 
   // Expiration
-  expiresAt                           DateTime?
+  expiresAt DateTime?
 
-  createdAt                           DateTime       @default(now())
-  updatedAt                           DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   job      Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
   artisan  User      @relation("SentProposals", fields: [artisanId], references: [id])
   client   User      @relation("ReceivedProposals", fields: [clientId], references: [id])
   contract Contract?
-  
-  attachments ProposalAttachment[]
+
+  attachments    ProposalAttachment[]
   timelineEvents ProposalTimelineEvent[]
-  decision ProposalDecision?
+  decision       ProposalDecision?
 
   @@unique([jobId, artisanId])
   @@index([jobId, status])
@@ -349,41 +388,41 @@ model Proposal {
 }
 
 model ProposalAttachment {
-  id          String   @id @default(uuid(7))
-  proposalId  String
-  fileUrl     String
-  fileName    String
-  fileType    String
-  fileSize    Int
-  uploadedAt  DateTime @default(now())
+  id         String   @id @default(uuid(7))
+  proposalId String
+  fileUrl    String
+  fileName   String
+  fileType   String
+  fileSize   Int
+  uploadedAt DateTime @default(now())
 
-  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@index([proposalId])
 }
 
 model ProposalTimelineEvent {
-  id          String   @id @default(uuid(7))
-  proposalId  String
-  status      ProposalStatus
-  actorId     String
-  notes       String?
-  createdAt   DateTime @default(now())
+  id         String         @id @default(uuid(7))
+  proposalId String
+  status     ProposalStatus
+  actorId    String
+  notes      String?
+  createdAt  DateTime       @default(now())
 
-  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@index([proposalId, createdAt])
 }
 
 model ProposalDecision {
-  id          String   @id @default(uuid(7))
-  proposalId  String   @unique
-  decision    String
-  decidedBy   String
-  reason      String?
-  decidedAt   DateTime @default(now())
+  id         String   @id @default(uuid(7))
+  proposalId String   @unique
+  decision   String
+  decidedBy  String
+  reason     String?
+  decidedAt  DateTime @default(now())
 
-  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
 
   @@index([proposalId])
 }
@@ -439,6 +478,7 @@ model Contract {
   ledgerEntries   LedgerEntry[]
   financialEvents FinancialEvent[]
   disputes        Dispute[]
+  deliverables    Deliverable[]
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -477,8 +517,6 @@ model Message {
   @@index([conversationId, createdAt])
   @@index([senderId, createdAt])
 }
-
-
 
 model Review {
   id              String   @id @default(uuid(7))
@@ -702,7 +740,7 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  skills    Skill[]
+  skills Skill[]
 }
 
 model Skill {
@@ -715,7 +753,226 @@ model Skill {
   updatedAt  DateTime @updatedAt
 
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  
+
   @@unique([name, categoryId])
   @@index([categoryId])
+}
+
+enum SuggestionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CategorySuggestion {
+  id                String           @id @default(uuid(7))
+  name              String
+  description       String?
+  status            SuggestionStatus @default(PENDING)
+  suggestedByUserId String
+  reviewedByUserId  String?
+  rejectionReason   String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  reviewedAt        DateTime?
+
+  suggestedBy User  @relation("SuggestedCategories", fields: [suggestedByUserId], references: [id], onDelete: Restrict)
+  reviewedBy  User? @relation("ReviewedCategories", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([suggestedByUserId])
+}
+
+enum MarketplaceVerificationStatus {
+  NOT_SUBMITTED
+  PENDING_REVIEW
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  RESUBMISSION_REQUIRED
+  SUSPENDED
+}
+
+enum FinancialVerificationStatus {
+  NOT_STARTED
+  PENDING
+  PROCESSING
+  VERIFIED
+  FAILED
+  EXPIRED
+  RETRY_REQUIRED
+}
+
+model ArtisanVerification {
+  id                        String                        @id @default(uuid(7))
+  userId                    String                        @unique
+  marketplaceStatus         MarketplaceVerificationStatus @default(NOT_SUBMITTED)
+  marketplaceApprovedAt     DateTime?
+  marketplaceRejectedReason String?
+  marketplaceReviewerId     String?
+  financialProvider         String?                       @default("PAYSTACK")
+  financialProviderRef      String?
+  financialStatus           FinancialVerificationStatus   @default(NOT_STARTED)
+  financialVerifiedAt       DateTime?
+  financialFailureReason    String?
+  createdAt                 DateTime                      @default(now())
+  updatedAt                 DateTime                      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([marketplaceStatus])
+  @@index([financialStatus])
+}
+
+// ----------------------------------------------------------------------------
+// DELIVERABLES DOMAIN
+// ----------------------------------------------------------------------------
+
+enum DeliverableStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  REVISION_REQUESTED
+  RESUBMITTED
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+  LOCKED
+}
+
+enum AttachmentType {
+  FILE
+  LINK
+}
+
+enum RevisionStatus {
+  PENDING
+  RESOLVED
+}
+
+model Deliverable {
+  id          String            @id @default(uuid(7))
+  contractId  String
+  status      DeliverableStatus @default(NOT_STARTED)
+  milestoneId String? // Deferred for future scalability
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  approvedAt  DateTime?
+
+  contract Contract             @relation(fields: [contractId], references: [id])
+  versions DeliverableVersion[]
+
+  @@index([contractId])
+  @@index([status])
+}
+
+model DeliverableVersion {
+  id            String   @id @default(uuid(7))
+  deliverableId String
+  versionNumber Int
+  submittedAt   DateTime @default(now())
+  artisanNotes  String?
+
+  deliverable Deliverable             @relation(fields: [deliverableId], references: [id], onDelete: Cascade)
+  attachments DeliverableAttachment[]
+  revisions   RevisionRequest[]
+
+  @@unique([deliverableId, versionNumber])
+}
+
+model DeliverableAttachment {
+  id        String         @id @default(uuid(7))
+  versionId String
+  type      AttachmentType
+  url       String
+  name      String
+  sizeBytes Int?
+  mimeType  String?
+  createdAt DateTime       @default(now())
+
+  version DeliverableVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+}
+
+model RevisionRequest {
+  id              String         @id @default(uuid(7))
+  versionId       String
+  requestedBy     String
+  requestedAt     DateTime       @default(now())
+  comment         String
+  requiredChanges String
+  status          RevisionStatus @default(PENDING)
+  dueDate         DateTime?
+
+  version DeliverableVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  client  User               @relation(fields: [requestedBy], references: [id])
+}
+
+// ----------------------------------------------------------------------------
+// AUDIT DOMAIN
+// ----------------------------------------------------------------------------
+
+enum AuditDomain {
+  AUTHENTICATION
+  AUTHORIZATION
+  MARKETPLACE
+  FINANCIAL
+  VERIFICATION
+  CONTRACTS
+  DELIVERABLES
+  DISPUTES
+  NOTIFICATIONS
+  ADMINISTRATION
+  SYSTEM
+}
+
+enum AuditActorType {
+  SYSTEM
+  ANONYMOUS
+  USER
+  ADMIN
+  WORKER
+  WEBHOOK
+  API
+}
+
+enum AuditSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+model AuditEvent {
+  id            String         @id @default(uuid(7))
+  domain        AuditDomain
+  action        String
+  actorType     AuditActorType
+  actorId       String?
+  targetType    String
+  targetId      String
+  correlationId String
+  metadata      Json?
+  ipAddress     String?
+  userAgent     String?
+  severity      AuditSeverity  @default(INFO)
+  timestamp     DateTime       @default(now())
+
+  @@index([timestamp])
+  @@index([correlationId])
+  @@index([targetId])
+  @@index([actorId])
+  @@index([metadata], type: Gin)
+}
+
+model SystemConfig {
+  id          String   @id @default(uuid(7))
+  key         String   @unique
+  value       Json
+  description String?
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@index([key])
 }

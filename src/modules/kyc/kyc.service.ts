@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { KycVerificationStatus, KycDocumentType, KycDocumentStatus } from '../../generated/prisma';
+import { KycDocumentStatus, KycDocumentType } from '../../generated/prisma';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -30,9 +30,9 @@ export class KycService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    if (user.kycStatus === KycVerificationStatus.VERIFIED) {
-      return { message: 'User already verified', status: user.kycStatus };
-    }
+    // if (user.kycStatus === KycVerificationStatus.VERIFIED) {
+    //   return { message: 'User already verified', status: user.kycStatus };
+    // }
 
     // Attempt Paystack BVN match
     if (process.env.NODE_ENV === 'development') {
@@ -66,14 +66,14 @@ export class KycService {
     await this.prisma.user.update({
       where: { id: userId },
       data: {
-        kycVerified: true,
-        kycStatus: KycVerificationStatus.PENDING, // PENDING document review
+        // kycVerified: true,
+        // kycStatus: KycVerificationStatus.PENDING, // PENDING document review
       },
     });
 
     return {
       message: 'Identity verified successfully. Please upload required documents.',
-      status: KycVerificationStatus.PENDING,
+      // kycStatus: KycVerificationStatus.PENDING,
     };
   }
 
@@ -112,8 +112,8 @@ export class KycService {
     if (!user) throw new NotFoundException('User not found');
     
     return {
-      kycStatus: user.kycStatus,
-      kycVerified: user.kycVerified,
+      // kycStatus: user.kycStatus,
+      // kycVerified: user.kycVerified,
       documents: user.kycDocuments,
     };
   }

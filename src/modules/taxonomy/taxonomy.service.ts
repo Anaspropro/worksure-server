@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { CategoryResponseDto, SkillResponseDto } from './dto/taxonomy.dto';
+import { CategoryResponseDto, SkillResponseDto, SuggestCategoryDto } from './dto/taxonomy.dto';
 
 @Injectable()
 export class TaxonomyService {
@@ -58,5 +58,32 @@ export class TaxonomyService {
       throw new NotFoundException(`Skill with ID ${id} not found`);
     }
     return skill;
+  }
+
+  async suggestCategory(userId: string, data: SuggestCategoryDto) {
+    // Check if category already exists (case insensitive)
+    const existingCategory = await this.prisma.category.findFirst({
+      where: {
+        name: {
+          equals: data.name,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (existingCategory) {
+      throw new Error(`Category '${data.name}' already exists.`);
+    }
+
+    const suggestion = await this.prisma.categorySuggestion.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        suggestedByUserId: userId,
+        status: 'PENDING',
+      },
+    });
+
+    return suggestion;
   }
 }

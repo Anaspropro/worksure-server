@@ -4,10 +4,10 @@ import { ResolveDisputeDecision } from '../admin.service';
 
 export class ResolveDisputeDto {
   @ApiProperty({
-    enum: ['REFUND_CLIENT', 'PAY_ARTISAN'],
-    example: 'REFUND_CLIENT',
+    enum: ['CLIENT_WINS', 'ARTISAN_WINS', 'SPLIT_DECISION', 'CANCELLED'],
+    example: 'CLIENT_WINS',
   })
-  @IsEnum(['REFUND_CLIENT', 'PAY_ARTISAN'])
+  @IsEnum(['CLIENT_WINS', 'ARTISAN_WINS', 'SPLIT_DECISION', 'CANCELLED'])
   decision!: ResolveDisputeDecision;
 
   @ApiPropertyOptional({

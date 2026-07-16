@@ -1,7 +1,9 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TaxonomyService } from './taxonomy.service';
-import { CategoryResponseDto, SkillResponseDto } from './dto/taxonomy.dto';
+import { CategoryResponseDto, SkillResponseDto, SuggestCategoryDto, CategorySuggestionResponseDto } from './dto/taxonomy.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('taxonomy')
 @Controller('taxonomy')
@@ -43,5 +45,16 @@ export class TaxonomyController {
   @ApiResponse({ status: 200, type: SkillResponseDto })
   async getSkill(@Param('id') id: string): Promise<SkillResponseDto> {
     return this.taxonomyService.getSkill(id);
+  }
+
+  @Post('suggest')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Suggest a new category' })
+  @ApiResponse({ status: 201, type: CategorySuggestionResponseDto })
+  async suggestCategory(
+    @CurrentUser() user: any,
+    @Body() data: SuggestCategoryDto,
+  ): Promise<any> {
+    return this.taxonomyService.suggestCategory(user.id, data);
   }
 }

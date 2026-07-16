@@ -6,12 +6,14 @@ import { PaymentsModule } from '../payments/payments.module';
 import { DisputesModule } from '../disputes/disputes.module';
 import { AuthModule } from '../auth/auth.module';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
+import { VerificationModule } from '../verification/verification.module';
 
 @Module({
   imports: [
     forwardRef(() => PaymentsModule),
     forwardRef(() => DisputesModule),
     forwardRef(() => AuthModule),
+    VerificationModule,
   ],
   controllers: [WalletController],
   providers: [WalletService, PrismaService, PaystackClientService],
