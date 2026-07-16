@@ -368,19 +368,43 @@ exports.Prisma.ReviewScalarFieldEnum = {
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  category: 'category',
   type: 'type',
-  title: 'title',
-  message: 'message',
+  priority: 'priority',
+  payload: 'payload',
   entityId: 'entityId',
   entityType: 'entityType',
-  actionUrl: 'actionUrl',
-  priority: 'priority',
-  read: 'read',
-  isArchived: 'isArchived',
-  metadata: 'metadata',
-  createdAt: 'createdAt',
   readAt: 'readAt',
-  archivedAt: 'archivedAt'
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DeliveryAttemptScalarFieldEnum = {
+  id: 'id',
+  notificationId: 'notificationId',
+  channel: 'channel',
+  status: 'status',
+  error: 'error',
+  providerId: 'providerId',
+  deliveredAt: 'deliveredAt'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  channel: 'channel',
+  category: 'category',
+  enabled: 'enabled',
+  quietHoursOn: 'quietHoursOn'
+};
+
+exports.Prisma.NotificationTemplateScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  channel: 'channel',
+  locale: 'locale',
+  subject: 'subject',
+  content: 'content'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {
@@ -600,6 +624,16 @@ exports.Prisma.AuditEventScalarFieldEnum = {
   timestamp: 'timestamp'
 };
 
+exports.Prisma.SystemConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  description: 'description',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -780,13 +814,31 @@ exports.Prisma.ReviewOrderByRelevanceFieldEnum = {
 exports.Prisma.NotificationOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
+  category: 'category',
   type: 'type',
-  title: 'title',
-  message: 'message',
   entityId: 'entityId',
-  entityType: 'entityType',
-  actionUrl: 'actionUrl',
-  priority: 'priority'
+  entityType: 'entityType'
+};
+
+exports.Prisma.DeliveryAttemptOrderByRelevanceFieldEnum = {
+  id: 'id',
+  notificationId: 'notificationId',
+  error: 'error',
+  providerId: 'providerId'
+};
+
+exports.Prisma.NotificationPreferenceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category'
+};
+
+exports.Prisma.NotificationTemplateOrderByRelevanceFieldEnum = {
+  id: 'id',
+  type: 'type',
+  locale: 'locale',
+  subject: 'subject',
+  content: 'content'
 };
 
 exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
@@ -933,6 +985,13 @@ exports.Prisma.AuditEventOrderByRelevanceFieldEnum = {
   ipAddress: 'ipAddress',
   userAgent: 'userAgent'
 };
+
+exports.Prisma.SystemConfigOrderByRelevanceFieldEnum = {
+  id: 'id',
+  key: 'key',
+  description: 'description',
+  updatedBy: 'updatedBy'
+};
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
   CLIENT: 'CLIENT',
@@ -1043,6 +1102,28 @@ exports.MessageType = exports.$Enums.MessageType = {
   VIDEO: 'VIDEO',
   AUDIO: 'AUDIO',
   FILE: 'FILE'
+};
+
+exports.NotificationPriority = exports.$Enums.NotificationPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+exports.NotificationChannel = exports.$Enums.NotificationChannel = {
+  IN_APP: 'IN_APP',
+  EMAIL: 'EMAIL',
+  PUSH: 'PUSH',
+  SMS: 'SMS'
+};
+
+exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
+  QUEUED: 'QUEUED',
+  PROCESSING: 'PROCESSING',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED',
+  RETRYING: 'RETRYING'
 };
 
 exports.AuditEntityType = exports.$Enums.AuditEntityType = {
@@ -1184,6 +1265,9 @@ exports.Prisma.ModelName = {
   Message: 'Message',
   Review: 'Review',
   Notification: 'Notification',
+  DeliveryAttempt: 'DeliveryAttempt',
+  NotificationPreference: 'NotificationPreference',
+  NotificationTemplate: 'NotificationTemplate',
   AuditLog: 'AuditLog',
   Payment: 'Payment',
   KycDocument: 'KycDocument',
@@ -1201,7 +1285,8 @@ exports.Prisma.ModelName = {
   DeliverableVersion: 'DeliverableVersion',
   DeliverableAttachment: 'DeliverableAttachment',
   RevisionRequest: 'RevisionRequest',
-  AuditEvent: 'AuditEvent'
+  AuditEvent: 'AuditEvent',
+  SystemConfig: 'SystemConfig'
 };
 
 /**

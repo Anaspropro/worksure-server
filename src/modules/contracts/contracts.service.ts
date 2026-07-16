@@ -372,17 +372,13 @@ export class ContractsService {
           data: { status: 'REJECTED' },
         });
 
-        const notificationsData = otherProposals.map(p => ({
-          id: uuidv7(),
-          userId: p.artisanId,
-          title: 'Proposal Rejected',
-          message: 'The client has awarded the contract for this job to another artisan.',
-          createdAt: new Date(),
-        }));
-        
-        await tx.notification.createMany({
-          data: notificationsData,
-        });
+        for (const p of otherProposals) {
+          this.eventEmitter.emit('proposal.rejected', {
+            proposalId: p.id,
+            jobId: proposal.jobId,
+            artisanId: p.artisanId,
+          });
+        }
       }
 
       return newContract;

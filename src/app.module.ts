@@ -42,6 +42,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { EventsModule } from './modules/events/events.module';
 import KeyvRedis from '@keyv/redis';
 import { redisConnection } from './queue/redis';
+import { BullModule } from '@nestjs/bullmq';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
@@ -92,6 +93,9 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     EventEmitterModule.forRoot({
       wildcard: true,
       delimiter: '.',
+    }),
+    BullModule.forRoot({
+      connection: redisConnection as any,
     }),
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({

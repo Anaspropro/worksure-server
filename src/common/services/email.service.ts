@@ -23,6 +23,34 @@ export class EmailService {
     }
   }
 
+  async sendEmail(options: { to: string; subject: string; html: string; text?: string }) {
+    const fromAddress = this.configService.emailFromAddress;
+
+    if (this.resend) {
+      try {
+        const { data, error } = await this.resend.emails.send({
+          from: fromAddress,
+          to: options.to,
+          subject: options.subject,
+          html: options.html,
+          text: options.text,
+        });
+
+        if (error) {
+          this.logger.error(`Failed to send email via Resend: ${JSON.stringify(error)}`);
+          throw new Error(error.message);
+        }
+
+        this.logger.log(`Email sent successfully to ${options.to}. Message ID: ${data?.id}`);
+      } catch (err: any) {
+        this.logger.error(`Error sending email to ${options.to}: ${err.message}`, err.stack);
+        throw err;
+      }
+    } else {
+      this.logger.log(`\n========================================================================\n[DEV MODE] Email to ${options.to}:\nSubject: ${options.subject}\nBody: ${options.html}\n========================================================================`);
+    }
+  }
+
   async sendVerificationOtp(to: string, otp: string) {
     const fromAddress = this.configService.emailFromAddress;
     const subject = `${otp} is your WorkSure verification code`;

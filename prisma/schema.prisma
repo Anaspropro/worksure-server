@@ -146,6 +146,28 @@ enum PaymentStatus {
   FAILED
 }
 
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  PUSH
+  SMS
+}
+
+enum DeliveryStatus {
+  QUEUED
+  PROCESSING
+  DELIVERED
+  FAILED
+  RETRYING
+}
+
 model User {
   id                          String     @id
   name                        String
@@ -181,6 +203,7 @@ model User {
   sentReviews         Review[]             @relation("SentReviews")
   receivedReviews     Review[]             @relation("ReceivedReviews")
   notifications       Notification[]
+  notificationPrefs   NotificationPreference[]
   transactions        Transaction[]
   payments            Payment[]            @relation("UserPayments")
   clientDisputes      Dispute[]            @relation("ClientDisputes")
@@ -544,25 +567,62 @@ model Review {
 }
 
 model Notification {
-  id         String    @id @default(uuid(7))
-  userId     String
-  type       String    @default("system_update")
-  title      String
-  message    String
-  entityId   String?
-  entityType String?
-  actionUrl  String?
-  priority   String    @default("medium")
-  read       Boolean   @default(false)
-  isArchived Boolean   @default(false)
-  metadata   Json?
-  createdAt  DateTime
-  readAt     DateTime?
-  archivedAt DateTime?
-  user       User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  id          String   @id @default(uuid(7))
+  userId      String
+  category    String   // 'FINANCIAL', 'CONTRACTS', 'SYSTEM'
+  type        String   // 'ESCROW_FUNDED'
+  priority    NotificationPriority @default(NORMAL)
+  payload     Json     // Dynamic variables for rendering
+  entityId    String?  
+  entityType  String?
+  readAt      DateTime?
+  archivedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  deliveries  DeliveryAttempt[]
+  user        User     @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@index([userId, createdAt])
-  @@index([userId, type, createdAt])
+  @@index([userId, category, createdAt])
+}
+
+model DeliveryAttempt {
+  id             String @id @default(uuid(7))
+  notificationId String
+  channel        NotificationChannel
+  status         DeliveryStatus
+  error          String?
+  providerId     String? // e.g. SendGrid Message ID
+  deliveredAt    DateTime?
+  
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  
+  @@index([notificationId])
+  @@index([status, channel])
+}
+
+model NotificationPreference {
+  id           String @id @default(uuid(7))
+  userId       String
+  channel      NotificationChannel
+  category     String // e.g. 'FINANCIAL' or 'ENTITY:contract_id'
+  enabled      Boolean @default(true)
+  quietHoursOn Boolean @default(false)
+  
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, channel, category])
+}
+
+model NotificationTemplate {
+  id       String @id @default(uuid(7))
+  type     String // 'ESCROW_FUNDED'
+  channel  NotificationChannel
+  locale   String @default("en")
+  subject  String?
+  content  String // Handlebars/Mustache syntax
+  
+  @@unique([type, channel, locale])
 }
 
 model AuditLog {

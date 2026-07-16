@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AdminRole, UserRole } from '@prisma/client';
+import { AdminRole, UserRole } from '../../generated/prisma';
 import { ADMIN_ROLES_KEY } from '../decorators/admin-roles.decorator';
 import { PrismaService } from '../../database/prisma.service';
 

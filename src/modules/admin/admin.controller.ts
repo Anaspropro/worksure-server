@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { UserRole, AdminRole } from '@prisma/client';
+import { UserRole, AdminRole } from '../../generated/prisma';
 import { AdminRolesGuard } from '../../common/guards/admin-roles.guard';
 import { RequireAdminRole } from '../../common/decorators/admin-roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -292,51 +292,6 @@ export class AdminController {
     return this.analyticsService.getContractStats();
   }
 
-  @ApiOperation({ summary: 'List all category suggestions' })
-  @ApiQuery({ name: 'status', required: false, description: 'Filter by PENDING, APPROVED, REJECTED' })
-  @Get('taxonomy/suggestions')
-  @RequireAdminRole(AdminRole.OPERATIONS_MANAGER)
-  getCategorySuggestions(
-    @Query('status') status?: string,
-    @Query('cursor') cursor?: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.adminService.getCategorySuggestions(
-      status,
-      cursor,
-      limit ? parseInt(limit, 10) : undefined,
-    );
-  }
-
-  @ApiOperation({ summary: 'Approve a category suggestion' })
-  @ApiParam({ name: 'id', description: 'Suggestion identifier' })
-  @Patch('taxonomy/suggestions/:id/approve')
-  @RequireAdminRole(AdminRole.OPERATIONS_MANAGER)
-  approveCategorySuggestion(
-    @Param('id') suggestionId: string,
-    @CurrentUser() adminUser: AuthenticatedUser,
-  ) {
-    return this.adminService.approveCategorySuggestion(
-      suggestionId,
-      this.getActor(adminUser),
-    );
-  }
-
-  @ApiOperation({ summary: 'Reject a category suggestion' })
-  @ApiParam({ name: 'id', description: 'Suggestion identifier' })
-  @Patch('taxonomy/suggestions/:id/reject')
-  @RequireAdminRole(AdminRole.OPERATIONS_MANAGER)
-  rejectCategorySuggestion(
-    @Param('id') suggestionId: string,
-    @Body() body: RejectSuggestionDto,
-    @CurrentUser() adminUser: AuthenticatedUser,
-  ) {
-    return this.adminService.rejectCategorySuggestion(
-      suggestionId,
-      this.getActor(adminUser),
-      body?.reason,
-    );
-  }
 
   @ApiOperation({ summary: 'List all system configurations' })
   @Get('config')

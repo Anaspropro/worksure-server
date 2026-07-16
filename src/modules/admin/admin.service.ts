@@ -23,6 +23,7 @@ import {
 } from '../../generated/prisma';
 import { PrismaService } from '../../database/prisma.service';
 import { RedisCacheService } from '../../common/cache/redis-cache.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 type AdminActor = {
   id: string;
@@ -51,7 +52,7 @@ const DISPUTE_DECISIONS = Object.values(DisputeDecision);
 
 type AdminUserRecord = Prisma.UserGetPayload<Record<string, never>>;
 type AdminDisputeRecord = Prisma.DisputeGetPayload<{
-  include: { history: { orderBy: { at: 'asc' } } };
+  include: { history: { orderBy: { at: 'asc' } }, contract: { select: { jobId: true } }, evidence: true };
 }>;
 type AdminJobRecord = Prisma.JobGetPayload<Record<string, never>>;
 type AdminTransactionRecord = Prisma.TransactionGetPayload<
@@ -69,6 +70,7 @@ export class AdminService {
     private readonly paymentsService: PaymentsService,
     private readonly notificationsService: NotificationsService,
     private readonly cacheService: RedisCacheService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async getAllUsers(search?: string, role?: UserRole, cursor?: string, limit = 50) {
@@ -137,9 +139,7 @@ export class AdminService {
         role: true,
         status: true,
         artisanVerified: true,
-        kycVerified: true,
         emailVerified: true,
-        kycStatus: true,
         paystackRecipientCode: true,
         payoutBankCode: true,
         payoutAccountNumber: true,
@@ -160,7 +160,7 @@ export class AdminService {
           take: 10,
         },
         notifications: {
-          select: { id: true, title: true, message: true, createdAt: true },
+          select: { id: true, category: true, type: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
@@ -209,7 +209,7 @@ export class AdminService {
         role: user.role,
         status: user.status,
         artisanVerified: user.artisanVerified,
-        kycVerified: user.kycVerified,
+
         createdAt: user.createdAt.toISOString(),
         lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
         updatedAt: user.updatedAt.toISOString(),
@@ -238,8 +238,8 @@ export class AdminService {
         ),
         notifications: user.notifications.map((notification) => ({
           id: notification.id,
-          title: notification.title,
-          message: notification.message,
+          category: notification.category,
+          type: notification.type,
           createdAt: notification.createdAt.toISOString(),
         })),
         activity: {
@@ -382,14 +382,8 @@ export class AdminService {
       data: { artisanVerified: false }, // Maintain false state
     });
 
-    await this.prisma.notification.create({
-      data: {
-        id: this.nextIdentifier(),
-        userId: user.id,
-        title: 'Verification Rejected',
-        message: 'Your artisan verification request has been rejected. Please ensure your provided details are accurate and resubmit if necessary.',
-        createdAt: new Date(),
-      },
+    this.eventEmitter.emit('marketplace.verification.rejected', {
+      userId: user.id,
     });
 
     await this.logAction(
@@ -515,7 +509,7 @@ export class AdminService {
 
     const resolvedAt = new Date();
     const notificationMessage =
-      parsedDecision === DisputeDecision.REFUND_CLIENT
+      parsedDecision === DisputeDecision.CLIENT_WINS
         ? `A refund of NGN ${dispute.amount} has been approved for dispute ${dispute.id}.`
         : `A payout of NGN ${dispute.amount} has been approved for dispute ${dispute.id}.`;
 
@@ -543,9 +537,9 @@ export class AdminService {
         },
       });
 
-      if (parsedDecision === DisputeDecision.REFUND_CLIENT && dispute.jobId) {
+      if (parsedDecision === DisputeDecision.CLIENT_WINS && dispute.contract?.jobId) {
         await tx.job.update({
-          where: { id: dispute.jobId },
+          where: { id: dispute.contract.jobId },
           data: {
             status: JobStatus.FORCE_CLOSED,
             flagged: true,
@@ -572,7 +566,11 @@ export class AdminService {
 
       return tx.dispute.findUniqueOrThrow({
         where: { id: dispute.id },
-        include: { history: { orderBy: { at: 'asc' } } },
+        include: { 
+          history: { orderBy: { at: 'asc' } },
+          contract: { select: { jobId: true } },
+          evidence: true
+        },
       });
     });
 
@@ -584,7 +582,7 @@ export class AdminService {
         throw new BadRequestException('Dispute is not associated with a contract');
       }
 
-      if (parsedDecision === DisputeDecision.REFUND_CLIENT) {
+      if (parsedDecision === DisputeDecision.CLIENT_WINS) {
         await this.paymentsService.refundContract(
           dispute.contractId,
           actor.id,
@@ -611,26 +609,12 @@ export class AdminService {
     }
 
     // Step 3: Send real-time notifications via NotificationsService
-    await Promise.allSettled([
-      this.notificationsService.createNotification({
-        userId: dispute.clientId,
-        type: 'system_alert' as any,
-        title: 'Dispute Update',
-        message: notificationMessage,
-        entityId: dispute.id,
-        entityType: 'dispute',
-        priority: 'high' as any,
-      }),
-      this.notificationsService.createNotification({
-        userId: dispute.artisanId,
-        type: 'system_alert' as any,
-        title: 'Dispute Update',
-        message: notificationMessage,
-        entityId: dispute.id,
-        entityType: 'dispute',
-        priority: 'high' as any,
-      }),
-    ]);
+    this.eventEmitter.emit('dispute.resolved', {
+      disputeId: dispute.id,
+      decision: parsedDecision,
+      clientId: dispute.clientId,
+      artisanId: dispute.artisanId,
+    });
 
     await this.cacheService.invalidatePattern('*admin/disputes*');
     await this.cacheService.invalidatePattern('*admin/jobs*');
@@ -645,7 +629,7 @@ export class AdminService {
       sideEffects: {
         fundMovementTriggered: fundMovementSucceeded,
         notificationsSent: 2,
-        jobForceClosed: parsedDecision === DisputeDecision.REFUND_CLIENT,
+        jobForceClosed: parsedDecision === DisputeDecision.CLIENT_WINS,
       },
     };
   }
@@ -927,6 +911,10 @@ export class AdminService {
         history: {
           orderBy: { at: 'asc' },
         },
+        contract: {
+          select: { jobId: true },
+        },
+        evidence: true,
       },
     });
     if (!dispute) {
@@ -990,7 +978,7 @@ export class AdminService {
   ) {
     if (!decision || !DISPUTE_DECISIONS.includes(decision as DisputeDecision)) {
       throw new BadRequestException(
-        'Dispute decision must be REFUND_CLIENT or PAY_ARTISAN.',
+        'Dispute decision must be CLIENT_WINS or ARTISAN_WINS.',
       );
     }
 
@@ -1014,17 +1002,13 @@ export class AdminService {
     return {
       id: dispute.id,
       contractId: dispute.contractId,
-      jobId: dispute.jobId,
+      jobId: dispute.contract?.jobId,
       clientId: dispute.clientId,
       artisanId: dispute.artisanId,
       amount: dispute.amount,
       status: dispute.status,
       createdAt: dispute.createdAt.toISOString(),
-      evidence: {
-        images: this.jsonStringArray(dispute.evidenceImages),
-        videos: this.jsonStringArray(dispute.evidenceVideos),
-        messages: this.jsonStringArray(dispute.evidenceMessages),
-      },
+      evidence: dispute.evidence,
       history: dispute.history.map((entry) => ({
         action: entry.action,
         at: entry.at.toISOString(),
@@ -1121,6 +1105,8 @@ export class AdminService {
 
   private nextIdentifier(): string {
     return uuidv7();
+  }
+
   async getSystemConfig() {
     const configs = await this.prisma.systemConfig.findMany({
       orderBy: { key: 'asc' },

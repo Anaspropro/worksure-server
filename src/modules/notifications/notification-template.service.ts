@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { DomainEventName } from '../../common/events/domain.events';
+import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from '../../database/prisma.service';
+import { NotificationChannel } from '../../generated/prisma';
 
-export interface NotificationContent {
-  title: string;
-  message: string;
-  emailSubject?: string;
-  emailBody?: string;
+export interface RenderedNotification {
+  subject?: string;
+  content: string;
 }
 
 @Injectable()
 export class NotificationTemplateService {
+  private readonly logger = new Logger(NotificationTemplateService.name);
+
+  constructor(private readonly prisma: PrismaService) {}
+
   /**
    * Interpolates variables into a template string
    * e.g. interpolate('Hello {name}', { name: 'World' }) => 'Hello World'
@@ -21,64 +24,61 @@ export class NotificationTemplateService {
   }
 
   /**
-   * Generates the notification content for a given domain event
+   * Generates the notification content by fetching template from DB
    */
-  public generate(eventName: DomainEventName, variables: Record<string, any>): NotificationContent {
-    switch (eventName) {
-      case DomainEventName.JOB_POSTED:
-        return {
-          title: 'Job Posted',
-          message: this.interpolate('Your job "{jobTitle}" has been successfully posted.', variables),
-          emailSubject: this.interpolate('Job Posted: {jobTitle}', variables),
-          emailBody: this.interpolate('Your job "{jobTitle}" has been successfully posted and is now visible to artisans.', variables),
-        };
+  public async render(
+    type: string, 
+    channel: NotificationChannel, 
+    locale: string = 'en', 
+    variables: Record<string, any>
+  ): Promise<RenderedNotification> {
+    
+    // Attempt to fetch template from DB
+    const template = await this.prisma.notificationTemplate.findUnique({
+      where: {
+        type_channel_locale: {
+          type,
+          channel,
+          locale
+        }
+      }
+    });
 
-      case DomainEventName.PROPOSAL_SUBMITTED:
-        return {
-          title: 'New Proposal Received',
-          message: this.interpolate('You have received a new proposal for {jobTitle}.', variables),
-          emailSubject: this.interpolate('New Proposal for {jobTitle}', variables),
-          emailBody: this.interpolate('A new proposal has been submitted for your job "{jobTitle}". Log in to review it.', variables),
-        };
+    if (template) {
+      return {
+        subject: template.subject ? this.interpolate(template.subject, variables) : undefined,
+        content: this.interpolate(template.content, variables)
+      };
+    }
 
-      case DomainEventName.PROPOSAL_ACCEPTED:
-        return {
-          title: 'Proposal Accepted',
-          message: this.interpolate('Congratulations! Your proposal for {jobTitle} has been accepted.', variables),
-          emailSubject: this.interpolate('Proposal Accepted: {jobTitle}', variables),
-          emailBody: this.interpolate('Congratulations! The client has accepted your proposal for the job "{jobTitle}".', variables),
-        };
+    this.logger.warn(`No template found for type=${type}, channel=${channel}, locale=${locale}. Falling back.`);
 
-      case DomainEventName.CONTRACT_FUNDED:
+    // Fallbacks
+    switch (type) {
+      case 'PROPOSAL_RECEIVED':
         return {
-          title: 'Contract Funded',
-          message: this.interpolate('The client has funded the escrow for {jobTitle}. You may now begin work.', variables),
-          emailSubject: this.interpolate('Contract Funded: {jobTitle}', variables),
-          emailBody: this.interpolate('The escrow for contract {contractReference} ({jobTitle}) has been fully funded. You can now securely begin work.', variables),
+          subject: this.interpolate('New Proposal for {jobTitle}', variables),
+          content: this.interpolate('You have received a new proposal for {jobTitle}.', variables),
         };
-
-      case DomainEventName.PAYMENT_PROCESSED:
+      case 'CONTRACT_FUNDED':
         return {
-          title: 'Payment Released',
-          message: this.interpolate('Your payment for {jobTitle} has been successfully released to your wallet.', variables),
-          emailSubject: this.interpolate('Payment Released: {jobTitle}', variables),
-          emailBody: this.interpolate('Funds for the job "{jobTitle}" have been released from escrow and added to your wallet balance.', variables),
+          subject: this.interpolate('Contract Funded: {jobTitle}', variables),
+          content: this.interpolate('The client has funded the escrow for {jobTitle}. You may now begin work.', variables),
         };
-
-      case DomainEventName.DISPUTE_RAISED:
+      case 'DISPUTE_CREATED':
         return {
-          title: 'Dispute Opened',
-          message: this.interpolate('A dispute has been opened for contract {contractReference}. Our team will review it shortly.', variables),
-          emailSubject: this.interpolate('Dispute Opened for Contract {contractReference}', variables),
-          emailBody: this.interpolate('A dispute has been initiated for contract {contractReference}. An administrator will be assigned to review the case. Please check the platform for updates.', variables),
+          subject: 'Dispute Opened',
+          content: 'A dispute has been opened for your contract. Please review it.',
         };
-
+      case 'MARKETPLACE_VERIFICATION_APPROVED':
+        return {
+          subject: 'Account Approved!',
+          content: 'Congratulations! Your profile has been approved.',
+        };
       default:
         return {
-          title: 'Notification',
-          message: 'You have a new notification.',
-          emailSubject: 'New Notification',
-          emailBody: 'You have a new notification on WorkSure.',
+          subject: 'New Notification',
+          content: 'You have a new notification.',
         };
     }
   }

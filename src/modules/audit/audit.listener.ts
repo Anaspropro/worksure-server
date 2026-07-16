@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AuditService } from './audit.service';
 import { auditContextStorage } from '../../common/middleware/audit-context.middleware';
-import { AuditDomain, AuditActorType, AuditSeverity } from '@prisma/client';
+import { AuditDomain, AuditActorType, AuditSeverity } from '../../generated/prisma';
 
 export interface BaseDomainEvent {
   domain: AuditDomain;

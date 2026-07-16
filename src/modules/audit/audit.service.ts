@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { RedactionService } from './redaction.service';
-import { AuditDomain, AuditActorType, AuditSeverity, Prisma } from '@prisma/client';
+import { AuditDomain, AuditActorType, AuditSeverity, Prisma } from '../../generated/prisma';
 
 @Injectable()
 export class AuditService {
