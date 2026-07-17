@@ -63,6 +63,7 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
         email: 'webwiz.admin@worksure.dev',
         passwordHash: adminPasswordHash,
         role: 'ADMIN',
+        adminRoles: ['SUPER_ADMIN'],
         status: 'ACTIVE',
         artisanVerified: false,
         emailVerified: true,
