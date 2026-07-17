@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { v7 as uuidv7 } from 'uuid';
+import { reputationQueue } from '../../queue/queue';
 import { AuthService } from '../auth/auth.service';
 import { PaymentsService } from '../payments/payments.service';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -20,9 +21,11 @@ import {
   TransactionType,
   UserRole,
   UserStatus,
+  ReviewStatus,
 } from '../../generated/prisma';
 import { PrismaService } from '../../database/prisma.service';
 import { RedisCacheService } from '../../common/cache/redis-cache.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 type AdminActor = {
   id: string;
@@ -51,7 +54,7 @@ const DISPUTE_DECISIONS = Object.values(DisputeDecision);
 
 type AdminUserRecord = Prisma.UserGetPayload<Record<string, never>>;
 type AdminDisputeRecord = Prisma.DisputeGetPayload<{
-  include: { history: { orderBy: { at: 'asc' } } };
+  include: { history: { orderBy: { at: 'asc' } }, contract: { select: { jobId: true } }, evidence: true };
 }>;
 type AdminJobRecord = Prisma.JobGetPayload<Record<string, never>>;
 type AdminTransactionRecord = Prisma.TransactionGetPayload<
@@ -69,6 +72,7 @@ export class AdminService {
     private readonly paymentsService: PaymentsService,
     private readonly notificationsService: NotificationsService,
     private readonly cacheService: RedisCacheService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async getAllUsers(search?: string, role?: UserRole, cursor?: string, limit = 50) {
@@ -137,9 +141,7 @@ export class AdminService {
         role: true,
         status: true,
         artisanVerified: true,
-        kycVerified: true,
         emailVerified: true,
-        kycStatus: true,
         paystackRecipientCode: true,
         payoutBankCode: true,
         payoutAccountNumber: true,
@@ -160,7 +162,7 @@ export class AdminService {
           take: 10,
         },
         notifications: {
-          select: { id: true, title: true, message: true, createdAt: true },
+          select: { id: true, category: true, type: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
@@ -184,7 +186,7 @@ export class AdminService {
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
-        sentReviews: {
+        authoredReviews: {
           select: { id: true, rating: true, comment: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
@@ -209,7 +211,7 @@ export class AdminService {
         role: user.role,
         status: user.status,
         artisanVerified: user.artisanVerified,
-        kycVerified: user.kycVerified,
+
         createdAt: user.createdAt.toISOString(),
         lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
         updatedAt: user.updatedAt.toISOString(),
@@ -238,8 +240,8 @@ export class AdminService {
         ),
         notifications: user.notifications.map((notification) => ({
           id: notification.id,
-          title: notification.title,
-          message: notification.message,
+          category: notification.category,
+          type: notification.type,
           createdAt: notification.createdAt.toISOString(),
         })),
         activity: {
@@ -257,7 +259,7 @@ export class AdminService {
             status: contract.status,
             createdAt: contract.createdAt.toISOString(),
           })),
-          sentReviews: user.sentReviews.map((review) => ({
+          authoredReviews: user.authoredReviews.map((review) => ({
             id: review.id,
             rating: review.rating,
             comment: review.comment,
@@ -382,14 +384,8 @@ export class AdminService {
       data: { artisanVerified: false }, // Maintain false state
     });
 
-    await this.prisma.notification.create({
-      data: {
-        id: this.nextIdentifier(),
-        userId: user.id,
-        title: 'Verification Rejected',
-        message: 'Your artisan verification request has been rejected. Please ensure your provided details are accurate and resubmit if necessary.',
-        createdAt: new Date(),
-      },
+    this.eventEmitter.emit('marketplace.verification.rejected', {
+      userId: user.id,
     });
 
     await this.logAction(
@@ -515,7 +511,7 @@ export class AdminService {
 
     const resolvedAt = new Date();
     const notificationMessage =
-      parsedDecision === DisputeDecision.REFUND_CLIENT
+      parsedDecision === DisputeDecision.CLIENT_WINS
         ? `A refund of NGN ${dispute.amount} has been approved for dispute ${dispute.id}.`
         : `A payout of NGN ${dispute.amount} has been approved for dispute ${dispute.id}.`;
 
@@ -543,9 +539,9 @@ export class AdminService {
         },
       });
 
-      if (parsedDecision === DisputeDecision.REFUND_CLIENT && dispute.jobId) {
+      if (parsedDecision === DisputeDecision.CLIENT_WINS && dispute.contract?.jobId) {
         await tx.job.update({
-          where: { id: dispute.jobId },
+          where: { id: dispute.contract.jobId },
           data: {
             status: JobStatus.FORCE_CLOSED,
             flagged: true,
@@ -572,7 +568,11 @@ export class AdminService {
 
       return tx.dispute.findUniqueOrThrow({
         where: { id: dispute.id },
-        include: { history: { orderBy: { at: 'asc' } } },
+        include: { 
+          history: { orderBy: { at: 'asc' } },
+          contract: { select: { jobId: true } },
+          evidence: true
+        },
       });
     });
 
@@ -584,7 +584,7 @@ export class AdminService {
         throw new BadRequestException('Dispute is not associated with a contract');
       }
 
-      if (parsedDecision === DisputeDecision.REFUND_CLIENT) {
+      if (parsedDecision === DisputeDecision.CLIENT_WINS) {
         await this.paymentsService.refundContract(
           dispute.contractId,
           actor.id,
@@ -611,26 +611,12 @@ export class AdminService {
     }
 
     // Step 3: Send real-time notifications via NotificationsService
-    await Promise.allSettled([
-      this.notificationsService.createNotification({
-        userId: dispute.clientId,
-        type: 'system_alert' as any,
-        title: 'Dispute Update',
-        message: notificationMessage,
-        entityId: dispute.id,
-        entityType: 'dispute',
-        priority: 'high' as any,
-      }),
-      this.notificationsService.createNotification({
-        userId: dispute.artisanId,
-        type: 'system_alert' as any,
-        title: 'Dispute Update',
-        message: notificationMessage,
-        entityId: dispute.id,
-        entityType: 'dispute',
-        priority: 'high' as any,
-      }),
-    ]);
+    this.eventEmitter.emit('dispute.resolved', {
+      disputeId: dispute.id,
+      decision: parsedDecision,
+      clientId: dispute.clientId,
+      artisanId: dispute.artisanId,
+    });
 
     await this.cacheService.invalidatePattern('*admin/disputes*');
     await this.cacheService.invalidatePattern('*admin/jobs*');
@@ -645,7 +631,7 @@ export class AdminService {
       sideEffects: {
         fundMovementTriggered: fundMovementSucceeded,
         notificationsSent: 2,
-        jobForceClosed: parsedDecision === DisputeDecision.REFUND_CLIENT,
+        jobForceClosed: parsedDecision === DisputeDecision.CLIENT_WINS,
       },
     };
   }
@@ -840,6 +826,115 @@ export class AdminService {
     };
   }
 
+  async getAllReviews(search?: string, status?: string, cursor?: string, limit = 50) {
+    const normalizedStatus = status?.toUpperCase();
+    if (
+      normalizedStatus &&
+      !Object.values(ReviewStatus).includes(normalizedStatus as ReviewStatus)
+    ) {
+      throw new BadRequestException(`Unsupported review status filter: ${status}`);
+    }
+
+    const take = Math.min(limit, 100);
+
+    const baseWhere: Prisma.ReviewWhereInput = normalizedStatus
+      ? { status: normalizedStatus as ReviewStatus }
+      : {};
+
+    // Search can target author or target names. We don't have review text search here yet unless requested.
+    const where: Prisma.ReviewWhereInput = search
+      ? {
+          ...baseWhere,
+          OR: [
+            { id: { equals: search } },
+            { author: { name: { contains: search, mode: 'insensitive' } } },
+            { target: { name: { contains: search, mode: 'insensitive' } } },
+          ],
+        }
+      : baseWhere;
+
+    const [reviews, total] = await Promise.all([
+      this.prisma.review.findMany({
+        where,
+        include: {
+          author: { select: { name: true, email: true } },
+          target: { select: { name: true, email: true } },
+          contract: { select: { job: { select: { title: true } } } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
+      }),
+      this.prisma.review.count({ where }),
+    ]);
+
+    let nextCursor: string | undefined = undefined;
+    if (reviews.length > take) {
+      const nextItem = reviews.pop();
+      nextCursor = nextItem?.id;
+    }
+
+    return {
+      data: reviews.map(r => ({
+        ...r,
+        authorName: r.author.name,
+        targetName: r.target.name,
+        jobTitle: r.contract?.job?.title,
+      })),
+      meta: {
+        total,
+        limit: take,
+        nextCursor,
+      },
+    };
+  }
+
+  async moderateReview(
+    reviewId: string,
+    action: 'FLAG' | 'LOCK' | 'RESTORE',
+    actor: AdminActor,
+    reason?: string,
+  ) {
+    const review = await this.prisma.review.findUnique({
+      where: { id: reviewId },
+    });
+
+    if (!review) {
+      throw new NotFoundException(`Review ${reviewId} not found.`);
+    }
+
+    let newStatus: ReviewStatus;
+    if (action === 'FLAG') newStatus = ReviewStatus.FLAGGED;
+    else if (action === 'LOCK') newStatus = ReviewStatus.LOCKED;
+    else newStatus = ReviewStatus.VISIBLE;
+
+    const updatedReview = await this.prisma.review.update({
+      where: { id: reviewId },
+      data: { status: newStatus },
+    });
+
+    // We must recalculate the JSS score of the target because this review
+    // might have been removed from or added back to their active Visible reviews.
+    await reputationQueue.add('calculateReputation', { userId: review.targetId });
+
+    await this.logAction(
+      `REVIEW_${action}ED`, // e.g., REVIEW_LOCKED
+      AuditEntityType.CONTRACT, // Assuming Review is part of Contract lifecycle
+      reviewId,
+      actor,
+      {
+        reason,
+        targetId: review.targetId,
+        authorId: review.authorId,
+      },
+    );
+
+    return { data: updatedReview };
+  }
+
   async getAllContracts(search?: string, status?: string, cursor?: string, limit = 50) {
     const normalizedStatus = status?.toUpperCase();
     if (
@@ -927,6 +1022,10 @@ export class AdminService {
         history: {
           orderBy: { at: 'asc' },
         },
+        contract: {
+          select: { jobId: true },
+        },
+        evidence: true,
       },
     });
     if (!dispute) {
@@ -990,7 +1089,7 @@ export class AdminService {
   ) {
     if (!decision || !DISPUTE_DECISIONS.includes(decision as DisputeDecision)) {
       throw new BadRequestException(
-        'Dispute decision must be REFUND_CLIENT or PAY_ARTISAN.',
+        'Dispute decision must be CLIENT_WINS or ARTISAN_WINS.',
       );
     }
 
@@ -1014,17 +1113,13 @@ export class AdminService {
     return {
       id: dispute.id,
       contractId: dispute.contractId,
-      jobId: dispute.jobId,
+      jobId: dispute.contract?.jobId,
       clientId: dispute.clientId,
       artisanId: dispute.artisanId,
       amount: dispute.amount,
       status: dispute.status,
       createdAt: dispute.createdAt.toISOString(),
-      evidence: {
-        images: this.jsonStringArray(dispute.evidenceImages),
-        videos: this.jsonStringArray(dispute.evidenceVideos),
-        messages: this.jsonStringArray(dispute.evidenceMessages),
-      },
+      evidence: dispute.evidence,
       history: dispute.history.map((entry) => ({
         action: entry.action,
         at: entry.at.toISOString(),
@@ -1122,4 +1217,44 @@ export class AdminService {
   private nextIdentifier(): string {
     return uuidv7();
   }
+
+  async getSystemConfig() {
+    const configs = await this.prisma.systemConfig.findMany({
+      orderBy: { key: 'asc' },
+    });
+    return { data: configs };
+  }
+
+  async updateSystemConfig(key: string, value: any, actor: AdminActor, description?: string) {
+    const config = await this.prisma.systemConfig.upsert({
+      where: { key },
+      update: {
+        value,
+        description: description ?? undefined,
+        updatedBy: actor.id,
+      },
+      create: {
+        id: uuidv7(),
+        key,
+        value,
+        description,
+        updatedBy: actor.id,
+      },
+    });
+
+    await this.logAction(
+      'CONFIG_UPDATED',
+      AuditEntityType.USER,
+      'SYSTEM',
+      actor,
+      {
+        key,
+        value,
+      },
+    );
+
+    await this.cacheService.invalidatePattern('*admin/config*');
+    return { data: config };
+  }
 }
+

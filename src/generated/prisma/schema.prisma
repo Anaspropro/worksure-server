@@ -14,6 +14,17 @@ enum UserRole {
   ARTISAN
 }
 
+enum AdminRole {
+  SUPER_ADMIN
+  OPERATIONS_MANAGER
+  FINANCE_ADMIN
+  DISPUTE_ADMIN
+  VERIFICATION_ADMIN
+  SUPPORT_ADMIN
+  CONTENT_MODERATOR
+  ANALYTICS_ADMIN
+}
+
 enum UserStatus {
   ACTIVE
   BANNED
@@ -21,12 +32,20 @@ enum UserStatus {
 
 enum DisputeStatus {
   OPEN
+  UNDER_REVIEW
+  EVIDENCE_COLLECTION
+  AWAITING_RESPONSE
+  ADMIN_INVESTIGATION
+  DECISION_PENDING
   RESOLVED
+  CLOSED
 }
 
 enum DisputeDecision {
-  REFUND_CLIENT
-  PAY_ARTISAN
+  CLIENT_WINS
+  ARTISAN_WINS
+  SPLIT_DECISION
+  CANCELLED
 }
 
 enum JobStatus {
@@ -127,27 +146,41 @@ enum PaymentStatus {
   FAILED
 }
 
-enum KycVerificationStatus {
-  UNVERIFIED
-  PENDING
-  VERIFIED
-  REJECTED
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  PUSH
+  SMS
+}
+
+enum DeliveryStatus {
+  QUEUED
+  PROCESSING
+  DELIVERED
+  FAILED
+  RETRYING
 }
 
 model User {
-  id                          String                @id
+  id                          String      @id
   name                        String
-  email                       String                @unique
+  email                       String      @unique
   passwordHash                String
-  passwordResetTokenHash      String?               @unique
+  passwordResetTokenHash      String?     @unique
   passwordResetTokenExpiresAt DateTime?
   passwordResetRequestedAt    DateTime?
   role                        UserRole
+  adminRoles                  AdminRole[]
   status                      UserStatus
-  artisanVerified             Boolean               @default(false)
-  kycVerified                 Boolean               @default(false)
-  emailVerified               Boolean               @default(false)
-  kycStatus                   KycVerificationStatus @default(UNVERIFIED)
+  artisanVerified             Boolean     @default(false)
+  emailVerified               Boolean     @default(false)
   paystackRecipientCode       String?
   payoutBankCode              String?
   payoutAccountNumber         String?
@@ -155,67 +188,99 @@ model User {
   phone                       String?
   createdAt                   DateTime
   lastLoginAt                 DateTime?
-  updatedAt                   DateTime              @updatedAt
+  updatedAt                   DateTime    @updatedAt
 
   // Relations
-  artisanProfile    ArtisanProfile?
-  kycDocuments      KycDocument[]
-  sentProposals     Proposal[]      @relation("SentProposals")
-  receivedProposals Proposal[]      @relation("ReceivedProposals")
-  clientContracts   Contract[]      @relation("ClientContracts")
-  artisanContracts  Contract[]      @relation("ArtisanContracts")
-  clientJobs        Job[]           @relation("ClientJobs")
-  artisanJobs       Job[]           @relation("ArtisanJobs")
-  sentReviews       Review[]        @relation("SentReviews")
-  receivedReviews   Review[]        @relation("ReceivedReviews")
-  notifications     Notification[]
-  transactions      Transaction[]
-  payments          Payment[]       @relation("UserPayments")
-  clientDisputes    Dispute[]       @relation("ClientDisputes")
-  artisanDisputes   Dispute[]       @relation("ArtisanDisputes")
-  ledgerAccounts    LedgerAccount?
+  artisanProfile      ArtisanProfile?
+  artisanVerification ArtisanVerification?
+  kycDocuments        KycDocument[]
+  sentProposals       Proposal[]               @relation("SentProposals")
+  receivedProposals   Proposal[]               @relation("ReceivedProposals")
+  clientContracts     Contract[]               @relation("ClientContracts")
+  artisanContracts    Contract[]               @relation("ArtisanContracts")
+  clientJobs          Job[]                    @relation("ClientJobs")
+  artisanJobs         Job[]                    @relation("ArtisanJobs")
+  authoredReviews     Review[]                 @relation("AuthoredReviews")
+  receivedReviews     Review[]                 @relation("ReceivedReviews")
+  reviewEligibilities ReviewEligibility[]      @relation("ReviewEligibilities")
+  targetEligibilities ReviewEligibility[]      @relation("TargetEligibilities")
+  reputationProfile   ReputationProfile?
+  notifications       Notification[]
+  notificationPrefs   NotificationPreference[]
+  transactions        Transaction[]
+  payments            Payment[]                @relation("UserPayments")
+  clientDisputes      Dispute[]                @relation("ClientDisputes")
+  artisanDisputes     Dispute[]                @relation("ArtisanDisputes")
+  ledgerAccounts      LedgerAccount?
+  suggestedCategories CategorySuggestion[]     @relation("SuggestedCategories")
+  reviewedCategories  CategorySuggestion[]     @relation("ReviewedCategories")
+  revisionRequests    RevisionRequest[]
 }
 
 model Dispute {
-  id                 String           @id
-  contractId         String?
-  jobId              String?
+  id                 String            @id @default(uuid(7))
+  contractId         String            @unique
+  initiatorId        String
   clientId           String
   artisanId          String
   amount             Int
-  status             DisputeStatus
-  evidenceImages     Json
-  evidenceVideos     Json
-  evidenceMessages   Json
+  status             DisputeStatus     @default(OPEN)
+  reason             String
+  description        String
   resolutionDecision DisputeDecision?
+  resolutionSplit    Json?
   resolvedAt         DateTime?
   resolvedBy         String?
   resolutionNotes    String?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
   history            DisputeHistory[]
+  evidence           DisputeEvidence[]
 
   // Relations
-  client   User      @relation("ClientDisputes", fields: [clientId], references: [id])
-  artisan  User      @relation("ArtisanDisputes", fields: [artisanId], references: [id])
-  contract Contract? @relation(fields: [contractId], references: [id])
+  client   User     @relation("ClientDisputes", fields: [clientId], references: [id])
+  artisan  User     @relation("ArtisanDisputes", fields: [artisanId], references: [id])
+  contract Contract @relation(fields: [contractId], references: [id])
 
   @@index([clientId, status])
   @@index([artisanId, status])
   @@index([contractId])
-  @@index([jobId])
 }
 
 model DisputeHistory {
-  id        String   @id
+  id        String   @id @default(uuid(7))
   disputeId String
   action    String
-  at        DateTime
+  at        DateTime @default(now())
   by        String
   notes     String?
+  metadata  Json?
   dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
 
   @@index([disputeId, at])
+}
+
+enum EvidenceType {
+  IMAGE
+  VIDEO
+  PDF
+  MESSAGE_REFERENCE
+  DELIVERABLE_REFERENCE
+  OTHER
+}
+
+model DisputeEvidence {
+  id          String       @id @default(uuid(7))
+  disputeId   String
+  submittedBy String
+  type        EvidenceType
+  url         String?
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+
+  dispute Dispute @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+
+  @@index([disputeId])
 }
 
 model Job {
@@ -429,16 +494,18 @@ model Contract {
   updatedAt DateTime @updatedAt
 
   // Relations
-  job             Job              @relation(fields: [jobId], references: [id])
-  proposal        Proposal         @relation(fields: [proposalId], references: [id])
-  client          User             @relation("ClientContracts", fields: [clientId], references: [id])
-  artisan         User             @relation("ArtisanContracts", fields: [artisanId], references: [id])
-  conversation    Conversation?
-  review          Review?
-  payments        Payment[]
-  ledgerEntries   LedgerEntry[]
-  financialEvents FinancialEvent[]
-  disputes        Dispute[]
+  job                 Job                 @relation(fields: [jobId], references: [id])
+  proposal            Proposal            @relation(fields: [proposalId], references: [id])
+  client              User                @relation("ClientContracts", fields: [clientId], references: [id])
+  artisan             User                @relation("ArtisanContracts", fields: [artisanId], references: [id])
+  conversation        Conversation?
+  reviews             Review[]
+  reviewEligibilities ReviewEligibility[]
+  payments            Payment[]
+  ledgerEntries       LedgerEntry[]
+  financialEvents     FinancialEvent[]
+  disputes            Dispute[]
+  deliverables        Deliverable[]
 
   @@index([clientId, status])
   @@index([artisanId, status])
@@ -478,51 +545,63 @@ model Message {
   @@index([senderId, createdAt])
 }
 
-model Review {
-  id              String   @id @default(uuid(7))
-  contractId      String   @unique
-  clientId        String
-  artisanId       String
-  rating          Int
-  comment         String?
-  categories      Json?
-  workQuality     Int?
-  communication   Int?
-  timeliness      Int?
-  professionalism Int?
-  evidence        Json?
-  isPublic        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now()) @updatedAt
-
-  // Relations
-  contract Contract @relation(fields: [contractId], references: [id])
-  client   User     @relation("SentReviews", fields: [clientId], references: [id])
-  artisan  User     @relation("ReceivedReviews", fields: [artisanId], references: [id])
-
-  @@index([artisanId, rating])
-}
-
 model Notification {
-  id         String    @id @default(uuid(7))
+  id         String               @id @default(uuid(7))
   userId     String
-  type       String    @default("system_update")
-  title      String
-  message    String
+  category   String // 'FINANCIAL', 'CONTRACTS', 'SYSTEM'
+  type       String // 'ESCROW_FUNDED'
+  priority   NotificationPriority @default(NORMAL)
+  payload    Json // Dynamic variables for rendering
   entityId   String?
   entityType String?
-  actionUrl  String?
-  priority   String    @default("medium")
-  read       Boolean   @default(false)
-  isArchived Boolean   @default(false)
-  metadata   Json?
-  createdAt  DateTime
   readAt     DateTime?
   archivedAt DateTime?
-  user       User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  createdAt  DateTime             @default(now())
+
+  deliveries DeliveryAttempt[]
+  user       User              @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@index([userId, createdAt])
-  @@index([userId, type, createdAt])
+  @@index([userId, category, createdAt])
+}
+
+model DeliveryAttempt {
+  id             String              @id @default(uuid(7))
+  notificationId String
+  channel        NotificationChannel
+  status         DeliveryStatus
+  error          String?
+  providerId     String? // e.g. SendGrid Message ID
+  deliveredAt    DateTime?
+
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@index([notificationId])
+  @@index([status, channel])
+}
+
+model NotificationPreference {
+  id           String              @id @default(uuid(7))
+  userId       String
+  channel      NotificationChannel
+  category     String // e.g. 'FINANCIAL' or 'ENTITY:contract_id'
+  enabled      Boolean             @default(true)
+  quietHoursOn Boolean             @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, channel, category])
+}
+
+model NotificationTemplate {
+  id      String              @id @default(uuid(7))
+  type    String // 'ESCROW_FUNDED'
+  channel NotificationChannel
+  locale  String              @default("en")
+  subject String?
+  content String // Handlebars/Mustache syntax
+
+  @@unique([type, channel, locale])
 }
 
 model AuditLog {
@@ -716,4 +795,308 @@ model Skill {
 
   @@unique([name, categoryId])
   @@index([categoryId])
+}
+
+enum SuggestionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CategorySuggestion {
+  id                String           @id @default(uuid(7))
+  name              String
+  description       String?
+  status            SuggestionStatus @default(PENDING)
+  suggestedByUserId String
+  reviewedByUserId  String?
+  rejectionReason   String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  reviewedAt        DateTime?
+
+  suggestedBy User  @relation("SuggestedCategories", fields: [suggestedByUserId], references: [id], onDelete: Restrict)
+  reviewedBy  User? @relation("ReviewedCategories", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([suggestedByUserId])
+}
+
+enum MarketplaceVerificationStatus {
+  NOT_SUBMITTED
+  PENDING_REVIEW
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  RESUBMISSION_REQUIRED
+  SUSPENDED
+}
+
+enum FinancialVerificationStatus {
+  NOT_STARTED
+  PENDING
+  PROCESSING
+  VERIFIED
+  FAILED
+  EXPIRED
+  RETRY_REQUIRED
+}
+
+model ArtisanVerification {
+  id                        String                        @id @default(uuid(7))
+  userId                    String                        @unique
+  marketplaceStatus         MarketplaceVerificationStatus @default(NOT_SUBMITTED)
+  marketplaceApprovedAt     DateTime?
+  marketplaceRejectedReason String?
+  marketplaceReviewerId     String?
+  financialProvider         String?                       @default("PAYSTACK")
+  financialProviderRef      String?
+  financialStatus           FinancialVerificationStatus   @default(NOT_STARTED)
+  financialVerifiedAt       DateTime?
+  financialFailureReason    String?
+  createdAt                 DateTime                      @default(now())
+  updatedAt                 DateTime                      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([marketplaceStatus])
+  @@index([financialStatus])
+}
+
+// ----------------------------------------------------------------------------
+// DELIVERABLES DOMAIN
+// ----------------------------------------------------------------------------
+
+enum DeliverableStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  REVISION_REQUESTED
+  RESUBMITTED
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+  LOCKED
+}
+
+enum AttachmentType {
+  FILE
+  LINK
+}
+
+enum RevisionStatus {
+  PENDING
+  RESOLVED
+}
+
+model Deliverable {
+  id          String            @id @default(uuid(7))
+  contractId  String
+  status      DeliverableStatus @default(NOT_STARTED)
+  milestoneId String? // Deferred for future scalability
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  approvedAt  DateTime?
+
+  contract Contract             @relation(fields: [contractId], references: [id])
+  versions DeliverableVersion[]
+
+  @@index([contractId])
+  @@index([status])
+}
+
+model DeliverableVersion {
+  id            String   @id @default(uuid(7))
+  deliverableId String
+  versionNumber Int
+  submittedAt   DateTime @default(now())
+  artisanNotes  String?
+
+  deliverable Deliverable             @relation(fields: [deliverableId], references: [id], onDelete: Cascade)
+  attachments DeliverableAttachment[]
+  revisions   RevisionRequest[]
+
+  @@unique([deliverableId, versionNumber])
+}
+
+model DeliverableAttachment {
+  id        String         @id @default(uuid(7))
+  versionId String
+  type      AttachmentType
+  url       String
+  name      String
+  sizeBytes Int?
+  mimeType  String?
+  createdAt DateTime       @default(now())
+
+  version DeliverableVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+}
+
+model RevisionRequest {
+  id              String         @id @default(uuid(7))
+  versionId       String
+  requestedBy     String
+  requestedAt     DateTime       @default(now())
+  comment         String
+  requiredChanges String
+  status          RevisionStatus @default(PENDING)
+  dueDate         DateTime?
+
+  version DeliverableVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  client  User               @relation(fields: [requestedBy], references: [id])
+}
+
+// ----------------------------------------------------------------------------
+// AUDIT DOMAIN
+// ----------------------------------------------------------------------------
+
+enum AuditDomain {
+  AUTHENTICATION
+  AUTHORIZATION
+  MARKETPLACE
+  FINANCIAL
+  VERIFICATION
+  CONTRACTS
+  DELIVERABLES
+  DISPUTES
+  NOTIFICATIONS
+  ADMINISTRATION
+  SYSTEM
+}
+
+enum AuditActorType {
+  SYSTEM
+  ANONYMOUS
+  USER
+  ADMIN
+  WORKER
+  WEBHOOK
+  API
+}
+
+enum AuditSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+model AuditEvent {
+  id            String         @id @default(uuid(7))
+  domain        AuditDomain
+  action        String
+  actorType     AuditActorType
+  actorId       String?
+  targetType    String
+  targetId      String
+  correlationId String
+  metadata      Json?
+  ipAddress     String?
+  userAgent     String?
+  severity      AuditSeverity  @default(INFO)
+  timestamp     DateTime       @default(now())
+
+  @@index([timestamp])
+  @@index([correlationId])
+  @@index([targetId])
+  @@index([actorId])
+  @@index([metadata], type: Gin)
+}
+
+model SystemConfig {
+  id          String   @id @default(uuid(7))
+  key         String   @unique
+  value       Json
+  description String?
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@index([key])
+}
+
+// ==========================================
+// REVIEWS & REPUTATION DOMAIN
+// ==========================================
+
+enum ReviewStatus {
+  DRAFT
+  SUBMITTED
+  VISIBLE
+  LOCKED
+  FLAGGED
+  HIDDEN
+  ARCHIVED
+}
+
+enum ReviewEligibilityStatus {
+  PENDING
+  EXPIRED
+  CONSUMED
+}
+
+model Review {
+  id         String       @id @default(uuid(7))
+  contractId String
+  authorId   String
+  targetId   String
+  rating     Decimal      @db.Decimal(3, 2)
+  breakdown  Json? // JSONB containing detailed ratings (communication, quality, etc)
+  comment    String?      @db.Text
+  status     ReviewStatus @default(DRAFT)
+
+  visibleAt DateTime?
+  lockedAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  author   User     @relation("AuthoredReviews", fields: [authorId], references: [id])
+  target   User     @relation("ReceivedReviews", fields: [targetId], references: [id])
+
+  @@unique([contractId, authorId]) // Only one review per party per contract
+  @@index([contractId])
+  @@index([authorId])
+  @@index([targetId])
+  @@index([status])
+}
+
+model ReviewEligibility {
+  id         String                  @id @default(uuid(7))
+  contractId String
+  userId     String // The person who is eligible to write the review
+  targetId   String // The person they are reviewing
+  status     ReviewEligibilityStatus @default(PENDING)
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  user     User     @relation("ReviewEligibilities", fields: [userId], references: [id])
+  target   User     @relation("TargetEligibilities", fields: [targetId], references: [id])
+
+  @@index([userId, status])
+  @@index([expiresAt])
+}
+
+model ReputationProfile {
+  id             String  @id @default(uuid(7))
+  userId         String  @unique
+  averageRating  Decimal @default(0.0) @db.Decimal(3, 2)
+  totalReviews   Int     @default(0)
+  jssScore       Int     @default(0) // Job Success Score (percentage 0-100)
+  completionRate Decimal @default(0.0) @db.Decimal(5, 2)
+  responseRate   Decimal @default(0.0) @db.Decimal(5, 2)
+  snapshotData   Json? // Any complex metric distributions 
+
+  lastRecalculatedAt DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([jssScore])
+  @@index([averageRating])
 }

@@ -63,3 +63,18 @@ export const escrowQueue = new Queue('escrow-queue', {
   connection: redisConnection as any,
   defaultJobOptions,
 });
+
+/**
+ * Expected Reputation Job Data Structure
+ */
+export interface ReputationJobData {
+  userId: string;
+}
+
+/**
+ * Create the BullMQ reputation-queue
+ */
+export const reputationQueue = new Queue('reputation-queue', {
+  connection: redisConnection as any,
+  defaultJobOptions,
+});

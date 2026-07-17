@@ -15,6 +15,7 @@ import { Worker } from 'bullmq';
 import { redisConnection } from '../../queue/redis';
 import { RedisCacheService } from '../../common/cache/redis-cache.service';
 import { ClsService } from 'nestjs-cls';
+import { MarketplaceVerificationService } from '../verification/marketplace.service';
 
 @Injectable()
 export class WalletService implements OnModuleInit, OnModuleDestroy {
@@ -26,6 +27,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     private readonly paystackClient: PaystackClientService,
     private readonly cacheService: RedisCacheService,
     private readonly cls: ClsService,
+    private readonly marketplaceVerificationService: MarketplaceVerificationService,
   ) {}
 
   onModuleInit() {
@@ -478,6 +480,11 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
   ) {
     if (amount <= 0) {
       throw new BadRequestException('Amount must be positive');
+    }
+
+    const verificationStatus = await this.marketplaceVerificationService.getStatus(userId);
+    if (!verificationStatus.isPayoutEligible) {
+      throw new ForbiddenException('Identity verification (Marketplace & Financial) is required for payouts.');
     }
 
     if (bankCode && accountNumber) {

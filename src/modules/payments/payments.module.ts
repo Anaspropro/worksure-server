@@ -10,6 +10,7 @@ import { PaystackClientService } from '../../common/services/paystack-client.ser
 import { IdempotencyService } from '../../common/services/idempotency.service';
 import { StuckPayoutDetectorService } from './stuck-payout-detector.service';
 import { PaystackWebhookService } from './paystack-webhook.service';
+import { PaymentsListener } from './payments.listener';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PaystackWebhookService } from './paystack-webhook.service';
     IdempotencyService,
     StuckPayoutDetectorService,
     PaystackWebhookService,
+    PaymentsListener,
   ],
   exports: [PaymentsService],
 })

@@ -129,11 +129,10 @@ exports.Prisma.UserScalarFieldEnum = {
   passwordResetTokenExpiresAt: 'passwordResetTokenExpiresAt',
   passwordResetRequestedAt: 'passwordResetRequestedAt',
   role: 'role',
+  adminRoles: 'adminRoles',
   status: 'status',
   artisanVerified: 'artisanVerified',
-  kycVerified: 'kycVerified',
   emailVerified: 'emailVerified',
-  kycStatus: 'kycStatus',
   paystackRecipientCode: 'paystackRecipientCode',
   payoutBankCode: 'payoutBankCode',
   payoutAccountNumber: 'payoutAccountNumber',
@@ -147,15 +146,15 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.DisputeScalarFieldEnum = {
   id: 'id',
   contractId: 'contractId',
-  jobId: 'jobId',
+  initiatorId: 'initiatorId',
   clientId: 'clientId',
   artisanId: 'artisanId',
   amount: 'amount',
   status: 'status',
-  evidenceImages: 'evidenceImages',
-  evidenceVideos: 'evidenceVideos',
-  evidenceMessages: 'evidenceMessages',
+  reason: 'reason',
+  description: 'description',
   resolutionDecision: 'resolutionDecision',
+  resolutionSplit: 'resolutionSplit',
   resolvedAt: 'resolvedAt',
   resolvedBy: 'resolvedBy',
   resolutionNotes: 'resolutionNotes',
@@ -169,7 +168,18 @@ exports.Prisma.DisputeHistoryScalarFieldEnum = {
   action: 'action',
   at: 'at',
   by: 'by',
-  notes: 'notes'
+  notes: 'notes',
+  metadata: 'metadata'
+};
+
+exports.Prisma.DisputeEvidenceScalarFieldEnum = {
+  id: 'id',
+  disputeId: 'disputeId',
+  submittedBy: 'submittedBy',
+  type: 'type',
+  url: 'url',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.JobScalarFieldEnum = {
@@ -337,40 +347,46 @@ exports.Prisma.MessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.ReviewScalarFieldEnum = {
-  id: 'id',
-  contractId: 'contractId',
-  clientId: 'clientId',
-  artisanId: 'artisanId',
-  rating: 'rating',
-  comment: 'comment',
-  categories: 'categories',
-  workQuality: 'workQuality',
-  communication: 'communication',
-  timeliness: 'timeliness',
-  professionalism: 'professionalism',
-  evidence: 'evidence',
-  isPublic: 'isPublic',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  category: 'category',
   type: 'type',
-  title: 'title',
-  message: 'message',
+  priority: 'priority',
+  payload: 'payload',
   entityId: 'entityId',
   entityType: 'entityType',
-  actionUrl: 'actionUrl',
-  priority: 'priority',
-  read: 'read',
-  isArchived: 'isArchived',
-  metadata: 'metadata',
-  createdAt: 'createdAt',
   readAt: 'readAt',
-  archivedAt: 'archivedAt'
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DeliveryAttemptScalarFieldEnum = {
+  id: 'id',
+  notificationId: 'notificationId',
+  channel: 'channel',
+  status: 'status',
+  error: 'error',
+  providerId: 'providerId',
+  deliveredAt: 'deliveredAt'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  channel: 'channel',
+  category: 'category',
+  enabled: 'enabled',
+  quietHoursOn: 'quietHoursOn'
+};
+
+exports.Prisma.NotificationTemplateScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  channel: 'channel',
+  locale: 'locale',
+  subject: 'subject',
+  content: 'content'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {
@@ -505,17 +521,152 @@ exports.Prisma.SkillScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CategorySuggestionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  suggestedByUserId: 'suggestedByUserId',
+  reviewedByUserId: 'reviewedByUserId',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  reviewedAt: 'reviewedAt'
+};
+
+exports.Prisma.ArtisanVerificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  marketplaceStatus: 'marketplaceStatus',
+  marketplaceApprovedAt: 'marketplaceApprovedAt',
+  marketplaceRejectedReason: 'marketplaceRejectedReason',
+  marketplaceReviewerId: 'marketplaceReviewerId',
+  financialProvider: 'financialProvider',
+  financialProviderRef: 'financialProviderRef',
+  financialStatus: 'financialStatus',
+  financialVerifiedAt: 'financialVerifiedAt',
+  financialFailureReason: 'financialFailureReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DeliverableScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  status: 'status',
+  milestoneId: 'milestoneId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  approvedAt: 'approvedAt'
+};
+
+exports.Prisma.DeliverableVersionScalarFieldEnum = {
+  id: 'id',
+  deliverableId: 'deliverableId',
+  versionNumber: 'versionNumber',
+  submittedAt: 'submittedAt',
+  artisanNotes: 'artisanNotes'
+};
+
+exports.Prisma.DeliverableAttachmentScalarFieldEnum = {
+  id: 'id',
+  versionId: 'versionId',
+  type: 'type',
+  url: 'url',
+  name: 'name',
+  sizeBytes: 'sizeBytes',
+  mimeType: 'mimeType',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.RevisionRequestScalarFieldEnum = {
+  id: 'id',
+  versionId: 'versionId',
+  requestedBy: 'requestedBy',
+  requestedAt: 'requestedAt',
+  comment: 'comment',
+  requiredChanges: 'requiredChanges',
+  status: 'status',
+  dueDate: 'dueDate'
+};
+
+exports.Prisma.AuditEventScalarFieldEnum = {
+  id: 'id',
+  domain: 'domain',
+  action: 'action',
+  actorType: 'actorType',
+  actorId: 'actorId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  correlationId: 'correlationId',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  severity: 'severity',
+  timestamp: 'timestamp'
+};
+
+exports.Prisma.SystemConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  description: 'description',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  authorId: 'authorId',
+  targetId: 'targetId',
+  rating: 'rating',
+  breakdown: 'breakdown',
+  comment: 'comment',
+  status: 'status',
+  visibleAt: 'visibleAt',
+  lockedAt: 'lockedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReviewEligibilityScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  userId: 'userId',
+  targetId: 'targetId',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReputationProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  averageRating: 'averageRating',
+  totalReviews: 'totalReviews',
+  jssScore: 'jssScore',
+  completionRate: 'completionRate',
+  responseRate: 'responseRate',
+  snapshotData: 'snapshotData',
+  lastRecalculatedAt: 'lastRecalculatedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
-exports.Prisma.JsonNullValueInput = {
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -551,9 +702,11 @@ exports.Prisma.JsonNullValueFilter = {
 exports.Prisma.DisputeOrderByRelevanceFieldEnum = {
   id: 'id',
   contractId: 'contractId',
-  jobId: 'jobId',
+  initiatorId: 'initiatorId',
   clientId: 'clientId',
   artisanId: 'artisanId',
+  reason: 'reason',
+  description: 'description',
   resolvedBy: 'resolvedBy',
   resolutionNotes: 'resolutionNotes'
 };
@@ -564,6 +717,13 @@ exports.Prisma.DisputeHistoryOrderByRelevanceFieldEnum = {
   action: 'action',
   by: 'by',
   notes: 'notes'
+};
+
+exports.Prisma.DisputeEvidenceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  disputeId: 'disputeId',
+  submittedBy: 'submittedBy',
+  url: 'url'
 };
 
 exports.Prisma.JobOrderByRelevanceFieldEnum = {
@@ -665,24 +825,34 @@ exports.Prisma.MessageOrderByRelevanceFieldEnum = {
   fileName: 'fileName'
 };
 
-exports.Prisma.ReviewOrderByRelevanceFieldEnum = {
-  id: 'id',
-  contractId: 'contractId',
-  clientId: 'clientId',
-  artisanId: 'artisanId',
-  comment: 'comment'
-};
-
 exports.Prisma.NotificationOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
+  category: 'category',
   type: 'type',
-  title: 'title',
-  message: 'message',
   entityId: 'entityId',
-  entityType: 'entityType',
-  actionUrl: 'actionUrl',
-  priority: 'priority'
+  entityType: 'entityType'
+};
+
+exports.Prisma.DeliveryAttemptOrderByRelevanceFieldEnum = {
+  id: 'id',
+  notificationId: 'notificationId',
+  error: 'error',
+  providerId: 'providerId'
+};
+
+exports.Prisma.NotificationPreferenceOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category'
+};
+
+exports.Prisma.NotificationTemplateOrderByRelevanceFieldEnum = {
+  id: 'id',
+  type: 'type',
+  locale: 'locale',
+  subject: 'subject',
+  content: 'content'
 };
 
 exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
@@ -771,6 +941,91 @@ exports.Prisma.SkillOrderByRelevanceFieldEnum = {
   slug: 'slug',
   categoryId: 'categoryId'
 };
+
+exports.Prisma.CategorySuggestionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  suggestedByUserId: 'suggestedByUserId',
+  reviewedByUserId: 'reviewedByUserId',
+  rejectionReason: 'rejectionReason'
+};
+
+exports.Prisma.ArtisanVerificationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  marketplaceRejectedReason: 'marketplaceRejectedReason',
+  marketplaceReviewerId: 'marketplaceReviewerId',
+  financialProvider: 'financialProvider',
+  financialProviderRef: 'financialProviderRef',
+  financialFailureReason: 'financialFailureReason'
+};
+
+exports.Prisma.DeliverableOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  milestoneId: 'milestoneId'
+};
+
+exports.Prisma.DeliverableVersionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  deliverableId: 'deliverableId',
+  artisanNotes: 'artisanNotes'
+};
+
+exports.Prisma.DeliverableAttachmentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  versionId: 'versionId',
+  url: 'url',
+  name: 'name',
+  mimeType: 'mimeType'
+};
+
+exports.Prisma.RevisionRequestOrderByRelevanceFieldEnum = {
+  id: 'id',
+  versionId: 'versionId',
+  requestedBy: 'requestedBy',
+  comment: 'comment',
+  requiredChanges: 'requiredChanges'
+};
+
+exports.Prisma.AuditEventOrderByRelevanceFieldEnum = {
+  id: 'id',
+  action: 'action',
+  actorId: 'actorId',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  correlationId: 'correlationId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent'
+};
+
+exports.Prisma.SystemConfigOrderByRelevanceFieldEnum = {
+  id: 'id',
+  key: 'key',
+  description: 'description',
+  updatedBy: 'updatedBy'
+};
+
+exports.Prisma.ReviewOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  authorId: 'authorId',
+  targetId: 'targetId',
+  comment: 'comment'
+};
+
+exports.Prisma.ReviewEligibilityOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  userId: 'userId',
+  targetId: 'targetId'
+};
+
+exports.Prisma.ReputationProfileOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+};
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
   CLIENT: 'CLIENT',
@@ -782,21 +1037,42 @@ exports.UserStatus = exports.$Enums.UserStatus = {
   BANNED: 'BANNED'
 };
 
-exports.KycVerificationStatus = exports.$Enums.KycVerificationStatus = {
-  UNVERIFIED: 'UNVERIFIED',
-  PENDING: 'PENDING',
-  VERIFIED: 'VERIFIED',
-  REJECTED: 'REJECTED'
+exports.AdminRole = exports.$Enums.AdminRole = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  OPERATIONS_MANAGER: 'OPERATIONS_MANAGER',
+  FINANCE_ADMIN: 'FINANCE_ADMIN',
+  DISPUTE_ADMIN: 'DISPUTE_ADMIN',
+  VERIFICATION_ADMIN: 'VERIFICATION_ADMIN',
+  SUPPORT_ADMIN: 'SUPPORT_ADMIN',
+  CONTENT_MODERATOR: 'CONTENT_MODERATOR',
+  ANALYTICS_ADMIN: 'ANALYTICS_ADMIN'
 };
 
 exports.DisputeStatus = exports.$Enums.DisputeStatus = {
   OPEN: 'OPEN',
-  RESOLVED: 'RESOLVED'
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  EVIDENCE_COLLECTION: 'EVIDENCE_COLLECTION',
+  AWAITING_RESPONSE: 'AWAITING_RESPONSE',
+  ADMIN_INVESTIGATION: 'ADMIN_INVESTIGATION',
+  DECISION_PENDING: 'DECISION_PENDING',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
 };
 
 exports.DisputeDecision = exports.$Enums.DisputeDecision = {
-  REFUND_CLIENT: 'REFUND_CLIENT',
-  PAY_ARTISAN: 'PAY_ARTISAN'
+  CLIENT_WINS: 'CLIENT_WINS',
+  ARTISAN_WINS: 'ARTISAN_WINS',
+  SPLIT_DECISION: 'SPLIT_DECISION',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.EvidenceType = exports.$Enums.EvidenceType = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  PDF: 'PDF',
+  MESSAGE_REFERENCE: 'MESSAGE_REFERENCE',
+  DELIVERABLE_REFERENCE: 'DELIVERABLE_REFERENCE',
+  OTHER: 'OTHER'
 };
 
 exports.JobStatus = exports.$Enums.JobStatus = {
@@ -862,6 +1138,28 @@ exports.MessageType = exports.$Enums.MessageType = {
   FILE: 'FILE'
 };
 
+exports.NotificationPriority = exports.$Enums.NotificationPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+exports.NotificationChannel = exports.$Enums.NotificationChannel = {
+  IN_APP: 'IN_APP',
+  EMAIL: 'EMAIL',
+  PUSH: 'PUSH',
+  SMS: 'SMS'
+};
+
+exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
+  QUEUED: 'QUEUED',
+  PROCESSING: 'PROCESSING',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED',
+  RETRYING: 'RETRYING'
+};
+
 exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   USER: 'USER',
   DISPUTE: 'DISPUTE',
@@ -904,10 +1202,107 @@ exports.LedgerAccountType = exports.$Enums.LedgerAccountType = {
   EXTERNAL_BANK: 'EXTERNAL_BANK'
 };
 
+exports.SuggestionStatus = exports.$Enums.SuggestionStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+exports.MarketplaceVerificationStatus = exports.$Enums.MarketplaceVerificationStatus = {
+  NOT_SUBMITTED: 'NOT_SUBMITTED',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  RESUBMISSION_REQUIRED: 'RESUBMISSION_REQUIRED',
+  SUSPENDED: 'SUSPENDED'
+};
+
+exports.FinancialVerificationStatus = exports.$Enums.FinancialVerificationStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  VERIFIED: 'VERIFIED',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+  RETRY_REQUIRED: 'RETRY_REQUIRED'
+};
+
+exports.DeliverableStatus = exports.$Enums.DeliverableStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUBMITTED: 'SUBMITTED',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  REVISION_REQUESTED: 'REVISION_REQUESTED',
+  RESUBMITTED: 'RESUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  LOCKED: 'LOCKED'
+};
+
+exports.AttachmentType = exports.$Enums.AttachmentType = {
+  FILE: 'FILE',
+  LINK: 'LINK'
+};
+
+exports.RevisionStatus = exports.$Enums.RevisionStatus = {
+  PENDING: 'PENDING',
+  RESOLVED: 'RESOLVED'
+};
+
+exports.AuditDomain = exports.$Enums.AuditDomain = {
+  AUTHENTICATION: 'AUTHENTICATION',
+  AUTHORIZATION: 'AUTHORIZATION',
+  MARKETPLACE: 'MARKETPLACE',
+  FINANCIAL: 'FINANCIAL',
+  VERIFICATION: 'VERIFICATION',
+  CONTRACTS: 'CONTRACTS',
+  DELIVERABLES: 'DELIVERABLES',
+  DISPUTES: 'DISPUTES',
+  NOTIFICATIONS: 'NOTIFICATIONS',
+  ADMINISTRATION: 'ADMINISTRATION',
+  SYSTEM: 'SYSTEM'
+};
+
+exports.AuditActorType = exports.$Enums.AuditActorType = {
+  SYSTEM: 'SYSTEM',
+  ANONYMOUS: 'ANONYMOUS',
+  USER: 'USER',
+  ADMIN: 'ADMIN',
+  WORKER: 'WORKER',
+  WEBHOOK: 'WEBHOOK',
+  API: 'API'
+};
+
+exports.AuditSeverity = exports.$Enums.AuditSeverity = {
+  INFO: 'INFO',
+  WARNING: 'WARNING',
+  CRITICAL: 'CRITICAL'
+};
+
+exports.ReviewStatus = exports.$Enums.ReviewStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  VISIBLE: 'VISIBLE',
+  LOCKED: 'LOCKED',
+  FLAGGED: 'FLAGGED',
+  HIDDEN: 'HIDDEN',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.ReviewEligibilityStatus = exports.$Enums.ReviewEligibilityStatus = {
+  PENDING: 'PENDING',
+  EXPIRED: 'EXPIRED',
+  CONSUMED: 'CONSUMED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Dispute: 'Dispute',
   DisputeHistory: 'DisputeHistory',
+  DisputeEvidence: 'DisputeEvidence',
   Job: 'Job',
   Transaction: 'Transaction',
   ArtisanProfile: 'ArtisanProfile',
@@ -918,8 +1313,10 @@ exports.Prisma.ModelName = {
   Contract: 'Contract',
   Conversation: 'Conversation',
   Message: 'Message',
-  Review: 'Review',
   Notification: 'Notification',
+  DeliveryAttempt: 'DeliveryAttempt',
+  NotificationPreference: 'NotificationPreference',
+  NotificationTemplate: 'NotificationTemplate',
   AuditLog: 'AuditLog',
   Payment: 'Payment',
   KycDocument: 'KycDocument',
@@ -930,7 +1327,18 @@ exports.Prisma.ModelName = {
   VerificationToken: 'VerificationToken',
   SystemLog: 'SystemLog',
   Category: 'Category',
-  Skill: 'Skill'
+  Skill: 'Skill',
+  CategorySuggestion: 'CategorySuggestion',
+  ArtisanVerification: 'ArtisanVerification',
+  Deliverable: 'Deliverable',
+  DeliverableVersion: 'DeliverableVersion',
+  DeliverableAttachment: 'DeliverableAttachment',
+  RevisionRequest: 'RevisionRequest',
+  AuditEvent: 'AuditEvent',
+  SystemConfig: 'SystemConfig',
+  Review: 'Review',
+  ReviewEligibility: 'ReviewEligibility',
+  ReputationProfile: 'ReputationProfile'
 };
 
 /**

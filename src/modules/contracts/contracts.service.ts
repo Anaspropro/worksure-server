@@ -13,8 +13,15 @@ import {
 } from '../../generated/prisma';
 
 import { IdempotencyService } from '../../common/services/idempotency.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ContractFundedEvent, DomainEventName } from '../../common/events/domain.events';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import {
+  DomainEventName,
+  JobPostedEvent,
+  ProposalSubmittedEvent,
+  ProposalAcceptedEvent,
+  ContractFundedEvent,
+  ContractCompletedEvent,
+} from '../../common/events/domain.events';
 
 @Injectable()
 export class ContractsService {
@@ -172,6 +179,16 @@ export class ContractsService {
         where: { id: contract.jobId },
         data: { status: 'COMPLETED' },
       });
+
+      this.eventEmitter.emit(
+        DomainEventName.CONTRACT_COMPLETED,
+        new ContractCompletedEvent(
+          updatedContract.id,
+          updatedContract.jobId,
+          updatedContract.clientId,
+          updatedContract.artisanId,
+        )
+      );
     }
 
     await this.recordTransitionAudit(contractId, contract.status, newStatus, {
@@ -372,17 +389,13 @@ export class ContractsService {
           data: { status: 'REJECTED' },
         });
 
-        const notificationsData = otherProposals.map(p => ({
-          id: uuidv7(),
-          userId: p.artisanId,
-          title: 'Proposal Rejected',
-          message: 'The client has awarded the contract for this job to another artisan.',
-          createdAt: new Date(),
-        }));
-        
-        await tx.notification.createMany({
-          data: notificationsData,
-        });
+        for (const p of otherProposals) {
+          this.eventEmitter.emit('proposal.rejected', {
+            proposalId: p.id,
+            jobId: proposal.jobId,
+            artisanId: p.artisanId,
+          });
+        }
       }
 
       return newContract;
@@ -631,6 +644,35 @@ export class ContractsService {
         },
       );
     });
+  }
+
+  @OnEvent(DomainEventName.DELIVERABLE_APPROVED)
+  async handleDeliverableApproved(event: any) {
+    const { contractId, clientId } = event;
+    const contract = await this.findContractMetadata(contractId);
+    if (!contract || contract.clientId !== clientId) {
+      return; // Invalid or unauthorized
+    }
+
+    // When the deliverable is approved by the client, we automatically transition the contract to READY_FOR_PAYOUT
+    if (contract.status === ContractStatus.IN_PROGRESS || contract.status === ContractStatus.CLIENT_CONFIRMED) {
+      await this.prisma.$transaction(async (tx) => {
+        await this.transitionContractStatusWithClient(
+          tx,
+          contractId,
+          ContractStatus.READY_FOR_PAYOUT,
+          {
+            clientConfirmedCompletion: true,
+            artisanConfirmedCompletion: true,
+          },
+          {
+            actorId: 'system',
+            action: 'DELIVERABLE_APPROVED_COMPLETION',
+            source: 'deliverables.approved',
+          }
+        );
+      });
+    }
   }
 
   async assertReadyForPayout(contractId: string) {

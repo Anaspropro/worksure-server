@@ -14,6 +14,11 @@ export enum DomainEventName {
   CONTRACT_COMPLETED = 'contract.completed',
   CONTRACT_CANCELLED = 'contract.cancelled',
 
+  // Deliverable Events
+  DELIVERABLE_SUBMITTED = 'deliverable.submitted',
+  DELIVERABLE_APPROVED = 'deliverable.approved',
+  DELIVERABLE_REVISION_REQUESTED = 'deliverable.revision_requested',
+
   // Payment Events
   PAYMENT_PROCESSED = 'payment.processed',
   PAYMENT_FAILED = 'payment.failed',
@@ -81,6 +86,18 @@ export class ContractFundedEvent implements BaseDomainEvent {
     public readonly clientId: string,
     public readonly artisanId: string,
     public readonly amount: number,
+  ) {}
+}
+
+export class ContractCompletedEvent implements BaseDomainEvent {
+  eventId: string = crypto.randomUUID();
+  timestamp: Date = new Date();
+  
+  constructor(
+    public readonly contractId: string,
+    public readonly jobId: string,
+    public readonly clientId: string,
+    public readonly artisanId: string,
   ) {}
 }
 
