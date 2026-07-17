@@ -1,0 +1,3 @@
+# Mark Prisma generated client as generated code
+# This excludes it from GitHub language statistics and diffs
+src/generated/** linguist-generated=true
