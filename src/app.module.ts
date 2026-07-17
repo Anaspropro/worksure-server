@@ -62,14 +62,15 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
       useFactory: (cls: ClsService) => {
         return {
           pinoHttp: {
-            transport: process.env.NODE_ENV !== 'production'
-              ? {
-                  target: 'pino-pretty',
-                  options: {
-                    singleLine: true,
-                  },
-                }
-              : undefined,
+            transport: (() => {
+              if (process.env.NODE_ENV === 'production') return undefined;
+              try {
+                require.resolve('pino-pretty');
+                return { target: 'pino-pretty', options: { singleLine: true } };
+              } catch {
+                return undefined;
+              }
+            })(),
             autoLogging: false,
             customProps: () => ({
               userId: cls.get('userId'),
