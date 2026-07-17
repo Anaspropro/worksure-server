@@ -27,6 +27,7 @@ import { AdminResetPasswordDto } from './dto/admin-reset-password.dto';
 import { ForceCloseJobDto } from './dto/force-close-job.dto';
 import { ResolveDisputeDto } from './dto/resolve-dispute.dto';
 import { RejectSuggestionDto } from './dto/reject-suggestion.dto';
+import { ModerateReviewDto } from './dto/moderate-review.dto';
 import { AdminService } from './admin.service';
 import { AnalyticsService, ReportType } from '../analytics/analytics.service';
 import { AuthenticatedUser } from '../auth/auth.service';
@@ -282,6 +283,49 @@ export class AdminController {
       status,
       cursor,
       limit ? parseInt(limit, 10) : undefined,
+    );
+  }
+
+  @ApiOperation({ summary: 'List all reviews' })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Review status filter',
+  })
+  @Get('reviews')
+  @RequireAdminRole(
+    AdminRole.OPERATIONS_MANAGER,
+    AdminRole.SUPPORT_ADMIN,
+    AdminRole.DISPUTE_ADMIN,
+  )
+  getAllReviews(
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+    @Query('cursor') cursor?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getAllReviews(
+      search,
+      status,
+      cursor,
+      limit ? parseInt(limit, 10) : undefined,
+    );
+  }
+
+  @ApiOperation({ summary: 'Moderate a review' })
+  @ApiParam({ name: 'id', description: 'Review identifier' })
+  @Patch('reviews/:id/moderate')
+  @RequireAdminRole(AdminRole.OPERATIONS_MANAGER, AdminRole.DISPUTE_ADMIN)
+  moderateReview(
+    @Param('id') reviewId: string,
+    @Body() body: ModerateReviewDto,
+    @CurrentUser() adminUser: AuthenticatedUser,
+  ) {
+    return this.adminService.moderateReview(
+      reviewId,
+      body.action,
+      this.getActor(adminUser),
+      body.reason,
     );
   }
 

@@ -84,11 +84,6 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 /**
- * Model Review
- * 
- */
-export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
-/**
  * Model Notification
  * 
  */
@@ -203,6 +198,21 @@ export type AuditEvent = $Result.DefaultSelection<Prisma.$AuditEventPayload>
  * 
  */
 export type SystemConfig = $Result.DefaultSelection<Prisma.$SystemConfigPayload>
+/**
+ * Model Review
+ * 
+ */
+export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
+/**
+ * Model ReviewEligibility
+ * 
+ */
+export type ReviewEligibility = $Result.DefaultSelection<Prisma.$ReviewEligibilityPayload>
+/**
+ * Model ReputationProfile
+ * 
+ */
+export type ReputationProfile = $Result.DefaultSelection<Prisma.$ReputationProfilePayload>
 
 /**
  * Enums
@@ -553,6 +563,28 @@ export const AuditSeverity: {
 
 export type AuditSeverity = (typeof AuditSeverity)[keyof typeof AuditSeverity]
 
+
+export const ReviewStatus: {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  VISIBLE: 'VISIBLE',
+  LOCKED: 'LOCKED',
+  FLAGGED: 'FLAGGED',
+  HIDDEN: 'HIDDEN',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
+
+
+export const ReviewEligibilityStatus: {
+  PENDING: 'PENDING',
+  EXPIRED: 'EXPIRED',
+  CONSUMED: 'CONSUMED'
+};
+
+export type ReviewEligibilityStatus = (typeof ReviewEligibilityStatus)[keyof typeof ReviewEligibilityStatus]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -674,6 +706,14 @@ export const AuditActorType: typeof $Enums.AuditActorType
 export type AuditSeverity = $Enums.AuditSeverity
 
 export const AuditSeverity: typeof $Enums.AuditSeverity
+
+export type ReviewStatus = $Enums.ReviewStatus
+
+export const ReviewStatus: typeof $Enums.ReviewStatus
+
+export type ReviewEligibilityStatus = $Enums.ReviewEligibilityStatus
+
+export const ReviewEligibilityStatus: typeof $Enums.ReviewEligibilityStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -937,16 +977,6 @@ export class PrismaClient<
   get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.review`: Exposes CRUD operations for the **Review** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Reviews
-    * const reviews = await prisma.review.findMany()
-    * ```
-    */
-  get review(): Prisma.ReviewDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
     * Example usage:
     * ```ts
@@ -1175,6 +1205,36 @@ export class PrismaClient<
     * ```
     */
   get systemConfig(): Prisma.SystemConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.review`: Exposes CRUD operations for the **Review** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Reviews
+    * const reviews = await prisma.review.findMany()
+    * ```
+    */
+  get review(): Prisma.ReviewDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reviewEligibility`: Exposes CRUD operations for the **ReviewEligibility** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReviewEligibilities
+    * const reviewEligibilities = await prisma.reviewEligibility.findMany()
+    * ```
+    */
+  get reviewEligibility(): Prisma.ReviewEligibilityDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reputationProfile`: Exposes CRUD operations for the **ReputationProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReputationProfiles
+    * const reputationProfiles = await prisma.reputationProfile.findMany()
+    * ```
+    */
+  get reputationProfile(): Prisma.ReputationProfileDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1623,7 +1683,6 @@ export namespace Prisma {
     Contract: 'Contract',
     Conversation: 'Conversation',
     Message: 'Message',
-    Review: 'Review',
     Notification: 'Notification',
     DeliveryAttempt: 'DeliveryAttempt',
     NotificationPreference: 'NotificationPreference',
@@ -1646,7 +1705,10 @@ export namespace Prisma {
     DeliverableAttachment: 'DeliverableAttachment',
     RevisionRequest: 'RevisionRequest',
     AuditEvent: 'AuditEvent',
-    SystemConfig: 'SystemConfig'
+    SystemConfig: 'SystemConfig',
+    Review: 'Review',
+    ReviewEligibility: 'ReviewEligibility',
+    ReputationProfile: 'ReputationProfile'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1662,7 +1724,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "dispute" | "disputeHistory" | "disputeEvidence" | "job" | "transaction" | "artisanProfile" | "proposal" | "proposalAttachment" | "proposalTimelineEvent" | "proposalDecision" | "contract" | "conversation" | "message" | "review" | "notification" | "deliveryAttempt" | "notificationPreference" | "notificationTemplate" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog" | "category" | "skill" | "categorySuggestion" | "artisanVerification" | "deliverable" | "deliverableVersion" | "deliverableAttachment" | "revisionRequest" | "auditEvent" | "systemConfig"
+      modelProps: "user" | "dispute" | "disputeHistory" | "disputeEvidence" | "job" | "transaction" | "artisanProfile" | "proposal" | "proposalAttachment" | "proposalTimelineEvent" | "proposalDecision" | "contract" | "conversation" | "message" | "notification" | "deliveryAttempt" | "notificationPreference" | "notificationTemplate" | "auditLog" | "payment" | "kycDocument" | "idempotencyKey" | "financialEvent" | "ledgerAccount" | "ledgerEntry" | "verificationToken" | "systemLog" | "category" | "skill" | "categorySuggestion" | "artisanVerification" | "deliverable" | "deliverableVersion" | "deliverableAttachment" | "revisionRequest" | "auditEvent" | "systemConfig" | "review" | "reviewEligibility" | "reputationProfile"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2699,80 +2761,6 @@ export namespace Prisma {
           count: {
             args: Prisma.MessageCountArgs<ExtArgs>
             result: $Utils.Optional<MessageCountAggregateOutputType> | number
-          }
-        }
-      }
-      Review: {
-        payload: Prisma.$ReviewPayload<ExtArgs>
-        fields: Prisma.ReviewFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.ReviewFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.ReviewFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
-          }
-          findFirst: {
-            args: Prisma.ReviewFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.ReviewFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
-          }
-          findMany: {
-            args: Prisma.ReviewFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
-          }
-          create: {
-            args: Prisma.ReviewCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
-          }
-          createMany: {
-            args: Prisma.ReviewCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.ReviewCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
-          }
-          delete: {
-            args: Prisma.ReviewDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
-          }
-          update: {
-            args: Prisma.ReviewUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
-          }
-          deleteMany: {
-            args: Prisma.ReviewDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.ReviewUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.ReviewUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
-          }
-          upsert: {
-            args: Prisma.ReviewUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
-          }
-          aggregate: {
-            args: Prisma.ReviewAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateReview>
-          }
-          groupBy: {
-            args: Prisma.ReviewGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ReviewGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.ReviewCountArgs<ExtArgs>
-            result: $Utils.Optional<ReviewCountAggregateOutputType> | number
           }
         }
       }
@@ -4478,6 +4466,228 @@ export namespace Prisma {
           }
         }
       }
+      Review: {
+        payload: Prisma.$ReviewPayload<ExtArgs>
+        fields: Prisma.ReviewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReviewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReviewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          findFirst: {
+            args: Prisma.ReviewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReviewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          findMany: {
+            args: Prisma.ReviewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          create: {
+            args: Prisma.ReviewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          createMany: {
+            args: Prisma.ReviewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReviewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          delete: {
+            args: Prisma.ReviewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          update: {
+            args: Prisma.ReviewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReviewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReviewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReviewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReviewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewPayload>
+          }
+          aggregate: {
+            args: Prisma.ReviewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReview>
+          }
+          groupBy: {
+            args: Prisma.ReviewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReviewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReviewCountArgs<ExtArgs>
+            result: $Utils.Optional<ReviewCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReviewEligibility: {
+        payload: Prisma.$ReviewEligibilityPayload<ExtArgs>
+        fields: Prisma.ReviewEligibilityFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReviewEligibilityFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReviewEligibilityFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>
+          }
+          findFirst: {
+            args: Prisma.ReviewEligibilityFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReviewEligibilityFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>
+          }
+          findMany: {
+            args: Prisma.ReviewEligibilityFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>[]
+          }
+          create: {
+            args: Prisma.ReviewEligibilityCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>
+          }
+          createMany: {
+            args: Prisma.ReviewEligibilityCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReviewEligibilityCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>[]
+          }
+          delete: {
+            args: Prisma.ReviewEligibilityDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>
+          }
+          update: {
+            args: Prisma.ReviewEligibilityUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReviewEligibilityDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReviewEligibilityUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReviewEligibilityUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReviewEligibilityUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReviewEligibilityPayload>
+          }
+          aggregate: {
+            args: Prisma.ReviewEligibilityAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReviewEligibility>
+          }
+          groupBy: {
+            args: Prisma.ReviewEligibilityGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReviewEligibilityGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReviewEligibilityCountArgs<ExtArgs>
+            result: $Utils.Optional<ReviewEligibilityCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReputationProfile: {
+        payload: Prisma.$ReputationProfilePayload<ExtArgs>
+        fields: Prisma.ReputationProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReputationProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReputationProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.ReputationProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReputationProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>
+          }
+          findMany: {
+            args: Prisma.ReputationProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>[]
+          }
+          create: {
+            args: Prisma.ReputationProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>
+          }
+          createMany: {
+            args: Prisma.ReputationProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReputationProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.ReputationProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>
+          }
+          update: {
+            args: Prisma.ReputationProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.ReputationProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReputationProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReputationProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>[]
+          }
+          upsert: {
+            args: Prisma.ReputationProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReputationProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.ReputationProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReputationProfile>
+          }
+          groupBy: {
+            args: Prisma.ReputationProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReputationProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReputationProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<ReputationProfileCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4600,7 +4810,6 @@ export namespace Prisma {
     contract?: ContractOmit
     conversation?: ConversationOmit
     message?: MessageOmit
-    review?: ReviewOmit
     notification?: NotificationOmit
     deliveryAttempt?: DeliveryAttemptOmit
     notificationPreference?: NotificationPreferenceOmit
@@ -4624,6 +4833,9 @@ export namespace Prisma {
     revisionRequest?: RevisionRequestOmit
     auditEvent?: AuditEventOmit
     systemConfig?: SystemConfigOmit
+    review?: ReviewOmit
+    reviewEligibility?: ReviewEligibilityOmit
+    reputationProfile?: ReputationProfileOmit
   }
 
   /* Types for Logging */
@@ -4711,8 +4923,10 @@ export namespace Prisma {
     artisanContracts: number
     clientJobs: number
     artisanJobs: number
-    sentReviews: number
+    authoredReviews: number
     receivedReviews: number
+    reviewEligibilities: number
+    targetEligibilities: number
     notifications: number
     notificationPrefs: number
     transactions: number
@@ -4732,8 +4946,10 @@ export namespace Prisma {
     artisanContracts?: boolean | UserCountOutputTypeCountArtisanContractsArgs
     clientJobs?: boolean | UserCountOutputTypeCountClientJobsArgs
     artisanJobs?: boolean | UserCountOutputTypeCountArtisanJobsArgs
-    sentReviews?: boolean | UserCountOutputTypeCountSentReviewsArgs
+    authoredReviews?: boolean | UserCountOutputTypeCountAuthoredReviewsArgs
     receivedReviews?: boolean | UserCountOutputTypeCountReceivedReviewsArgs
+    reviewEligibilities?: boolean | UserCountOutputTypeCountReviewEligibilitiesArgs
+    targetEligibilities?: boolean | UserCountOutputTypeCountTargetEligibilitiesArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     notificationPrefs?: boolean | UserCountOutputTypeCountNotificationPrefsArgs
     transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
@@ -4808,7 +5024,7 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSentReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountAuthoredReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReviewWhereInput
   }
 
@@ -4817,6 +5033,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountReceivedReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReviewWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReviewEligibilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewEligibilityWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTargetEligibilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewEligibilityWhereInput
   }
 
   /**
@@ -4999,6 +5229,8 @@ export namespace Prisma {
    */
 
   export type ContractCountOutputType = {
+    reviews: number
+    reviewEligibilities: number
     payments: number
     ledgerEntries: number
     financialEvents: number
@@ -5007,6 +5239,8 @@ export namespace Prisma {
   }
 
   export type ContractCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reviews?: boolean | ContractCountOutputTypeCountReviewsArgs
+    reviewEligibilities?: boolean | ContractCountOutputTypeCountReviewEligibilitiesArgs
     payments?: boolean | ContractCountOutputTypeCountPaymentsArgs
     ledgerEntries?: boolean | ContractCountOutputTypeCountLedgerEntriesArgs
     financialEvents?: boolean | ContractCountOutputTypeCountFinancialEventsArgs
@@ -5023,6 +5257,20 @@ export namespace Prisma {
      * Select specific fields to fetch from the ContractCountOutputType
      */
     select?: ContractCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ContractCountOutputType without action
+   */
+  export type ContractCountOutputTypeCountReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
+  }
+
+  /**
+   * ContractCountOutputType without action
+   */
+  export type ContractCountOutputTypeCountReviewEligibilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewEligibilityWhereInput
   }
 
   /**
@@ -5589,8 +5837,11 @@ export namespace Prisma {
     artisanContracts?: boolean | User$artisanContractsArgs<ExtArgs>
     clientJobs?: boolean | User$clientJobsArgs<ExtArgs>
     artisanJobs?: boolean | User$artisanJobsArgs<ExtArgs>
-    sentReviews?: boolean | User$sentReviewsArgs<ExtArgs>
+    authoredReviews?: boolean | User$authoredReviewsArgs<ExtArgs>
     receivedReviews?: boolean | User$receivedReviewsArgs<ExtArgs>
+    reviewEligibilities?: boolean | User$reviewEligibilitiesArgs<ExtArgs>
+    targetEligibilities?: boolean | User$targetEligibilitiesArgs<ExtArgs>
+    reputationProfile?: boolean | User$reputationProfileArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     notificationPrefs?: boolean | User$notificationPrefsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
@@ -5684,8 +5935,11 @@ export namespace Prisma {
     artisanContracts?: boolean | User$artisanContractsArgs<ExtArgs>
     clientJobs?: boolean | User$clientJobsArgs<ExtArgs>
     artisanJobs?: boolean | User$artisanJobsArgs<ExtArgs>
-    sentReviews?: boolean | User$sentReviewsArgs<ExtArgs>
+    authoredReviews?: boolean | User$authoredReviewsArgs<ExtArgs>
     receivedReviews?: boolean | User$receivedReviewsArgs<ExtArgs>
+    reviewEligibilities?: boolean | User$reviewEligibilitiesArgs<ExtArgs>
+    targetEligibilities?: boolean | User$targetEligibilitiesArgs<ExtArgs>
+    reputationProfile?: boolean | User$reputationProfileArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     notificationPrefs?: boolean | User$notificationPrefsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
@@ -5713,8 +5967,11 @@ export namespace Prisma {
       artisanContracts: Prisma.$ContractPayload<ExtArgs>[]
       clientJobs: Prisma.$JobPayload<ExtArgs>[]
       artisanJobs: Prisma.$JobPayload<ExtArgs>[]
-      sentReviews: Prisma.$ReviewPayload<ExtArgs>[]
+      authoredReviews: Prisma.$ReviewPayload<ExtArgs>[]
       receivedReviews: Prisma.$ReviewPayload<ExtArgs>[]
+      reviewEligibilities: Prisma.$ReviewEligibilityPayload<ExtArgs>[]
+      targetEligibilities: Prisma.$ReviewEligibilityPayload<ExtArgs>[]
+      reputationProfile: Prisma.$ReputationProfilePayload<ExtArgs> | null
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       notificationPrefs: Prisma.$NotificationPreferencePayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
@@ -6150,8 +6407,11 @@ export namespace Prisma {
     artisanContracts<T extends User$artisanContractsArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanContractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clientJobs<T extends User$clientJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     artisanJobs<T extends User$artisanJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$artisanJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sentReviews<T extends User$sentReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    authoredReviews<T extends User$authoredReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$authoredReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedReviews<T extends User$receivedReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviewEligibilities<T extends User$reviewEligibilitiesArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewEligibilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    targetEligibilities<T extends User$targetEligibilitiesArgs<ExtArgs> = {}>(args?: Subset<T, User$targetEligibilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reputationProfile<T extends User$reputationProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$reputationProfileArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationPrefs<T extends User$notificationPrefsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationPrefsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6810,9 +7070,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.sentReviews
+   * User.authoredReviews
    */
-  export type User$sentReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$authoredReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Review
      */
@@ -6855,6 +7115,73 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * User.reviewEligibilities
+   */
+  export type User$reviewEligibilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    where?: ReviewEligibilityWhereInput
+    orderBy?: ReviewEligibilityOrderByWithRelationInput | ReviewEligibilityOrderByWithRelationInput[]
+    cursor?: ReviewEligibilityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewEligibilityScalarFieldEnum | ReviewEligibilityScalarFieldEnum[]
+  }
+
+  /**
+   * User.targetEligibilities
+   */
+  export type User$targetEligibilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    where?: ReviewEligibilityWhereInput
+    orderBy?: ReviewEligibilityOrderByWithRelationInput | ReviewEligibilityOrderByWithRelationInput[]
+    cursor?: ReviewEligibilityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewEligibilityScalarFieldEnum | ReviewEligibilityScalarFieldEnum[]
+  }
+
+  /**
+   * User.reputationProfile
+   */
+  export type User$reputationProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    where?: ReputationProfileWhereInput
   }
 
   /**
@@ -19522,7 +19849,8 @@ export namespace Prisma {
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
     conversation?: boolean | Contract$conversationArgs<ExtArgs>
-    review?: boolean | Contract$reviewArgs<ExtArgs>
+    reviews?: boolean | Contract$reviewsArgs<ExtArgs>
+    reviewEligibilities?: boolean | Contract$reviewEligibilitiesArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
     ledgerEntries?: boolean | Contract$ledgerEntriesArgs<ExtArgs>
     financialEvents?: boolean | Contract$financialEventsArgs<ExtArgs>
@@ -19648,7 +19976,8 @@ export namespace Prisma {
     client?: boolean | UserDefaultArgs<ExtArgs>
     artisan?: boolean | UserDefaultArgs<ExtArgs>
     conversation?: boolean | Contract$conversationArgs<ExtArgs>
-    review?: boolean | Contract$reviewArgs<ExtArgs>
+    reviews?: boolean | Contract$reviewsArgs<ExtArgs>
+    reviewEligibilities?: boolean | Contract$reviewEligibilitiesArgs<ExtArgs>
     payments?: boolean | Contract$paymentsArgs<ExtArgs>
     ledgerEntries?: boolean | Contract$ledgerEntriesArgs<ExtArgs>
     financialEvents?: boolean | Contract$financialEventsArgs<ExtArgs>
@@ -19677,7 +20006,8 @@ export namespace Prisma {
       client: Prisma.$UserPayload<ExtArgs>
       artisan: Prisma.$UserPayload<ExtArgs>
       conversation: Prisma.$ConversationPayload<ExtArgs> | null
-      review: Prisma.$ReviewPayload<ExtArgs> | null
+      reviews: Prisma.$ReviewPayload<ExtArgs>[]
+      reviewEligibilities: Prisma.$ReviewEligibilityPayload<ExtArgs>[]
       payments: Prisma.$PaymentPayload<ExtArgs>[]
       ledgerEntries: Prisma.$LedgerEntryPayload<ExtArgs>[]
       financialEvents: Prisma.$FinancialEventPayload<ExtArgs>[]
@@ -20115,7 +20445,8 @@ export namespace Prisma {
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     conversation<T extends Contract$conversationArgs<ExtArgs> = {}>(args?: Subset<T, Contract$conversationArgs<ExtArgs>>): Prisma__ConversationClient<$Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    review<T extends Contract$reviewArgs<ExtArgs> = {}>(args?: Subset<T, Contract$reviewArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reviews<T extends Contract$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Contract$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviewEligibilities<T extends Contract$reviewEligibilitiesArgs<ExtArgs> = {}>(args?: Subset<T, Contract$reviewEligibilitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends Contract$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Contract$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ledgerEntries<T extends Contract$ledgerEntriesArgs<ExtArgs> = {}>(args?: Subset<T, Contract$ledgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financialEvents<T extends Contract$financialEventsArgs<ExtArgs> = {}>(args?: Subset<T, Contract$financialEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -20601,9 +20932,9 @@ export namespace Prisma {
   }
 
   /**
-   * Contract.review
+   * Contract.reviews
    */
-  export type Contract$reviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Contract$reviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Review
      */
@@ -20617,6 +20948,35 @@ export namespace Prisma {
      */
     include?: ReviewInclude<ExtArgs> | null
     where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    cursor?: ReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Contract.reviewEligibilities
+   */
+  export type Contract$reviewEligibilitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    where?: ReviewEligibilityWhereInput
+    orderBy?: ReviewEligibilityOrderByWithRelationInput | ReviewEligibilityOrderByWithRelationInput[]
+    cursor?: ReviewEligibilityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReviewEligibilityScalarFieldEnum | ReviewEligibilityScalarFieldEnum[]
   }
 
   /**
@@ -23023,1257 +23383,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MessageInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Review
-   */
-
-  export type AggregateReview = {
-    _count: ReviewCountAggregateOutputType | null
-    _avg: ReviewAvgAggregateOutputType | null
-    _sum: ReviewSumAggregateOutputType | null
-    _min: ReviewMinAggregateOutputType | null
-    _max: ReviewMaxAggregateOutputType | null
-  }
-
-  export type ReviewAvgAggregateOutputType = {
-    rating: number | null
-    workQuality: number | null
-    communication: number | null
-    timeliness: number | null
-    professionalism: number | null
-  }
-
-  export type ReviewSumAggregateOutputType = {
-    rating: number | null
-    workQuality: number | null
-    communication: number | null
-    timeliness: number | null
-    professionalism: number | null
-  }
-
-  export type ReviewMinAggregateOutputType = {
-    id: string | null
-    contractId: string | null
-    clientId: string | null
-    artisanId: string | null
-    rating: number | null
-    comment: string | null
-    workQuality: number | null
-    communication: number | null
-    timeliness: number | null
-    professionalism: number | null
-    isPublic: boolean | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type ReviewMaxAggregateOutputType = {
-    id: string | null
-    contractId: string | null
-    clientId: string | null
-    artisanId: string | null
-    rating: number | null
-    comment: string | null
-    workQuality: number | null
-    communication: number | null
-    timeliness: number | null
-    professionalism: number | null
-    isPublic: boolean | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type ReviewCountAggregateOutputType = {
-    id: number
-    contractId: number
-    clientId: number
-    artisanId: number
-    rating: number
-    comment: number
-    categories: number
-    workQuality: number
-    communication: number
-    timeliness: number
-    professionalism: number
-    evidence: number
-    isPublic: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type ReviewAvgAggregateInputType = {
-    rating?: true
-    workQuality?: true
-    communication?: true
-    timeliness?: true
-    professionalism?: true
-  }
-
-  export type ReviewSumAggregateInputType = {
-    rating?: true
-    workQuality?: true
-    communication?: true
-    timeliness?: true
-    professionalism?: true
-  }
-
-  export type ReviewMinAggregateInputType = {
-    id?: true
-    contractId?: true
-    clientId?: true
-    artisanId?: true
-    rating?: true
-    comment?: true
-    workQuality?: true
-    communication?: true
-    timeliness?: true
-    professionalism?: true
-    isPublic?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type ReviewMaxAggregateInputType = {
-    id?: true
-    contractId?: true
-    clientId?: true
-    artisanId?: true
-    rating?: true
-    comment?: true
-    workQuality?: true
-    communication?: true
-    timeliness?: true
-    professionalism?: true
-    isPublic?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type ReviewCountAggregateInputType = {
-    id?: true
-    contractId?: true
-    clientId?: true
-    artisanId?: true
-    rating?: true
-    comment?: true
-    categories?: true
-    workQuality?: true
-    communication?: true
-    timeliness?: true
-    professionalism?: true
-    evidence?: true
-    isPublic?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type ReviewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Review to aggregate.
-     */
-    where?: ReviewWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Reviews to fetch.
-     */
-    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ReviewWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Reviews from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Reviews.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Reviews
-    **/
-    _count?: true | ReviewCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ReviewAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ReviewSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ReviewMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ReviewMaxAggregateInputType
-  }
-
-  export type GetReviewAggregateType<T extends ReviewAggregateArgs> = {
-        [P in keyof T & keyof AggregateReview]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateReview[P]>
-      : GetScalarType<T[P], AggregateReview[P]>
-  }
-
-
-
-
-  export type ReviewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ReviewWhereInput
-    orderBy?: ReviewOrderByWithAggregationInput | ReviewOrderByWithAggregationInput[]
-    by: ReviewScalarFieldEnum[] | ReviewScalarFieldEnum
-    having?: ReviewScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ReviewCountAggregateInputType | true
-    _avg?: ReviewAvgAggregateInputType
-    _sum?: ReviewSumAggregateInputType
-    _min?: ReviewMinAggregateInputType
-    _max?: ReviewMaxAggregateInputType
-  }
-
-  export type ReviewGroupByOutputType = {
-    id: string
-    contractId: string
-    clientId: string
-    artisanId: string
-    rating: number
-    comment: string | null
-    categories: JsonValue | null
-    workQuality: number | null
-    communication: number | null
-    timeliness: number | null
-    professionalism: number | null
-    evidence: JsonValue | null
-    isPublic: boolean
-    createdAt: Date
-    updatedAt: Date
-    _count: ReviewCountAggregateOutputType | null
-    _avg: ReviewAvgAggregateOutputType | null
-    _sum: ReviewSumAggregateOutputType | null
-    _min: ReviewMinAggregateOutputType | null
-    _max: ReviewMaxAggregateOutputType | null
-  }
-
-  type GetReviewGroupByPayload<T extends ReviewGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ReviewGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ReviewGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ReviewGroupByOutputType[P]>
-            : GetScalarType<T[P], ReviewGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ReviewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    contractId?: boolean
-    clientId?: boolean
-    artisanId?: boolean
-    rating?: boolean
-    comment?: boolean
-    categories?: boolean
-    workQuality?: boolean
-    communication?: boolean
-    timeliness?: boolean
-    professionalism?: boolean
-    evidence?: boolean
-    isPublic?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    contract?: boolean | ContractDefaultArgs<ExtArgs>
-    client?: boolean | UserDefaultArgs<ExtArgs>
-    artisan?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["review"]>
-
-  export type ReviewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    contractId?: boolean
-    clientId?: boolean
-    artisanId?: boolean
-    rating?: boolean
-    comment?: boolean
-    categories?: boolean
-    workQuality?: boolean
-    communication?: boolean
-    timeliness?: boolean
-    professionalism?: boolean
-    evidence?: boolean
-    isPublic?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    contract?: boolean | ContractDefaultArgs<ExtArgs>
-    client?: boolean | UserDefaultArgs<ExtArgs>
-    artisan?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["review"]>
-
-  export type ReviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    contractId?: boolean
-    clientId?: boolean
-    artisanId?: boolean
-    rating?: boolean
-    comment?: boolean
-    categories?: boolean
-    workQuality?: boolean
-    communication?: boolean
-    timeliness?: boolean
-    professionalism?: boolean
-    evidence?: boolean
-    isPublic?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    contract?: boolean | ContractDefaultArgs<ExtArgs>
-    client?: boolean | UserDefaultArgs<ExtArgs>
-    artisan?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["review"]>
-
-  export type ReviewSelectScalar = {
-    id?: boolean
-    contractId?: boolean
-    clientId?: boolean
-    artisanId?: boolean
-    rating?: boolean
-    comment?: boolean
-    categories?: boolean
-    workQuality?: boolean
-    communication?: boolean
-    timeliness?: boolean
-    professionalism?: boolean
-    evidence?: boolean
-    isPublic?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "clientId" | "artisanId" | "rating" | "comment" | "categories" | "workQuality" | "communication" | "timeliness" | "professionalism" | "evidence" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
-  export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    contract?: boolean | ContractDefaultArgs<ExtArgs>
-    client?: boolean | UserDefaultArgs<ExtArgs>
-    artisan?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type ReviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    contract?: boolean | ContractDefaultArgs<ExtArgs>
-    client?: boolean | UserDefaultArgs<ExtArgs>
-    artisan?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    contract?: boolean | ContractDefaultArgs<ExtArgs>
-    client?: boolean | UserDefaultArgs<ExtArgs>
-    artisan?: boolean | UserDefaultArgs<ExtArgs>
-  }
-
-  export type $ReviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Review"
-    objects: {
-      contract: Prisma.$ContractPayload<ExtArgs>
-      client: Prisma.$UserPayload<ExtArgs>
-      artisan: Prisma.$UserPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      contractId: string
-      clientId: string
-      artisanId: string
-      rating: number
-      comment: string | null
-      categories: Prisma.JsonValue | null
-      workQuality: number | null
-      communication: number | null
-      timeliness: number | null
-      professionalism: number | null
-      evidence: Prisma.JsonValue | null
-      isPublic: boolean
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["review"]>
-    composites: {}
-  }
-
-  type ReviewGetPayload<S extends boolean | null | undefined | ReviewDefaultArgs> = $Result.GetResult<Prisma.$ReviewPayload, S>
-
-  type ReviewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ReviewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ReviewCountAggregateInputType | true
-    }
-
-  export interface ReviewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Review'], meta: { name: 'Review' } }
-    /**
-     * Find zero or one Review that matches the filter.
-     * @param {ReviewFindUniqueArgs} args - Arguments to find a Review
-     * @example
-     * // Get one Review
-     * const review = await prisma.review.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ReviewFindUniqueArgs>(args: SelectSubset<T, ReviewFindUniqueArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Review that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {ReviewFindUniqueOrThrowArgs} args - Arguments to find a Review
-     * @example
-     * // Get one Review
-     * const review = await prisma.review.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ReviewFindUniqueOrThrowArgs>(args: SelectSubset<T, ReviewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Review that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReviewFindFirstArgs} args - Arguments to find a Review
-     * @example
-     * // Get one Review
-     * const review = await prisma.review.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ReviewFindFirstArgs>(args?: SelectSubset<T, ReviewFindFirstArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Review that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReviewFindFirstOrThrowArgs} args - Arguments to find a Review
-     * @example
-     * // Get one Review
-     * const review = await prisma.review.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ReviewFindFirstOrThrowArgs>(args?: SelectSubset<T, ReviewFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Reviews that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReviewFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Reviews
-     * const reviews = await prisma.review.findMany()
-     * 
-     * // Get first 10 Reviews
-     * const reviews = await prisma.review.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const reviewWithIdOnly = await prisma.review.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends ReviewFindManyArgs>(args?: SelectSubset<T, ReviewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Review.
-     * @param {ReviewCreateArgs} args - Arguments to create a Review.
-     * @example
-     * // Create one Review
-     * const Review = await prisma.review.create({
-     *   data: {
-     *     // ... data to create a Review
-     *   }
-     * })
-     * 
-     */
-    create<T extends ReviewCreateArgs>(args: SelectSubset<T, ReviewCreateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Reviews.
-     * @param {ReviewCreateManyArgs} args - Arguments to create many Reviews.
-     * @example
-     * // Create many Reviews
-     * const review = await prisma.review.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ReviewCreateManyArgs>(args?: SelectSubset<T, ReviewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Reviews and returns the data saved in the database.
-     * @param {ReviewCreateManyAndReturnArgs} args - Arguments to create many Reviews.
-     * @example
-     * // Create many Reviews
-     * const review = await prisma.review.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Reviews and only return the `id`
-     * const reviewWithIdOnly = await prisma.review.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends ReviewCreateManyAndReturnArgs>(args?: SelectSubset<T, ReviewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Review.
-     * @param {ReviewDeleteArgs} args - Arguments to delete one Review.
-     * @example
-     * // Delete one Review
-     * const Review = await prisma.review.delete({
-     *   where: {
-     *     // ... filter to delete one Review
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ReviewDeleteArgs>(args: SelectSubset<T, ReviewDeleteArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Review.
-     * @param {ReviewUpdateArgs} args - Arguments to update one Review.
-     * @example
-     * // Update one Review
-     * const review = await prisma.review.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ReviewUpdateArgs>(args: SelectSubset<T, ReviewUpdateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Reviews.
-     * @param {ReviewDeleteManyArgs} args - Arguments to filter Reviews to delete.
-     * @example
-     * // Delete a few Reviews
-     * const { count } = await prisma.review.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ReviewDeleteManyArgs>(args?: SelectSubset<T, ReviewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Reviews.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReviewUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Reviews
-     * const review = await prisma.review.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ReviewUpdateManyArgs>(args: SelectSubset<T, ReviewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Reviews and returns the data updated in the database.
-     * @param {ReviewUpdateManyAndReturnArgs} args - Arguments to update many Reviews.
-     * @example
-     * // Update many Reviews
-     * const review = await prisma.review.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Reviews and only return the `id`
-     * const reviewWithIdOnly = await prisma.review.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends ReviewUpdateManyAndReturnArgs>(args: SelectSubset<T, ReviewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Review.
-     * @param {ReviewUpsertArgs} args - Arguments to update or create a Review.
-     * @example
-     * // Update or create a Review
-     * const review = await prisma.review.upsert({
-     *   create: {
-     *     // ... data to create a Review
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Review we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ReviewUpsertArgs>(args: SelectSubset<T, ReviewUpsertArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Reviews.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReviewCountArgs} args - Arguments to filter Reviews to count.
-     * @example
-     * // Count the number of Reviews
-     * const count = await prisma.review.count({
-     *   where: {
-     *     // ... the filter for the Reviews we want to count
-     *   }
-     * })
-    **/
-    count<T extends ReviewCountArgs>(
-      args?: Subset<T, ReviewCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ReviewCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Review.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReviewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ReviewAggregateArgs>(args: Subset<T, ReviewAggregateArgs>): Prisma.PrismaPromise<GetReviewAggregateType<T>>
-
-    /**
-     * Group by Review.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReviewGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ReviewGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ReviewGroupByArgs['orderBy'] }
-        : { orderBy?: ReviewGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ReviewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReviewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Review model
-   */
-  readonly fields: ReviewFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Review.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    contract<T extends ContractDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContractDefaultArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    artisan<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Review model
-   */
-  interface ReviewFieldRefs {
-    readonly id: FieldRef<"Review", 'String'>
-    readonly contractId: FieldRef<"Review", 'String'>
-    readonly clientId: FieldRef<"Review", 'String'>
-    readonly artisanId: FieldRef<"Review", 'String'>
-    readonly rating: FieldRef<"Review", 'Int'>
-    readonly comment: FieldRef<"Review", 'String'>
-    readonly categories: FieldRef<"Review", 'Json'>
-    readonly workQuality: FieldRef<"Review", 'Int'>
-    readonly communication: FieldRef<"Review", 'Int'>
-    readonly timeliness: FieldRef<"Review", 'Int'>
-    readonly professionalism: FieldRef<"Review", 'Int'>
-    readonly evidence: FieldRef<"Review", 'Json'>
-    readonly isPublic: FieldRef<"Review", 'Boolean'>
-    readonly createdAt: FieldRef<"Review", 'DateTime'>
-    readonly updatedAt: FieldRef<"Review", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Review findUnique
-   */
-  export type ReviewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * Filter, which Review to fetch.
-     */
-    where: ReviewWhereUniqueInput
-  }
-
-  /**
-   * Review findUniqueOrThrow
-   */
-  export type ReviewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * Filter, which Review to fetch.
-     */
-    where: ReviewWhereUniqueInput
-  }
-
-  /**
-   * Review findFirst
-   */
-  export type ReviewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * Filter, which Review to fetch.
-     */
-    where?: ReviewWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Reviews to fetch.
-     */
-    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Reviews.
-     */
-    cursor?: ReviewWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Reviews from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Reviews.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Reviews.
-     */
-    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
-  }
-
-  /**
-   * Review findFirstOrThrow
-   */
-  export type ReviewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * Filter, which Review to fetch.
-     */
-    where?: ReviewWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Reviews to fetch.
-     */
-    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Reviews.
-     */
-    cursor?: ReviewWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Reviews from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Reviews.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Reviews.
-     */
-    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
-  }
-
-  /**
-   * Review findMany
-   */
-  export type ReviewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * Filter, which Reviews to fetch.
-     */
-    where?: ReviewWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Reviews to fetch.
-     */
-    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Reviews.
-     */
-    cursor?: ReviewWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Reviews from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Reviews.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Reviews.
-     */
-    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
-  }
-
-  /**
-   * Review create
-   */
-  export type ReviewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Review.
-     */
-    data: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
-  }
-
-  /**
-   * Review createMany
-   */
-  export type ReviewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Reviews.
-     */
-    data: ReviewCreateManyInput | ReviewCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Review createManyAndReturn
-   */
-  export type ReviewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * The data used to create many Reviews.
-     */
-    data: ReviewCreateManyInput | ReviewCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Review update
-   */
-  export type ReviewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Review.
-     */
-    data: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
-    /**
-     * Choose, which Review to update.
-     */
-    where: ReviewWhereUniqueInput
-  }
-
-  /**
-   * Review updateMany
-   */
-  export type ReviewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Reviews.
-     */
-    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
-    /**
-     * Filter which Reviews to update
-     */
-    where?: ReviewWhereInput
-    /**
-     * Limit how many Reviews to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Review updateManyAndReturn
-   */
-  export type ReviewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * The data used to update Reviews.
-     */
-    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
-    /**
-     * Filter which Reviews to update
-     */
-    where?: ReviewWhereInput
-    /**
-     * Limit how many Reviews to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Review upsert
-   */
-  export type ReviewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Review to update in case it exists.
-     */
-    where: ReviewWhereUniqueInput
-    /**
-     * In case the Review found by the `where` argument doesn't exist, create a new Review with this data.
-     */
-    create: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
-    /**
-     * In case the Review was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
-  }
-
-  /**
-   * Review delete
-   */
-  export type ReviewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
-    /**
-     * Filter which Review to delete.
-     */
-    where: ReviewWhereUniqueInput
-  }
-
-  /**
-   * Review deleteMany
-   */
-  export type ReviewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Reviews to delete
-     */
-    where?: ReviewWhereInput
-    /**
-     * Limit how many Reviews to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Review without action
-   */
-  export type ReviewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Review
-     */
-    select?: ReviewSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Review
-     */
-    omit?: ReviewOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReviewInclude<ExtArgs> | null
   }
 
 
@@ -49909,6 +49018,3511 @@ export namespace Prisma {
 
 
   /**
+   * Model Review
+   */
+
+  export type AggregateReview = {
+    _count: ReviewCountAggregateOutputType | null
+    _avg: ReviewAvgAggregateOutputType | null
+    _sum: ReviewSumAggregateOutputType | null
+    _min: ReviewMinAggregateOutputType | null
+    _max: ReviewMaxAggregateOutputType | null
+  }
+
+  export type ReviewAvgAggregateOutputType = {
+    rating: Decimal | null
+  }
+
+  export type ReviewSumAggregateOutputType = {
+    rating: Decimal | null
+  }
+
+  export type ReviewMinAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    authorId: string | null
+    targetId: string | null
+    rating: Decimal | null
+    comment: string | null
+    status: $Enums.ReviewStatus | null
+    visibleAt: Date | null
+    lockedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReviewMaxAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    authorId: string | null
+    targetId: string | null
+    rating: Decimal | null
+    comment: string | null
+    status: $Enums.ReviewStatus | null
+    visibleAt: Date | null
+    lockedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReviewCountAggregateOutputType = {
+    id: number
+    contractId: number
+    authorId: number
+    targetId: number
+    rating: number
+    breakdown: number
+    comment: number
+    status: number
+    visibleAt: number
+    lockedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReviewAvgAggregateInputType = {
+    rating?: true
+  }
+
+  export type ReviewSumAggregateInputType = {
+    rating?: true
+  }
+
+  export type ReviewMinAggregateInputType = {
+    id?: true
+    contractId?: true
+    authorId?: true
+    targetId?: true
+    rating?: true
+    comment?: true
+    status?: true
+    visibleAt?: true
+    lockedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReviewMaxAggregateInputType = {
+    id?: true
+    contractId?: true
+    authorId?: true
+    targetId?: true
+    rating?: true
+    comment?: true
+    status?: true
+    visibleAt?: true
+    lockedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReviewCountAggregateInputType = {
+    id?: true
+    contractId?: true
+    authorId?: true
+    targetId?: true
+    rating?: true
+    breakdown?: true
+    comment?: true
+    status?: true
+    visibleAt?: true
+    lockedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReviewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Review to aggregate.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Reviews
+    **/
+    _count?: true | ReviewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReviewAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReviewSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReviewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReviewMaxAggregateInputType
+  }
+
+  export type GetReviewAggregateType<T extends ReviewAggregateArgs> = {
+        [P in keyof T & keyof AggregateReview]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReview[P]>
+      : GetScalarType<T[P], AggregateReview[P]>
+  }
+
+
+
+
+  export type ReviewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewWhereInput
+    orderBy?: ReviewOrderByWithAggregationInput | ReviewOrderByWithAggregationInput[]
+    by: ReviewScalarFieldEnum[] | ReviewScalarFieldEnum
+    having?: ReviewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReviewCountAggregateInputType | true
+    _avg?: ReviewAvgAggregateInputType
+    _sum?: ReviewSumAggregateInputType
+    _min?: ReviewMinAggregateInputType
+    _max?: ReviewMaxAggregateInputType
+  }
+
+  export type ReviewGroupByOutputType = {
+    id: string
+    contractId: string
+    authorId: string
+    targetId: string
+    rating: Decimal
+    breakdown: JsonValue | null
+    comment: string | null
+    status: $Enums.ReviewStatus
+    visibleAt: Date | null
+    lockedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ReviewCountAggregateOutputType | null
+    _avg: ReviewAvgAggregateOutputType | null
+    _sum: ReviewSumAggregateOutputType | null
+    _min: ReviewMinAggregateOutputType | null
+    _max: ReviewMaxAggregateOutputType | null
+  }
+
+  type GetReviewGroupByPayload<T extends ReviewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReviewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReviewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReviewGroupByOutputType[P]>
+            : GetScalarType<T[P], ReviewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReviewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    authorId?: boolean
+    targetId?: boolean
+    rating?: boolean
+    breakdown?: boolean
+    comment?: boolean
+    status?: boolean
+    visibleAt?: boolean
+    lockedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    authorId?: boolean
+    targetId?: boolean
+    rating?: boolean
+    breakdown?: boolean
+    comment?: boolean
+    status?: boolean
+    visibleAt?: boolean
+    lockedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    authorId?: boolean
+    targetId?: boolean
+    rating?: boolean
+    breakdown?: boolean
+    comment?: boolean
+    status?: boolean
+    visibleAt?: boolean
+    lockedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["review"]>
+
+  export type ReviewSelectScalar = {
+    id?: boolean
+    contractId?: boolean
+    authorId?: boolean
+    targetId?: boolean
+    rating?: boolean
+    breakdown?: boolean
+    comment?: boolean
+    status?: boolean
+    visibleAt?: boolean
+    lockedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "authorId" | "targetId" | "rating" | "breakdown" | "comment" | "status" | "visibleAt" | "lockedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["review"]>
+  export type ReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ReviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Review"
+    objects: {
+      contract: Prisma.$ContractPayload<ExtArgs>
+      author: Prisma.$UserPayload<ExtArgs>
+      target: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contractId: string
+      authorId: string
+      targetId: string
+      rating: Prisma.Decimal
+      breakdown: Prisma.JsonValue | null
+      comment: string | null
+      status: $Enums.ReviewStatus
+      visibleAt: Date | null
+      lockedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["review"]>
+    composites: {}
+  }
+
+  type ReviewGetPayload<S extends boolean | null | undefined | ReviewDefaultArgs> = $Result.GetResult<Prisma.$ReviewPayload, S>
+
+  type ReviewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReviewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReviewCountAggregateInputType | true
+    }
+
+  export interface ReviewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Review'], meta: { name: 'Review' } }
+    /**
+     * Find zero or one Review that matches the filter.
+     * @param {ReviewFindUniqueArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReviewFindUniqueArgs>(args: SelectSubset<T, ReviewFindUniqueArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Review that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReviewFindUniqueOrThrowArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReviewFindUniqueOrThrowArgs>(args: SelectSubset<T, ReviewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Review that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindFirstArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReviewFindFirstArgs>(args?: SelectSubset<T, ReviewFindFirstArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Review that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindFirstOrThrowArgs} args - Arguments to find a Review
+     * @example
+     * // Get one Review
+     * const review = await prisma.review.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReviewFindFirstOrThrowArgs>(args?: SelectSubset<T, ReviewFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Reviews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Reviews
+     * const reviews = await prisma.review.findMany()
+     * 
+     * // Get first 10 Reviews
+     * const reviews = await prisma.review.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reviewWithIdOnly = await prisma.review.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReviewFindManyArgs>(args?: SelectSubset<T, ReviewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Review.
+     * @param {ReviewCreateArgs} args - Arguments to create a Review.
+     * @example
+     * // Create one Review
+     * const Review = await prisma.review.create({
+     *   data: {
+     *     // ... data to create a Review
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReviewCreateArgs>(args: SelectSubset<T, ReviewCreateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Reviews.
+     * @param {ReviewCreateManyArgs} args - Arguments to create many Reviews.
+     * @example
+     * // Create many Reviews
+     * const review = await prisma.review.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReviewCreateManyArgs>(args?: SelectSubset<T, ReviewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Reviews and returns the data saved in the database.
+     * @param {ReviewCreateManyAndReturnArgs} args - Arguments to create many Reviews.
+     * @example
+     * // Create many Reviews
+     * const review = await prisma.review.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Reviews and only return the `id`
+     * const reviewWithIdOnly = await prisma.review.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReviewCreateManyAndReturnArgs>(args?: SelectSubset<T, ReviewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Review.
+     * @param {ReviewDeleteArgs} args - Arguments to delete one Review.
+     * @example
+     * // Delete one Review
+     * const Review = await prisma.review.delete({
+     *   where: {
+     *     // ... filter to delete one Review
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReviewDeleteArgs>(args: SelectSubset<T, ReviewDeleteArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Review.
+     * @param {ReviewUpdateArgs} args - Arguments to update one Review.
+     * @example
+     * // Update one Review
+     * const review = await prisma.review.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReviewUpdateArgs>(args: SelectSubset<T, ReviewUpdateArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Reviews.
+     * @param {ReviewDeleteManyArgs} args - Arguments to filter Reviews to delete.
+     * @example
+     * // Delete a few Reviews
+     * const { count } = await prisma.review.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReviewDeleteManyArgs>(args?: SelectSubset<T, ReviewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Reviews
+     * const review = await prisma.review.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReviewUpdateManyArgs>(args: SelectSubset<T, ReviewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reviews and returns the data updated in the database.
+     * @param {ReviewUpdateManyAndReturnArgs} args - Arguments to update many Reviews.
+     * @example
+     * // Update many Reviews
+     * const review = await prisma.review.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Reviews and only return the `id`
+     * const reviewWithIdOnly = await prisma.review.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReviewUpdateManyAndReturnArgs>(args: SelectSubset<T, ReviewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Review.
+     * @param {ReviewUpsertArgs} args - Arguments to update or create a Review.
+     * @example
+     * // Update or create a Review
+     * const review = await prisma.review.upsert({
+     *   create: {
+     *     // ... data to create a Review
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Review we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReviewUpsertArgs>(args: SelectSubset<T, ReviewUpsertArgs<ExtArgs>>): Prisma__ReviewClient<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Reviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewCountArgs} args - Arguments to filter Reviews to count.
+     * @example
+     * // Count the number of Reviews
+     * const count = await prisma.review.count({
+     *   where: {
+     *     // ... the filter for the Reviews we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReviewCountArgs>(
+      args?: Subset<T, ReviewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReviewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Review.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReviewAggregateArgs>(args: Subset<T, ReviewAggregateArgs>): Prisma.PrismaPromise<GetReviewAggregateType<T>>
+
+    /**
+     * Group by Review.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReviewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReviewGroupByArgs['orderBy'] }
+        : { orderBy?: ReviewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReviewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReviewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Review model
+   */
+  readonly fields: ReviewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Review.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contract<T extends ContractDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContractDefaultArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    target<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Review model
+   */
+  interface ReviewFieldRefs {
+    readonly id: FieldRef<"Review", 'String'>
+    readonly contractId: FieldRef<"Review", 'String'>
+    readonly authorId: FieldRef<"Review", 'String'>
+    readonly targetId: FieldRef<"Review", 'String'>
+    readonly rating: FieldRef<"Review", 'Decimal'>
+    readonly breakdown: FieldRef<"Review", 'Json'>
+    readonly comment: FieldRef<"Review", 'String'>
+    readonly status: FieldRef<"Review", 'ReviewStatus'>
+    readonly visibleAt: FieldRef<"Review", 'DateTime'>
+    readonly lockedAt: FieldRef<"Review", 'DateTime'>
+    readonly createdAt: FieldRef<"Review", 'DateTime'>
+    readonly updatedAt: FieldRef<"Review", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Review findUnique
+   */
+  export type ReviewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review findUniqueOrThrow
+   */
+  export type ReviewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review findFirst
+   */
+  export type ReviewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review findFirstOrThrow
+   */
+  export type ReviewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Review to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review findMany
+   */
+  export type ReviewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Reviews to fetch.
+     */
+    where?: ReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Reviews to fetch.
+     */
+    orderBy?: ReviewOrderByWithRelationInput | ReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Reviews.
+     */
+    cursor?: ReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Reviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Reviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Reviews.
+     */
+    distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Review create
+   */
+  export type ReviewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Review.
+     */
+    data: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
+  }
+
+  /**
+   * Review createMany
+   */
+  export type ReviewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Reviews.
+     */
+    data: ReviewCreateManyInput | ReviewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Review createManyAndReturn
+   */
+  export type ReviewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * The data used to create many Reviews.
+     */
+    data: ReviewCreateManyInput | ReviewCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Review update
+   */
+  export type ReviewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Review.
+     */
+    data: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
+    /**
+     * Choose, which Review to update.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review updateMany
+   */
+  export type ReviewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Reviews.
+     */
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Reviews to update
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Review updateManyAndReturn
+   */
+  export type ReviewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * The data used to update Reviews.
+     */
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Reviews to update
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Review upsert
+   */
+  export type ReviewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Review to update in case it exists.
+     */
+    where: ReviewWhereUniqueInput
+    /**
+     * In case the Review found by the `where` argument doesn't exist, create a new Review with this data.
+     */
+    create: XOR<ReviewCreateInput, ReviewUncheckedCreateInput>
+    /**
+     * In case the Review was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReviewUpdateInput, ReviewUncheckedUpdateInput>
+  }
+
+  /**
+   * Review delete
+   */
+  export type ReviewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+    /**
+     * Filter which Review to delete.
+     */
+    where: ReviewWhereUniqueInput
+  }
+
+  /**
+   * Review deleteMany
+   */
+  export type ReviewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reviews to delete
+     */
+    where?: ReviewWhereInput
+    /**
+     * Limit how many Reviews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Review without action
+   */
+  export type ReviewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Review
+     */
+    select?: ReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Review
+     */
+    omit?: ReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReviewEligibility
+   */
+
+  export type AggregateReviewEligibility = {
+    _count: ReviewEligibilityCountAggregateOutputType | null
+    _min: ReviewEligibilityMinAggregateOutputType | null
+    _max: ReviewEligibilityMaxAggregateOutputType | null
+  }
+
+  export type ReviewEligibilityMinAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    userId: string | null
+    targetId: string | null
+    status: $Enums.ReviewEligibilityStatus | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReviewEligibilityMaxAggregateOutputType = {
+    id: string | null
+    contractId: string | null
+    userId: string | null
+    targetId: string | null
+    status: $Enums.ReviewEligibilityStatus | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReviewEligibilityCountAggregateOutputType = {
+    id: number
+    contractId: number
+    userId: number
+    targetId: number
+    status: number
+    expiresAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReviewEligibilityMinAggregateInputType = {
+    id?: true
+    contractId?: true
+    userId?: true
+    targetId?: true
+    status?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReviewEligibilityMaxAggregateInputType = {
+    id?: true
+    contractId?: true
+    userId?: true
+    targetId?: true
+    status?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReviewEligibilityCountAggregateInputType = {
+    id?: true
+    contractId?: true
+    userId?: true
+    targetId?: true
+    status?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReviewEligibilityAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReviewEligibility to aggregate.
+     */
+    where?: ReviewEligibilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReviewEligibilities to fetch.
+     */
+    orderBy?: ReviewEligibilityOrderByWithRelationInput | ReviewEligibilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReviewEligibilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReviewEligibilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReviewEligibilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReviewEligibilities
+    **/
+    _count?: true | ReviewEligibilityCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReviewEligibilityMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReviewEligibilityMaxAggregateInputType
+  }
+
+  export type GetReviewEligibilityAggregateType<T extends ReviewEligibilityAggregateArgs> = {
+        [P in keyof T & keyof AggregateReviewEligibility]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReviewEligibility[P]>
+      : GetScalarType<T[P], AggregateReviewEligibility[P]>
+  }
+
+
+
+
+  export type ReviewEligibilityGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReviewEligibilityWhereInput
+    orderBy?: ReviewEligibilityOrderByWithAggregationInput | ReviewEligibilityOrderByWithAggregationInput[]
+    by: ReviewEligibilityScalarFieldEnum[] | ReviewEligibilityScalarFieldEnum
+    having?: ReviewEligibilityScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReviewEligibilityCountAggregateInputType | true
+    _min?: ReviewEligibilityMinAggregateInputType
+    _max?: ReviewEligibilityMaxAggregateInputType
+  }
+
+  export type ReviewEligibilityGroupByOutputType = {
+    id: string
+    contractId: string
+    userId: string
+    targetId: string
+    status: $Enums.ReviewEligibilityStatus
+    expiresAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: ReviewEligibilityCountAggregateOutputType | null
+    _min: ReviewEligibilityMinAggregateOutputType | null
+    _max: ReviewEligibilityMaxAggregateOutputType | null
+  }
+
+  type GetReviewEligibilityGroupByPayload<T extends ReviewEligibilityGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReviewEligibilityGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReviewEligibilityGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReviewEligibilityGroupByOutputType[P]>
+            : GetScalarType<T[P], ReviewEligibilityGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReviewEligibilitySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    userId?: boolean
+    targetId?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reviewEligibility"]>
+
+  export type ReviewEligibilitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    userId?: boolean
+    targetId?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reviewEligibility"]>
+
+  export type ReviewEligibilitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractId?: boolean
+    userId?: boolean
+    targetId?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reviewEligibility"]>
+
+  export type ReviewEligibilitySelectScalar = {
+    id?: boolean
+    contractId?: boolean
+    userId?: boolean
+    targetId?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReviewEligibilityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractId" | "userId" | "targetId" | "status" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["reviewEligibility"]>
+  export type ReviewEligibilityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReviewEligibilityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReviewEligibilityIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contract?: boolean | ContractDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    target?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ReviewEligibilityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReviewEligibility"
+    objects: {
+      contract: Prisma.$ContractPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+      target: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contractId: string
+      userId: string
+      targetId: string
+      status: $Enums.ReviewEligibilityStatus
+      expiresAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["reviewEligibility"]>
+    composites: {}
+  }
+
+  type ReviewEligibilityGetPayload<S extends boolean | null | undefined | ReviewEligibilityDefaultArgs> = $Result.GetResult<Prisma.$ReviewEligibilityPayload, S>
+
+  type ReviewEligibilityCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReviewEligibilityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReviewEligibilityCountAggregateInputType | true
+    }
+
+  export interface ReviewEligibilityDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReviewEligibility'], meta: { name: 'ReviewEligibility' } }
+    /**
+     * Find zero or one ReviewEligibility that matches the filter.
+     * @param {ReviewEligibilityFindUniqueArgs} args - Arguments to find a ReviewEligibility
+     * @example
+     * // Get one ReviewEligibility
+     * const reviewEligibility = await prisma.reviewEligibility.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReviewEligibilityFindUniqueArgs>(args: SelectSubset<T, ReviewEligibilityFindUniqueArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReviewEligibility that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReviewEligibilityFindUniqueOrThrowArgs} args - Arguments to find a ReviewEligibility
+     * @example
+     * // Get one ReviewEligibility
+     * const reviewEligibility = await prisma.reviewEligibility.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReviewEligibilityFindUniqueOrThrowArgs>(args: SelectSubset<T, ReviewEligibilityFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReviewEligibility that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewEligibilityFindFirstArgs} args - Arguments to find a ReviewEligibility
+     * @example
+     * // Get one ReviewEligibility
+     * const reviewEligibility = await prisma.reviewEligibility.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReviewEligibilityFindFirstArgs>(args?: SelectSubset<T, ReviewEligibilityFindFirstArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReviewEligibility that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewEligibilityFindFirstOrThrowArgs} args - Arguments to find a ReviewEligibility
+     * @example
+     * // Get one ReviewEligibility
+     * const reviewEligibility = await prisma.reviewEligibility.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReviewEligibilityFindFirstOrThrowArgs>(args?: SelectSubset<T, ReviewEligibilityFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReviewEligibilities that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewEligibilityFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReviewEligibilities
+     * const reviewEligibilities = await prisma.reviewEligibility.findMany()
+     * 
+     * // Get first 10 ReviewEligibilities
+     * const reviewEligibilities = await prisma.reviewEligibility.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reviewEligibilityWithIdOnly = await prisma.reviewEligibility.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReviewEligibilityFindManyArgs>(args?: SelectSubset<T, ReviewEligibilityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReviewEligibility.
+     * @param {ReviewEligibilityCreateArgs} args - Arguments to create a ReviewEligibility.
+     * @example
+     * // Create one ReviewEligibility
+     * const ReviewEligibility = await prisma.reviewEligibility.create({
+     *   data: {
+     *     // ... data to create a ReviewEligibility
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReviewEligibilityCreateArgs>(args: SelectSubset<T, ReviewEligibilityCreateArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReviewEligibilities.
+     * @param {ReviewEligibilityCreateManyArgs} args - Arguments to create many ReviewEligibilities.
+     * @example
+     * // Create many ReviewEligibilities
+     * const reviewEligibility = await prisma.reviewEligibility.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReviewEligibilityCreateManyArgs>(args?: SelectSubset<T, ReviewEligibilityCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReviewEligibilities and returns the data saved in the database.
+     * @param {ReviewEligibilityCreateManyAndReturnArgs} args - Arguments to create many ReviewEligibilities.
+     * @example
+     * // Create many ReviewEligibilities
+     * const reviewEligibility = await prisma.reviewEligibility.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReviewEligibilities and only return the `id`
+     * const reviewEligibilityWithIdOnly = await prisma.reviewEligibility.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReviewEligibilityCreateManyAndReturnArgs>(args?: SelectSubset<T, ReviewEligibilityCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReviewEligibility.
+     * @param {ReviewEligibilityDeleteArgs} args - Arguments to delete one ReviewEligibility.
+     * @example
+     * // Delete one ReviewEligibility
+     * const ReviewEligibility = await prisma.reviewEligibility.delete({
+     *   where: {
+     *     // ... filter to delete one ReviewEligibility
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReviewEligibilityDeleteArgs>(args: SelectSubset<T, ReviewEligibilityDeleteArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReviewEligibility.
+     * @param {ReviewEligibilityUpdateArgs} args - Arguments to update one ReviewEligibility.
+     * @example
+     * // Update one ReviewEligibility
+     * const reviewEligibility = await prisma.reviewEligibility.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReviewEligibilityUpdateArgs>(args: SelectSubset<T, ReviewEligibilityUpdateArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReviewEligibilities.
+     * @param {ReviewEligibilityDeleteManyArgs} args - Arguments to filter ReviewEligibilities to delete.
+     * @example
+     * // Delete a few ReviewEligibilities
+     * const { count } = await prisma.reviewEligibility.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReviewEligibilityDeleteManyArgs>(args?: SelectSubset<T, ReviewEligibilityDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReviewEligibilities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewEligibilityUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReviewEligibilities
+     * const reviewEligibility = await prisma.reviewEligibility.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReviewEligibilityUpdateManyArgs>(args: SelectSubset<T, ReviewEligibilityUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReviewEligibilities and returns the data updated in the database.
+     * @param {ReviewEligibilityUpdateManyAndReturnArgs} args - Arguments to update many ReviewEligibilities.
+     * @example
+     * // Update many ReviewEligibilities
+     * const reviewEligibility = await prisma.reviewEligibility.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReviewEligibilities and only return the `id`
+     * const reviewEligibilityWithIdOnly = await prisma.reviewEligibility.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReviewEligibilityUpdateManyAndReturnArgs>(args: SelectSubset<T, ReviewEligibilityUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReviewEligibility.
+     * @param {ReviewEligibilityUpsertArgs} args - Arguments to update or create a ReviewEligibility.
+     * @example
+     * // Update or create a ReviewEligibility
+     * const reviewEligibility = await prisma.reviewEligibility.upsert({
+     *   create: {
+     *     // ... data to create a ReviewEligibility
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReviewEligibility we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReviewEligibilityUpsertArgs>(args: SelectSubset<T, ReviewEligibilityUpsertArgs<ExtArgs>>): Prisma__ReviewEligibilityClient<$Result.GetResult<Prisma.$ReviewEligibilityPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReviewEligibilities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewEligibilityCountArgs} args - Arguments to filter ReviewEligibilities to count.
+     * @example
+     * // Count the number of ReviewEligibilities
+     * const count = await prisma.reviewEligibility.count({
+     *   where: {
+     *     // ... the filter for the ReviewEligibilities we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReviewEligibilityCountArgs>(
+      args?: Subset<T, ReviewEligibilityCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReviewEligibilityCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReviewEligibility.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewEligibilityAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReviewEligibilityAggregateArgs>(args: Subset<T, ReviewEligibilityAggregateArgs>): Prisma.PrismaPromise<GetReviewEligibilityAggregateType<T>>
+
+    /**
+     * Group by ReviewEligibility.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReviewEligibilityGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReviewEligibilityGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReviewEligibilityGroupByArgs['orderBy'] }
+        : { orderBy?: ReviewEligibilityGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReviewEligibilityGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReviewEligibilityGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReviewEligibility model
+   */
+  readonly fields: ReviewEligibilityFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReviewEligibility.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReviewEligibilityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contract<T extends ContractDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ContractDefaultArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    target<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReviewEligibility model
+   */
+  interface ReviewEligibilityFieldRefs {
+    readonly id: FieldRef<"ReviewEligibility", 'String'>
+    readonly contractId: FieldRef<"ReviewEligibility", 'String'>
+    readonly userId: FieldRef<"ReviewEligibility", 'String'>
+    readonly targetId: FieldRef<"ReviewEligibility", 'String'>
+    readonly status: FieldRef<"ReviewEligibility", 'ReviewEligibilityStatus'>
+    readonly expiresAt: FieldRef<"ReviewEligibility", 'DateTime'>
+    readonly createdAt: FieldRef<"ReviewEligibility", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReviewEligibility", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReviewEligibility findUnique
+   */
+  export type ReviewEligibilityFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * Filter, which ReviewEligibility to fetch.
+     */
+    where: ReviewEligibilityWhereUniqueInput
+  }
+
+  /**
+   * ReviewEligibility findUniqueOrThrow
+   */
+  export type ReviewEligibilityFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * Filter, which ReviewEligibility to fetch.
+     */
+    where: ReviewEligibilityWhereUniqueInput
+  }
+
+  /**
+   * ReviewEligibility findFirst
+   */
+  export type ReviewEligibilityFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * Filter, which ReviewEligibility to fetch.
+     */
+    where?: ReviewEligibilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReviewEligibilities to fetch.
+     */
+    orderBy?: ReviewEligibilityOrderByWithRelationInput | ReviewEligibilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReviewEligibilities.
+     */
+    cursor?: ReviewEligibilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReviewEligibilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReviewEligibilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReviewEligibilities.
+     */
+    distinct?: ReviewEligibilityScalarFieldEnum | ReviewEligibilityScalarFieldEnum[]
+  }
+
+  /**
+   * ReviewEligibility findFirstOrThrow
+   */
+  export type ReviewEligibilityFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * Filter, which ReviewEligibility to fetch.
+     */
+    where?: ReviewEligibilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReviewEligibilities to fetch.
+     */
+    orderBy?: ReviewEligibilityOrderByWithRelationInput | ReviewEligibilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReviewEligibilities.
+     */
+    cursor?: ReviewEligibilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReviewEligibilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReviewEligibilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReviewEligibilities.
+     */
+    distinct?: ReviewEligibilityScalarFieldEnum | ReviewEligibilityScalarFieldEnum[]
+  }
+
+  /**
+   * ReviewEligibility findMany
+   */
+  export type ReviewEligibilityFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * Filter, which ReviewEligibilities to fetch.
+     */
+    where?: ReviewEligibilityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReviewEligibilities to fetch.
+     */
+    orderBy?: ReviewEligibilityOrderByWithRelationInput | ReviewEligibilityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReviewEligibilities.
+     */
+    cursor?: ReviewEligibilityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReviewEligibilities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReviewEligibilities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReviewEligibilities.
+     */
+    distinct?: ReviewEligibilityScalarFieldEnum | ReviewEligibilityScalarFieldEnum[]
+  }
+
+  /**
+   * ReviewEligibility create
+   */
+  export type ReviewEligibilityCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReviewEligibility.
+     */
+    data: XOR<ReviewEligibilityCreateInput, ReviewEligibilityUncheckedCreateInput>
+  }
+
+  /**
+   * ReviewEligibility createMany
+   */
+  export type ReviewEligibilityCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReviewEligibilities.
+     */
+    data: ReviewEligibilityCreateManyInput | ReviewEligibilityCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReviewEligibility createManyAndReturn
+   */
+  export type ReviewEligibilityCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReviewEligibilities.
+     */
+    data: ReviewEligibilityCreateManyInput | ReviewEligibilityCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReviewEligibility update
+   */
+  export type ReviewEligibilityUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReviewEligibility.
+     */
+    data: XOR<ReviewEligibilityUpdateInput, ReviewEligibilityUncheckedUpdateInput>
+    /**
+     * Choose, which ReviewEligibility to update.
+     */
+    where: ReviewEligibilityWhereUniqueInput
+  }
+
+  /**
+   * ReviewEligibility updateMany
+   */
+  export type ReviewEligibilityUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReviewEligibilities.
+     */
+    data: XOR<ReviewEligibilityUpdateManyMutationInput, ReviewEligibilityUncheckedUpdateManyInput>
+    /**
+     * Filter which ReviewEligibilities to update
+     */
+    where?: ReviewEligibilityWhereInput
+    /**
+     * Limit how many ReviewEligibilities to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReviewEligibility updateManyAndReturn
+   */
+  export type ReviewEligibilityUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * The data used to update ReviewEligibilities.
+     */
+    data: XOR<ReviewEligibilityUpdateManyMutationInput, ReviewEligibilityUncheckedUpdateManyInput>
+    /**
+     * Filter which ReviewEligibilities to update
+     */
+    where?: ReviewEligibilityWhereInput
+    /**
+     * Limit how many ReviewEligibilities to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReviewEligibility upsert
+   */
+  export type ReviewEligibilityUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReviewEligibility to update in case it exists.
+     */
+    where: ReviewEligibilityWhereUniqueInput
+    /**
+     * In case the ReviewEligibility found by the `where` argument doesn't exist, create a new ReviewEligibility with this data.
+     */
+    create: XOR<ReviewEligibilityCreateInput, ReviewEligibilityUncheckedCreateInput>
+    /**
+     * In case the ReviewEligibility was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReviewEligibilityUpdateInput, ReviewEligibilityUncheckedUpdateInput>
+  }
+
+  /**
+   * ReviewEligibility delete
+   */
+  export type ReviewEligibilityDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+    /**
+     * Filter which ReviewEligibility to delete.
+     */
+    where: ReviewEligibilityWhereUniqueInput
+  }
+
+  /**
+   * ReviewEligibility deleteMany
+   */
+  export type ReviewEligibilityDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReviewEligibilities to delete
+     */
+    where?: ReviewEligibilityWhereInput
+    /**
+     * Limit how many ReviewEligibilities to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReviewEligibility without action
+   */
+  export type ReviewEligibilityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReviewEligibility
+     */
+    select?: ReviewEligibilitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReviewEligibility
+     */
+    omit?: ReviewEligibilityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReviewEligibilityInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReputationProfile
+   */
+
+  export type AggregateReputationProfile = {
+    _count: ReputationProfileCountAggregateOutputType | null
+    _avg: ReputationProfileAvgAggregateOutputType | null
+    _sum: ReputationProfileSumAggregateOutputType | null
+    _min: ReputationProfileMinAggregateOutputType | null
+    _max: ReputationProfileMaxAggregateOutputType | null
+  }
+
+  export type ReputationProfileAvgAggregateOutputType = {
+    averageRating: Decimal | null
+    totalReviews: number | null
+    jssScore: number | null
+    completionRate: Decimal | null
+    responseRate: Decimal | null
+  }
+
+  export type ReputationProfileSumAggregateOutputType = {
+    averageRating: Decimal | null
+    totalReviews: number | null
+    jssScore: number | null
+    completionRate: Decimal | null
+    responseRate: Decimal | null
+  }
+
+  export type ReputationProfileMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    averageRating: Decimal | null
+    totalReviews: number | null
+    jssScore: number | null
+    completionRate: Decimal | null
+    responseRate: Decimal | null
+    lastRecalculatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReputationProfileMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    averageRating: Decimal | null
+    totalReviews: number | null
+    jssScore: number | null
+    completionRate: Decimal | null
+    responseRate: Decimal | null
+    lastRecalculatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReputationProfileCountAggregateOutputType = {
+    id: number
+    userId: number
+    averageRating: number
+    totalReviews: number
+    jssScore: number
+    completionRate: number
+    responseRate: number
+    snapshotData: number
+    lastRecalculatedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReputationProfileAvgAggregateInputType = {
+    averageRating?: true
+    totalReviews?: true
+    jssScore?: true
+    completionRate?: true
+    responseRate?: true
+  }
+
+  export type ReputationProfileSumAggregateInputType = {
+    averageRating?: true
+    totalReviews?: true
+    jssScore?: true
+    completionRate?: true
+    responseRate?: true
+  }
+
+  export type ReputationProfileMinAggregateInputType = {
+    id?: true
+    userId?: true
+    averageRating?: true
+    totalReviews?: true
+    jssScore?: true
+    completionRate?: true
+    responseRate?: true
+    lastRecalculatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReputationProfileMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    averageRating?: true
+    totalReviews?: true
+    jssScore?: true
+    completionRate?: true
+    responseRate?: true
+    lastRecalculatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReputationProfileCountAggregateInputType = {
+    id?: true
+    userId?: true
+    averageRating?: true
+    totalReviews?: true
+    jssScore?: true
+    completionRate?: true
+    responseRate?: true
+    snapshotData?: true
+    lastRecalculatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReputationProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReputationProfile to aggregate.
+     */
+    where?: ReputationProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReputationProfiles to fetch.
+     */
+    orderBy?: ReputationProfileOrderByWithRelationInput | ReputationProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReputationProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReputationProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReputationProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReputationProfiles
+    **/
+    _count?: true | ReputationProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReputationProfileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReputationProfileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReputationProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReputationProfileMaxAggregateInputType
+  }
+
+  export type GetReputationProfileAggregateType<T extends ReputationProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateReputationProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReputationProfile[P]>
+      : GetScalarType<T[P], AggregateReputationProfile[P]>
+  }
+
+
+
+
+  export type ReputationProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReputationProfileWhereInput
+    orderBy?: ReputationProfileOrderByWithAggregationInput | ReputationProfileOrderByWithAggregationInput[]
+    by: ReputationProfileScalarFieldEnum[] | ReputationProfileScalarFieldEnum
+    having?: ReputationProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReputationProfileCountAggregateInputType | true
+    _avg?: ReputationProfileAvgAggregateInputType
+    _sum?: ReputationProfileSumAggregateInputType
+    _min?: ReputationProfileMinAggregateInputType
+    _max?: ReputationProfileMaxAggregateInputType
+  }
+
+  export type ReputationProfileGroupByOutputType = {
+    id: string
+    userId: string
+    averageRating: Decimal
+    totalReviews: number
+    jssScore: number
+    completionRate: Decimal
+    responseRate: Decimal
+    snapshotData: JsonValue | null
+    lastRecalculatedAt: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: ReputationProfileCountAggregateOutputType | null
+    _avg: ReputationProfileAvgAggregateOutputType | null
+    _sum: ReputationProfileSumAggregateOutputType | null
+    _min: ReputationProfileMinAggregateOutputType | null
+    _max: ReputationProfileMaxAggregateOutputType | null
+  }
+
+  type GetReputationProfileGroupByPayload<T extends ReputationProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReputationProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReputationProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReputationProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], ReputationProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReputationProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    averageRating?: boolean
+    totalReviews?: boolean
+    jssScore?: boolean
+    completionRate?: boolean
+    responseRate?: boolean
+    snapshotData?: boolean
+    lastRecalculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reputationProfile"]>
+
+  export type ReputationProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    averageRating?: boolean
+    totalReviews?: boolean
+    jssScore?: boolean
+    completionRate?: boolean
+    responseRate?: boolean
+    snapshotData?: boolean
+    lastRecalculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reputationProfile"]>
+
+  export type ReputationProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    averageRating?: boolean
+    totalReviews?: boolean
+    jssScore?: boolean
+    completionRate?: boolean
+    responseRate?: boolean
+    snapshotData?: boolean
+    lastRecalculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reputationProfile"]>
+
+  export type ReputationProfileSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    averageRating?: boolean
+    totalReviews?: boolean
+    jssScore?: boolean
+    completionRate?: boolean
+    responseRate?: boolean
+    snapshotData?: boolean
+    lastRecalculatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReputationProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "averageRating" | "totalReviews" | "jssScore" | "completionRate" | "responseRate" | "snapshotData" | "lastRecalculatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["reputationProfile"]>
+  export type ReputationProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReputationProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ReputationProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ReputationProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReputationProfile"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      averageRating: Prisma.Decimal
+      totalReviews: number
+      jssScore: number
+      completionRate: Prisma.Decimal
+      responseRate: Prisma.Decimal
+      snapshotData: Prisma.JsonValue | null
+      lastRecalculatedAt: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["reputationProfile"]>
+    composites: {}
+  }
+
+  type ReputationProfileGetPayload<S extends boolean | null | undefined | ReputationProfileDefaultArgs> = $Result.GetResult<Prisma.$ReputationProfilePayload, S>
+
+  type ReputationProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReputationProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReputationProfileCountAggregateInputType | true
+    }
+
+  export interface ReputationProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReputationProfile'], meta: { name: 'ReputationProfile' } }
+    /**
+     * Find zero or one ReputationProfile that matches the filter.
+     * @param {ReputationProfileFindUniqueArgs} args - Arguments to find a ReputationProfile
+     * @example
+     * // Get one ReputationProfile
+     * const reputationProfile = await prisma.reputationProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReputationProfileFindUniqueArgs>(args: SelectSubset<T, ReputationProfileFindUniqueArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReputationProfile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReputationProfileFindUniqueOrThrowArgs} args - Arguments to find a ReputationProfile
+     * @example
+     * // Get one ReputationProfile
+     * const reputationProfile = await prisma.reputationProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReputationProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, ReputationProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReputationProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReputationProfileFindFirstArgs} args - Arguments to find a ReputationProfile
+     * @example
+     * // Get one ReputationProfile
+     * const reputationProfile = await prisma.reputationProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReputationProfileFindFirstArgs>(args?: SelectSubset<T, ReputationProfileFindFirstArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReputationProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReputationProfileFindFirstOrThrowArgs} args - Arguments to find a ReputationProfile
+     * @example
+     * // Get one ReputationProfile
+     * const reputationProfile = await prisma.reputationProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReputationProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, ReputationProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReputationProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReputationProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReputationProfiles
+     * const reputationProfiles = await prisma.reputationProfile.findMany()
+     * 
+     * // Get first 10 ReputationProfiles
+     * const reputationProfiles = await prisma.reputationProfile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reputationProfileWithIdOnly = await prisma.reputationProfile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReputationProfileFindManyArgs>(args?: SelectSubset<T, ReputationProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReputationProfile.
+     * @param {ReputationProfileCreateArgs} args - Arguments to create a ReputationProfile.
+     * @example
+     * // Create one ReputationProfile
+     * const ReputationProfile = await prisma.reputationProfile.create({
+     *   data: {
+     *     // ... data to create a ReputationProfile
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReputationProfileCreateArgs>(args: SelectSubset<T, ReputationProfileCreateArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReputationProfiles.
+     * @param {ReputationProfileCreateManyArgs} args - Arguments to create many ReputationProfiles.
+     * @example
+     * // Create many ReputationProfiles
+     * const reputationProfile = await prisma.reputationProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReputationProfileCreateManyArgs>(args?: SelectSubset<T, ReputationProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReputationProfiles and returns the data saved in the database.
+     * @param {ReputationProfileCreateManyAndReturnArgs} args - Arguments to create many ReputationProfiles.
+     * @example
+     * // Create many ReputationProfiles
+     * const reputationProfile = await prisma.reputationProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReputationProfiles and only return the `id`
+     * const reputationProfileWithIdOnly = await prisma.reputationProfile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReputationProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, ReputationProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReputationProfile.
+     * @param {ReputationProfileDeleteArgs} args - Arguments to delete one ReputationProfile.
+     * @example
+     * // Delete one ReputationProfile
+     * const ReputationProfile = await prisma.reputationProfile.delete({
+     *   where: {
+     *     // ... filter to delete one ReputationProfile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReputationProfileDeleteArgs>(args: SelectSubset<T, ReputationProfileDeleteArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReputationProfile.
+     * @param {ReputationProfileUpdateArgs} args - Arguments to update one ReputationProfile.
+     * @example
+     * // Update one ReputationProfile
+     * const reputationProfile = await prisma.reputationProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReputationProfileUpdateArgs>(args: SelectSubset<T, ReputationProfileUpdateArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReputationProfiles.
+     * @param {ReputationProfileDeleteManyArgs} args - Arguments to filter ReputationProfiles to delete.
+     * @example
+     * // Delete a few ReputationProfiles
+     * const { count } = await prisma.reputationProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReputationProfileDeleteManyArgs>(args?: SelectSubset<T, ReputationProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReputationProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReputationProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReputationProfiles
+     * const reputationProfile = await prisma.reputationProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReputationProfileUpdateManyArgs>(args: SelectSubset<T, ReputationProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReputationProfiles and returns the data updated in the database.
+     * @param {ReputationProfileUpdateManyAndReturnArgs} args - Arguments to update many ReputationProfiles.
+     * @example
+     * // Update many ReputationProfiles
+     * const reputationProfile = await prisma.reputationProfile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReputationProfiles and only return the `id`
+     * const reputationProfileWithIdOnly = await prisma.reputationProfile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReputationProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, ReputationProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReputationProfile.
+     * @param {ReputationProfileUpsertArgs} args - Arguments to update or create a ReputationProfile.
+     * @example
+     * // Update or create a ReputationProfile
+     * const reputationProfile = await prisma.reputationProfile.upsert({
+     *   create: {
+     *     // ... data to create a ReputationProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReputationProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReputationProfileUpsertArgs>(args: SelectSubset<T, ReputationProfileUpsertArgs<ExtArgs>>): Prisma__ReputationProfileClient<$Result.GetResult<Prisma.$ReputationProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReputationProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReputationProfileCountArgs} args - Arguments to filter ReputationProfiles to count.
+     * @example
+     * // Count the number of ReputationProfiles
+     * const count = await prisma.reputationProfile.count({
+     *   where: {
+     *     // ... the filter for the ReputationProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReputationProfileCountArgs>(
+      args?: Subset<T, ReputationProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReputationProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReputationProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReputationProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReputationProfileAggregateArgs>(args: Subset<T, ReputationProfileAggregateArgs>): Prisma.PrismaPromise<GetReputationProfileAggregateType<T>>
+
+    /**
+     * Group by ReputationProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReputationProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReputationProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReputationProfileGroupByArgs['orderBy'] }
+        : { orderBy?: ReputationProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReputationProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReputationProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReputationProfile model
+   */
+  readonly fields: ReputationProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReputationProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReputationProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReputationProfile model
+   */
+  interface ReputationProfileFieldRefs {
+    readonly id: FieldRef<"ReputationProfile", 'String'>
+    readonly userId: FieldRef<"ReputationProfile", 'String'>
+    readonly averageRating: FieldRef<"ReputationProfile", 'Decimal'>
+    readonly totalReviews: FieldRef<"ReputationProfile", 'Int'>
+    readonly jssScore: FieldRef<"ReputationProfile", 'Int'>
+    readonly completionRate: FieldRef<"ReputationProfile", 'Decimal'>
+    readonly responseRate: FieldRef<"ReputationProfile", 'Decimal'>
+    readonly snapshotData: FieldRef<"ReputationProfile", 'Json'>
+    readonly lastRecalculatedAt: FieldRef<"ReputationProfile", 'DateTime'>
+    readonly createdAt: FieldRef<"ReputationProfile", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReputationProfile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReputationProfile findUnique
+   */
+  export type ReputationProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ReputationProfile to fetch.
+     */
+    where: ReputationProfileWhereUniqueInput
+  }
+
+  /**
+   * ReputationProfile findUniqueOrThrow
+   */
+  export type ReputationProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ReputationProfile to fetch.
+     */
+    where: ReputationProfileWhereUniqueInput
+  }
+
+  /**
+   * ReputationProfile findFirst
+   */
+  export type ReputationProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ReputationProfile to fetch.
+     */
+    where?: ReputationProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReputationProfiles to fetch.
+     */
+    orderBy?: ReputationProfileOrderByWithRelationInput | ReputationProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReputationProfiles.
+     */
+    cursor?: ReputationProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReputationProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReputationProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReputationProfiles.
+     */
+    distinct?: ReputationProfileScalarFieldEnum | ReputationProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ReputationProfile findFirstOrThrow
+   */
+  export type ReputationProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ReputationProfile to fetch.
+     */
+    where?: ReputationProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReputationProfiles to fetch.
+     */
+    orderBy?: ReputationProfileOrderByWithRelationInput | ReputationProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReputationProfiles.
+     */
+    cursor?: ReputationProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReputationProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReputationProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReputationProfiles.
+     */
+    distinct?: ReputationProfileScalarFieldEnum | ReputationProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ReputationProfile findMany
+   */
+  export type ReputationProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ReputationProfiles to fetch.
+     */
+    where?: ReputationProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReputationProfiles to fetch.
+     */
+    orderBy?: ReputationProfileOrderByWithRelationInput | ReputationProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReputationProfiles.
+     */
+    cursor?: ReputationProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReputationProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReputationProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReputationProfiles.
+     */
+    distinct?: ReputationProfileScalarFieldEnum | ReputationProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ReputationProfile create
+   */
+  export type ReputationProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReputationProfile.
+     */
+    data: XOR<ReputationProfileCreateInput, ReputationProfileUncheckedCreateInput>
+  }
+
+  /**
+   * ReputationProfile createMany
+   */
+  export type ReputationProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReputationProfiles.
+     */
+    data: ReputationProfileCreateManyInput | ReputationProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReputationProfile createManyAndReturn
+   */
+  export type ReputationProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReputationProfiles.
+     */
+    data: ReputationProfileCreateManyInput | ReputationProfileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReputationProfile update
+   */
+  export type ReputationProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReputationProfile.
+     */
+    data: XOR<ReputationProfileUpdateInput, ReputationProfileUncheckedUpdateInput>
+    /**
+     * Choose, which ReputationProfile to update.
+     */
+    where: ReputationProfileWhereUniqueInput
+  }
+
+  /**
+   * ReputationProfile updateMany
+   */
+  export type ReputationProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReputationProfiles.
+     */
+    data: XOR<ReputationProfileUpdateManyMutationInput, ReputationProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which ReputationProfiles to update
+     */
+    where?: ReputationProfileWhereInput
+    /**
+     * Limit how many ReputationProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReputationProfile updateManyAndReturn
+   */
+  export type ReputationProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * The data used to update ReputationProfiles.
+     */
+    data: XOR<ReputationProfileUpdateManyMutationInput, ReputationProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which ReputationProfiles to update
+     */
+    where?: ReputationProfileWhereInput
+    /**
+     * Limit how many ReputationProfiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReputationProfile upsert
+   */
+  export type ReputationProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReputationProfile to update in case it exists.
+     */
+    where: ReputationProfileWhereUniqueInput
+    /**
+     * In case the ReputationProfile found by the `where` argument doesn't exist, create a new ReputationProfile with this data.
+     */
+    create: XOR<ReputationProfileCreateInput, ReputationProfileUncheckedCreateInput>
+    /**
+     * In case the ReputationProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReputationProfileUpdateInput, ReputationProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * ReputationProfile delete
+   */
+  export type ReputationProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+    /**
+     * Filter which ReputationProfile to delete.
+     */
+    where: ReputationProfileWhereUniqueInput
+  }
+
+  /**
+   * ReputationProfile deleteMany
+   */
+  export type ReputationProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReputationProfiles to delete
+     */
+    where?: ReputationProfileWhereInput
+    /**
+     * Limit how many ReputationProfiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReputationProfile without action
+   */
+  export type ReputationProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReputationProfile
+     */
+    select?: ReputationProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReputationProfile
+     */
+    omit?: ReputationProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReputationProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -50189,27 +52803,6 @@ export namespace Prisma {
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
-
-
-  export const ReviewScalarFieldEnum: {
-    id: 'id',
-    contractId: 'contractId',
-    clientId: 'clientId',
-    artisanId: 'artisanId',
-    rating: 'rating',
-    comment: 'comment',
-    categories: 'categories',
-    workQuality: 'workQuality',
-    communication: 'communication',
-    timeliness: 'timeliness',
-    professionalism: 'professionalism',
-    evidence: 'evidence',
-    isPublic: 'isPublic',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
   export const NotificationScalarFieldEnum: {
@@ -50550,6 +53143,55 @@ export namespace Prisma {
   export type SystemConfigScalarFieldEnum = (typeof SystemConfigScalarFieldEnum)[keyof typeof SystemConfigScalarFieldEnum]
 
 
+  export const ReviewScalarFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    authorId: 'authorId',
+    targetId: 'targetId',
+    rating: 'rating',
+    breakdown: 'breakdown',
+    comment: 'comment',
+    status: 'status',
+    visibleAt: 'visibleAt',
+    lockedAt: 'lockedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+  export const ReviewEligibilityScalarFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    userId: 'userId',
+    targetId: 'targetId',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReviewEligibilityScalarFieldEnum = (typeof ReviewEligibilityScalarFieldEnum)[keyof typeof ReviewEligibilityScalarFieldEnum]
+
+
+  export const ReputationProfileScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    averageRating: 'averageRating',
+    totalReviews: 'totalReviews',
+    jssScore: 'jssScore',
+    completionRate: 'completionRate',
+    responseRate: 'responseRate',
+    snapshotData: 'snapshotData',
+    lastRecalculatedAt: 'lastRecalculatedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReputationProfileScalarFieldEnum = (typeof ReputationProfileScalarFieldEnum)[keyof typeof ReputationProfileScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -50777,17 +53419,6 @@ export namespace Prisma {
   };
 
   export type MessageOrderByRelevanceFieldEnum = (typeof MessageOrderByRelevanceFieldEnum)[keyof typeof MessageOrderByRelevanceFieldEnum]
-
-
-  export const ReviewOrderByRelevanceFieldEnum: {
-    id: 'id',
-    contractId: 'contractId',
-    clientId: 'clientId',
-    artisanId: 'artisanId',
-    comment: 'comment'
-  };
-
-  export type ReviewOrderByRelevanceFieldEnum = (typeof ReviewOrderByRelevanceFieldEnum)[keyof typeof ReviewOrderByRelevanceFieldEnum]
 
 
   export const NotificationOrderByRelevanceFieldEnum: {
@@ -51039,6 +53670,35 @@ export namespace Prisma {
   };
 
   export type SystemConfigOrderByRelevanceFieldEnum = (typeof SystemConfigOrderByRelevanceFieldEnum)[keyof typeof SystemConfigOrderByRelevanceFieldEnum]
+
+
+  export const ReviewOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    authorId: 'authorId',
+    targetId: 'targetId',
+    comment: 'comment'
+  };
+
+  export type ReviewOrderByRelevanceFieldEnum = (typeof ReviewOrderByRelevanceFieldEnum)[keyof typeof ReviewOrderByRelevanceFieldEnum]
+
+
+  export const ReviewEligibilityOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contractId: 'contractId',
+    userId: 'userId',
+    targetId: 'targetId'
+  };
+
+  export type ReviewEligibilityOrderByRelevanceFieldEnum = (typeof ReviewEligibilityOrderByRelevanceFieldEnum)[keyof typeof ReviewEligibilityOrderByRelevanceFieldEnum]
+
+
+  export const ReputationProfileOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId'
+  };
+
+  export type ReputationProfileOrderByRelevanceFieldEnum = (typeof ReputationProfileOrderByRelevanceFieldEnum)[keyof typeof ReputationProfileOrderByRelevanceFieldEnum]
 
 
   /**
@@ -51541,6 +54201,48 @@ export namespace Prisma {
    */
   export type ListEnumAuditSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditSeverity[]'>
     
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReviewStatus'
+   */
+  export type EnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReviewStatus[]'
+   */
+  export type ListEnumReviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReviewEligibilityStatus'
+   */
+  export type EnumReviewEligibilityStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewEligibilityStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReviewEligibilityStatus[]'
+   */
+  export type ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReviewEligibilityStatus[]'>
+    
   /**
    * Deep Input Types
    */
@@ -51579,8 +54281,11 @@ export namespace Prisma {
     artisanContracts?: ContractListRelationFilter
     clientJobs?: JobListRelationFilter
     artisanJobs?: JobListRelationFilter
-    sentReviews?: ReviewListRelationFilter
+    authoredReviews?: ReviewListRelationFilter
     receivedReviews?: ReviewListRelationFilter
+    reviewEligibilities?: ReviewEligibilityListRelationFilter
+    targetEligibilities?: ReviewEligibilityListRelationFilter
+    reputationProfile?: XOR<ReputationProfileNullableScalarRelationFilter, ReputationProfileWhereInput> | null
     notifications?: NotificationListRelationFilter
     notificationPrefs?: NotificationPreferenceListRelationFilter
     transactions?: TransactionListRelationFilter
@@ -51623,8 +54328,11 @@ export namespace Prisma {
     artisanContracts?: ContractOrderByRelationAggregateInput
     clientJobs?: JobOrderByRelationAggregateInput
     artisanJobs?: JobOrderByRelationAggregateInput
-    sentReviews?: ReviewOrderByRelationAggregateInput
+    authoredReviews?: ReviewOrderByRelationAggregateInput
     receivedReviews?: ReviewOrderByRelationAggregateInput
+    reviewEligibilities?: ReviewEligibilityOrderByRelationAggregateInput
+    targetEligibilities?: ReviewEligibilityOrderByRelationAggregateInput
+    reputationProfile?: ReputationProfileOrderByWithRelationInput
     notifications?: NotificationOrderByRelationAggregateInput
     notificationPrefs?: NotificationPreferenceOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
@@ -51671,8 +54379,11 @@ export namespace Prisma {
     artisanContracts?: ContractListRelationFilter
     clientJobs?: JobListRelationFilter
     artisanJobs?: JobListRelationFilter
-    sentReviews?: ReviewListRelationFilter
+    authoredReviews?: ReviewListRelationFilter
     receivedReviews?: ReviewListRelationFilter
+    reviewEligibilities?: ReviewEligibilityListRelationFilter
+    targetEligibilities?: ReviewEligibilityListRelationFilter
+    reputationProfile?: XOR<ReputationProfileNullableScalarRelationFilter, ReputationProfileWhereInput> | null
     notifications?: NotificationListRelationFilter
     notificationPrefs?: NotificationPreferenceListRelationFilter
     transactions?: TransactionListRelationFilter
@@ -52729,7 +55440,8 @@ export namespace Prisma {
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
     conversation?: XOR<ConversationNullableScalarRelationFilter, ConversationWhereInput> | null
-    review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
+    reviews?: ReviewListRelationFilter
+    reviewEligibilities?: ReviewEligibilityListRelationFilter
     payments?: PaymentListRelationFilter
     ledgerEntries?: LedgerEntryListRelationFilter
     financialEvents?: FinancialEventListRelationFilter
@@ -52774,7 +55486,8 @@ export namespace Prisma {
     client?: UserOrderByWithRelationInput
     artisan?: UserOrderByWithRelationInput
     conversation?: ConversationOrderByWithRelationInput
-    review?: ReviewOrderByWithRelationInput
+    reviews?: ReviewOrderByRelationAggregateInput
+    reviewEligibilities?: ReviewEligibilityOrderByRelationAggregateInput
     payments?: PaymentOrderByRelationAggregateInput
     ledgerEntries?: LedgerEntryOrderByRelationAggregateInput
     financialEvents?: FinancialEventOrderByRelationAggregateInput
@@ -52823,7 +55536,8 @@ export namespace Prisma {
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
     artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
     conversation?: XOR<ConversationNullableScalarRelationFilter, ConversationWhereInput> | null
-    review?: XOR<ReviewNullableScalarRelationFilter, ReviewWhereInput> | null
+    reviews?: ReviewListRelationFilter
+    reviewEligibilities?: ReviewEligibilityListRelationFilter
     payments?: PaymentListRelationFilter
     ledgerEntries?: LedgerEntryListRelationFilter
     financialEvents?: FinancialEventListRelationFilter
@@ -53052,120 +55766,6 @@ export namespace Prisma {
     fileName?: StringNullableWithAggregatesFilter<"Message"> | string | null
     fileSize?: IntNullableWithAggregatesFilter<"Message"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
-  }
-
-  export type ReviewWhereInput = {
-    AND?: ReviewWhereInput | ReviewWhereInput[]
-    OR?: ReviewWhereInput[]
-    NOT?: ReviewWhereInput | ReviewWhereInput[]
-    id?: StringFilter<"Review"> | string
-    contractId?: StringFilter<"Review"> | string
-    clientId?: StringFilter<"Review"> | string
-    artisanId?: StringFilter<"Review"> | string
-    rating?: IntFilter<"Review"> | number
-    comment?: StringNullableFilter<"Review"> | string | null
-    categories?: JsonNullableFilter<"Review">
-    workQuality?: IntNullableFilter<"Review"> | number | null
-    communication?: IntNullableFilter<"Review"> | number | null
-    timeliness?: IntNullableFilter<"Review"> | number | null
-    professionalism?: IntNullableFilter<"Review"> | number | null
-    evidence?: JsonNullableFilter<"Review">
-    isPublic?: BoolFilter<"Review"> | boolean
-    createdAt?: DateTimeFilter<"Review"> | Date | string
-    updatedAt?: DateTimeFilter<"Review"> | Date | string
-    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
-    client?: XOR<UserScalarRelationFilter, UserWhereInput>
-    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }
-
-  export type ReviewOrderByWithRelationInput = {
-    id?: SortOrder
-    contractId?: SortOrder
-    clientId?: SortOrder
-    artisanId?: SortOrder
-    rating?: SortOrder
-    comment?: SortOrderInput | SortOrder
-    categories?: SortOrderInput | SortOrder
-    workQuality?: SortOrderInput | SortOrder
-    communication?: SortOrderInput | SortOrder
-    timeliness?: SortOrderInput | SortOrder
-    professionalism?: SortOrderInput | SortOrder
-    evidence?: SortOrderInput | SortOrder
-    isPublic?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    contract?: ContractOrderByWithRelationInput
-    client?: UserOrderByWithRelationInput
-    artisan?: UserOrderByWithRelationInput
-    _relevance?: ReviewOrderByRelevanceInput
-  }
-
-  export type ReviewWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    contractId?: string
-    AND?: ReviewWhereInput | ReviewWhereInput[]
-    OR?: ReviewWhereInput[]
-    NOT?: ReviewWhereInput | ReviewWhereInput[]
-    clientId?: StringFilter<"Review"> | string
-    artisanId?: StringFilter<"Review"> | string
-    rating?: IntFilter<"Review"> | number
-    comment?: StringNullableFilter<"Review"> | string | null
-    categories?: JsonNullableFilter<"Review">
-    workQuality?: IntNullableFilter<"Review"> | number | null
-    communication?: IntNullableFilter<"Review"> | number | null
-    timeliness?: IntNullableFilter<"Review"> | number | null
-    professionalism?: IntNullableFilter<"Review"> | number | null
-    evidence?: JsonNullableFilter<"Review">
-    isPublic?: BoolFilter<"Review"> | boolean
-    createdAt?: DateTimeFilter<"Review"> | Date | string
-    updatedAt?: DateTimeFilter<"Review"> | Date | string
-    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
-    client?: XOR<UserScalarRelationFilter, UserWhereInput>
-    artisan?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "contractId">
-
-  export type ReviewOrderByWithAggregationInput = {
-    id?: SortOrder
-    contractId?: SortOrder
-    clientId?: SortOrder
-    artisanId?: SortOrder
-    rating?: SortOrder
-    comment?: SortOrderInput | SortOrder
-    categories?: SortOrderInput | SortOrder
-    workQuality?: SortOrderInput | SortOrder
-    communication?: SortOrderInput | SortOrder
-    timeliness?: SortOrderInput | SortOrder
-    professionalism?: SortOrderInput | SortOrder
-    evidence?: SortOrderInput | SortOrder
-    isPublic?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: ReviewCountOrderByAggregateInput
-    _avg?: ReviewAvgOrderByAggregateInput
-    _max?: ReviewMaxOrderByAggregateInput
-    _min?: ReviewMinOrderByAggregateInput
-    _sum?: ReviewSumOrderByAggregateInput
-  }
-
-  export type ReviewScalarWhereWithAggregatesInput = {
-    AND?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
-    OR?: ReviewScalarWhereWithAggregatesInput[]
-    NOT?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Review"> | string
-    contractId?: StringWithAggregatesFilter<"Review"> | string
-    clientId?: StringWithAggregatesFilter<"Review"> | string
-    artisanId?: StringWithAggregatesFilter<"Review"> | string
-    rating?: IntWithAggregatesFilter<"Review"> | number
-    comment?: StringNullableWithAggregatesFilter<"Review"> | string | null
-    categories?: JsonNullableWithAggregatesFilter<"Review">
-    workQuality?: IntNullableWithAggregatesFilter<"Review"> | number | null
-    communication?: IntNullableWithAggregatesFilter<"Review"> | number | null
-    timeliness?: IntNullableWithAggregatesFilter<"Review"> | number | null
-    professionalism?: IntNullableWithAggregatesFilter<"Review"> | number | null
-    evidence?: JsonNullableWithAggregatesFilter<"Review">
-    isPublic?: BoolWithAggregatesFilter<"Review"> | boolean
-    createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
   }
 
   export type NotificationWhereInput = {
@@ -54916,6 +57516,271 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"SystemConfig"> | Date | string
   }
 
+  export type ReviewWhereInput = {
+    AND?: ReviewWhereInput | ReviewWhereInput[]
+    OR?: ReviewWhereInput[]
+    NOT?: ReviewWhereInput | ReviewWhereInput[]
+    id?: StringFilter<"Review"> | string
+    contractId?: StringFilter<"Review"> | string
+    authorId?: StringFilter<"Review"> | string
+    targetId?: StringFilter<"Review"> | string
+    rating?: DecimalFilter<"Review"> | Decimal | DecimalJsLike | number | string
+    breakdown?: JsonNullableFilter<"Review">
+    comment?: StringNullableFilter<"Review"> | string | null
+    status?: EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
+    visibleAt?: DateTimeNullableFilter<"Review"> | Date | string | null
+    lockedAt?: DateTimeNullableFilter<"Review"> | Date | string | null
+    createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    target?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ReviewOrderByWithRelationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    authorId?: SortOrder
+    targetId?: SortOrder
+    rating?: SortOrder
+    breakdown?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    status?: SortOrder
+    visibleAt?: SortOrderInput | SortOrder
+    lockedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    contract?: ContractOrderByWithRelationInput
+    author?: UserOrderByWithRelationInput
+    target?: UserOrderByWithRelationInput
+    _relevance?: ReviewOrderByRelevanceInput
+  }
+
+  export type ReviewWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contractId_authorId?: ReviewContractIdAuthorIdCompoundUniqueInput
+    AND?: ReviewWhereInput | ReviewWhereInput[]
+    OR?: ReviewWhereInput[]
+    NOT?: ReviewWhereInput | ReviewWhereInput[]
+    contractId?: StringFilter<"Review"> | string
+    authorId?: StringFilter<"Review"> | string
+    targetId?: StringFilter<"Review"> | string
+    rating?: DecimalFilter<"Review"> | Decimal | DecimalJsLike | number | string
+    breakdown?: JsonNullableFilter<"Review">
+    comment?: StringNullableFilter<"Review"> | string | null
+    status?: EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
+    visibleAt?: DateTimeNullableFilter<"Review"> | Date | string | null
+    lockedAt?: DateTimeNullableFilter<"Review"> | Date | string | null
+    createdAt?: DateTimeFilter<"Review"> | Date | string
+    updatedAt?: DateTimeFilter<"Review"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    target?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "contractId_authorId">
+
+  export type ReviewOrderByWithAggregationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    authorId?: SortOrder
+    targetId?: SortOrder
+    rating?: SortOrder
+    breakdown?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    status?: SortOrder
+    visibleAt?: SortOrderInput | SortOrder
+    lockedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReviewCountOrderByAggregateInput
+    _avg?: ReviewAvgOrderByAggregateInput
+    _max?: ReviewMaxOrderByAggregateInput
+    _min?: ReviewMinOrderByAggregateInput
+    _sum?: ReviewSumOrderByAggregateInput
+  }
+
+  export type ReviewScalarWhereWithAggregatesInput = {
+    AND?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
+    OR?: ReviewScalarWhereWithAggregatesInput[]
+    NOT?: ReviewScalarWhereWithAggregatesInput | ReviewScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Review"> | string
+    contractId?: StringWithAggregatesFilter<"Review"> | string
+    authorId?: StringWithAggregatesFilter<"Review"> | string
+    targetId?: StringWithAggregatesFilter<"Review"> | string
+    rating?: DecimalWithAggregatesFilter<"Review"> | Decimal | DecimalJsLike | number | string
+    breakdown?: JsonNullableWithAggregatesFilter<"Review">
+    comment?: StringNullableWithAggregatesFilter<"Review"> | string | null
+    status?: EnumReviewStatusWithAggregatesFilter<"Review"> | $Enums.ReviewStatus
+    visibleAt?: DateTimeNullableWithAggregatesFilter<"Review"> | Date | string | null
+    lockedAt?: DateTimeNullableWithAggregatesFilter<"Review"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
+  }
+
+  export type ReviewEligibilityWhereInput = {
+    AND?: ReviewEligibilityWhereInput | ReviewEligibilityWhereInput[]
+    OR?: ReviewEligibilityWhereInput[]
+    NOT?: ReviewEligibilityWhereInput | ReviewEligibilityWhereInput[]
+    id?: StringFilter<"ReviewEligibility"> | string
+    contractId?: StringFilter<"ReviewEligibility"> | string
+    userId?: StringFilter<"ReviewEligibility"> | string
+    targetId?: StringFilter<"ReviewEligibility"> | string
+    status?: EnumReviewEligibilityStatusFilter<"ReviewEligibility"> | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    createdAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    updatedAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    target?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ReviewEligibilityOrderByWithRelationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    contract?: ContractOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    target?: UserOrderByWithRelationInput
+    _relevance?: ReviewEligibilityOrderByRelevanceInput
+  }
+
+  export type ReviewEligibilityWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReviewEligibilityWhereInput | ReviewEligibilityWhereInput[]
+    OR?: ReviewEligibilityWhereInput[]
+    NOT?: ReviewEligibilityWhereInput | ReviewEligibilityWhereInput[]
+    contractId?: StringFilter<"ReviewEligibility"> | string
+    userId?: StringFilter<"ReviewEligibility"> | string
+    targetId?: StringFilter<"ReviewEligibility"> | string
+    status?: EnumReviewEligibilityStatusFilter<"ReviewEligibility"> | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    createdAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    updatedAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    contract?: XOR<ContractScalarRelationFilter, ContractWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    target?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ReviewEligibilityOrderByWithAggregationInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReviewEligibilityCountOrderByAggregateInput
+    _max?: ReviewEligibilityMaxOrderByAggregateInput
+    _min?: ReviewEligibilityMinOrderByAggregateInput
+  }
+
+  export type ReviewEligibilityScalarWhereWithAggregatesInput = {
+    AND?: ReviewEligibilityScalarWhereWithAggregatesInput | ReviewEligibilityScalarWhereWithAggregatesInput[]
+    OR?: ReviewEligibilityScalarWhereWithAggregatesInput[]
+    NOT?: ReviewEligibilityScalarWhereWithAggregatesInput | ReviewEligibilityScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReviewEligibility"> | string
+    contractId?: StringWithAggregatesFilter<"ReviewEligibility"> | string
+    userId?: StringWithAggregatesFilter<"ReviewEligibility"> | string
+    targetId?: StringWithAggregatesFilter<"ReviewEligibility"> | string
+    status?: EnumReviewEligibilityStatusWithAggregatesFilter<"ReviewEligibility"> | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeWithAggregatesFilter<"ReviewEligibility"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"ReviewEligibility"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReviewEligibility"> | Date | string
+  }
+
+  export type ReputationProfileWhereInput = {
+    AND?: ReputationProfileWhereInput | ReputationProfileWhereInput[]
+    OR?: ReputationProfileWhereInput[]
+    NOT?: ReputationProfileWhereInput | ReputationProfileWhereInput[]
+    id?: StringFilter<"ReputationProfile"> | string
+    userId?: StringFilter<"ReputationProfile"> | string
+    averageRating?: DecimalFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFilter<"ReputationProfile"> | number
+    jssScore?: IntFilter<"ReputationProfile"> | number
+    completionRate?: DecimalFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    snapshotData?: JsonNullableFilter<"ReputationProfile">
+    lastRecalculatedAt?: DateTimeFilter<"ReputationProfile"> | Date | string
+    createdAt?: DateTimeFilter<"ReputationProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"ReputationProfile"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ReputationProfileOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    averageRating?: SortOrder
+    totalReviews?: SortOrder
+    jssScore?: SortOrder
+    completionRate?: SortOrder
+    responseRate?: SortOrder
+    snapshotData?: SortOrderInput | SortOrder
+    lastRecalculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    _relevance?: ReputationProfileOrderByRelevanceInput
+  }
+
+  export type ReputationProfileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: ReputationProfileWhereInput | ReputationProfileWhereInput[]
+    OR?: ReputationProfileWhereInput[]
+    NOT?: ReputationProfileWhereInput | ReputationProfileWhereInput[]
+    averageRating?: DecimalFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFilter<"ReputationProfile"> | number
+    jssScore?: IntFilter<"ReputationProfile"> | number
+    completionRate?: DecimalFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    snapshotData?: JsonNullableFilter<"ReputationProfile">
+    lastRecalculatedAt?: DateTimeFilter<"ReputationProfile"> | Date | string
+    createdAt?: DateTimeFilter<"ReputationProfile"> | Date | string
+    updatedAt?: DateTimeFilter<"ReputationProfile"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type ReputationProfileOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    averageRating?: SortOrder
+    totalReviews?: SortOrder
+    jssScore?: SortOrder
+    completionRate?: SortOrder
+    responseRate?: SortOrder
+    snapshotData?: SortOrderInput | SortOrder
+    lastRecalculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReputationProfileCountOrderByAggregateInput
+    _avg?: ReputationProfileAvgOrderByAggregateInput
+    _max?: ReputationProfileMaxOrderByAggregateInput
+    _min?: ReputationProfileMinOrderByAggregateInput
+    _sum?: ReputationProfileSumOrderByAggregateInput
+  }
+
+  export type ReputationProfileScalarWhereWithAggregatesInput = {
+    AND?: ReputationProfileScalarWhereWithAggregatesInput | ReputationProfileScalarWhereWithAggregatesInput[]
+    OR?: ReputationProfileScalarWhereWithAggregatesInput[]
+    NOT?: ReputationProfileScalarWhereWithAggregatesInput | ReputationProfileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReputationProfile"> | string
+    userId?: StringWithAggregatesFilter<"ReputationProfile"> | string
+    averageRating?: DecimalWithAggregatesFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntWithAggregatesFilter<"ReputationProfile"> | number
+    jssScore?: IntWithAggregatesFilter<"ReputationProfile"> | number
+    completionRate?: DecimalWithAggregatesFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalWithAggregatesFilter<"ReputationProfile"> | Decimal | DecimalJsLike | number | string
+    snapshotData?: JsonNullableWithAggregatesFilter<"ReputationProfile">
+    lastRecalculatedAt?: DateTimeWithAggregatesFilter<"ReputationProfile"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"ReputationProfile"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReputationProfile"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     name: string
@@ -54946,8 +57811,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -54990,8 +57858,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -55034,8 +57905,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -55078,8 +57952,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -56247,7 +59124,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -56288,7 +59166,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -56329,7 +59208,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -56370,7 +59250,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -56630,129 +59511,6 @@ export namespace Prisma {
     fileName?: NullableStringFieldUpdateOperationsInput | string | null
     fileSize?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ReviewCreateInput = {
-    id?: string
-    rating: number
-    comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    contract: ContractCreateNestedOneWithoutReviewInput
-    client: UserCreateNestedOneWithoutSentReviewsInput
-    artisan: UserCreateNestedOneWithoutReceivedReviewsInput
-  }
-
-  export type ReviewUncheckedCreateInput = {
-    id?: string
-    contractId: string
-    clientId: string
-    artisanId: string
-    rating: number
-    comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type ReviewUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
-    comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
-    client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
-    artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
-  }
-
-  export type ReviewUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
-    comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ReviewCreateManyInput = {
-    id?: string
-    contractId: string
-    clientId: string
-    artisanId: string
-    rating: number
-    comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type ReviewUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
-    comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ReviewUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    contractId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
-    comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationCreateInput = {
@@ -58649,6 +61407,279 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReviewCreateInput = {
+    id?: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: string | null
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract: ContractCreateNestedOneWithoutReviewsInput
+    author: UserCreateNestedOneWithoutAuthoredReviewsInput
+    target: UserCreateNestedOneWithoutReceivedReviewsInput
+  }
+
+  export type ReviewUncheckedCreateInput = {
+    id?: string
+    contractId: string
+    authorId: string
+    targetId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: string | null
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutReviewsNestedInput
+    author?: UserUpdateOneRequiredWithoutAuthoredReviewsNestedInput
+    target?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
+  }
+
+  export type ReviewUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewCreateManyInput = {
+    id?: string
+    contractId: string
+    authorId: string
+    targetId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: string | null
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityCreateInput = {
+    id?: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract: ContractCreateNestedOneWithoutReviewEligibilitiesInput
+    user: UserCreateNestedOneWithoutReviewEligibilitiesInput
+    target: UserCreateNestedOneWithoutTargetEligibilitiesInput
+  }
+
+  export type ReviewEligibilityUncheckedCreateInput = {
+    id?: string
+    contractId: string
+    userId: string
+    targetId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutReviewEligibilitiesNestedInput
+    user?: UserUpdateOneRequiredWithoutReviewEligibilitiesNestedInput
+    target?: UserUpdateOneRequiredWithoutTargetEligibilitiesNestedInput
+  }
+
+  export type ReviewEligibilityUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityCreateManyInput = {
+    id?: string
+    contractId: string
+    userId: string
+    targetId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReputationProfileCreateInput = {
+    id?: string
+    averageRating?: Decimal | DecimalJsLike | number | string
+    totalReviews?: number
+    jssScore?: number
+    completionRate?: Decimal | DecimalJsLike | number | string
+    responseRate?: Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutReputationProfileInput
+  }
+
+  export type ReputationProfileUncheckedCreateInput = {
+    id?: string
+    userId: string
+    averageRating?: Decimal | DecimalJsLike | number | string
+    totalReviews?: number
+    jssScore?: number
+    completionRate?: Decimal | DecimalJsLike | number | string
+    responseRate?: Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReputationProfileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    averageRating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFieldUpdateOperationsInput | number
+    jssScore?: IntFieldUpdateOperationsInput | number
+    completionRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutReputationProfileNestedInput
+  }
+
+  export type ReputationProfileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    averageRating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFieldUpdateOperationsInput | number
+    jssScore?: IntFieldUpdateOperationsInput | number
+    completionRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReputationProfileCreateManyInput = {
+    id?: string
+    userId: string
+    averageRating?: Decimal | DecimalJsLike | number | string
+    totalReviews?: number
+    jssScore?: number
+    completionRate?: Decimal | DecimalJsLike | number | string
+    responseRate?: Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReputationProfileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    averageRating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFieldUpdateOperationsInput | number
+    jssScore?: IntFieldUpdateOperationsInput | number
+    completionRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReputationProfileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    averageRating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFieldUpdateOperationsInput | number
+    jssScore?: IntFieldUpdateOperationsInput | number
+    completionRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -58770,6 +61801,17 @@ export namespace Prisma {
     none?: ReviewWhereInput
   }
 
+  export type ReviewEligibilityListRelationFilter = {
+    every?: ReviewEligibilityWhereInput
+    some?: ReviewEligibilityWhereInput
+    none?: ReviewEligibilityWhereInput
+  }
+
+  export type ReputationProfileNullableScalarRelationFilter = {
+    is?: ReputationProfileWhereInput | null
+    isNot?: ReputationProfileWhereInput | null
+  }
+
   export type NotificationListRelationFilter = {
     every?: NotificationWhereInput
     some?: NotificationWhereInput
@@ -58839,6 +61881,10 @@ export namespace Prisma {
   }
 
   export type ReviewOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReviewEligibilityOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -60001,11 +63047,6 @@ export namespace Prisma {
     isNot?: ConversationWhereInput | null
   }
 
-  export type ReviewNullableScalarRelationFilter = {
-    is?: ReviewWhereInput | null
-    isNot?: ReviewWhereInput | null
-  }
-
   export type LedgerEntryListRelationFilter = {
     every?: LedgerEntryWhereInput
     some?: LedgerEntryWhereInput
@@ -60278,78 +63319,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumMessageTypeFilter<$PrismaModel>
     _max?: NestedEnumMessageTypeFilter<$PrismaModel>
-  }
-
-  export type ReviewOrderByRelevanceInput = {
-    fields: ReviewOrderByRelevanceFieldEnum | ReviewOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
-  export type ReviewCountOrderByAggregateInput = {
-    id?: SortOrder
-    contractId?: SortOrder
-    clientId?: SortOrder
-    artisanId?: SortOrder
-    rating?: SortOrder
-    comment?: SortOrder
-    categories?: SortOrder
-    workQuality?: SortOrder
-    communication?: SortOrder
-    timeliness?: SortOrder
-    professionalism?: SortOrder
-    evidence?: SortOrder
-    isPublic?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type ReviewAvgOrderByAggregateInput = {
-    rating?: SortOrder
-    workQuality?: SortOrder
-    communication?: SortOrder
-    timeliness?: SortOrder
-    professionalism?: SortOrder
-  }
-
-  export type ReviewMaxOrderByAggregateInput = {
-    id?: SortOrder
-    contractId?: SortOrder
-    clientId?: SortOrder
-    artisanId?: SortOrder
-    rating?: SortOrder
-    comment?: SortOrder
-    workQuality?: SortOrder
-    communication?: SortOrder
-    timeliness?: SortOrder
-    professionalism?: SortOrder
-    isPublic?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type ReviewMinOrderByAggregateInput = {
-    id?: SortOrder
-    contractId?: SortOrder
-    clientId?: SortOrder
-    artisanId?: SortOrder
-    rating?: SortOrder
-    comment?: SortOrder
-    workQuality?: SortOrder
-    communication?: SortOrder
-    timeliness?: SortOrder
-    professionalism?: SortOrder
-    isPublic?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type ReviewSumOrderByAggregateInput = {
-    rating?: SortOrder
-    workQuality?: SortOrder
-    communication?: SortOrder
-    timeliness?: SortOrder
-    professionalism?: SortOrder
   }
 
   export type EnumNotificationPriorityFilter<$PrismaModel = never> = {
@@ -61734,6 +64703,230 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type EnumReviewStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewStatus | EnumReviewStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewStatusFilter<$PrismaModel> | $Enums.ReviewStatus
+  }
+
+  export type ReviewOrderByRelevanceInput = {
+    fields: ReviewOrderByRelevanceFieldEnum | ReviewOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ReviewContractIdAuthorIdCompoundUniqueInput = {
+    contractId: string
+    authorId: string
+  }
+
+  export type ReviewCountOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    authorId?: SortOrder
+    targetId?: SortOrder
+    rating?: SortOrder
+    breakdown?: SortOrder
+    comment?: SortOrder
+    status?: SortOrder
+    visibleAt?: SortOrder
+    lockedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReviewAvgOrderByAggregateInput = {
+    rating?: SortOrder
+  }
+
+  export type ReviewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    authorId?: SortOrder
+    targetId?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    status?: SortOrder
+    visibleAt?: SortOrder
+    lockedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReviewMinOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    authorId?: SortOrder
+    targetId?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    status?: SortOrder
+    visibleAt?: SortOrder
+    lockedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReviewSumOrderByAggregateInput = {
+    rating?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type EnumReviewStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewStatus | EnumReviewStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReviewStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReviewStatusFilter<$PrismaModel>
+    _max?: NestedEnumReviewStatusFilter<$PrismaModel>
+  }
+
+  export type EnumReviewEligibilityStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewEligibilityStatus | EnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewEligibilityStatusFilter<$PrismaModel> | $Enums.ReviewEligibilityStatus
+  }
+
+  export type ReviewEligibilityOrderByRelevanceInput = {
+    fields: ReviewEligibilityOrderByRelevanceFieldEnum | ReviewEligibilityOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ReviewEligibilityCountOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReviewEligibilityMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReviewEligibilityMinOrderByAggregateInput = {
+    id?: SortOrder
+    contractId?: SortOrder
+    userId?: SortOrder
+    targetId?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumReviewEligibilityStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewEligibilityStatus | EnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewEligibilityStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReviewEligibilityStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReviewEligibilityStatusFilter<$PrismaModel>
+    _max?: NestedEnumReviewEligibilityStatusFilter<$PrismaModel>
+  }
+
+  export type ReputationProfileOrderByRelevanceInput = {
+    fields: ReputationProfileOrderByRelevanceFieldEnum | ReputationProfileOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type ReputationProfileCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    averageRating?: SortOrder
+    totalReviews?: SortOrder
+    jssScore?: SortOrder
+    completionRate?: SortOrder
+    responseRate?: SortOrder
+    snapshotData?: SortOrder
+    lastRecalculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReputationProfileAvgOrderByAggregateInput = {
+    averageRating?: SortOrder
+    totalReviews?: SortOrder
+    jssScore?: SortOrder
+    completionRate?: SortOrder
+    responseRate?: SortOrder
+  }
+
+  export type ReputationProfileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    averageRating?: SortOrder
+    totalReviews?: SortOrder
+    jssScore?: SortOrder
+    completionRate?: SortOrder
+    responseRate?: SortOrder
+    lastRecalculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReputationProfileMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    averageRating?: SortOrder
+    totalReviews?: SortOrder
+    jssScore?: SortOrder
+    completionRate?: SortOrder
+    responseRate?: SortOrder
+    lastRecalculatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReputationProfileSumOrderByAggregateInput = {
+    averageRating?: SortOrder
+    totalReviews?: SortOrder
+    jssScore?: SortOrder
+    completionRate?: SortOrder
+    responseRate?: SortOrder
+  }
+
   export type UserCreateadminRolesInput = {
     set: $Enums.AdminRole[]
   }
@@ -61799,18 +64992,38 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
-  export type ReviewCreateNestedManyWithoutClientInput = {
-    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
-    createMany?: ReviewCreateManyClientInputEnvelope
+  export type ReviewCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<ReviewCreateWithoutAuthorInput, ReviewUncheckedCreateWithoutAuthorInput> | ReviewCreateWithoutAuthorInput[] | ReviewUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAuthorInput | ReviewCreateOrConnectWithoutAuthorInput[]
+    createMany?: ReviewCreateManyAuthorInputEnvelope
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
-  export type ReviewCreateNestedManyWithoutArtisanInput = {
-    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
-    createMany?: ReviewCreateManyArtisanInputEnvelope
+  export type ReviewCreateNestedManyWithoutTargetInput = {
+    create?: XOR<ReviewCreateWithoutTargetInput, ReviewUncheckedCreateWithoutTargetInput> | ReviewCreateWithoutTargetInput[] | ReviewUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTargetInput | ReviewCreateOrConnectWithoutTargetInput[]
+    createMany?: ReviewCreateManyTargetInputEnvelope
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type ReviewEligibilityCreateNestedManyWithoutUserInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutUserInput, ReviewEligibilityUncheckedCreateWithoutUserInput> | ReviewEligibilityCreateWithoutUserInput[] | ReviewEligibilityUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutUserInput | ReviewEligibilityCreateOrConnectWithoutUserInput[]
+    createMany?: ReviewEligibilityCreateManyUserInputEnvelope
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+  }
+
+  export type ReviewEligibilityCreateNestedManyWithoutTargetInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutTargetInput, ReviewEligibilityUncheckedCreateWithoutTargetInput> | ReviewEligibilityCreateWithoutTargetInput[] | ReviewEligibilityUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutTargetInput | ReviewEligibilityCreateOrConnectWithoutTargetInput[]
+    createMany?: ReviewEligibilityCreateManyTargetInputEnvelope
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+  }
+
+  export type ReputationProfileCreateNestedOneWithoutUserInput = {
+    create?: XOR<ReputationProfileCreateWithoutUserInput, ReputationProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ReputationProfileCreateOrConnectWithoutUserInput
+    connect?: ReputationProfileWhereUniqueInput
   }
 
   export type NotificationCreateNestedManyWithoutUserInput = {
@@ -61943,18 +65156,38 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
-  export type ReviewUncheckedCreateNestedManyWithoutClientInput = {
-    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
-    createMany?: ReviewCreateManyClientInputEnvelope
+  export type ReviewUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<ReviewCreateWithoutAuthorInput, ReviewUncheckedCreateWithoutAuthorInput> | ReviewCreateWithoutAuthorInput[] | ReviewUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAuthorInput | ReviewCreateOrConnectWithoutAuthorInput[]
+    createMany?: ReviewCreateManyAuthorInputEnvelope
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
-  export type ReviewUncheckedCreateNestedManyWithoutArtisanInput = {
-    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
-    createMany?: ReviewCreateManyArtisanInputEnvelope
+  export type ReviewUncheckedCreateNestedManyWithoutTargetInput = {
+    create?: XOR<ReviewCreateWithoutTargetInput, ReviewUncheckedCreateWithoutTargetInput> | ReviewCreateWithoutTargetInput[] | ReviewUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTargetInput | ReviewCreateOrConnectWithoutTargetInput[]
+    createMany?: ReviewCreateManyTargetInputEnvelope
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutUserInput, ReviewEligibilityUncheckedCreateWithoutUserInput> | ReviewEligibilityCreateWithoutUserInput[] | ReviewEligibilityUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutUserInput | ReviewEligibilityCreateOrConnectWithoutUserInput[]
+    createMany?: ReviewEligibilityCreateManyUserInputEnvelope
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+  }
+
+  export type ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutTargetInput, ReviewEligibilityUncheckedCreateWithoutTargetInput> | ReviewEligibilityCreateWithoutTargetInput[] | ReviewEligibilityUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutTargetInput | ReviewEligibilityCreateOrConnectWithoutTargetInput[]
+    createMany?: ReviewEligibilityCreateManyTargetInputEnvelope
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+  }
+
+  export type ReputationProfileUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<ReputationProfileCreateWithoutUserInput, ReputationProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ReputationProfileCreateOrConnectWithoutUserInput
+    connect?: ReputationProfileWhereUniqueInput
   }
 
   export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
@@ -62177,32 +65410,70 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
-  export type ReviewUpdateManyWithoutClientNestedInput = {
-    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
-    upsert?: ReviewUpsertWithWhereUniqueWithoutClientInput | ReviewUpsertWithWhereUniqueWithoutClientInput[]
-    createMany?: ReviewCreateManyClientInputEnvelope
+  export type ReviewUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<ReviewCreateWithoutAuthorInput, ReviewUncheckedCreateWithoutAuthorInput> | ReviewCreateWithoutAuthorInput[] | ReviewUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAuthorInput | ReviewCreateOrConnectWithoutAuthorInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutAuthorInput | ReviewUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: ReviewCreateManyAuthorInputEnvelope
     set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    update?: ReviewUpdateWithWhereUniqueWithoutClientInput | ReviewUpdateWithWhereUniqueWithoutClientInput[]
-    updateMany?: ReviewUpdateManyWithWhereWithoutClientInput | ReviewUpdateManyWithWhereWithoutClientInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutAuthorInput | ReviewUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutAuthorInput | ReviewUpdateManyWithWhereWithoutAuthorInput[]
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
-  export type ReviewUpdateManyWithoutArtisanNestedInput = {
-    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
-    upsert?: ReviewUpsertWithWhereUniqueWithoutArtisanInput | ReviewUpsertWithWhereUniqueWithoutArtisanInput[]
-    createMany?: ReviewCreateManyArtisanInputEnvelope
+  export type ReviewUpdateManyWithoutTargetNestedInput = {
+    create?: XOR<ReviewCreateWithoutTargetInput, ReviewUncheckedCreateWithoutTargetInput> | ReviewCreateWithoutTargetInput[] | ReviewUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTargetInput | ReviewCreateOrConnectWithoutTargetInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutTargetInput | ReviewUpsertWithWhereUniqueWithoutTargetInput[]
+    createMany?: ReviewCreateManyTargetInputEnvelope
     set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    update?: ReviewUpdateWithWhereUniqueWithoutArtisanInput | ReviewUpdateWithWhereUniqueWithoutArtisanInput[]
-    updateMany?: ReviewUpdateManyWithWhereWithoutArtisanInput | ReviewUpdateManyWithWhereWithoutArtisanInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutTargetInput | ReviewUpdateWithWhereUniqueWithoutTargetInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutTargetInput | ReviewUpdateManyWithWhereWithoutTargetInput[]
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type ReviewEligibilityUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutUserInput, ReviewEligibilityUncheckedCreateWithoutUserInput> | ReviewEligibilityCreateWithoutUserInput[] | ReviewEligibilityUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutUserInput | ReviewEligibilityCreateOrConnectWithoutUserInput[]
+    upsert?: ReviewEligibilityUpsertWithWhereUniqueWithoutUserInput | ReviewEligibilityUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ReviewEligibilityCreateManyUserInputEnvelope
+    set?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    disconnect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    delete?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    update?: ReviewEligibilityUpdateWithWhereUniqueWithoutUserInput | ReviewEligibilityUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ReviewEligibilityUpdateManyWithWhereWithoutUserInput | ReviewEligibilityUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
+  }
+
+  export type ReviewEligibilityUpdateManyWithoutTargetNestedInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutTargetInput, ReviewEligibilityUncheckedCreateWithoutTargetInput> | ReviewEligibilityCreateWithoutTargetInput[] | ReviewEligibilityUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutTargetInput | ReviewEligibilityCreateOrConnectWithoutTargetInput[]
+    upsert?: ReviewEligibilityUpsertWithWhereUniqueWithoutTargetInput | ReviewEligibilityUpsertWithWhereUniqueWithoutTargetInput[]
+    createMany?: ReviewEligibilityCreateManyTargetInputEnvelope
+    set?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    disconnect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    delete?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    update?: ReviewEligibilityUpdateWithWhereUniqueWithoutTargetInput | ReviewEligibilityUpdateWithWhereUniqueWithoutTargetInput[]
+    updateMany?: ReviewEligibilityUpdateManyWithWhereWithoutTargetInput | ReviewEligibilityUpdateManyWithWhereWithoutTargetInput[]
+    deleteMany?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
+  }
+
+  export type ReputationProfileUpdateOneWithoutUserNestedInput = {
+    create?: XOR<ReputationProfileCreateWithoutUserInput, ReputationProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ReputationProfileCreateOrConnectWithoutUserInput
+    upsert?: ReputationProfileUpsertWithoutUserInput
+    disconnect?: ReputationProfileWhereInput | boolean
+    delete?: ReputationProfileWhereInput | boolean
+    connect?: ReputationProfileWhereUniqueInput
+    update?: XOR<XOR<ReputationProfileUpdateToOneWithWhereWithoutUserInput, ReputationProfileUpdateWithoutUserInput>, ReputationProfileUncheckedUpdateWithoutUserInput>
   }
 
   export type NotificationUpdateManyWithoutUserNestedInput = {
@@ -62459,32 +65730,70 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
-  export type ReviewUncheckedUpdateManyWithoutClientNestedInput = {
-    create?: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput> | ReviewCreateWithoutClientInput[] | ReviewUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutClientInput | ReviewCreateOrConnectWithoutClientInput[]
-    upsert?: ReviewUpsertWithWhereUniqueWithoutClientInput | ReviewUpsertWithWhereUniqueWithoutClientInput[]
-    createMany?: ReviewCreateManyClientInputEnvelope
+  export type ReviewUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<ReviewCreateWithoutAuthorInput, ReviewUncheckedCreateWithoutAuthorInput> | ReviewCreateWithoutAuthorInput[] | ReviewUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutAuthorInput | ReviewCreateOrConnectWithoutAuthorInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutAuthorInput | ReviewUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: ReviewCreateManyAuthorInputEnvelope
     set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    update?: ReviewUpdateWithWhereUniqueWithoutClientInput | ReviewUpdateWithWhereUniqueWithoutClientInput[]
-    updateMany?: ReviewUpdateManyWithWhereWithoutClientInput | ReviewUpdateManyWithWhereWithoutClientInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutAuthorInput | ReviewUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutAuthorInput | ReviewUpdateManyWithWhereWithoutAuthorInput[]
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
-  export type ReviewUncheckedUpdateManyWithoutArtisanNestedInput = {
-    create?: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput> | ReviewCreateWithoutArtisanInput[] | ReviewUncheckedCreateWithoutArtisanInput[]
-    connectOrCreate?: ReviewCreateOrConnectWithoutArtisanInput | ReviewCreateOrConnectWithoutArtisanInput[]
-    upsert?: ReviewUpsertWithWhereUniqueWithoutArtisanInput | ReviewUpsertWithWhereUniqueWithoutArtisanInput[]
-    createMany?: ReviewCreateManyArtisanInputEnvelope
+  export type ReviewUncheckedUpdateManyWithoutTargetNestedInput = {
+    create?: XOR<ReviewCreateWithoutTargetInput, ReviewUncheckedCreateWithoutTargetInput> | ReviewCreateWithoutTargetInput[] | ReviewUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutTargetInput | ReviewCreateOrConnectWithoutTargetInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutTargetInput | ReviewUpsertWithWhereUniqueWithoutTargetInput[]
+    createMany?: ReviewCreateManyTargetInputEnvelope
     set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
-    update?: ReviewUpdateWithWhereUniqueWithoutArtisanInput | ReviewUpdateWithWhereUniqueWithoutArtisanInput[]
-    updateMany?: ReviewUpdateManyWithWhereWithoutArtisanInput | ReviewUpdateManyWithWhereWithoutArtisanInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutTargetInput | ReviewUpdateWithWhereUniqueWithoutTargetInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutTargetInput | ReviewUpdateManyWithWhereWithoutTargetInput[]
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutUserInput, ReviewEligibilityUncheckedCreateWithoutUserInput> | ReviewEligibilityCreateWithoutUserInput[] | ReviewEligibilityUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutUserInput | ReviewEligibilityCreateOrConnectWithoutUserInput[]
+    upsert?: ReviewEligibilityUpsertWithWhereUniqueWithoutUserInput | ReviewEligibilityUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ReviewEligibilityCreateManyUserInputEnvelope
+    set?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    disconnect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    delete?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    update?: ReviewEligibilityUpdateWithWhereUniqueWithoutUserInput | ReviewEligibilityUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ReviewEligibilityUpdateManyWithWhereWithoutUserInput | ReviewEligibilityUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
+  }
+
+  export type ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutTargetInput, ReviewEligibilityUncheckedCreateWithoutTargetInput> | ReviewEligibilityCreateWithoutTargetInput[] | ReviewEligibilityUncheckedCreateWithoutTargetInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutTargetInput | ReviewEligibilityCreateOrConnectWithoutTargetInput[]
+    upsert?: ReviewEligibilityUpsertWithWhereUniqueWithoutTargetInput | ReviewEligibilityUpsertWithWhereUniqueWithoutTargetInput[]
+    createMany?: ReviewEligibilityCreateManyTargetInputEnvelope
+    set?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    disconnect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    delete?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    update?: ReviewEligibilityUpdateWithWhereUniqueWithoutTargetInput | ReviewEligibilityUpdateWithWhereUniqueWithoutTargetInput[]
+    updateMany?: ReviewEligibilityUpdateManyWithWhereWithoutTargetInput | ReviewEligibilityUpdateManyWithWhereWithoutTargetInput[]
+    deleteMany?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
+  }
+
+  export type ReputationProfileUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<ReputationProfileCreateWithoutUserInput, ReputationProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ReputationProfileCreateOrConnectWithoutUserInput
+    upsert?: ReputationProfileUpsertWithoutUserInput
+    disconnect?: ReputationProfileWhereInput | boolean
+    delete?: ReputationProfileWhereInput | boolean
+    connect?: ReputationProfileWhereUniqueInput
+    update?: XOR<XOR<ReputationProfileUpdateToOneWithWhereWithoutUserInput, ReputationProfileUpdateWithoutUserInput>, ReputationProfileUncheckedUpdateWithoutUserInput>
   }
 
   export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
@@ -63227,10 +66536,18 @@ export namespace Prisma {
     connect?: ConversationWhereUniqueInput
   }
 
-  export type ReviewCreateNestedOneWithoutContractInput = {
-    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
-    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
-    connect?: ReviewWhereUniqueInput
+  export type ReviewCreateNestedManyWithoutContractInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput> | ReviewCreateWithoutContractInput[] | ReviewUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput | ReviewCreateOrConnectWithoutContractInput[]
+    createMany?: ReviewCreateManyContractInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type ReviewEligibilityCreateNestedManyWithoutContractInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutContractInput, ReviewEligibilityUncheckedCreateWithoutContractInput> | ReviewEligibilityCreateWithoutContractInput[] | ReviewEligibilityUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutContractInput | ReviewEligibilityCreateOrConnectWithoutContractInput[]
+    createMany?: ReviewEligibilityCreateManyContractInputEnvelope
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
   }
 
   export type PaymentCreateNestedManyWithoutContractInput = {
@@ -63274,10 +66591,18 @@ export namespace Prisma {
     connect?: ConversationWhereUniqueInput
   }
 
-  export type ReviewUncheckedCreateNestedOneWithoutContractInput = {
-    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
-    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
-    connect?: ReviewWhereUniqueInput
+  export type ReviewUncheckedCreateNestedManyWithoutContractInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput> | ReviewCreateWithoutContractInput[] | ReviewUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput | ReviewCreateOrConnectWithoutContractInput[]
+    createMany?: ReviewCreateManyContractInputEnvelope
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutContractInput, ReviewEligibilityUncheckedCreateWithoutContractInput> | ReviewEligibilityCreateWithoutContractInput[] | ReviewEligibilityUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutContractInput | ReviewEligibilityCreateOrConnectWithoutContractInput[]
+    createMany?: ReviewEligibilityCreateManyContractInputEnvelope
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
   }
 
   export type PaymentUncheckedCreateNestedManyWithoutContractInput = {
@@ -63361,14 +66686,32 @@ export namespace Prisma {
     update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutContractInput, ConversationUpdateWithoutContractInput>, ConversationUncheckedUpdateWithoutContractInput>
   }
 
-  export type ReviewUpdateOneWithoutContractNestedInput = {
-    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
-    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
-    upsert?: ReviewUpsertWithoutContractInput
-    disconnect?: ReviewWhereInput | boolean
-    delete?: ReviewWhereInput | boolean
-    connect?: ReviewWhereUniqueInput
-    update?: XOR<XOR<ReviewUpdateToOneWithWhereWithoutContractInput, ReviewUpdateWithoutContractInput>, ReviewUncheckedUpdateWithoutContractInput>
+  export type ReviewUpdateManyWithoutContractNestedInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput> | ReviewCreateWithoutContractInput[] | ReviewUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput | ReviewCreateOrConnectWithoutContractInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutContractInput | ReviewUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: ReviewCreateManyContractInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutContractInput | ReviewUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutContractInput | ReviewUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type ReviewEligibilityUpdateManyWithoutContractNestedInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutContractInput, ReviewEligibilityUncheckedCreateWithoutContractInput> | ReviewEligibilityCreateWithoutContractInput[] | ReviewEligibilityUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutContractInput | ReviewEligibilityCreateOrConnectWithoutContractInput[]
+    upsert?: ReviewEligibilityUpsertWithWhereUniqueWithoutContractInput | ReviewEligibilityUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: ReviewEligibilityCreateManyContractInputEnvelope
+    set?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    disconnect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    delete?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    update?: ReviewEligibilityUpdateWithWhereUniqueWithoutContractInput | ReviewEligibilityUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: ReviewEligibilityUpdateManyWithWhereWithoutContractInput | ReviewEligibilityUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
   }
 
   export type PaymentUpdateManyWithoutContractNestedInput = {
@@ -63451,14 +66794,32 @@ export namespace Prisma {
     update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutContractInput, ConversationUpdateWithoutContractInput>, ConversationUncheckedUpdateWithoutContractInput>
   }
 
-  export type ReviewUncheckedUpdateOneWithoutContractNestedInput = {
-    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
-    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput
-    upsert?: ReviewUpsertWithoutContractInput
-    disconnect?: ReviewWhereInput | boolean
-    delete?: ReviewWhereInput | boolean
-    connect?: ReviewWhereUniqueInput
-    update?: XOR<XOR<ReviewUpdateToOneWithWhereWithoutContractInput, ReviewUpdateWithoutContractInput>, ReviewUncheckedUpdateWithoutContractInput>
+  export type ReviewUncheckedUpdateManyWithoutContractNestedInput = {
+    create?: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput> | ReviewCreateWithoutContractInput[] | ReviewUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewCreateOrConnectWithoutContractInput | ReviewCreateOrConnectWithoutContractInput[]
+    upsert?: ReviewUpsertWithWhereUniqueWithoutContractInput | ReviewUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: ReviewCreateManyContractInputEnvelope
+    set?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    disconnect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    delete?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+    update?: ReviewUpdateWithWhereUniqueWithoutContractInput | ReviewUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: ReviewUpdateManyWithWhereWithoutContractInput | ReviewUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput = {
+    create?: XOR<ReviewEligibilityCreateWithoutContractInput, ReviewEligibilityUncheckedCreateWithoutContractInput> | ReviewEligibilityCreateWithoutContractInput[] | ReviewEligibilityUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: ReviewEligibilityCreateOrConnectWithoutContractInput | ReviewEligibilityCreateOrConnectWithoutContractInput[]
+    upsert?: ReviewEligibilityUpsertWithWhereUniqueWithoutContractInput | ReviewEligibilityUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: ReviewEligibilityCreateManyContractInputEnvelope
+    set?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    disconnect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    delete?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    connect?: ReviewEligibilityWhereUniqueInput | ReviewEligibilityWhereUniqueInput[]
+    update?: ReviewEligibilityUpdateWithWhereUniqueWithoutContractInput | ReviewEligibilityUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: ReviewEligibilityUpdateManyWithWhereWithoutContractInput | ReviewEligibilityUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
   }
 
   export type PaymentUncheckedUpdateManyWithoutContractNestedInput = {
@@ -63603,48 +66964,6 @@ export namespace Prisma {
     upsert?: ConversationUpsertWithoutMessagesInput
     connect?: ConversationWhereUniqueInput
     update?: XOR<XOR<ConversationUpdateToOneWithWhereWithoutMessagesInput, ConversationUpdateWithoutMessagesInput>, ConversationUncheckedUpdateWithoutMessagesInput>
-  }
-
-  export type ContractCreateNestedOneWithoutReviewInput = {
-    create?: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
-    connectOrCreate?: ContractCreateOrConnectWithoutReviewInput
-    connect?: ContractWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutSentReviewsInput = {
-    create?: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutSentReviewsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutReceivedReviewsInput = {
-    create?: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutReceivedReviewsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type ContractUpdateOneRequiredWithoutReviewNestedInput = {
-    create?: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
-    connectOrCreate?: ContractCreateOrConnectWithoutReviewInput
-    upsert?: ContractUpsertWithoutReviewInput
-    connect?: ContractWhereUniqueInput
-    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutReviewInput, ContractUpdateWithoutReviewInput>, ContractUncheckedUpdateWithoutReviewInput>
-  }
-
-  export type UserUpdateOneRequiredWithoutSentReviewsNestedInput = {
-    create?: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutSentReviewsInput
-    upsert?: UserUpsertWithoutSentReviewsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSentReviewsInput, UserUpdateWithoutSentReviewsInput>, UserUncheckedUpdateWithoutSentReviewsInput>
-  }
-
-  export type UserUpdateOneRequiredWithoutReceivedReviewsNestedInput = {
-    create?: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutReceivedReviewsInput
-    upsert?: UserUpsertWithoutReceivedReviewsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceivedReviewsInput, UserUpdateWithoutReceivedReviewsInput>, UserUncheckedUpdateWithoutReceivedReviewsInput>
   }
 
   export type DeliveryAttemptCreateNestedManyWithoutNotificationInput = {
@@ -64355,6 +67674,120 @@ export namespace Prisma {
 
   export type EnumAuditSeverityFieldUpdateOperationsInput = {
     set?: $Enums.AuditSeverity
+  }
+
+  export type ContractCreateNestedOneWithoutReviewsInput = {
+    create?: XOR<ContractCreateWithoutReviewsInput, ContractUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutReviewsInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAuthoredReviewsInput = {
+    create?: XOR<UserCreateWithoutAuthoredReviewsInput, UserUncheckedCreateWithoutAuthoredReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuthoredReviewsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReceivedReviewsInput = {
+    create?: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedReviewsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type EnumReviewStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ReviewStatus
+  }
+
+  export type ContractUpdateOneRequiredWithoutReviewsNestedInput = {
+    create?: XOR<ContractCreateWithoutReviewsInput, ContractUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutReviewsInput
+    upsert?: ContractUpsertWithoutReviewsInput
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutReviewsInput, ContractUpdateWithoutReviewsInput>, ContractUncheckedUpdateWithoutReviewsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutAuthoredReviewsNestedInput = {
+    create?: XOR<UserCreateWithoutAuthoredReviewsInput, UserUncheckedCreateWithoutAuthoredReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuthoredReviewsInput
+    upsert?: UserUpsertWithoutAuthoredReviewsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuthoredReviewsInput, UserUpdateWithoutAuthoredReviewsInput>, UserUncheckedUpdateWithoutAuthoredReviewsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReceivedReviewsNestedInput = {
+    create?: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedReviewsInput
+    upsert?: UserUpsertWithoutReceivedReviewsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceivedReviewsInput, UserUpdateWithoutReceivedReviewsInput>, UserUncheckedUpdateWithoutReceivedReviewsInput>
+  }
+
+  export type ContractCreateNestedOneWithoutReviewEligibilitiesInput = {
+    create?: XOR<ContractCreateWithoutReviewEligibilitiesInput, ContractUncheckedCreateWithoutReviewEligibilitiesInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutReviewEligibilitiesInput
+    connect?: ContractWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReviewEligibilitiesInput = {
+    create?: XOR<UserCreateWithoutReviewEligibilitiesInput, UserUncheckedCreateWithoutReviewEligibilitiesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewEligibilitiesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTargetEligibilitiesInput = {
+    create?: XOR<UserCreateWithoutTargetEligibilitiesInput, UserUncheckedCreateWithoutTargetEligibilitiesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTargetEligibilitiesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumReviewEligibilityStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ReviewEligibilityStatus
+  }
+
+  export type ContractUpdateOneRequiredWithoutReviewEligibilitiesNestedInput = {
+    create?: XOR<ContractCreateWithoutReviewEligibilitiesInput, ContractUncheckedCreateWithoutReviewEligibilitiesInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutReviewEligibilitiesInput
+    upsert?: ContractUpsertWithoutReviewEligibilitiesInput
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutReviewEligibilitiesInput, ContractUpdateWithoutReviewEligibilitiesInput>, ContractUncheckedUpdateWithoutReviewEligibilitiesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReviewEligibilitiesNestedInput = {
+    create?: XOR<UserCreateWithoutReviewEligibilitiesInput, UserUncheckedCreateWithoutReviewEligibilitiesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewEligibilitiesInput
+    upsert?: UserUpsertWithoutReviewEligibilitiesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReviewEligibilitiesInput, UserUpdateWithoutReviewEligibilitiesInput>, UserUncheckedUpdateWithoutReviewEligibilitiesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutTargetEligibilitiesNestedInput = {
+    create?: XOR<UserCreateWithoutTargetEligibilitiesInput, UserUncheckedCreateWithoutTargetEligibilitiesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTargetEligibilitiesInput
+    upsert?: UserUpsertWithoutTargetEligibilitiesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTargetEligibilitiesInput, UserUpdateWithoutTargetEligibilitiesInput>, UserUncheckedUpdateWithoutTargetEligibilitiesInput>
+  }
+
+  export type UserCreateNestedOneWithoutReputationProfileInput = {
+    create?: XOR<UserCreateWithoutReputationProfileInput, UserUncheckedCreateWithoutReputationProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReputationProfileInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutReputationProfileNestedInput = {
+    create?: XOR<UserCreateWithoutReputationProfileInput, UserUncheckedCreateWithoutReputationProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReputationProfileInput
+    upsert?: UserUpsertWithoutReputationProfileInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReputationProfileInput, UserUpdateWithoutReputationProfileInput>, UserUncheckedUpdateWithoutReputationProfileInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -65130,6 +68563,67 @@ export namespace Prisma {
     _max?: NestedEnumAuditSeverityFilter<$PrismaModel>
   }
 
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedEnumReviewStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewStatus | EnumReviewStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewStatusFilter<$PrismaModel> | $Enums.ReviewStatus
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type NestedEnumReviewStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewStatus | EnumReviewStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewStatus[] | ListEnumReviewStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReviewStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReviewStatusFilter<$PrismaModel>
+    _max?: NestedEnumReviewStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumReviewEligibilityStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewEligibilityStatus | EnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewEligibilityStatusFilter<$PrismaModel> | $Enums.ReviewEligibilityStatus
+  }
+
+  export type NestedEnumReviewEligibilityStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReviewEligibilityStatus | EnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReviewEligibilityStatus[] | ListEnumReviewEligibilityStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReviewEligibilityStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReviewEligibilityStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReviewEligibilityStatusFilter<$PrismaModel>
+    _max?: NestedEnumReviewEligibilityStatusFilter<$PrismaModel>
+  }
+
   export type ArtisanProfileCreateWithoutUserInput = {
     id?: string
     bio?: string | null
@@ -65416,7 +68910,8 @@ export namespace Prisma {
     proposal: ProposalCreateNestedOneWithoutContractInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -65456,7 +68951,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -65506,7 +69002,8 @@ export namespace Prisma {
     proposal: ProposalCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -65546,7 +69043,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -65676,92 +69174,171 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ReviewCreateWithoutClientInput = {
+  export type ReviewCreateWithoutAuthorInput = {
     id?: string
-    rating: number
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    contract: ContractCreateNestedOneWithoutReviewInput
-    artisan: UserCreateNestedOneWithoutReceivedReviewsInput
+    contract: ContractCreateNestedOneWithoutReviewsInput
+    target: UserCreateNestedOneWithoutReceivedReviewsInput
   }
 
-  export type ReviewUncheckedCreateWithoutClientInput = {
+  export type ReviewUncheckedCreateWithoutAuthorInput = {
     id?: string
     contractId: string
-    artisanId: string
-    rating: number
+    targetId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type ReviewCreateOrConnectWithoutClientInput = {
+  export type ReviewCreateOrConnectWithoutAuthorInput = {
     where: ReviewWhereUniqueInput
-    create: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput>
+    create: XOR<ReviewCreateWithoutAuthorInput, ReviewUncheckedCreateWithoutAuthorInput>
   }
 
-  export type ReviewCreateManyClientInputEnvelope = {
-    data: ReviewCreateManyClientInput | ReviewCreateManyClientInput[]
+  export type ReviewCreateManyAuthorInputEnvelope = {
+    data: ReviewCreateManyAuthorInput | ReviewCreateManyAuthorInput[]
     skipDuplicates?: boolean
   }
 
-  export type ReviewCreateWithoutArtisanInput = {
+  export type ReviewCreateWithoutTargetInput = {
     id?: string
-    rating: number
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    contract: ContractCreateNestedOneWithoutReviewInput
-    client: UserCreateNestedOneWithoutSentReviewsInput
+    contract: ContractCreateNestedOneWithoutReviewsInput
+    author: UserCreateNestedOneWithoutAuthoredReviewsInput
   }
 
-  export type ReviewUncheckedCreateWithoutArtisanInput = {
+  export type ReviewUncheckedCreateWithoutTargetInput = {
     id?: string
     contractId: string
-    clientId: string
-    rating: number
+    authorId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type ReviewCreateOrConnectWithoutArtisanInput = {
+  export type ReviewCreateOrConnectWithoutTargetInput = {
     where: ReviewWhereUniqueInput
-    create: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput>
+    create: XOR<ReviewCreateWithoutTargetInput, ReviewUncheckedCreateWithoutTargetInput>
   }
 
-  export type ReviewCreateManyArtisanInputEnvelope = {
-    data: ReviewCreateManyArtisanInput | ReviewCreateManyArtisanInput[]
+  export type ReviewCreateManyTargetInputEnvelope = {
+    data: ReviewCreateManyTargetInput | ReviewCreateManyTargetInput[]
     skipDuplicates?: boolean
+  }
+
+  export type ReviewEligibilityCreateWithoutUserInput = {
+    id?: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract: ContractCreateNestedOneWithoutReviewEligibilitiesInput
+    target: UserCreateNestedOneWithoutTargetEligibilitiesInput
+  }
+
+  export type ReviewEligibilityUncheckedCreateWithoutUserInput = {
+    id?: string
+    contractId: string
+    targetId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityCreateOrConnectWithoutUserInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    create: XOR<ReviewEligibilityCreateWithoutUserInput, ReviewEligibilityUncheckedCreateWithoutUserInput>
+  }
+
+  export type ReviewEligibilityCreateManyUserInputEnvelope = {
+    data: ReviewEligibilityCreateManyUserInput | ReviewEligibilityCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReviewEligibilityCreateWithoutTargetInput = {
+    id?: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contract: ContractCreateNestedOneWithoutReviewEligibilitiesInput
+    user: UserCreateNestedOneWithoutReviewEligibilitiesInput
+  }
+
+  export type ReviewEligibilityUncheckedCreateWithoutTargetInput = {
+    id?: string
+    contractId: string
+    userId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityCreateOrConnectWithoutTargetInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    create: XOR<ReviewEligibilityCreateWithoutTargetInput, ReviewEligibilityUncheckedCreateWithoutTargetInput>
+  }
+
+  export type ReviewEligibilityCreateManyTargetInputEnvelope = {
+    data: ReviewEligibilityCreateManyTargetInput | ReviewEligibilityCreateManyTargetInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReputationProfileCreateWithoutUserInput = {
+    id?: string
+    averageRating?: Decimal | DecimalJsLike | number | string
+    totalReviews?: number
+    jssScore?: number
+    completionRate?: Decimal | DecimalJsLike | number | string
+    responseRate?: Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReputationProfileUncheckedCreateWithoutUserInput = {
+    id?: string
+    averageRating?: Decimal | DecimalJsLike | number | string
+    totalReviews?: number
+    jssScore?: number
+    completionRate?: Decimal | DecimalJsLike | number | string
+    responseRate?: Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReputationProfileCreateOrConnectWithoutUserInput = {
+    where: ReputationProfileWhereUniqueInput
+    create: XOR<ReputationProfileCreateWithoutUserInput, ReputationProfileUncheckedCreateWithoutUserInput>
   }
 
   export type NotificationCreateWithoutUserInput = {
@@ -66458,20 +70035,20 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutArtisanInput>
   }
 
-  export type ReviewUpsertWithWhereUniqueWithoutClientInput = {
+  export type ReviewUpsertWithWhereUniqueWithoutAuthorInput = {
     where: ReviewWhereUniqueInput
-    update: XOR<ReviewUpdateWithoutClientInput, ReviewUncheckedUpdateWithoutClientInput>
-    create: XOR<ReviewCreateWithoutClientInput, ReviewUncheckedCreateWithoutClientInput>
+    update: XOR<ReviewUpdateWithoutAuthorInput, ReviewUncheckedUpdateWithoutAuthorInput>
+    create: XOR<ReviewCreateWithoutAuthorInput, ReviewUncheckedCreateWithoutAuthorInput>
   }
 
-  export type ReviewUpdateWithWhereUniqueWithoutClientInput = {
+  export type ReviewUpdateWithWhereUniqueWithoutAuthorInput = {
     where: ReviewWhereUniqueInput
-    data: XOR<ReviewUpdateWithoutClientInput, ReviewUncheckedUpdateWithoutClientInput>
+    data: XOR<ReviewUpdateWithoutAuthorInput, ReviewUncheckedUpdateWithoutAuthorInput>
   }
 
-  export type ReviewUpdateManyWithWhereWithoutClientInput = {
+  export type ReviewUpdateManyWithWhereWithoutAuthorInput = {
     where: ReviewScalarWhereInput
-    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutClientInput>
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutAuthorInput>
   }
 
   export type ReviewScalarWhereInput = {
@@ -66480,35 +70057,115 @@ export namespace Prisma {
     NOT?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
     id?: StringFilter<"Review"> | string
     contractId?: StringFilter<"Review"> | string
-    clientId?: StringFilter<"Review"> | string
-    artisanId?: StringFilter<"Review"> | string
-    rating?: IntFilter<"Review"> | number
+    authorId?: StringFilter<"Review"> | string
+    targetId?: StringFilter<"Review"> | string
+    rating?: DecimalFilter<"Review"> | Decimal | DecimalJsLike | number | string
+    breakdown?: JsonNullableFilter<"Review">
     comment?: StringNullableFilter<"Review"> | string | null
-    categories?: JsonNullableFilter<"Review">
-    workQuality?: IntNullableFilter<"Review"> | number | null
-    communication?: IntNullableFilter<"Review"> | number | null
-    timeliness?: IntNullableFilter<"Review"> | number | null
-    professionalism?: IntNullableFilter<"Review"> | number | null
-    evidence?: JsonNullableFilter<"Review">
-    isPublic?: BoolFilter<"Review"> | boolean
+    status?: EnumReviewStatusFilter<"Review"> | $Enums.ReviewStatus
+    visibleAt?: DateTimeNullableFilter<"Review"> | Date | string | null
+    lockedAt?: DateTimeNullableFilter<"Review"> | Date | string | null
     createdAt?: DateTimeFilter<"Review"> | Date | string
     updatedAt?: DateTimeFilter<"Review"> | Date | string
   }
 
-  export type ReviewUpsertWithWhereUniqueWithoutArtisanInput = {
+  export type ReviewUpsertWithWhereUniqueWithoutTargetInput = {
     where: ReviewWhereUniqueInput
-    update: XOR<ReviewUpdateWithoutArtisanInput, ReviewUncheckedUpdateWithoutArtisanInput>
-    create: XOR<ReviewCreateWithoutArtisanInput, ReviewUncheckedCreateWithoutArtisanInput>
+    update: XOR<ReviewUpdateWithoutTargetInput, ReviewUncheckedUpdateWithoutTargetInput>
+    create: XOR<ReviewCreateWithoutTargetInput, ReviewUncheckedCreateWithoutTargetInput>
   }
 
-  export type ReviewUpdateWithWhereUniqueWithoutArtisanInput = {
+  export type ReviewUpdateWithWhereUniqueWithoutTargetInput = {
     where: ReviewWhereUniqueInput
-    data: XOR<ReviewUpdateWithoutArtisanInput, ReviewUncheckedUpdateWithoutArtisanInput>
+    data: XOR<ReviewUpdateWithoutTargetInput, ReviewUncheckedUpdateWithoutTargetInput>
   }
 
-  export type ReviewUpdateManyWithWhereWithoutArtisanInput = {
+  export type ReviewUpdateManyWithWhereWithoutTargetInput = {
     where: ReviewScalarWhereInput
-    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutArtisanInput>
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutTargetInput>
+  }
+
+  export type ReviewEligibilityUpsertWithWhereUniqueWithoutUserInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    update: XOR<ReviewEligibilityUpdateWithoutUserInput, ReviewEligibilityUncheckedUpdateWithoutUserInput>
+    create: XOR<ReviewEligibilityCreateWithoutUserInput, ReviewEligibilityUncheckedCreateWithoutUserInput>
+  }
+
+  export type ReviewEligibilityUpdateWithWhereUniqueWithoutUserInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    data: XOR<ReviewEligibilityUpdateWithoutUserInput, ReviewEligibilityUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ReviewEligibilityUpdateManyWithWhereWithoutUserInput = {
+    where: ReviewEligibilityScalarWhereInput
+    data: XOR<ReviewEligibilityUpdateManyMutationInput, ReviewEligibilityUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ReviewEligibilityScalarWhereInput = {
+    AND?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
+    OR?: ReviewEligibilityScalarWhereInput[]
+    NOT?: ReviewEligibilityScalarWhereInput | ReviewEligibilityScalarWhereInput[]
+    id?: StringFilter<"ReviewEligibility"> | string
+    contractId?: StringFilter<"ReviewEligibility"> | string
+    userId?: StringFilter<"ReviewEligibility"> | string
+    targetId?: StringFilter<"ReviewEligibility"> | string
+    status?: EnumReviewEligibilityStatusFilter<"ReviewEligibility"> | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    createdAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+    updatedAt?: DateTimeFilter<"ReviewEligibility"> | Date | string
+  }
+
+  export type ReviewEligibilityUpsertWithWhereUniqueWithoutTargetInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    update: XOR<ReviewEligibilityUpdateWithoutTargetInput, ReviewEligibilityUncheckedUpdateWithoutTargetInput>
+    create: XOR<ReviewEligibilityCreateWithoutTargetInput, ReviewEligibilityUncheckedCreateWithoutTargetInput>
+  }
+
+  export type ReviewEligibilityUpdateWithWhereUniqueWithoutTargetInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    data: XOR<ReviewEligibilityUpdateWithoutTargetInput, ReviewEligibilityUncheckedUpdateWithoutTargetInput>
+  }
+
+  export type ReviewEligibilityUpdateManyWithWhereWithoutTargetInput = {
+    where: ReviewEligibilityScalarWhereInput
+    data: XOR<ReviewEligibilityUpdateManyMutationInput, ReviewEligibilityUncheckedUpdateManyWithoutTargetInput>
+  }
+
+  export type ReputationProfileUpsertWithoutUserInput = {
+    update: XOR<ReputationProfileUpdateWithoutUserInput, ReputationProfileUncheckedUpdateWithoutUserInput>
+    create: XOR<ReputationProfileCreateWithoutUserInput, ReputationProfileUncheckedCreateWithoutUserInput>
+    where?: ReputationProfileWhereInput
+  }
+
+  export type ReputationProfileUpdateToOneWithWhereWithoutUserInput = {
+    where?: ReputationProfileWhereInput
+    data: XOR<ReputationProfileUpdateWithoutUserInput, ReputationProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ReputationProfileUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    averageRating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFieldUpdateOperationsInput | number
+    jssScore?: IntFieldUpdateOperationsInput | number
+    completionRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReputationProfileUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    averageRating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalReviews?: IntFieldUpdateOperationsInput | number
+    jssScore?: IntFieldUpdateOperationsInput | number
+    completionRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    responseRate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    snapshotData?: NullableJsonNullValueInput | InputJsonValue
+    lastRecalculatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
@@ -66906,8 +70563,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -66949,8 +70609,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -66997,8 +70660,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -67040,8 +70706,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -67091,7 +70760,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -67131,7 +70801,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -67242,8 +70913,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -67285,8 +70959,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -67339,8 +71016,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -67382,8 +71062,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -67439,7 +71122,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -67479,7 +71163,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -67707,8 +71392,11 @@ export namespace Prisma {
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -67750,8 +71438,11 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -67798,8 +71489,11 @@ export namespace Prisma {
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -67841,8 +71535,11 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -67892,7 +71589,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -67932,7 +71630,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -68061,8 +71760,11 @@ export namespace Prisma {
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -68104,8 +71806,11 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -68158,8 +71863,11 @@ export namespace Prisma {
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -68201,8 +71909,11 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -68258,7 +71969,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -68298,7 +72010,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -68352,8 +72065,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
@@ -68395,8 +72111,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
@@ -68454,8 +72173,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
@@ -68497,8 +72219,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
@@ -68539,8 +72264,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -68582,8 +72310,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -68641,8 +72372,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -68684,8 +72418,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -68778,8 +72515,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -68821,8 +72561,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -68869,8 +72612,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -68912,8 +72658,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -68963,7 +72712,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -69003,7 +72753,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -69188,8 +72939,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -69231,8 +72985,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -69285,8 +73042,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -69328,8 +73088,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -69385,7 +73148,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -69425,7 +73189,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -70112,8 +73877,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -70155,8 +73923,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -70203,8 +73974,11 @@ export namespace Prisma {
     clientContracts?: ContractCreateNestedManyWithoutClientInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -70246,8 +74020,11 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -70290,34 +74067,28 @@ export namespace Prisma {
 
   export type ReviewCreateWithoutContractInput = {
     id?: string
-    rating: number
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    client: UserCreateNestedOneWithoutSentReviewsInput
-    artisan: UserCreateNestedOneWithoutReceivedReviewsInput
+    author: UserCreateNestedOneWithoutAuthoredReviewsInput
+    target: UserCreateNestedOneWithoutReceivedReviewsInput
   }
 
   export type ReviewUncheckedCreateWithoutContractInput = {
     id?: string
-    clientId: string
-    artisanId: string
-    rating: number
+    authorId: string
+    targetId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -70325,6 +74096,41 @@ export namespace Prisma {
   export type ReviewCreateOrConnectWithoutContractInput = {
     where: ReviewWhereUniqueInput
     create: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
+  }
+
+  export type ReviewCreateManyContractInputEnvelope = {
+    data: ReviewCreateManyContractInput | ReviewCreateManyContractInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReviewEligibilityCreateWithoutContractInput = {
+    id?: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutReviewEligibilitiesInput
+    target: UserCreateNestedOneWithoutTargetEligibilitiesInput
+  }
+
+  export type ReviewEligibilityUncheckedCreateWithoutContractInput = {
+    id?: string
+    userId: string
+    targetId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityCreateOrConnectWithoutContractInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    create: XOR<ReviewEligibilityCreateWithoutContractInput, ReviewEligibilityUncheckedCreateWithoutContractInput>
+  }
+
+  export type ReviewEligibilityCreateManyContractInputEnvelope = {
+    data: ReviewEligibilityCreateManyContractInput | ReviewEligibilityCreateManyContractInput[]
+    skipDuplicates?: boolean
   }
 
   export type PaymentCreateWithoutContractInput = {
@@ -70701,8 +74507,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -70744,8 +74553,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -70798,8 +74610,11 @@ export namespace Prisma {
     clientContracts?: ContractUpdateManyWithoutClientNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -70841,8 +74656,11 @@ export namespace Prisma {
     clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -70884,49 +74702,36 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
   }
 
-  export type ReviewUpsertWithoutContractInput = {
+  export type ReviewUpsertWithWhereUniqueWithoutContractInput = {
+    where: ReviewWhereUniqueInput
     update: XOR<ReviewUpdateWithoutContractInput, ReviewUncheckedUpdateWithoutContractInput>
     create: XOR<ReviewCreateWithoutContractInput, ReviewUncheckedCreateWithoutContractInput>
-    where?: ReviewWhereInput
   }
 
-  export type ReviewUpdateToOneWithWhereWithoutContractInput = {
-    where?: ReviewWhereInput
+  export type ReviewUpdateWithWhereUniqueWithoutContractInput = {
+    where: ReviewWhereUniqueInput
     data: XOR<ReviewUpdateWithoutContractInput, ReviewUncheckedUpdateWithoutContractInput>
   }
 
-  export type ReviewUpdateWithoutContractInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
-    comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
-    artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
+  export type ReviewUpdateManyWithWhereWithoutContractInput = {
+    where: ReviewScalarWhereInput
+    data: XOR<ReviewUpdateManyMutationInput, ReviewUncheckedUpdateManyWithoutContractInput>
   }
 
-  export type ReviewUncheckedUpdateWithoutContractInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
-    comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type ReviewEligibilityUpsertWithWhereUniqueWithoutContractInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    update: XOR<ReviewEligibilityUpdateWithoutContractInput, ReviewEligibilityUncheckedUpdateWithoutContractInput>
+    create: XOR<ReviewEligibilityCreateWithoutContractInput, ReviewEligibilityUncheckedCreateWithoutContractInput>
+  }
+
+  export type ReviewEligibilityUpdateWithWhereUniqueWithoutContractInput = {
+    where: ReviewEligibilityWhereUniqueInput
+    data: XOR<ReviewEligibilityUpdateWithoutContractInput, ReviewEligibilityUncheckedUpdateWithoutContractInput>
+  }
+
+  export type ReviewEligibilityUpdateManyWithWhereWithoutContractInput = {
+    where: ReviewEligibilityScalarWhereInput
+    data: XOR<ReviewEligibilityUpdateManyMutationInput, ReviewEligibilityUncheckedUpdateManyWithoutContractInput>
   }
 
   export type PaymentUpsertWithWhereUniqueWithoutContractInput = {
@@ -71082,7 +74887,8 @@ export namespace Prisma {
     proposal: ProposalCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -71122,7 +74928,8 @@ export namespace Prisma {
     platformFeeDeducted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -71212,7 +75019,8 @@ export namespace Prisma {
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -71252,7 +75060,8 @@ export namespace Prisma {
     platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -71344,558 +75153,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ContractCreateWithoutReviewInput = {
-    id?: string
-    amount: number
-    status?: $Enums.ContractStatus
-    currency?: string
-    paystackReference?: string | null
-    paystackAuthorizationUrl?: string | null
-    paystackAccessCode?: string | null
-    fundedPaymentId?: string | null
-    payoutRequestedAt?: Date | string | null
-    paidOutAt?: Date | string | null
-    refundedAt?: Date | string | null
-    refundReason?: string | null
-    payoutFailureReason?: string | null
-    fundedAt?: Date | string | null
-    activatedAt?: Date | string | null
-    startedAt?: Date | string | null
-    completedAt?: Date | string | null
-    cancelledAt?: Date | string | null
-    clientConfirmedCompletion?: boolean
-    clientConfirmedAt?: Date | string | null
-    artisanConfirmedCompletion?: boolean
-    artisanConfirmedAt?: Date | string | null
-    escrowReleased?: boolean
-    escrowReleasedAt?: Date | string | null
-    platformFeeDeducted?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    job: JobCreateNestedOneWithoutContractInput
-    proposal: ProposalCreateNestedOneWithoutContractInput
-    client: UserCreateNestedOneWithoutClientContractsInput
-    artisan: UserCreateNestedOneWithoutArtisanContractsInput
-    conversation?: ConversationCreateNestedOneWithoutContractInput
-    payments?: PaymentCreateNestedManyWithoutContractInput
-    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
-    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
-    disputes?: DisputeCreateNestedManyWithoutContractInput
-    deliverables?: DeliverableCreateNestedManyWithoutContractInput
-  }
-
-  export type ContractUncheckedCreateWithoutReviewInput = {
-    id?: string
-    jobId: string
-    proposalId: string
-    clientId: string
-    artisanId: string
-    amount: number
-    status?: $Enums.ContractStatus
-    currency?: string
-    paystackReference?: string | null
-    paystackAuthorizationUrl?: string | null
-    paystackAccessCode?: string | null
-    fundedPaymentId?: string | null
-    payoutRequestedAt?: Date | string | null
-    paidOutAt?: Date | string | null
-    refundedAt?: Date | string | null
-    refundReason?: string | null
-    payoutFailureReason?: string | null
-    fundedAt?: Date | string | null
-    activatedAt?: Date | string | null
-    startedAt?: Date | string | null
-    completedAt?: Date | string | null
-    cancelledAt?: Date | string | null
-    clientConfirmedCompletion?: boolean
-    clientConfirmedAt?: Date | string | null
-    artisanConfirmedCompletion?: boolean
-    artisanConfirmedAt?: Date | string | null
-    escrowReleased?: boolean
-    escrowReleasedAt?: Date | string | null
-    platformFeeDeducted?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
-    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
-    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
-    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
-    deliverables?: DeliverableUncheckedCreateNestedManyWithoutContractInput
-  }
-
-  export type ContractCreateOrConnectWithoutReviewInput = {
-    where: ContractWhereUniqueInput
-    create: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
-  }
-
-  export type UserCreateWithoutSentReviewsInput = {
-    id: string
-    name: string
-    email: string
-    passwordHash: string
-    passwordResetTokenHash?: string | null
-    passwordResetTokenExpiresAt?: Date | string | null
-    passwordResetRequestedAt?: Date | string | null
-    role: $Enums.UserRole
-    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
-    status: $Enums.UserStatus
-    artisanVerified?: boolean
-    emailVerified?: boolean
-    paystackRecipientCode?: string | null
-    payoutBankCode?: string | null
-    payoutAccountNumber?: string | null
-    payoutAccountName?: string | null
-    phone?: string | null
-    createdAt: Date | string
-    lastLoginAt?: Date | string | null
-    updatedAt?: Date | string
-    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
-    artisanVerification?: ArtisanVerificationCreateNestedOneWithoutUserInput
-    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
-    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
-    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
-    clientContracts?: ContractCreateNestedManyWithoutClientInput
-    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
-    clientJobs?: JobCreateNestedManyWithoutClientInput
-    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-    notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
-    transactions?: TransactionCreateNestedManyWithoutUserInput
-    payments?: PaymentCreateNestedManyWithoutUserInput
-    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
-    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
-    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
-    suggestedCategories?: CategorySuggestionCreateNestedManyWithoutSuggestedByInput
-    reviewedCategories?: CategorySuggestionCreateNestedManyWithoutReviewedByInput
-    revisionRequests?: RevisionRequestCreateNestedManyWithoutClientInput
-  }
-
-  export type UserUncheckedCreateWithoutSentReviewsInput = {
-    id: string
-    name: string
-    email: string
-    passwordHash: string
-    passwordResetTokenHash?: string | null
-    passwordResetTokenExpiresAt?: Date | string | null
-    passwordResetRequestedAt?: Date | string | null
-    role: $Enums.UserRole
-    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
-    status: $Enums.UserStatus
-    artisanVerified?: boolean
-    emailVerified?: boolean
-    paystackRecipientCode?: string | null
-    payoutBankCode?: string | null
-    payoutAccountNumber?: string | null
-    payoutAccountName?: string | null
-    phone?: string | null
-    createdAt: Date | string
-    lastLoginAt?: Date | string | null
-    updatedAt?: Date | string
-    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
-    artisanVerification?: ArtisanVerificationUncheckedCreateNestedOneWithoutUserInput
-    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
-    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
-    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
-    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
-    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
-    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
-    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
-    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
-    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
-    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
-    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
-    suggestedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutSuggestedByInput
-    reviewedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutReviewedByInput
-    revisionRequests?: RevisionRequestUncheckedCreateNestedManyWithoutClientInput
-  }
-
-  export type UserCreateOrConnectWithoutSentReviewsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
-  }
-
-  export type UserCreateWithoutReceivedReviewsInput = {
-    id: string
-    name: string
-    email: string
-    passwordHash: string
-    passwordResetTokenHash?: string | null
-    passwordResetTokenExpiresAt?: Date | string | null
-    passwordResetRequestedAt?: Date | string | null
-    role: $Enums.UserRole
-    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
-    status: $Enums.UserStatus
-    artisanVerified?: boolean
-    emailVerified?: boolean
-    paystackRecipientCode?: string | null
-    payoutBankCode?: string | null
-    payoutAccountNumber?: string | null
-    payoutAccountName?: string | null
-    phone?: string | null
-    createdAt: Date | string
-    lastLoginAt?: Date | string | null
-    updatedAt?: Date | string
-    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
-    artisanVerification?: ArtisanVerificationCreateNestedOneWithoutUserInput
-    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
-    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
-    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
-    clientContracts?: ContractCreateNestedManyWithoutClientInput
-    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
-    clientJobs?: JobCreateNestedManyWithoutClientInput
-    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-    notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
-    transactions?: TransactionCreateNestedManyWithoutUserInput
-    payments?: PaymentCreateNestedManyWithoutUserInput
-    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
-    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
-    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
-    suggestedCategories?: CategorySuggestionCreateNestedManyWithoutSuggestedByInput
-    reviewedCategories?: CategorySuggestionCreateNestedManyWithoutReviewedByInput
-    revisionRequests?: RevisionRequestCreateNestedManyWithoutClientInput
-  }
-
-  export type UserUncheckedCreateWithoutReceivedReviewsInput = {
-    id: string
-    name: string
-    email: string
-    passwordHash: string
-    passwordResetTokenHash?: string | null
-    passwordResetTokenExpiresAt?: Date | string | null
-    passwordResetRequestedAt?: Date | string | null
-    role: $Enums.UserRole
-    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
-    status: $Enums.UserStatus
-    artisanVerified?: boolean
-    emailVerified?: boolean
-    paystackRecipientCode?: string | null
-    payoutBankCode?: string | null
-    payoutAccountNumber?: string | null
-    payoutAccountName?: string | null
-    phone?: string | null
-    createdAt: Date | string
-    lastLoginAt?: Date | string | null
-    updatedAt?: Date | string
-    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
-    artisanVerification?: ArtisanVerificationUncheckedCreateNestedOneWithoutUserInput
-    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
-    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
-    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
-    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
-    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
-    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
-    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-    notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
-    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
-    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
-    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
-    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
-    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
-    suggestedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutSuggestedByInput
-    reviewedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutReviewedByInput
-    revisionRequests?: RevisionRequestUncheckedCreateNestedManyWithoutClientInput
-  }
-
-  export type UserCreateOrConnectWithoutReceivedReviewsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
-  }
-
-  export type ContractUpsertWithoutReviewInput = {
-    update: XOR<ContractUpdateWithoutReviewInput, ContractUncheckedUpdateWithoutReviewInput>
-    create: XOR<ContractCreateWithoutReviewInput, ContractUncheckedCreateWithoutReviewInput>
-    where?: ContractWhereInput
-  }
-
-  export type ContractUpdateToOneWithWhereWithoutReviewInput = {
-    where?: ContractWhereInput
-    data: XOR<ContractUpdateWithoutReviewInput, ContractUncheckedUpdateWithoutReviewInput>
-  }
-
-  export type ContractUpdateWithoutReviewInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    amount?: IntFieldUpdateOperationsInput | number
-    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-    currency?: StringFieldUpdateOperationsInput | string
-    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
-    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
-    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
-    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
-    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
-    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
-    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    job?: JobUpdateOneRequiredWithoutContractNestedInput
-    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
-    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
-    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
-    conversation?: ConversationUpdateOneWithoutContractNestedInput
-    payments?: PaymentUpdateManyWithoutContractNestedInput
-    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
-    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
-    disputes?: DisputeUpdateManyWithoutContractNestedInput
-    deliverables?: DeliverableUpdateManyWithoutContractNestedInput
-  }
-
-  export type ContractUncheckedUpdateWithoutReviewInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    jobId?: StringFieldUpdateOperationsInput | string
-    proposalId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    amount?: IntFieldUpdateOperationsInput | number
-    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
-    currency?: StringFieldUpdateOperationsInput | string
-    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
-    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
-    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
-    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
-    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
-    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
-    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
-    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
-    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
-    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
-    deliverables?: DeliverableUncheckedUpdateManyWithoutContractNestedInput
-  }
-
-  export type UserUpsertWithoutSentReviewsInput = {
-    update: XOR<UserUpdateWithoutSentReviewsInput, UserUncheckedUpdateWithoutSentReviewsInput>
-    create: XOR<UserCreateWithoutSentReviewsInput, UserUncheckedCreateWithoutSentReviewsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutSentReviewsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutSentReviewsInput, UserUncheckedUpdateWithoutSentReviewsInput>
-  }
-
-  export type UserUpdateWithoutSentReviewsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
-    artisanVerification?: ArtisanVerificationUpdateOneWithoutUserNestedInput
-    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
-    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
-    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
-    clientContracts?: ContractUpdateManyWithoutClientNestedInput
-    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
-    clientJobs?: JobUpdateManyWithoutClientNestedInput
-    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-    notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
-    transactions?: TransactionUpdateManyWithoutUserNestedInput
-    payments?: PaymentUpdateManyWithoutUserNestedInput
-    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
-    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
-    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
-    suggestedCategories?: CategorySuggestionUpdateManyWithoutSuggestedByNestedInput
-    reviewedCategories?: CategorySuggestionUpdateManyWithoutReviewedByNestedInput
-    revisionRequests?: RevisionRequestUpdateManyWithoutClientNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutSentReviewsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
-    artisanVerification?: ArtisanVerificationUncheckedUpdateOneWithoutUserNestedInput
-    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
-    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
-    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
-    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
-    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
-    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
-    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
-    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
-    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
-    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
-    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
-    suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
-    reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
-    revisionRequests?: RevisionRequestUncheckedUpdateManyWithoutClientNestedInput
-  }
-
-  export type UserUpsertWithoutReceivedReviewsInput = {
-    update: XOR<UserUpdateWithoutReceivedReviewsInput, UserUncheckedUpdateWithoutReceivedReviewsInput>
-    create: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutReceivedReviewsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutReceivedReviewsInput, UserUncheckedUpdateWithoutReceivedReviewsInput>
-  }
-
-  export type UserUpdateWithoutReceivedReviewsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
-    artisanVerification?: ArtisanVerificationUpdateOneWithoutUserNestedInput
-    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
-    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
-    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
-    clientContracts?: ContractUpdateManyWithoutClientNestedInput
-    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
-    clientJobs?: JobUpdateManyWithoutClientNestedInput
-    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-    notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
-    transactions?: TransactionUpdateManyWithoutUserNestedInput
-    payments?: PaymentUpdateManyWithoutUserNestedInput
-    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
-    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
-    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
-    suggestedCategories?: CategorySuggestionUpdateManyWithoutSuggestedByNestedInput
-    reviewedCategories?: CategorySuggestionUpdateManyWithoutReviewedByNestedInput
-    revisionRequests?: RevisionRequestUpdateManyWithoutClientNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutReceivedReviewsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
-    artisanVerification?: ArtisanVerificationUncheckedUpdateOneWithoutUserNestedInput
-    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
-    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
-    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
-    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
-    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
-    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
-    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-    notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
-    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
-    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
-    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
-    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
-    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
-    suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
-    reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
-    revisionRequests?: RevisionRequestUncheckedUpdateManyWithoutClientNestedInput
-  }
-
   export type DeliveryAttemptCreateWithoutNotificationInput = {
     id?: string
     channel: $Enums.NotificationChannel
@@ -71954,8 +75211,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
@@ -71997,8 +75257,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
@@ -72085,8 +75348,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
@@ -72128,8 +75394,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
@@ -72243,8 +75512,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
     payments?: PaymentCreateNestedManyWithoutUserInput
@@ -72286,8 +75558,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
     payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
@@ -72345,8 +75620,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
     payments?: PaymentUpdateManyWithoutUserNestedInput
@@ -72388,8 +75666,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
@@ -72434,7 +75715,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
     disputes?: DisputeCreateNestedManyWithoutContractInput
@@ -72474,7 +75756,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
@@ -72516,8 +75799,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -72559,8 +75845,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -72653,7 +75942,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
     disputes?: DisputeUpdateManyWithoutContractNestedInput
@@ -72693,7 +75983,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
@@ -72741,8 +76032,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -72784,8 +76078,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -72842,8 +76139,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -72885,8 +76185,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -72944,8 +76247,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -72987,8 +76293,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -73034,7 +76343,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     disputes?: DisputeCreateNestedManyWithoutContractInput
@@ -73074,7 +76384,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
@@ -73130,7 +76441,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     disputes?: DisputeUpdateManyWithoutContractNestedInput
@@ -73170,7 +76482,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
@@ -73207,8 +76520,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -73250,8 +76566,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -73373,8 +76692,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -73416,8 +76738,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -73560,7 +76885,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
     disputes?: DisputeCreateNestedManyWithoutContractInput
@@ -73600,7 +76926,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
     disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
@@ -73789,7 +77116,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
     disputes?: DisputeUpdateManyWithoutContractNestedInput
@@ -73829,7 +77157,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
     disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
@@ -74036,8 +77365,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -74079,8 +77411,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -74127,8 +77462,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -74170,8 +77508,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -74229,8 +77570,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -74272,8 +77616,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -74326,8 +77673,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -74369,8 +77719,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -74411,8 +77764,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -74454,8 +77810,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -74513,8 +77872,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -74556,8 +77918,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -74603,7 +77968,8 @@ export namespace Prisma {
     client: UserCreateNestedOneWithoutClientContractsInput
     artisan: UserCreateNestedOneWithoutArtisanContractsInput
     conversation?: ConversationCreateNestedOneWithoutContractInput
-    review?: ReviewCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
     payments?: PaymentCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
@@ -74643,7 +78009,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
-    review?: ReviewUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
     payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
     ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
     financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
@@ -74727,7 +78094,8 @@ export namespace Prisma {
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -74767,7 +78135,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -75068,8 +78437,11 @@ export namespace Prisma {
     artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
     clientJobs?: JobCreateNestedManyWithoutClientInput
     artisanJobs?: JobCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutUserInput
@@ -75111,8 +78483,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
     clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
     artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
-    sentReviews?: ReviewUncheckedCreateNestedManyWithoutClientInput
-    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
@@ -75199,8 +78574,11 @@ export namespace Prisma {
     artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutUserNestedInput
@@ -75242,8 +78620,11 @@ export namespace Prisma {
     artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
     clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
     artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
-    sentReviews?: ReviewUncheckedUpdateManyWithoutClientNestedInput
-    receivedReviews?: ReviewUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -75253,6 +78634,1366 @@ export namespace Prisma {
     ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
     suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
     reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type ContractCreateWithoutReviewsInput = {
+    id?: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutContractInput
+    payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
+    deliverables?: DeliverableCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutReviewsInput = {
+    id?: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutContractInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
+    deliverables?: DeliverableUncheckedCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutReviewsInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutReviewsInput, ContractUncheckedCreateWithoutReviewsInput>
+  }
+
+  export type UserCreateWithoutAuthoredReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestCreateNestedManyWithoutClientInput
+  }
+
+  export type UserUncheckedCreateWithoutAuthoredReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type UserCreateOrConnectWithoutAuthoredReviewsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAuthoredReviewsInput, UserUncheckedCreateWithoutAuthoredReviewsInput>
+  }
+
+  export type UserCreateWithoutReceivedReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestCreateNestedManyWithoutClientInput
+  }
+
+  export type UserUncheckedCreateWithoutReceivedReviewsInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type UserCreateOrConnectWithoutReceivedReviewsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+  }
+
+  export type ContractUpsertWithoutReviewsInput = {
+    update: XOR<ContractUpdateWithoutReviewsInput, ContractUncheckedUpdateWithoutReviewsInput>
+    create: XOR<ContractCreateWithoutReviewsInput, ContractUncheckedCreateWithoutReviewsInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutReviewsInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutReviewsInput, ContractUncheckedUpdateWithoutReviewsInput>
+  }
+
+  export type ContractUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
+    payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
+    deliverables?: DeliverableUpdateManyWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
+    deliverables?: DeliverableUncheckedUpdateManyWithoutContractNestedInput
+  }
+
+  export type UserUpsertWithoutAuthoredReviewsInput = {
+    update: XOR<UserUpdateWithoutAuthoredReviewsInput, UserUncheckedUpdateWithoutAuthoredReviewsInput>
+    create: XOR<UserCreateWithoutAuthoredReviewsInput, UserUncheckedCreateWithoutAuthoredReviewsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAuthoredReviewsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAuthoredReviewsInput, UserUncheckedUpdateWithoutAuthoredReviewsInput>
+  }
+
+  export type UserUpdateWithoutAuthoredReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAuthoredReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserUpsertWithoutReceivedReviewsInput = {
+    update: XOR<UserUpdateWithoutReceivedReviewsInput, UserUncheckedUpdateWithoutReceivedReviewsInput>
+    create: XOR<UserCreateWithoutReceivedReviewsInput, UserUncheckedCreateWithoutReceivedReviewsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReceivedReviewsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReceivedReviewsInput, UserUncheckedUpdateWithoutReceivedReviewsInput>
+  }
+
+  export type UserUpdateWithoutReceivedReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReceivedReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type ContractCreateWithoutReviewEligibilitiesInput = {
+    id?: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutContractInput
+    proposal: ProposalCreateNestedOneWithoutContractInput
+    client: UserCreateNestedOneWithoutClientContractsInput
+    artisan: UserCreateNestedOneWithoutArtisanContractsInput
+    conversation?: ConversationCreateNestedOneWithoutContractInput
+    reviews?: ReviewCreateNestedManyWithoutContractInput
+    payments?: PaymentCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventCreateNestedManyWithoutContractInput
+    disputes?: DisputeCreateNestedManyWithoutContractInput
+    deliverables?: DeliverableCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutReviewEligibilitiesInput = {
+    id?: string
+    jobId: string
+    proposalId: string
+    clientId: string
+    artisanId: string
+    amount: number
+    status?: $Enums.ContractStatus
+    currency?: string
+    paystackReference?: string | null
+    paystackAuthorizationUrl?: string | null
+    paystackAccessCode?: string | null
+    fundedPaymentId?: string | null
+    payoutRequestedAt?: Date | string | null
+    paidOutAt?: Date | string | null
+    refundedAt?: Date | string | null
+    refundReason?: string | null
+    payoutFailureReason?: string | null
+    fundedAt?: Date | string | null
+    activatedAt?: Date | string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    clientConfirmedCompletion?: boolean
+    clientConfirmedAt?: Date | string | null
+    artisanConfirmedCompletion?: boolean
+    artisanConfirmedAt?: Date | string | null
+    escrowReleased?: boolean
+    escrowReleasedAt?: Date | string | null
+    platformFeeDeducted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conversation?: ConversationUncheckedCreateNestedOneWithoutContractInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutContractInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutContractInput
+    ledgerEntries?: LedgerEntryUncheckedCreateNestedManyWithoutContractInput
+    financialEvents?: FinancialEventUncheckedCreateNestedManyWithoutContractInput
+    disputes?: DisputeUncheckedCreateNestedManyWithoutContractInput
+    deliverables?: DeliverableUncheckedCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutReviewEligibilitiesInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutReviewEligibilitiesInput, ContractUncheckedCreateWithoutReviewEligibilitiesInput>
+  }
+
+  export type UserCreateWithoutReviewEligibilitiesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestCreateNestedManyWithoutClientInput
+  }
+
+  export type UserUncheckedCreateWithoutReviewEligibilitiesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type UserCreateOrConnectWithoutReviewEligibilitiesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReviewEligibilitiesInput, UserUncheckedCreateWithoutReviewEligibilitiesInput>
+  }
+
+  export type UserCreateWithoutTargetEligibilitiesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    reputationProfile?: ReputationProfileCreateNestedOneWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestCreateNestedManyWithoutClientInput
+  }
+
+  export type UserUncheckedCreateWithoutTargetEligibilitiesInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    reputationProfile?: ReputationProfileUncheckedCreateNestedOneWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type UserCreateOrConnectWithoutTargetEligibilitiesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTargetEligibilitiesInput, UserUncheckedCreateWithoutTargetEligibilitiesInput>
+  }
+
+  export type ContractUpsertWithoutReviewEligibilitiesInput = {
+    update: XOR<ContractUpdateWithoutReviewEligibilitiesInput, ContractUncheckedUpdateWithoutReviewEligibilitiesInput>
+    create: XOR<ContractCreateWithoutReviewEligibilitiesInput, ContractUncheckedCreateWithoutReviewEligibilitiesInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutReviewEligibilitiesInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutReviewEligibilitiesInput, ContractUncheckedUpdateWithoutReviewEligibilitiesInput>
+  }
+
+  export type ContractUpdateWithoutReviewEligibilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
+    proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
+    client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
+    artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
+    conversation?: ConversationUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    payments?: PaymentUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUpdateManyWithoutContractNestedInput
+    deliverables?: DeliverableUpdateManyWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutReviewEligibilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    proposalId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    artisanId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    status?: EnumContractStatusFieldUpdateOperationsInput | $Enums.ContractStatus
+    currency?: StringFieldUpdateOperationsInput | string
+    paystackReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAuthorizationUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    paystackAccessCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    refundReason?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutFailureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    fundedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clientConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    clientConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artisanConfirmedCompletion?: BoolFieldUpdateOperationsInput | boolean
+    artisanConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escrowReleased?: BoolFieldUpdateOperationsInput | boolean
+    escrowReleasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    platformFeeDeducted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
+    ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
+    financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
+    disputes?: DisputeUncheckedUpdateManyWithoutContractNestedInput
+    deliverables?: DeliverableUncheckedUpdateManyWithoutContractNestedInput
+  }
+
+  export type UserUpsertWithoutReviewEligibilitiesInput = {
+    update: XOR<UserUpdateWithoutReviewEligibilitiesInput, UserUncheckedUpdateWithoutReviewEligibilitiesInput>
+    create: XOR<UserCreateWithoutReviewEligibilitiesInput, UserUncheckedCreateWithoutReviewEligibilitiesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReviewEligibilitiesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReviewEligibilitiesInput, UserUncheckedUpdateWithoutReviewEligibilitiesInput>
+  }
+
+  export type UserUpdateWithoutReviewEligibilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReviewEligibilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserUpsertWithoutTargetEligibilitiesInput = {
+    update: XOR<UserUpdateWithoutTargetEligibilitiesInput, UserUncheckedUpdateWithoutTargetEligibilitiesInput>
+    create: XOR<UserCreateWithoutTargetEligibilitiesInput, UserUncheckedCreateWithoutTargetEligibilitiesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTargetEligibilitiesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTargetEligibilitiesInput, UserUncheckedUpdateWithoutTargetEligibilitiesInput>
+  }
+
+  export type UserUpdateWithoutTargetEligibilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    reputationProfile?: ReputationProfileUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTargetEligibilitiesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    reputationProfile?: ReputationProfileUncheckedUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserCreateWithoutReputationProfileInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalCreateNestedManyWithoutClientInput
+    clientContracts?: ContractCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobCreateNestedManyWithoutClientInput
+    artisanJobs?: JobCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityCreateNestedManyWithoutTargetInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+    payments?: PaymentCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestCreateNestedManyWithoutClientInput
+  }
+
+  export type UserUncheckedCreateWithoutReputationProfileInput = {
+    id: string
+    name: string
+    email: string
+    passwordHash: string
+    passwordResetTokenHash?: string | null
+    passwordResetTokenExpiresAt?: Date | string | null
+    passwordResetRequestedAt?: Date | string | null
+    role: $Enums.UserRole
+    adminRoles?: UserCreateadminRolesInput | $Enums.AdminRole[]
+    status: $Enums.UserStatus
+    artisanVerified?: boolean
+    emailVerified?: boolean
+    paystackRecipientCode?: string | null
+    payoutBankCode?: string | null
+    payoutAccountNumber?: string | null
+    payoutAccountName?: string | null
+    phone?: string | null
+    createdAt: Date | string
+    lastLoginAt?: Date | string | null
+    updatedAt?: Date | string
+    artisanProfile?: ArtisanProfileUncheckedCreateNestedOneWithoutUserInput
+    artisanVerification?: ArtisanVerificationUncheckedCreateNestedOneWithoutUserInput
+    kycDocuments?: KycDocumentUncheckedCreateNestedManyWithoutUserInput
+    sentProposals?: ProposalUncheckedCreateNestedManyWithoutArtisanInput
+    receivedProposals?: ProposalUncheckedCreateNestedManyWithoutClientInput
+    clientContracts?: ContractUncheckedCreateNestedManyWithoutClientInput
+    artisanContracts?: ContractUncheckedCreateNestedManyWithoutArtisanInput
+    clientJobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    artisanJobs?: JobUncheckedCreateNestedManyWithoutArtisanInput
+    authoredReviews?: ReviewUncheckedCreateNestedManyWithoutAuthorInput
+    receivedReviews?: ReviewUncheckedCreateNestedManyWithoutTargetInput
+    reviewEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutUserInput
+    targetEligibilities?: ReviewEligibilityUncheckedCreateNestedManyWithoutTargetInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPrefs?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutUserInput
+    clientDisputes?: DisputeUncheckedCreateNestedManyWithoutClientInput
+    artisanDisputes?: DisputeUncheckedCreateNestedManyWithoutArtisanInput
+    ledgerAccounts?: LedgerAccountUncheckedCreateNestedOneWithoutUserInput
+    suggestedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutSuggestedByInput
+    reviewedCategories?: CategorySuggestionUncheckedCreateNestedManyWithoutReviewedByInput
+    revisionRequests?: RevisionRequestUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type UserCreateOrConnectWithoutReputationProfileInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReputationProfileInput, UserUncheckedCreateWithoutReputationProfileInput>
+  }
+
+  export type UserUpsertWithoutReputationProfileInput = {
+    update: XOR<UserUpdateWithoutReputationProfileInput, UserUncheckedUpdateWithoutReputationProfileInput>
+    create: XOR<UserCreateWithoutReputationProfileInput, UserUncheckedCreateWithoutReputationProfileInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReputationProfileInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReputationProfileInput, UserUncheckedUpdateWithoutReputationProfileInput>
+  }
+
+  export type UserUpdateWithoutReputationProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUpdateManyWithoutTargetNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+    payments?: PaymentUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUpdateManyWithoutClientNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReputationProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetTokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    adminRoles?: UserUpdateadminRolesInput | $Enums.AdminRole[]
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    artisanVerified?: BoolFieldUpdateOperationsInput | boolean
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    paystackRecipientCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutBankCode?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    payoutAccountName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artisanProfile?: ArtisanProfileUncheckedUpdateOneWithoutUserNestedInput
+    artisanVerification?: ArtisanVerificationUncheckedUpdateOneWithoutUserNestedInput
+    kycDocuments?: KycDocumentUncheckedUpdateManyWithoutUserNestedInput
+    sentProposals?: ProposalUncheckedUpdateManyWithoutArtisanNestedInput
+    receivedProposals?: ProposalUncheckedUpdateManyWithoutClientNestedInput
+    clientContracts?: ContractUncheckedUpdateManyWithoutClientNestedInput
+    artisanContracts?: ContractUncheckedUpdateManyWithoutArtisanNestedInput
+    clientJobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    artisanJobs?: JobUncheckedUpdateManyWithoutArtisanNestedInput
+    authoredReviews?: ReviewUncheckedUpdateManyWithoutAuthorNestedInput
+    receivedReviews?: ReviewUncheckedUpdateManyWithoutTargetNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutUserNestedInput
+    targetEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutTargetNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPrefs?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutUserNestedInput
+    clientDisputes?: DisputeUncheckedUpdateManyWithoutClientNestedInput
+    artisanDisputes?: DisputeUncheckedUpdateManyWithoutArtisanNestedInput
+    ledgerAccounts?: LedgerAccountUncheckedUpdateOneWithoutUserNestedInput
+    suggestedCategories?: CategorySuggestionUncheckedUpdateManyWithoutSuggestedByNestedInput
+    reviewedCategories?: CategorySuggestionUncheckedUpdateManyWithoutReviewedByNestedInput
+    revisionRequests?: RevisionRequestUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type KycDocumentCreateManyUserInput = {
@@ -75433,36 +80174,50 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type ReviewCreateManyClientInput = {
+  export type ReviewCreateManyAuthorInput = {
     id?: string
     contractId: string
-    artisanId: string
-    rating: number
+    targetId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
-  export type ReviewCreateManyArtisanInput = {
+  export type ReviewCreateManyTargetInput = {
     id?: string
     contractId: string
-    clientId: string
-    rating: number
+    authorId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: number | null
-    communication?: number | null
-    timeliness?: number | null
-    professionalism?: number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: boolean
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityCreateManyUserInput = {
+    id?: string
+    contractId: string
+    targetId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityCreateManyTargetInput = {
+    id?: string
+    contractId: string
+    userId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -75853,7 +80608,8 @@ export namespace Prisma {
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     artisan?: UserUpdateOneRequiredWithoutArtisanContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -75893,7 +80649,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -75966,7 +80723,8 @@ export namespace Prisma {
     proposal?: ProposalUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutClientContractsNestedInput
     conversation?: ConversationUpdateOneWithoutContractNestedInput
-    review?: ReviewUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUpdateManyWithoutContractNestedInput
     payments?: PaymentUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUpdateManyWithoutContractNestedInput
@@ -76006,7 +80764,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: ConversationUncheckedUpdateOneWithoutContractNestedInput
-    review?: ReviewUncheckedUpdateOneWithoutContractNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutContractNestedInput
+    reviewEligibilities?: ReviewEligibilityUncheckedUpdateManyWithoutContractNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutContractNestedInput
     ledgerEntries?: LedgerEntryUncheckedUpdateManyWithoutContractNestedInput
     financialEvents?: FinancialEventUncheckedUpdateManyWithoutContractNestedInput
@@ -76181,104 +80940,146 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReviewUpdateWithoutClientInput = {
+  export type ReviewUpdateWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
-    artisan?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
+    contract?: ContractUpdateOneRequiredWithoutReviewsNestedInput
+    target?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
   }
 
-  export type ReviewUncheckedUpdateWithoutClientInput = {
+  export type ReviewUncheckedUpdateWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
+    targetId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReviewUncheckedUpdateManyWithoutClientInput = {
+  export type ReviewUncheckedUpdateManyWithoutAuthorInput = {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: StringFieldUpdateOperationsInput | string
-    artisanId?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
+    targetId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReviewUpdateWithoutArtisanInput = {
+  export type ReviewUpdateWithoutTargetInput = {
     id?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    contract?: ContractUpdateOneRequiredWithoutReviewNestedInput
-    client?: UserUpdateOneRequiredWithoutSentReviewsNestedInput
+    contract?: ContractUpdateOneRequiredWithoutReviewsNestedInput
+    author?: UserUpdateOneRequiredWithoutAuthoredReviewsNestedInput
   }
 
-  export type ReviewUncheckedUpdateWithoutArtisanInput = {
+  export type ReviewUncheckedUpdateWithoutTargetInput = {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
+    authorId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReviewUncheckedUpdateManyWithoutArtisanInput = {
+  export type ReviewUncheckedUpdateManyWithoutTargetInput = {
     id?: StringFieldUpdateOperationsInput | string
     contractId?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    rating?: IntFieldUpdateOperationsInput | number
+    authorId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    categories?: NullableJsonNullValueInput | InputJsonValue
-    workQuality?: NullableIntFieldUpdateOperationsInput | number | null
-    communication?: NullableIntFieldUpdateOperationsInput | number | null
-    timeliness?: NullableIntFieldUpdateOperationsInput | number | null
-    professionalism?: NullableIntFieldUpdateOperationsInput | number | null
-    evidence?: NullableJsonNullValueInput | InputJsonValue
-    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutReviewEligibilitiesNestedInput
+    target?: UserUpdateOneRequiredWithoutTargetEligibilitiesNestedInput
+  }
+
+  export type ReviewEligibilityUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityUpdateWithoutTargetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contract?: ContractUpdateOneRequiredWithoutReviewEligibilitiesNestedInput
+    user?: UserUpdateOneRequiredWithoutReviewEligibilitiesNestedInput
+  }
+
+  export type ReviewEligibilityUncheckedUpdateWithoutTargetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityUncheckedUpdateManyWithoutTargetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -76943,6 +81744,30 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReviewCreateManyContractInput = {
+    id?: string
+    authorId: string
+    targetId: string
+    rating: Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: string | null
+    status?: $Enums.ReviewStatus
+    visibleAt?: Date | string | null
+    lockedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReviewEligibilityCreateManyContractInput = {
+    id?: string
+    userId: string
+    targetId: string
+    status?: $Enums.ReviewEligibilityStatus
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type PaymentCreateManyContractInput = {
     id?: string
     userId: string
@@ -77012,6 +81837,78 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     approvedAt?: Date | string | null
+  }
+
+  export type ReviewUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUpdateOneRequiredWithoutAuthoredReviewsNestedInput
+    target?: UserUpdateOneRequiredWithoutReceivedReviewsNestedInput
+  }
+
+  export type ReviewUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewUncheckedUpdateManyWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    breakdown?: NullableJsonNullValueInput | InputJsonValue
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+    visibleAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutReviewEligibilitiesNestedInput
+    target?: UserUpdateOneRequiredWithoutTargetEligibilitiesNestedInput
+  }
+
+  export type ReviewEligibilityUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReviewEligibilityUncheckedUpdateManyWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    targetId?: StringFieldUpdateOperationsInput | string
+    status?: EnumReviewEligibilityStatusFieldUpdateOperationsInput | $Enums.ReviewEligibilityStatus
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentUpdateWithoutContractInput = {

@@ -31,131 +31,23 @@
       }
     },
     "/notifications": {
-      "post": {
-        "operationId": "NotificationsController_createNotification",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNotificationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Notification created successfully."
-          },
-          "400": {
-            "description": "Invalid notification data."
-          },
-          "403": {
-            "description": "Admin access required."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Create a new notification (Admin only)",
-        "tags": [
-          "notifications"
-        ]
-      },
       "get": {
         "operationId": "NotificationsController_listNotifications",
         "parameters": [
           {
-            "name": "type",
-            "required": false,
-            "in": "query",
-            "description": "Filter by type",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "priority",
-            "required": false,
-            "in": "query",
-            "description": "Filter by priority",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isRead",
-            "required": false,
-            "in": "query",
-            "description": "Filter by read status",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isArchived",
-            "required": false,
-            "in": "query",
-            "description": "Filter by archived status",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "entityId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by entity ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "entityType",
-            "required": false,
-            "in": "query",
-            "description": "Filter by entity type",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateFrom",
-            "required": false,
-            "in": "query",
-            "description": "Filter by date from",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateTo",
-            "required": false,
-            "in": "query",
-            "description": "Filter by date to",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "page",
-            "required": false,
+            "required": true,
             "in": "query",
-            "description": "Page number (default: 1)",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           },
           {
             "name": "limit",
-            "required": false,
+            "required": true,
             "in": "query",
-            "description": "Items per page (default: 20, max: 100)",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -175,13 +67,13 @@
         ]
       }
     },
-    "/notifications/me": {
+    "/notifications/unread-count": {
       "get": {
-        "operationId": "NotificationsController_getMyNotifications",
+        "operationId": "NotificationsController_getUnreadCount",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "User notifications retrieved successfully."
+            "description": "Unread count retrieved successfully."
           }
         },
         "security": [
@@ -189,73 +81,7 @@
             "bearer": []
           }
         ],
-        "summary": "Get current user notifications",
-        "tags": [
-          "notifications"
-        ]
-      }
-    },
-    "/notifications/{id}": {
-      "get": {
-        "operationId": "NotificationsController_getNotification",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Notification retrieved successfully."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get notification by ID",
-        "tags": [
-          "notifications"
-        ]
-      },
-      "patch": {
-        "operationId": "NotificationsController_updateNotification",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateNotificationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Notification updated successfully."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Update notification",
+        "summary": "Get unread notification count",
         "tags": [
           "notifications"
         ]
@@ -277,7 +103,7 @@
         },
         "responses": {
           "200": {
-            "description": "Notifications updated successfully."
+            "description": "Notifications marked as read."
           }
         },
         "security": [
@@ -285,7 +111,7 @@
             "bearer": []
           }
         ],
-        "summary": "Mark multiple notifications as read/archived",
+        "summary": "Mark multiple notifications as read",
         "tags": [
           "notifications"
         ]
@@ -311,13 +137,13 @@
         ]
       }
     },
-    "/notifications/stats/me": {
+    "/notifications/preferences": {
       "get": {
-        "operationId": "NotificationsController_getNotificationStats",
+        "operationId": "NotificationsController_getPreferences",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Notification statistics retrieved successfully."
+            "description": "Preferences retrieved successfully."
           }
         },
         "security": [
@@ -325,28 +151,17 @@
             "bearer": []
           }
         ],
-        "summary": "Get notification statistics",
+        "summary": "Get user notification preferences",
         "tags": [
           "notifications"
         ]
-      }
-    },
-    "/notifications/{id}/delete": {
+      },
       "patch": {
-        "operationId": "NotificationsController_deleteNotification",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "NotificationsController_updatePreference",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Notification deleted successfully."
+            "description": "Preference updated successfully."
           }
         },
         "security": [
@@ -354,7 +169,7 @@
             "bearer": []
           }
         ],
-        "summary": "Delete notification",
+        "summary": "Update notification preference",
         "tags": [
           "notifications"
         ]
@@ -1493,35 +1308,23 @@
         ]
       }
     },
-    "/admin/contracts/stats": {
+    "/admin/reviews": {
       "get": {
-        "operationId": "AdminController_getContractStats",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get system contract statistics",
-        "tags": [
-          "admin"
-        ]
-      }
-    },
-    "/admin/taxonomy/suggestions": {
-      "get": {
-        "operationId": "AdminController_getCategorySuggestions",
+        "operationId": "AdminController_getAllReviews",
         "parameters": [
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "status",
             "required": false,
             "in": "query",
-            "description": "Filter by PENDING, APPROVED, REJECTED",
+            "description": "Review status filter",
             "schema": {
               "type": "string"
             }
@@ -1553,51 +1356,21 @@
             "bearer": []
           }
         ],
-        "summary": "List all category suggestions",
+        "summary": "List all reviews",
         "tags": [
           "admin"
         ]
       }
     },
-    "/admin/taxonomy/suggestions/{id}/approve": {
+    "/admin/reviews/{id}/moderate": {
       "patch": {
-        "operationId": "AdminController_approveCategorySuggestion",
+        "operationId": "AdminController_moderateReview",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "Suggestion identifier",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Approve a category suggestion",
-        "tags": [
-          "admin"
-        ]
-      }
-    },
-    "/admin/taxonomy/suggestions/{id}/reject": {
-      "patch": {
-        "operationId": "AdminController_rejectCategorySuggestion",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Suggestion identifier",
+            "description": "Review identifier",
             "schema": {
               "type": "string"
             }
@@ -1608,7 +1381,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RejectSuggestionDto"
+                "$ref": "#/components/schemas/ModerateReviewDto"
               }
             }
           }
@@ -1623,7 +1396,77 @@
             "bearer": []
           }
         ],
-        "summary": "Reject a category suggestion",
+        "summary": "Moderate a review",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/contracts/stats": {
+      "get": {
+        "operationId": "AdminController_getContractStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get system contract statistics",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/config": {
+      "get": {
+        "operationId": "AdminController_getSystemConfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all system configurations",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/config/{key}": {
+      "patch": {
+        "operationId": "AdminController_updateSystemConfig",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "description": "Configuration key",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a system configuration",
         "tags": [
           "admin"
         ]
@@ -2532,16 +2375,25 @@
         ]
       }
     },
-    "/disputes": {
+    "/disputes/contract/{contractId}": {
       "post": {
         "operationId": "DisputesController_createDispute",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "contractId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDisputeDto"
+                "$ref": "#/components/schemas/OpenDisputeDto"
               }
             }
           }
@@ -2557,7 +2409,7 @@
             "description": "Access denied."
           },
           "404": {
-            "description": "Contract or job not found."
+            "description": "Contract not found."
           }
         },
         "security": [
@@ -2569,175 +2421,11 @@
         "tags": [
           "disputes"
         ]
-      },
-      "get": {
-        "operationId": "DisputesController_listDisputes",
-        "parameters": [
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "description": "Filter by status",
-            "schema": {
-              "enum": [
-                "OPEN",
-                "RESOLVED"
-              ],
-              "type": "string"
-            }
-          },
-          {
-            "name": "contractId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by contract ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "jobId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by job ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "clientId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by client ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "artisanId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by artisan ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateFrom",
-            "required": false,
-            "in": "query",
-            "description": "Filter by date from",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateTo",
-            "required": false,
-            "in": "query",
-            "description": "Filter by date to",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number (default: 1)",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page (default: 10, max: 100)",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Disputes retrieved successfully."
-          },
-          "403": {
-            "description": "Authentication required."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "List disputes with filtering",
-        "tags": [
-          "disputes"
-        ]
       }
     },
-    "/disputes/me": {
-      "get": {
-        "operationId": "DisputesController_getMyDisputes",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "User disputes retrieved successfully."
-          },
-          "403": {
-            "description": "Authentication required."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get current user disputes",
-        "tags": [
-          "disputes"
-        ]
-      }
-    },
-    "/disputes/{id}": {
-      "get": {
-        "operationId": "DisputesController_getDispute",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Dispute ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Dispute retrieved successfully."
-          },
-          "403": {
-            "description": "Access denied."
-          },
-          "404": {
-            "description": "Dispute not found."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get dispute by ID",
-        "tags": [
-          "disputes"
-        ]
-      },
-      "patch": {
-        "operationId": "DisputesController_updateDispute",
+    "/disputes/{id}/evidence": {
+      "post": {
+        "operationId": "DisputesController_submitEvidence",
         "parameters": [
           {
             "name": "id",
@@ -2753,23 +2441,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateDisputeDto"
+                "$ref": "#/components/schemas/SubmitEvidenceDto"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Dispute updated successfully."
-          },
-          "400": {
-            "description": "Invalid update data."
-          },
-          "403": {
-            "description": "Admin access required."
-          },
-          "404": {
-            "description": "Dispute not found."
+          "201": {
+            "description": ""
           }
         },
         "security": [
@@ -2777,7 +2456,114 @@
             "bearer": []
           }
         ],
-        "summary": "Update dispute (Admin only)",
+        "summary": "Submit evidence for a dispute",
+        "tags": [
+          "disputes"
+        ]
+      }
+    },
+    "/disputes/{id}/state": {
+      "patch": {
+        "operationId": "DisputesController_changeState",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Change dispute state (Admin only)",
+        "tags": [
+          "disputes"
+        ]
+      }
+    },
+    "/disputes/{id}/resolve": {
+      "patch": {
+        "operationId": "DisputesController_resolveDispute",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Resolve a dispute (Admin only)",
+        "tags": [
+          "disputes"
+        ]
+      }
+    },
+    "/disputes/me": {
+      "get": {
+        "operationId": "DisputesController_getMyDisputes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List current user disputes",
+        "tags": [
+          "disputes"
+        ]
+      }
+    },
+    "/disputes/{id}": {
+      "get": {
+        "operationId": "DisputesController_getDispute",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get dispute details by ID",
         "tags": [
           "disputes"
         ]
@@ -3756,6 +3542,171 @@
         ]
       }
     },
+    "/deliverables/contract/{contractId}": {
+      "get": {
+        "operationId": "DeliverablesController_getDeliverableForContract",
+        "parameters": [
+          {
+            "name": "contractId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the active deliverable for a contract",
+        "tags": [
+          "Deliverables"
+        ]
+      }
+    },
+    "/deliverables/contract/{contractId}/submit": {
+      "post": {
+        "operationId": "DeliverablesController_submitVersion",
+        "parameters": [
+          {
+            "name": "contractId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitDeliverableVersionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Submit a new version of the deliverable (Artisan only)",
+        "tags": [
+          "Deliverables"
+        ]
+      }
+    },
+    "/deliverables/{id}/view": {
+      "put": {
+        "operationId": "DeliverablesController_markAsViewed",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark deliverable as viewed by client",
+        "tags": [
+          "Deliverables"
+        ]
+      }
+    },
+    "/deliverables/{id}/request-revision": {
+      "post": {
+        "operationId": "DeliverablesController_requestRevision",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRevisionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Request a revision (Client only)",
+        "tags": [
+          "Deliverables"
+        ]
+      }
+    },
+    "/deliverables/{id}/approve": {
+      "post": {
+        "operationId": "DeliverablesController_approveDeliverable",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Approve a deliverable (Client only)",
+        "tags": [
+          "Deliverables"
+        ]
+      }
+    },
     "/chat/conversations": {
       "get": {
         "operationId": "ChatController_getConversations",
@@ -3901,32 +3852,13 @@
         ]
       }
     },
-    "/reviews": {
-      "post": {
-        "operationId": "ReviewsController_createReview",
+    "/reviews/eligible": {
+      "get": {
+        "operationId": "ReviewsController_getEligibleReviews",
         "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateReviewDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "Review created successfully."
-          },
-          "400": {
-            "description": "Invalid review data or contract not completed."
-          },
-          "403": {
-            "description": "Access denied or not eligible to review."
-          },
-          "404": {
-            "description": "Contract not found."
+            "description": ""
           }
         },
         "security": [
@@ -3934,182 +3866,57 @@
             "bearer": []
           }
         ],
-        "summary": "Create a new review",
+        "summary": "Get contracts eligible for review",
         "tags": [
-          "reviews"
+          "Reviews"
         ]
-      },
+      }
+    },
+    "/reviews/reputation/{userId}": {
       "get": {
-        "operationId": "ReviewsController_listReviews",
+        "operationId": "ReviewsController_getReputationProfile",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get reputation profile for a user",
+        "tags": [
+          "Reviews"
+        ]
+      }
+    },
+    "/reviews/{contractId}/submit": {
+      "post": {
+        "operationId": "ReviewsController_submitReview",
         "parameters": [
           {
             "name": "contractId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by contract ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "clientId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by client ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "artisanId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by artisan ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "minRating",
-            "required": false,
-            "in": "query",
-            "description": "Filter by minimum rating",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "maxRating",
-            "required": false,
-            "in": "query",
-            "description": "Filter by maximum rating",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "categories",
-            "required": false,
-            "in": "query",
-            "description": "Filter by categories",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "dateFrom",
-            "required": false,
-            "in": "query",
-            "description": "Filter by date from",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateTo",
-            "required": false,
-            "in": "query",
-            "description": "Filter by date to",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isPublic",
-            "required": false,
-            "in": "query",
-            "description": "Filter by public status",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number (default: 1)",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page (default: 10, max: 100)",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Reviews retrieved successfully."
-          },
-          "403": {
-            "description": "Authentication required."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "List reviews with filtering",
-        "tags": [
-          "reviews"
-        ]
-      }
-    },
-    "/reviews/me": {
-      "get": {
-        "operationId": "ReviewsController_getMyReviews",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "User reviews retrieved successfully."
-          },
-          "403": {
-            "description": "Authentication required."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get current user reviews",
-        "tags": [
-          "reviews"
-        ]
-      }
-    },
-    "/reviews/{id}": {
-      "get": {
-        "operationId": "ReviewsController_getReview",
-        "parameters": [
-          {
-            "name": "id",
             "required": true,
             "in": "path",
-            "description": "Review ID",
             "schema": {
               "type": "string"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Review retrieved successfully."
-          },
-          "403": {
-            "description": "Access denied."
-          },
-          "404": {
-            "description": "Review not found."
+          "201": {
+            "description": ""
           }
         },
         "security": [
@@ -4117,89 +3924,9 @@
             "bearer": []
           }
         ],
-        "summary": "Get review by ID",
+        "summary": "Submit a review for a contract",
         "tags": [
-          "reviews"
-        ]
-      },
-      "patch": {
-        "operationId": "ReviewsController_updateReview",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Review ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateReviewDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Review updated successfully."
-          },
-          "400": {
-            "description": "Invalid update data."
-          },
-          "403": {
-            "description": "Access denied."
-          },
-          "404": {
-            "description": "Review not found."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Update review",
-        "tags": [
-          "reviews"
-        ]
-      }
-    },
-    "/reviews/stats/{artisanId}": {
-      "get": {
-        "operationId": "ReviewsController_getReviewStats",
-        "parameters": [
-          {
-            "name": "artisanId",
-            "required": true,
-            "in": "path",
-            "description": "Artisan ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Review statistics retrieved successfully."
-          },
-          "404": {
-            "description": "Artisan not found."
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get review statistics for an artisan",
-        "tags": [
-          "reviews"
+          "Reviews"
         ]
       }
     },
@@ -4224,7 +3951,7 @@
             }
           },
           {
-            "name": "entityType",
+            "name": "targetType",
             "required": true,
             "in": "query",
             "schema": {
@@ -4232,7 +3959,7 @@
             }
           },
           {
-            "name": "performedBy",
+            "name": "actorId",
             "required": true,
             "in": "query",
             "schema": {
@@ -4242,6 +3969,51 @@
         ],
         "responses": {
           "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Audit"
+        ]
+      }
+    },
+    "/admin/audit/timeline/{targetType}/{targetId}": {
+      "get": {
+        "operationId": "AuditController_getTimeline",
+        "parameters": [
+          {
+            "name": "targetType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Audit"
+        ]
+      }
+    },
+    "/admin/audit/export": {
+      "post": {
+        "operationId": "AuditController_exportAuditLogs",
+        "parameters": [],
+        "responses": {
+          "201": {
             "description": ""
           }
         },
@@ -4500,97 +4272,18 @@
       }
     },
     "schemas": {
-      "CreateNotificationDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "description": "User ID"
-          },
-          "type": {
-            "type": "string",
-            "description": "Notification type"
-          },
-          "title": {
-            "type": "string",
-            "description": "Notification title"
-          },
-          "message": {
-            "type": "string",
-            "description": "Notification message"
-          },
-          "entityId": {
-            "type": "string",
-            "description": "Related entity ID"
-          },
-          "entityType": {
-            "type": "string",
-            "description": "Related entity type"
-          },
-          "actionUrl": {
-            "type": "string",
-            "description": "Action URL"
-          },
-          "priority": {
-            "type": "string",
-            "description": "Notification priority"
-          },
-          "metadata": {
-            "type": "object",
-            "description": "Additional metadata"
-          }
-        },
-        "required": [
-          "userId",
-          "type",
-          "title",
-          "message"
-        ]
-      },
-      "UpdateNotificationDto": {
-        "type": "object",
-        "properties": {
-          "isRead": {
-            "type": "boolean",
-            "description": "Mark as read"
-          },
-          "isArchived": {
-            "type": "boolean",
-            "description": "Mark as archived"
-          },
-          "actionUrl": {
-            "type": "string",
-            "description": "Action URL"
-          },
-          "metadata": {
-            "type": "object",
-            "description": "Additional metadata"
-          }
-        }
-      },
       "MarkNotificationsDto": {
         "type": "object",
         "properties": {
           "notificationIds": {
-            "description": "Notification IDs",
             "type": "array",
             "items": {
               "type": "string"
             }
-          },
-          "markAsRead": {
-            "type": "boolean",
-            "description": "Mark as read"
-          },
-          "markAsArchived": {
-            "type": "boolean",
-            "description": "Mark as archived"
           }
         },
         "required": [
-          "notificationIds",
-          "markAsRead",
-          "markAsArchived"
+          "notificationIds"
         ]
       },
       "RegisterDto": {
@@ -4691,10 +4384,12 @@
           "decision": {
             "type": "string",
             "enum": [
-              "REFUND_CLIENT",
-              "PAY_ARTISAN"
+              "CLIENT_WINS",
+              "ARTISAN_WINS",
+              "SPLIT_DECISION",
+              "CANCELLED"
             ],
-            "example": "REFUND_CLIENT"
+            "example": "CLIENT_WINS"
           },
           "notes": {
             "type": "string",
@@ -4714,13 +4409,26 @@
           }
         }
       },
-      "RejectSuggestionDto": {
+      "ModerateReviewDto": {
         "type": "object",
         "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "FLAG",
+              "LOCK",
+              "RESTORE"
+            ],
+            "description": "Moderation action to apply"
+          },
           "reason": {
-            "type": "string"
+            "type": "string",
+            "description": "Optional reason for the moderation action"
           }
-        }
+        },
+        "required": [
+          "action"
+        ]
       },
       "PaymentFundContractDto": {
         "type": "object",
@@ -4886,74 +4594,56 @@
         "type": "object",
         "properties": {}
       },
-      "CreateDisputeDto": {
+      "OpenDisputeDto": {
         "type": "object",
         "properties": {
-          "contractId": {
+          "reason": {
             "type": "string",
-            "description": "Contract ID (if contract-related)"
-          },
-          "jobId": {
-            "type": "string",
-            "description": "Job ID (if job-related)"
-          },
-          "amount": {
-            "type": "number",
-            "description": "Dispute amount"
+            "description": "The reason for opening the dispute"
           },
           "description": {
             "type": "string",
-            "description": "Dispute description"
+            "description": "Detailed description of the issue"
           },
-          "evidenceImages": {
-            "description": "Evidence images URLs",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "evidenceVideos": {
-            "description": "Evidence videos URLs",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "evidenceMessages": {
-            "description": "Evidence messages",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "amountDisputed": {
+            "type": "number",
+            "description": "The amount in dispute",
+            "minimum": 1
           }
         },
         "required": [
-          "contractId",
-          "jobId",
-          "amount",
-          "description"
+          "reason",
+          "description",
+          "amountDisputed"
         ]
       },
-      "UpdateDisputeDto": {
+      "SubmitEvidenceDto": {
         "type": "object",
         "properties": {
-          "status": {
+          "type": {
             "type": "string",
-            "description": "Dispute status"
+            "enum": [
+              "IMAGE",
+              "VIDEO",
+              "PDF",
+              "MESSAGE_REFERENCE",
+              "DELIVERABLE_REFERENCE",
+              "OTHER"
+            ],
+            "description": "Type of the evidence"
           },
-          "resolutionDecision": {
+          "url": {
             "type": "string",
-            "description": "Resolution decision"
+            "description": "URL of the evidence if it is a file or image"
           },
-          "resolutionNotes": {
-            "type": "string",
-            "description": "Resolution notes"
-          },
-          "resolvedBy": {
-            "type": "string",
-            "description": "Resolver ID"
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata"
           }
-        }
+        },
+        "required": [
+          "type"
+        ]
       },
       "VerificationStatusResponseDto": {
         "type": "object",
@@ -5451,100 +5141,69 @@
           "notes"
         ]
       },
-      "CreateReviewDto": {
+      "AttachmentDto": {
         "type": "object",
         "properties": {
-          "contractId": {
+          "type": {
             "type": "string",
-            "description": "Contract ID"
+            "enum": [
+              "FILE",
+              "LINK"
+            ]
           },
-          "rating": {
-            "type": "number",
-            "description": "Rating (1-5)"
+          "url": {
+            "type": "string"
           },
-          "comment": {
-            "type": "string",
-            "description": "Review comment"
+          "name": {
+            "type": "string"
           },
-          "categories": {
-            "description": "Review categories",
+          "sizeBytes": {
+            "type": "number"
+          },
+          "mimeType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "url",
+          "name"
+        ]
+      },
+      "SubmitDeliverableVersionDto": {
+        "type": "object",
+        "properties": {
+          "artisanNotes": {
+            "type": "string"
+          },
+          "attachments": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
-          },
-          "workQuality": {
-            "type": "number",
-            "description": "Work quality rating (1-5)"
-          },
-          "communication": {
-            "type": "number",
-            "description": "Communication rating (1-5)"
-          },
-          "timeliness": {
-            "type": "number",
-            "description": "Timeliness rating (1-5)"
-          },
-          "professionalism": {
-            "type": "number",
-            "description": "Professionalism rating (1-5)"
-          },
-          "evidence": {
-            "description": "Supporting evidence URLs",
-            "type": "array",
-            "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/AttachmentDto"
             }
           }
         },
         "required": [
-          "contractId",
-          "rating",
-          "comment"
+          "attachments"
         ]
       },
-      "UpdateReviewDto": {
+      "RequestRevisionDto": {
         "type": "object",
         "properties": {
-          "rating": {
-            "type": "number",
-            "description": "Rating (1-5)"
-          },
           "comment": {
-            "type": "string",
-            "description": "Review comment"
+            "type": "string"
           },
-          "categories": {
-            "description": "Review categories",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "requiredChanges": {
+            "type": "string"
           },
-          "workQuality": {
-            "type": "number",
-            "description": "Work quality rating (1-5)"
-          },
-          "communication": {
-            "type": "number",
-            "description": "Communication rating (1-5)"
-          },
-          "timeliness": {
-            "type": "number",
-            "description": "Timeliness rating (1-5)"
-          },
-          "professionalism": {
-            "type": "number",
-            "description": "Professionalism rating (1-5)"
-          },
-          "evidence": {
-            "description": "Supporting evidence URLs",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "dueDate": {
+            "type": "string"
           }
-        }
+        },
+        "required": [
+          "comment",
+          "requiredChanges"
+        ]
       },
       "CategoryResponseDto": {
         "type": "object",

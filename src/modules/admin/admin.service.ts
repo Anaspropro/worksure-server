@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { v7 as uuidv7 } from 'uuid';
+import { reputationQueue } from '../../queue/queue';
 import { AuthService } from '../auth/auth.service';
 import { PaymentsService } from '../payments/payments.service';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -20,6 +21,7 @@ import {
   TransactionType,
   UserRole,
   UserStatus,
+  ReviewStatus,
 } from '../../generated/prisma';
 import { PrismaService } from '../../database/prisma.service';
 import { RedisCacheService } from '../../common/cache/redis-cache.service';
@@ -184,7 +186,7 @@ export class AdminService {
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
-        sentReviews: {
+        authoredReviews: {
           select: { id: true, rating: true, comment: true, createdAt: true },
           orderBy: { createdAt: 'desc' },
           take: 5,
@@ -257,7 +259,7 @@ export class AdminService {
             status: contract.status,
             createdAt: contract.createdAt.toISOString(),
           })),
-          sentReviews: user.sentReviews.map((review) => ({
+          authoredReviews: user.authoredReviews.map((review) => ({
             id: review.id,
             rating: review.rating,
             comment: review.comment,
@@ -822,6 +824,115 @@ export class AdminService {
         nextCursor,
       },
     };
+  }
+
+  async getAllReviews(search?: string, status?: string, cursor?: string, limit = 50) {
+    const normalizedStatus = status?.toUpperCase();
+    if (
+      normalizedStatus &&
+      !Object.values(ReviewStatus).includes(normalizedStatus as ReviewStatus)
+    ) {
+      throw new BadRequestException(`Unsupported review status filter: ${status}`);
+    }
+
+    const take = Math.min(limit, 100);
+
+    const baseWhere: Prisma.ReviewWhereInput = normalizedStatus
+      ? { status: normalizedStatus as ReviewStatus }
+      : {};
+
+    // Search can target author or target names. We don't have review text search here yet unless requested.
+    const where: Prisma.ReviewWhereInput = search
+      ? {
+          ...baseWhere,
+          OR: [
+            { id: { equals: search } },
+            { author: { name: { contains: search, mode: 'insensitive' } } },
+            { target: { name: { contains: search, mode: 'insensitive' } } },
+          ],
+        }
+      : baseWhere;
+
+    const [reviews, total] = await Promise.all([
+      this.prisma.review.findMany({
+        where,
+        include: {
+          author: { select: { name: true, email: true } },
+          target: { select: { name: true, email: true } },
+          contract: { select: { job: { select: { title: true } } } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: take + 1,
+        ...(cursor && {
+          cursor: { id: cursor },
+          skip: 1,
+        }),
+      }),
+      this.prisma.review.count({ where }),
+    ]);
+
+    let nextCursor: string | undefined = undefined;
+    if (reviews.length > take) {
+      const nextItem = reviews.pop();
+      nextCursor = nextItem?.id;
+    }
+
+    return {
+      data: reviews.map(r => ({
+        ...r,
+        authorName: r.author.name,
+        targetName: r.target.name,
+        jobTitle: r.contract?.job?.title,
+      })),
+      meta: {
+        total,
+        limit: take,
+        nextCursor,
+      },
+    };
+  }
+
+  async moderateReview(
+    reviewId: string,
+    action: 'FLAG' | 'LOCK' | 'RESTORE',
+    actor: AdminActor,
+    reason?: string,
+  ) {
+    const review = await this.prisma.review.findUnique({
+      where: { id: reviewId },
+    });
+
+    if (!review) {
+      throw new NotFoundException(`Review ${reviewId} not found.`);
+    }
+
+    let newStatus: ReviewStatus;
+    if (action === 'FLAG') newStatus = ReviewStatus.FLAGGED;
+    else if (action === 'LOCK') newStatus = ReviewStatus.LOCKED;
+    else newStatus = ReviewStatus.VISIBLE;
+
+    const updatedReview = await this.prisma.review.update({
+      where: { id: reviewId },
+      data: { status: newStatus },
+    });
+
+    // We must recalculate the JSS score of the target because this review
+    // might have been removed from or added back to their active Visible reviews.
+    await reputationQueue.add('calculateReputation', { userId: review.targetId });
+
+    await this.logAction(
+      `REVIEW_${action}ED`, // e.g., REVIEW_LOCKED
+      AuditEntityType.CONTRACT, // Assuming Review is part of Contract lifecycle
+      reviewId,
+      actor,
+      {
+        reason,
+        targetId: review.targetId,
+        authorId: review.authorId,
+      },
+    );
+
+    return { data: updatedReview };
   }
 
   async getAllContracts(search?: string, status?: string, cursor?: string, limit = 50) {

@@ -89,6 +89,18 @@ export class ContractFundedEvent implements BaseDomainEvent {
   ) {}
 }
 
+export class ContractCompletedEvent implements BaseDomainEvent {
+  eventId: string = crypto.randomUUID();
+  timestamp: Date = new Date();
+  
+  constructor(
+    public readonly contractId: string,
+    public readonly jobId: string,
+    public readonly clientId: string,
+    public readonly artisanId: string,
+  ) {}
+}
+
 export class PaymentReleasedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();

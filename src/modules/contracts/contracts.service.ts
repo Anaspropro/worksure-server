@@ -14,7 +14,14 @@ import {
 
 import { IdempotencyService } from '../../common/services/idempotency.service';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { ContractFundedEvent, DomainEventName } from '../../common/events/domain.events';
+import {
+  DomainEventName,
+  JobPostedEvent,
+  ProposalSubmittedEvent,
+  ProposalAcceptedEvent,
+  ContractFundedEvent,
+  ContractCompletedEvent,
+} from '../../common/events/domain.events';
 
 @Injectable()
 export class ContractsService {
@@ -172,6 +179,16 @@ export class ContractsService {
         where: { id: contract.jobId },
         data: { status: 'COMPLETED' },
       });
+
+      this.eventEmitter.emit(
+        DomainEventName.CONTRACT_COMPLETED,
+        new ContractCompletedEvent(
+          updatedContract.id,
+          updatedContract.jobId,
+          updatedContract.clientId,
+          updatedContract.artisanId,
+        )
+      );
     }
 
     await this.recordTransitionAudit(contractId, contract.status, newStatus, {

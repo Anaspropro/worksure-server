@@ -1,295 +1,90 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { v7 as uuidv7 } from 'uuid';
-import { ContractStatus } from '../../generated/prisma';
+import { ReviewStatus, Prisma } from '../../generated/prisma';
+import { reputationQueue } from '../../queue/queue';
 
 @Injectable()
 export class ReviewsService {
+  private readonly logger = new Logger(ReviewsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
-  async createReview(
-    userId: string,
-    contractId: string,
-    rating: number,
-    comment: string,
-    _categories?: string[],
-    _workQuality?: number,
-    _communication?: number,
-    _timeliness?: number,
-    _professionalism?: number,
-    _evidence?: string[],
-  ) {
-    void _categories;
-    void _workQuality;
-    void _communication;
-    void _timeliness;
-    void _professionalism;
-    void _evidence;
-
-    const contract = await this.prisma.contract.findUnique({
-      where: { id: contractId },
-    });
-
-    if (!contract) {
-      throw new NotFoundException('Contract not found');
-    }
-
-    // Check if user is the client
-    if (contract.clientId !== userId) {
-      throw new BadRequestException('Only clients can create reviews');
-    }
-
-    // Check if contract is completed
-    const reviewableStatuses = new Set<ContractStatus>([
-      ContractStatus.COMPLETED,
-      ContractStatus.PAID_OUT,
-    ]);
-
-    if (!reviewableStatuses.has(contract.status)) {
-      throw new BadRequestException(
-        'You can only review contracts that have been fully completed and settled',
-      );
-    }
-
-    // Check if review already exists for this contract
-    const existingReview = await this.prisma.review.findFirst({
-      where: {
-        contractId,
-        clientId: userId,
-      },
-    });
-
-    if (existingReview) {
-      throw new BadRequestException('You have already reviewed this contract');
-    }
-
-    // Create review with basic schema fields
-    const review = await this.prisma.review.create({
-      data: {
-        id: uuidv7(),
-        contractId,
-        clientId: userId,
-        artisanId: contract.artisanId,
-        rating,
-        comment,
-        categories: _categories ?? undefined,
-        workQuality: _workQuality,
-        communication: _communication,
-        timeliness: _timeliness,
-        professionalism: _professionalism,
-        evidence: _evidence ?? undefined,
-        isPublic: true,
-        createdAt: new Date(),
-      },
-    });
-
-    return review;
-  }
-
-  async updateReview(
-    reviewId: string,
-    userId: string,
-    rating?: number,
-    comment?: string,
-    _categories?: string[],
-    _workQuality?: number,
-    _communication?: number,
-    _timeliness?: number,
-    _professionalism?: number,
-    _evidence?: string[],
-  ) {
-    void _categories;
-    void _workQuality;
-    void _communication;
-    void _timeliness;
-    void _professionalism;
-    void _evidence;
-
-    const review = await this.prisma.review.findUnique({
-      where: { id: reviewId },
-    });
-
-    if (!review) {
-      throw new NotFoundException('Review not found');
-    }
-
-    // Check if user is the review owner
-    if (review.clientId !== userId) {
-      throw new BadRequestException('You can only update your own reviews');
-    }
-
-    const updateData: any = {
-      ...(rating !== undefined && { rating }),
-      ...(comment && { comment }),
-      ...(_categories !== undefined && { categories: _categories }),
-      ...(_workQuality !== undefined && { workQuality: _workQuality }),
-      ...(_communication !== undefined && { communication: _communication }),
-      ...(_timeliness !== undefined && { timeliness: _timeliness }),
-      ...(_professionalism !== undefined && {
-        professionalism: _professionalism,
-      }),
-      ...(_evidence !== undefined && { evidence: _evidence }),
-    };
-
-    const updatedReview = await this.prisma.review.update({
-      where: { id: reviewId },
-      data: updateData,
-    });
-
-    return updatedReview;
-  }
-
-  async getReviewsByUser(userId: string) {
-    return await this.prisma.review.findMany({
-      where: {
-        clientId: userId,
-      },
+  async getEligibleReviews(userId: string) {
+    return this.prisma.reviewEligibility.findMany({
+      where: { userId, status: 'PENDING' },
       include: {
-        contract: {
-          include: {
-            job: {
-              select: {
-                title: true,
-              },
-            },
-          },
-        },
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
+        contract: { select: { id: true, amount: true, job: { select: { title: true } } } },
+        target: { select: { id: true, name: true, image: true } }
+      }
     });
   }
 
-  async getReviewById(reviewId: string, _userId?: string) {
-    void _userId;
-
-    const review = await this.prisma.review.findUnique({
-      where: { id: reviewId },
-      include: {
-        contract: {
-          include: {
-            job: {
-              select: {
-                title: true,
-              },
-            },
-          },
-        },
-        client: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        artisan: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
+  async getReputationProfile(userId: string) {
+    return this.prisma.reputationProfile.findUnique({
+      where: { userId }
     });
-
-    if (!review) {
-      throw new NotFoundException('Review not found');
-    }
-
-    // Check access
-    // All reviews are public in the current schema, so no access check needed for visibility
-    return review;
   }
 
-  async getReviewStats(artisanId: string) {
-    const reviews = await this.prisma.review.findMany({
-      where: {
-        artisanId,
-      },
-    });
+  async submitReview(userId: string, contractId: string, targetId: string, rating: number, comment?: string, breakdown?: any) {
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Verify eligibility
+      const eligibility = await tx.reviewEligibility.findFirst({
+        where: { userId, contractId, targetId, status: 'PENDING' }
+      });
 
-    const totalReviews = reviews.length;
-    const averageRating =
-      totalReviews > 0
-        ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
-        : 0;
-
-    const ratingDistribution = {
-      1: reviews.filter((r) => r.rating === 1).length,
-      2: reviews.filter((r) => r.rating === 2).length,
-      3: reviews.filter((r) => r.rating === 3).length,
-      4: reviews.filter((r) => r.rating === 4).length,
-      5: reviews.filter((r) => r.rating === 5).length,
-    };
-
-    // Category averages are not available in the current schema
-    const averageOf = (values: Array<number | null | undefined>) => {
-      const numeric = values.filter(
-        (value): value is number => typeof value === 'number',
-      );
-
-      if (numeric.length === 0) {
-        return 0;
+      if (!eligibility) {
+        throw new BadRequestException('You are not eligible to review this contract or have already reviewed it.');
       }
 
-      return numeric.reduce((sum, value) => sum + value, 0) / numeric.length;
-    };
+      if (eligibility.expiresAt < new Date()) {
+        await tx.reviewEligibility.update({
+          where: { id: eligibility.id },
+          data: { status: 'EXPIRED' }
+        });
+        throw new BadRequestException('Review period has expired.');
+      }
 
-    const categoryAverages = {
-      workQuality: averageOf(reviews.map((review) => review.workQuality)),
-      communication: averageOf(reviews.map((review) => review.communication)),
-      timeliness: averageOf(reviews.map((review) => review.timeliness)),
-      professionalism: averageOf(
-        reviews.map((review) => review.professionalism),
-      ),
-    };
+      // 2. Check if the other party has submitted their review
+      const otherPartyEligibility = await tx.reviewEligibility.findFirst({
+        where: { userId: targetId, contractId, targetId: userId }
+      });
 
-    return {
-      totalReviews,
-      averageRating,
-      ratingDistribution,
-      categoryAverages,
-    };
-  }
+      const otherPartySubmitted = otherPartyEligibility?.status === 'CONSUMED';
+      const initialStatus = otherPartySubmitted ? ReviewStatus.VISIBLE : ReviewStatus.SUBMITTED;
 
-  getDefinition() {
-    return {
-      name: 'reviews',
-      description: 'Handles user reviews and ratings for completed contracts',
-      responsibilities: [
-        'Create and manage user reviews',
-        'Validate review eligibility',
-        'Calculate review statistics',
-        'Handle review categories and ratings',
-        'Manage review visibility and access',
-        'Provide review history and analytics',
-      ],
-      rules: [
-        'Only clients can create reviews',
-        'Reviews can only be created for completed contracts',
-        'One review per contract per client',
-        'Reviews are public by default',
-        'Review ratings must be between 1-5',
-        'Category ratings are optional but validated',
-      ],
-    };
+      // 3. Create the review
+      const review = await tx.review.create({
+        data: {
+          contractId,
+          authorId: userId,
+          targetId,
+          rating,
+          comment,
+          breakdown: breakdown ?? Prisma.JsonNull,
+          status: initialStatus,
+          visibleAt: initialStatus === ReviewStatus.VISIBLE ? new Date() : null,
+        }
+      });
+
+      // 4. Update eligibility
+      await tx.reviewEligibility.update({
+        where: { id: eligibility.id },
+        data: { status: 'CONSUMED' }
+      });
+
+      // 5. If both have submitted, make the other party's review visible and update both reputation profiles
+      if (otherPartySubmitted) {
+        await tx.review.updateMany({
+          where: { contractId, authorId: targetId },
+          data: { status: ReviewStatus.VISIBLE, visibleAt: new Date() }
+        });
+
+        // Trigger asynchronous reputation calculation
+        await reputationQueue.add('calculateReputation', { userId });
+        await reputationQueue.add('calculateReputation', { userId: targetId });
+      }
+
+      return review;
+    });
   }
 }
