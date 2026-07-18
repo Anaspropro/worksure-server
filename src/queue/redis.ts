@@ -37,6 +37,18 @@ const redisOptions: RedisOptions = {
 
 export const redisConnection = new Redis(redisUrl, redisOptions);
 
+export function getBullRedisOptions(): RedisOptions {
+  const url = new URL(redisUrl as string);
+  return {
+    ...redisOptions,
+    host: url.hostname,
+    port: parseInt(url.port || '6379'),
+    username: url.username || undefined,
+    password: url.password || undefined,
+    tls: url.protocol === 'rediss:' ? { rejectUnauthorized: false } : undefined,
+  };
+}
+
 redisConnection.on('error', (err) => {
   console.error('[Redis] Connection error:', err);
 });
