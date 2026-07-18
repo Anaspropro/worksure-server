@@ -94,6 +94,10 @@ export class AdminService {
       where,
       orderBy: { createdAt: 'asc' },
       take: take + 1,
+      include: {
+        artisanProfile: true,
+        clientProfile: true,
+      },
       ...(cursor && {
         cursor: { id: cursor },
         skip: 1,
@@ -1096,7 +1100,7 @@ export class AdminService {
     return decision as DisputeDecision;
   }
 
-  private mapUser(user: AdminUserRecord) {
+  private mapUser(user: any) {
     return {
       id: user.id,
       name: user.name,
@@ -1106,6 +1110,8 @@ export class AdminService {
       artisanVerified: user.artisanVerified,
       phone: user.phone,
       createdAt: user.createdAt.toISOString(),
+      artisanProfile: user.artisanProfile,
+      clientProfile: user.clientProfile,
     };
   }
 
