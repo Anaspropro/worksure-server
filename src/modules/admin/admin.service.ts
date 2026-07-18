@@ -1147,6 +1147,8 @@ export class AdminService {
       amount: job.amount,
       status: job.status,
       flagged: job.flagged,
+      createdAt: job.createdAt?.toISOString(),
+      updatedAt: job.updatedAt?.toISOString(),
       forceClosedAt: job.forceClosedAt?.toISOString(),
       forceCloseReason: job.forceCloseReason ?? undefined,
     };
