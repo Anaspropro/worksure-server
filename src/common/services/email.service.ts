@@ -123,6 +123,17 @@ export class EmailService {
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
           }
+          .btn-primary {
+            display: inline-block;
+            background-color: #4f46e5;
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 12px 32px;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+          }
           .expiry-note {
             font-size: 14px;
             color: #6b7280;
@@ -155,6 +166,11 @@ export class EmailService {
             <div class="otp-container">
               <p class="otp-code">${otp}</p>
               <p class="expiry-note">This code is valid for <strong>15 minutes</strong>.</p>
+            </div>
+            
+            <p class="instructions" style="text-align: center; margin-bottom: 16px;">Or automatically verify your email by clicking the button below:</p>
+            <div style="text-align: center; margin-bottom: 32px;">
+              <a href="${this.configService.appUrl}/auth/verify-email?token=${otp}&email=${encodeURIComponent(to)}" class="btn-primary">Verify Email</a>
             </div>
             
             <p class="instructions">If you did not request this code, you can safely ignore this email. Someone may have entered your email address by mistake.</p>
