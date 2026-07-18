@@ -198,8 +198,8 @@ export class AnalyticsService {
         const jobMap = Object.fromEntries(
           jobStatusGroups.map((s) => [s.status, s._count.id]),
         );
-        // Wallet balance already includes frozen funds (escrow), so adding escrow amounts would double-count.
-        const totalSystemValue = walletAgg._sum.balance ?? 0;
+        // Combine wallet balances and escrowed funds
+        const totalSystemValue = (walletAgg._sum.balance ?? 0) + (escrowAgg._sum.amount ?? 0);
         
         reportData = {
           reportType: 'overview',

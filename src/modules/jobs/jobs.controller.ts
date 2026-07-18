@@ -65,8 +65,6 @@ export class JobsController {
   @ApiQuery({ name: 'search', required: false })
   @ApiQuery({ name: 'cursor', required: false, type: String })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get()
   async listJobs(@Query() query: JobListQueryDto) {
     return this.jobsService.listJobs(query);
