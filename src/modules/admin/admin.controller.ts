@@ -169,8 +169,6 @@ export class AdminController {
     required: false,
     description: 'Job status filter',
   })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get('jobs')
   @RequireAdminRole(AdminRole.OPERATIONS_MANAGER, AdminRole.SUPPORT_ADMIN)
   getAllJobs(
@@ -243,8 +241,9 @@ export class AdminController {
   generateReports(
     @Query('reportType') reportType?: ReportType,
     @Query('month') month?: string,
+    @Query('force') force?: boolean,
   ) {
-    return this.analyticsService.generateReports(reportType, month);
+    return this.analyticsService.generateReports(reportType, month, force);
   }
 
   @ApiOperation({ summary: 'List audit logs' })
