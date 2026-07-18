@@ -1,23 +1,15 @@
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ServerOptions } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
-import Redis from 'ioredis';
+import { redisConnection } from '../../queue/redis';
 
 export class RedisIoAdapter extends IoAdapter {
   private adapterConstructor: ReturnType<typeof createAdapter>;
 
   async connectToRedis(): Promise<void> {
-    const redisUrl = process.env.REDIS_URL;
-    if (!redisUrl) {
-      throw new Error('REDIS_URL environment variable is missing');
-    }
-
-    const pubClient = new Redis(redisUrl, {
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-    const subClient = pubClient.duplicate();
+    // Duplicate the shared, hardened Redis connection
+    const pubClient = redisConnection.duplicate();
+    const subClient = redisConnection.duplicate();
 
     this.adapterConstructor = createAdapter(pubClient, subClient);
   }

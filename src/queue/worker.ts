@@ -29,7 +29,7 @@ export const emailWorker = new Worker<EmailJobData, any, string>(
     return { success: true, deliveredTo: to, timestamp: new Date().toISOString() };
   },
   {
-    connection: redisConnection as any,
+    connection: redisConnection.duplicate() as any,
     // Rate Limiting (CRITICAL requirement: max 5 jobs per 10 seconds)
     limiter: {
       max: 5,

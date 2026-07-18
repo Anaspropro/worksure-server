@@ -24,7 +24,7 @@ export class ReputationService implements OnModuleInit, OnModuleDestroy {
         return { success: true };
       },
       {
-        connection: redisConnection as any,
+        connection: redisConnection.duplicate() as any,
         concurrency: 2,
       }
     );
