@@ -48,7 +48,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         return { success: true, deliveredTo: to, timestamp: new Date().toISOString() };
       },
       {
-        connection: redisConnection as any,
+        connection: redisConnection.duplicate() as any,
         limiter: {
           max: 5,
           duration: 10000,

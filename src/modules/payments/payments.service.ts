@@ -60,7 +60,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
       } else if (job.name === 'process-refund') {
         await this.processEscrowRefund(job.data);
       }
-    }, { connection: redisConnection as any });
+    }, { connection: redisConnection.duplicate() as any });
 
     this.escrowWorker.on('failed', (job, err) => {
       console.error(`[Escrow Worker] Job ${job?.id} failed:`, err);

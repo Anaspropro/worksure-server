@@ -34,7 +34,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     this.payoutWorker = new Worker('payout-queue', async (job) => {
       const { transactionId, adminId } = job.data;
       await this.executePayoutTask(adminId, transactionId);
-    }, { connection: redisConnection as any });
+    }, { connection: redisConnection.duplicate() as any });
 
     this.payoutWorker.on('failed', (job, err) => {
       console.error(`[Payout Worker] Job ${job?.id} failed:`, err);
