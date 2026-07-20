@@ -96,7 +96,6 @@ export class AdminService {
       take: take + 1,
       include: {
         artisanProfile: true,
-        clientProfile: true,
       },
       ...(cursor && {
         cursor: { id: cursor },
