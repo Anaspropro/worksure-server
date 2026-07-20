@@ -44,8 +44,6 @@ export class AdminController {
 
   @ApiOperation({ summary: 'List all users' })
   @ApiOkResponse({ description: 'User list returned successfully.' })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get('users')
   @RequireAdminRole(AdminRole.OPERATIONS_MANAGER, AdminRole.SUPPORT_ADMIN)
   getAllUsers(
@@ -132,8 +130,6 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: 'List all disputes' })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get('disputes')
   @RequireAdminRole(AdminRole.DISPUTE_ADMIN)
   getAllDisputes(
@@ -209,8 +205,6 @@ export class AdminController {
     required: false,
     description: 'Transaction type filter',
   })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get('transactions')
   @RequireAdminRole(AdminRole.FINANCE_ADMIN)
   getAllTransactions(
@@ -247,8 +241,6 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: 'List audit logs' })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get('audit-logs')
   @RequireAdminRole(AdminRole.OPERATIONS_MANAGER)
   getAuditLogs(
@@ -267,8 +259,6 @@ export class AdminController {
     required: false,
     description: 'Contract status filter',
   })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get('contracts')
   @RequireAdminRole(AdminRole.OPERATIONS_MANAGER, AdminRole.SUPPORT_ADMIN, AdminRole.DISPUTE_ADMIN)
   getAllContracts(

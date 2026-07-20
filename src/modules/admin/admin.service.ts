@@ -96,7 +96,6 @@ export class AdminService {
       take: take + 1,
       include: {
         artisanProfile: true,
-        clientProfile: true,
       },
       ...(cursor && {
         cursor: { id: cursor },
@@ -351,6 +350,19 @@ export class AdminService {
     const updatedUser = await this.prisma.user.update({
       where: { id: user.id },
       data: { artisanVerified: true },
+    });
+
+    await this.prisma.artisanProfile.updateMany({
+      where: { userId: user.id },
+      data: { verified: true },
+    });
+
+    await this.prisma.artisanVerification.updateMany({
+      where: { userId: user.id },
+      data: {
+        marketplaceStatus: 'APPROVED',
+        marketplaceApprovedAt: new Date(),
+      },
     });
 
     await this.logAction(
