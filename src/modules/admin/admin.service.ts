@@ -353,6 +353,19 @@ export class AdminService {
       data: { artisanVerified: true },
     });
 
+    await this.prisma.artisanProfile.updateMany({
+      where: { userId: user.id },
+      data: { verified: true },
+    });
+
+    await this.prisma.artisanVerification.updateMany({
+      where: { userId: user.id },
+      data: {
+        marketplaceStatus: 'APPROVED',
+        marketplaceApprovedAt: new Date(),
+      },
+    });
+
     await this.logAction(
       'ARTISAN_VERIFIED',
       AuditEntityType.USER,
