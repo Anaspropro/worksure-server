@@ -11,7 +11,7 @@ import {
   ConflictException,
   UseInterceptors,
 } from '@nestjs/common';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -195,8 +195,6 @@ export class ArtisanController {
   @ApiOperation({ summary: 'Get artisan profile by user ID' })
   @ApiOkResponse({ description: 'Artisan profile returned successfully.' })
   @ApiNotFoundResponse({ description: 'Artisan profile not found.' })
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(300000)
   @Get(':userId')
   async getArtisanProfileByUserId(
     @Param('userId') userId: string,

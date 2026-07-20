@@ -224,8 +224,8 @@ export class AnalyticsService {
       exportFormats: ['json', 'csv'],
     };
 
-    // Cache the expensive report result for 15 minutes
-    await this.cacheService.set(cacheKey, result, 15 * 60 * 1000);
+    // Cache the expensive report result for 2 minutes
+    await this.cacheService.set(cacheKey, result, 2 * 60 * 1000);
 
     // Perform audit logging asynchronously to avoid blocking the response
     this.prisma.auditLog.create({
@@ -309,7 +309,7 @@ export class AnalyticsService {
       activeContractCount: escrowAgg._count.id,
     };
 
-    await this.cacheService.set(cacheKey, result, 5 * 60 * 1000); // 5 mins
+    await this.cacheService.set(cacheKey, result, 1 * 60 * 1000); // 1 min
     return result;
   }
 }
