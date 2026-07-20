@@ -1123,7 +1123,6 @@ export class AdminService {
       phone: user.phone,
       createdAt: user.createdAt.toISOString(),
       artisanProfile: user.artisanProfile,
-      clientProfile: user.clientProfile,
     };
   }
 
