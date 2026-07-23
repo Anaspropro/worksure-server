@@ -96,6 +96,12 @@ export class AdminService {
       take: take + 1,
       include: {
         artisanProfile: true,
+        clientContracts: {
+          select: { amount: true, status: true },
+        },
+        _count: {
+          select: { clientJobs: true },
+        },
       },
       ...(cursor && {
         cursor: { id: cursor },
@@ -238,6 +244,13 @@ export class AdminService {
               updatedAt: user.artisanProfile.updatedAt.toISOString(),
             }
           : null,
+        clientProfile: {
+          companyName: null,
+          totalJobs: user.clientJobs?.length ?? 0,
+          totalSpent: user.clientContracts
+            ? user.clientContracts.reduce((sum, c) => sum + (c.amount || 0), 0)
+            : 0,
+        },
         transactions: user.transactions.map((transaction) =>
           this.mapTransaction(transaction as any),
         ),
@@ -1113,6 +1126,10 @@ export class AdminService {
   }
 
   private mapUser(user: any) {
+    const totalSpent = user.clientContracts
+      ? user.clientContracts.reduce((sum: number, c: any) => sum + (c.amount || 0), 0)
+      : 0;
+
     return {
       id: user.id,
       name: user.name,
@@ -1123,6 +1140,11 @@ export class AdminService {
       phone: user.phone,
       createdAt: user.createdAt.toISOString(),
       artisanProfile: user.artisanProfile,
+      clientProfile: {
+        companyName: null,
+        totalJobs: user._count?.clientJobs ?? 0,
+        totalSpent,
+      },
     };
   }
 
