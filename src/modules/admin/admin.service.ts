@@ -220,6 +220,7 @@ export class AdminService {
         role: user.role,
         status: user.status,
         artisanVerified: user.artisanVerified,
+        phone: user.phone ?? null,
 
         createdAt: user.createdAt.toISOString(),
         lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
