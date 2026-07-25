@@ -31,7 +31,7 @@ export class ReputationService implements OnModuleInit, OnModuleDestroy {
 
     this.worker.on('failed', (job, err) => {
       this.logger.error(`❌ Reputation calculation failed for ${job?.data?.userId}: ${err.message}`);
-    });d
+    });
 
     this.logger.log('🚀 Reputation Engine Worker started.');
   }
