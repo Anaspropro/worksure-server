@@ -6,10 +6,42 @@ import { CategoryResponseDto, SkillResponseDto, SuggestCategoryDto } from './dto
 export class TaxonomyService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly defaultCategories = [
+    { name: "Plumbing & Pipefitting", slug: "plumbing-pipefitting", isPopular: true },
+    { name: "Electrical Installation & Wiring", slug: "electrical-installation-wiring", isPopular: true },
+    { name: "Carpentry & Woodwork", slug: "carpentry-woodwork", isPopular: true },
+    { name: "Masonry & Bricklaying", slug: "masonry-bricklaying", isPopular: true },
+    { name: "Painting & Interior Decorating", slug: "painting-interior-decorating", isPopular: true },
+    { name: "Air Conditioning & Refrigeration", slug: "ac-refrigeration", isPopular: true },
+    { name: "Roofing & Waterproofing", slug: "roofing-waterproofing", isPopular: false },
+    { name: "Welding & Metal Fabrication", slug: "welding-metal-fabrication", isPopular: false },
+    { name: "Solar & Inverter Technology", slug: "solar-inverter-technology", isPopular: true },
+    { name: "Tiling & Flooring Services", slug: "tiling-flooring", isPopular: false },
+    { name: "Generator Repair & Maintenance", slug: "generator-repair-maintenance", isPopular: true },
+    { name: "Automobile Repairs & Mechanics", slug: "automobile-repairs-mechanics", isPopular: false },
+    { name: "Catering & Culinary Services", slug: "catering-culinary", isPopular: false },
+    { name: "Fashion Design & Tailoring", slug: "fashion-design-tailoring", isPopular: false },
+    { name: "Cleaning & Janitorial Services", slug: "cleaning-janitorial", isPopular: true },
+    { name: "CCTV & Security Systems", slug: "cctv-security-systems", isPopular: false },
+    { name: "Gardening & Landscaping", slug: "gardening-landscaping", isPopular: false },
+    { name: "Glass & Aluminium Fabrication", slug: "glass-aluminium-fabrication", isPopular: false },
+  ];
+
   async getCategories(): Promise<CategoryResponseDto[]> {
-    const categories = await this.prisma.category.findMany({
+    let categories = await this.prisma.category.findMany({
       orderBy: { name: 'asc' },
     });
+
+    if (categories.length === 0) {
+      await this.prisma.category.createMany({
+        data: this.defaultCategories,
+        skipDuplicates: true,
+      });
+      categories = await this.prisma.category.findMany({
+        orderBy: { name: 'asc' },
+      });
+    }
+
     return categories;
   }
 
