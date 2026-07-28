@@ -81,7 +81,9 @@ export class ProposalsService {
     createDto: CreateProposalDto,
   ): Promise<ProposalResponseDto> {
     this.ensureArtisanRole(user);
-    await this.ensureVerifiedArtisan(user.id);
+    if (!createDto.isDraft) {
+      await this.ensureVerifiedArtisan(user.id);
+    }
 
     const job = await this.prisma.job.findUnique({
       where: { id: createDto.jobId },
@@ -103,6 +105,16 @@ export class ProposalsService {
       );
     }
 
+    if (!createDto.isDraft && createDto.attachments) {
+      for (const file of createDto.attachments) {
+        if (file.fileType.startsWith('image/') && file.fileSize > 100 * 1024) {
+          throw new BadRequestException(`Image ${file.fileName} exceeds 100kB limit`);
+        } else if (!file.fileType.startsWith('image/') && file.fileSize > 50 * 1024) {
+          throw new BadRequestException(`Document ${file.fileName} exceeds 50kB limit`);
+        }
+      }
+    }
+
     const existingProposal = await this.prisma.proposal.findFirst({
       where: {
         jobId: createDto.jobId,
@@ -112,19 +124,71 @@ export class ProposalsService {
     });
 
     if (existingProposal) {
+      if (existingProposal.status === ProposalStatus.DRAFT) {
+        const updatedStatus = createDto.isDraft ? ProposalStatus.DRAFT : ProposalStatus.SUBMITTED;
+        
+        // Delete old draft attachments if new ones are provided
+        if (createDto.attachments) {
+          await this.prisma.proposalAttachment.deleteMany({
+            where: { proposalId: existingProposal.id },
+          });
+        }
+
+        const updated = await this.prisma.proposal.update({
+          where: { id: existingProposal.id },
+          data: {
+            message: createDto.message,
+            amount: createDto.amount,
+            estimatedDuration: createDto.estimatedDuration,
+            status: updatedStatus,
+            attachments: createDto.attachments ? {
+              create: createDto.attachments.map(a => ({
+                id: uuidv7(),
+                fileUrl: a.fileUrl,
+                fileName: a.fileName,
+                fileType: a.fileType,
+                fileSize: a.fileSize,
+              }))
+            } : undefined,
+            timelineEvents: {
+              create: {
+                id: uuidv7(),
+                status: updatedStatus,
+                actorId: user.id,
+                notes: createDto.isDraft ? 'Proposal draft updated' : 'Proposal submitted from draft',
+              }
+            }
+          },
+          include: {
+            job: {
+              select: {
+                id: true,
+                title: true,
+                description: true,
+                budget: true,
+                status: true,
+              },
+            },
+            client: { select: { id: true, name: true, email: true } },
+            artisan: { select: { id: true, name: true, email: true } },
+            attachments: true,
+            timelineEvents: true,
+          },
+        });
+
+        if (!createDto.isDraft) {
+          this.eventEmitter.emit(
+            DomainEventName.PROPOSAL_SUBMITTED,
+            new ProposalSubmittedEvent(updated.id, updated.jobId, updated.job.title, updated.artisanId, updated.clientId)
+          );
+        }
+
+        return this.formatProposalResponse(updated);
+      }
+
       throw new BadRequestException(
         'You already have an active proposal for this job',
       );
-    }
-
-    if (!createDto.isDraft && createDto.attachments) {
-      for (const file of createDto.attachments) {
-        if (file.fileType.startsWith('image/') && file.fileSize > 100 * 1024) {
-          throw new BadRequestException(`Image ${file.fileName} exceeds 100kB limit`);
-        } else if (!file.fileType.startsWith('image/') && file.fileSize > 50 * 1024) {
-          throw new BadRequestException(`Document ${file.fileName} exceeds 50kB limit`);
-        }
-      }
     }
 
     const artisan = await this.prisma.user.findUnique({
