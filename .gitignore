@@ -44,3 +44,7 @@ test-*.js
 wallet_test_output.txt
 *.bak
 *.txt
+
+# Prisma generated client
+src/generated/prisma/
+
