@@ -41,6 +41,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CacheModule } from '@nestjs/cache-manager';
 import { EventsModule } from './modules/events/events.module';
 import KeyvRedis from '@keyv/redis';
+import { Keyv } from 'keyv';
 import { redisConnection, getBullRedisOptions } from './queue/redis';
 import { BullModule } from '@nestjs/bullmq';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
@@ -115,11 +116,28 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
       ],
       storage: new RedisThrottlerStorage(),
     }),
-    CacheModule.registerAsync({
+    CacheModule.registerAsync<any>({
       isGlobal: true,
-      useFactory: () => ({
-        stores: [new KeyvRedis(redisConnection as any)],
-      }),
+      useFactory: () => {
+        const isRedisReady =
+          redisConnection &&
+          (redisConnection.status === 'ready' ||
+            redisConnection.status === undefined);
+        if (isRedisReady) {
+          try {
+            return {
+              stores: [new KeyvRedis(redisConnection as any)],
+            };
+          } catch {
+            return {
+              stores: [new Keyv()],
+            };
+          }
+        }
+        return {
+          stores: [new Keyv()],
+        };
+      },
     }),
     AppConfigModule,
     AppCacheModule,
