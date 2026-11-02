@@ -23,7 +23,9 @@ describe('WebhookSignatureService', () => {
     const result = await service.isEventProcessed('evt_123');
 
     expect(result).toBe(true);
-    expect(redisConnection.exists).toHaveBeenCalledWith('idempotency:paystack_webhook:evt_123');
+    expect(redisConnection.exists).toHaveBeenCalledWith(
+      'idempotency:paystack_webhook:evt_123',
+    );
   });
 
   it('locks events for processing using Redis SET NX', async () => {
@@ -59,8 +61,12 @@ describe('WebhookSignatureService', () => {
       const payload = 'test-payload';
       const secret = 'test-secret';
       const shortSignature = 'short';
-      
-      const isValid = service.verifyPaystackSignature(payload, shortSignature, secret);
+
+      const isValid = service.verifyPaystackSignature(
+        payload,
+        shortSignature,
+        secret,
+      );
       expect(isValid).toBe(false);
     });
 
@@ -71,9 +77,15 @@ describe('WebhookSignatureService', () => {
         .createHmac('sha512', secret)
         .update(payload)
         .digest('hex');
-      
+
       expect(service.verifyPaystackSignature(payload, hash, secret)).toBe(true);
-      expect(service.verifyPaystackSignature(payload, hash.replace('a', 'b'), secret)).toBe(false);
+      expect(
+        service.verifyPaystackSignature(
+          payload,
+          hash.replace('a', 'b'),
+          secret,
+        ),
+      ).toBe(false);
     });
 
     it('throws BadRequestException if missing parameters', () => {

@@ -1,7 +1,14 @@
-import { IsString, IsOptional, IsNumber, IsEnum, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { ProposalStatus } from '../../../generated/prisma';
+import { PaginationQueryDto } from '../../../common/dto/pagination-query.dto';
 
 export class ProposalAttachmentDto {
   @ApiProperty({ description: 'File URL' })
@@ -39,7 +46,10 @@ export class CreateProposalDto {
   @IsString()
   estimatedDuration?: string;
 
-  @ApiPropertyOptional({ description: 'Attachments', type: [ProposalAttachmentDto] })
+  @ApiPropertyOptional({
+    description: 'Attachments',
+    type: [ProposalAttachmentDto],
+  })
   @IsOptional()
   attachments?: ProposalAttachmentDto[];
 
@@ -89,7 +99,8 @@ export class ProposalArtisanDto {
   @ApiProperty() id: string;
   @ApiProperty() name: string;
   @ApiProperty() email: string;
-  @ApiPropertyOptional({ type: ProposalArtisanProfileDto }) artisanProfile?: ProposalArtisanProfileDto;
+  @ApiPropertyOptional({ type: ProposalArtisanProfileDto })
+  artisanProfile?: ProposalArtisanProfileDto;
 }
 
 export class ProposalResponseDto {
@@ -117,7 +128,6 @@ export class ProposalResponseDto {
   @ApiProperty({ description: 'Last update date' })
   updatedAt: string;
 
-
   @ApiProperty({ description: 'Job information', type: ProposalJobDto })
   job: ProposalJobDto;
 
@@ -126,8 +136,11 @@ export class ProposalResponseDto {
 
   @ApiProperty({ description: 'Artisan information', type: ProposalArtisanDto })
   artisan: ProposalArtisanDto;
-  
-  @ApiPropertyOptional({ description: 'Attachments', type: [ProposalAttachmentDto] })
+
+  @ApiPropertyOptional({
+    description: 'Attachments',
+    type: [ProposalAttachmentDto],
+  })
   attachments?: ProposalAttachmentDto[];
 }
 
@@ -169,7 +182,7 @@ export class ProposalComparisonItemDto {
   recommended: boolean;
 }
 
-export class ProposalListQueryDto {
+export class ProposalListQueryDto extends PaginationQueryDto {
   @ApiPropertyOptional({ description: 'Filter by status' })
   @IsOptional()
   @IsEnum(ProposalStatus)
@@ -194,20 +207,6 @@ export class ProposalListQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
-
-  @ApiPropertyOptional({ description: 'Page number (default: 1)' })
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  page?: number = 1;
-
-  @ApiPropertyOptional({
-    description: 'Items per page (default: 10, max: 100)',
-  })
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  limit?: number = 10;
 }
 
 export class ProposalActionDto {

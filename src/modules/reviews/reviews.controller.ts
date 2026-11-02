@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Req, UseGuards, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Req,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
@@ -27,7 +35,13 @@ export class ReviewsController {
   async submitReview(
     @Req() req,
     @Param('contractId') contractId: string,
-    @Body() body: { targetId: string; rating: number; comment?: string; breakdown?: any }
+    @Body()
+    body: {
+      targetId: string;
+      rating: number;
+      comment?: string;
+      breakdown?: any;
+    },
   ) {
     return this.reviewsService.submitReview(
       req.user.id,
@@ -35,7 +49,7 @@ export class ReviewsController {
       body.targetId,
       body.rating,
       body.comment,
-      body.breakdown
+      body.breakdown,
     );
   }
 }

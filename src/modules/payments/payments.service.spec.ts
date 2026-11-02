@@ -99,5 +99,4 @@ describe('PaymentsService Webhook Processing', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
 });

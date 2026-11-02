@@ -1,0 +1,53 @@
+services:
+  - type: redis
+    name: worksure-redis
+    plan: standard
+    region: oregon
+    maxmemoryPolicy: noeviction
+    ipAllowList: []
+
+  - type: web
+    name: worksure-server
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: standard
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: false
+    preDeployCommand: npx prisma migrate deploy
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: worksure-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: worksure-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PAYSTACK_SECRET
+        sync: false
+      - key: PAYSTACK_PUBLIC
+        sync: false
+      - key: PAYSTACK_WEBHOOK_SECRET
+        sync: false
+      - key: CLOUDINARY_NAME
+        sync: false
+      - key: CLOUDINARY_KEY
+        sync: false
+      - key: CLOUDINARY_SECRET
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+databases:
+  - name: worksure-db
+    databaseName: worksure
+    user: worksure_user
+    plan: standard

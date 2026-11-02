@@ -25,9 +25,14 @@ export class PaymentsListener {
           event.contractId,
           `Dispute ${event.disputeId} resolved: payout to artisan`,
         );
-      } else if (event.outcome === DisputeDecision.SPLIT_DECISION && event.resolutionSplit) {
+      } else if (
+        event.outcome === DisputeDecision.SPLIT_DECISION &&
+        event.resolutionSplit
+      ) {
         // Handle split logic (not yet implemented in PaymentsService directly, but would be called here)
-        this.logger.warn(`Split decision payout for dispute ${event.disputeId} requires manual processing`);
+        this.logger.warn(
+          `Split decision payout for dispute ${event.disputeId} requires manual processing`,
+        );
       }
     } catch (err) {
       this.logger.error(

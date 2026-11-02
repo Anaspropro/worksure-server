@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 
 @Injectable()
@@ -34,8 +31,6 @@ export class MediaService {
       api_secret: apiSecret,
     });
   }
-
-
 
   async getSignedUploadParams(folder = 'worksure/chat') {
     const timestamp = Math.round(new Date().getTime() / 1000);

@@ -15,7 +15,7 @@ import { EmailService } from '../../common/services/email.service';
 
 @Module({
   imports: [
-    PrismaModule, 
+    PrismaModule,
     forwardRef(() => AuthModule),
     BullModule.registerQueue({
       name: 'notification-routing-queue',

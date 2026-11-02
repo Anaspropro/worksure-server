@@ -16,7 +16,9 @@ export class DataPruningService {
       const now = new Date();
 
       // 1. Prune SystemLogs older than 14 days
-      const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+      const fourteenDaysAgo = new Date(
+        now.getTime() - 14 * 24 * 60 * 60 * 1000,
+      );
       const prunedSystemLogs = await this.prisma.systemLog.deleteMany({
         where: {
           createdAt: {
@@ -24,7 +26,9 @@ export class DataPruningService {
           },
         },
       });
-      this.logger.log(`Pruned ${prunedSystemLogs.count} SystemLogs older than 14 days.`);
+      this.logger.log(
+        `Pruned ${prunedSystemLogs.count} SystemLogs older than 14 days.`,
+      );
 
       // 2. Prune routine Reconciliation AuditLogs older than 30 days
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -43,10 +47,14 @@ export class DataPruningService {
           },
         },
       });
-      this.logger.log(`Pruned ${prunedReconciliationLogs.count} routine Reconciliation AuditLogs older than 30 days.`);
+      this.logger.log(
+        `Pruned ${prunedReconciliationLogs.count} routine Reconciliation AuditLogs older than 30 days.`,
+      );
 
       // 3. Prune all other AuditLogs older than 180 days (6 months)
-      const oneEightyDaysAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+      const oneEightyDaysAgo = new Date(
+        now.getTime() - 180 * 24 * 60 * 60 * 1000,
+      );
       const prunedAuditLogs = await this.prisma.auditLog.deleteMany({
         where: {
           performedAt: {
@@ -54,11 +62,16 @@ export class DataPruningService {
           },
         },
       });
-      this.logger.log(`Pruned ${prunedAuditLogs.count} general AuditLogs older than 180 days.`);
+      this.logger.log(
+        `Pruned ${prunedAuditLogs.count} general AuditLogs older than 180 days.`,
+      );
 
       this.logger.log('Nightly data pruning job completed successfully.');
     } catch (error) {
-      this.logger.error('Failed to execute nightly data pruning job', error.stack);
+      this.logger.error(
+        'Failed to execute nightly data pruning job',
+        error.stack,
+      );
     }
   }
 }

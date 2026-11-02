@@ -8,7 +8,13 @@ import { MonitoringModule } from '../monitoring/monitoring.module';
 import { BullMQHealthIndicator } from './bullmq-health.indicator';
 
 @Module({
-  imports: [TerminusModule, PrismaModule, AppConfigModule, AppCacheModule, MonitoringModule],
+  imports: [
+    TerminusModule,
+    PrismaModule,
+    AppConfigModule,
+    AppCacheModule,
+    MonitoringModule,
+  ],
   controllers: [HealthController],
   providers: [BullMQHealthIndicator],
 })

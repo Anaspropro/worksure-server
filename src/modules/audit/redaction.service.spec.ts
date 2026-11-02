@@ -24,7 +24,7 @@ describe('RedactionService', () => {
       profile: {
         ssn: '000-00-0000',
         age: 30,
-      }
+      },
     };
 
     const redacted = service.redact(payload);
@@ -42,7 +42,7 @@ describe('RedactionService', () => {
     };
 
     const redacted = service.redact(payload, ['customSecretKey']);
-    
+
     expect(redacted.email).toBe('test@example.com');
     expect(redacted.customSecretKey).toBe('[REDACTED]');
   });
@@ -51,8 +51,8 @@ describe('RedactionService', () => {
     const payload = {
       users: [
         { name: 'Alice', token: 'abc' },
-        { name: 'Bob', token: 'def' }
-      ]
+        { name: 'Bob', token: 'def' },
+      ],
     };
 
     const redacted = service.redact(payload);

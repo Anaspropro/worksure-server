@@ -111,7 +111,9 @@ describe('ChatGateway', () => {
 
       await gateway.handleConnection(mockClient);
 
-      expect(mockSessionService.validateSession).toHaveBeenCalledWith('session-456');
+      expect(mockSessionService.validateSession).toHaveBeenCalledWith(
+        'session-456',
+      );
       expect(mockClient.disconnect).toHaveBeenCalled();
     });
 

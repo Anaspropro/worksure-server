@@ -39,7 +39,9 @@ describe('AuthService', () => {
   const mockSessionService = {
     createSession: jest.fn().mockResolvedValue('session-1'),
     createSessionToken: jest.fn().mockReturnValue('session-token'),
-    detectSuspiciousActivity: jest.fn().mockResolvedValue({ isSuspicious: false }),
+    detectSuspiciousActivity: jest
+      .fn()
+      .mockResolvedValue({ isSuspicious: false }),
     validateSession: jest.fn(),
   };
 
@@ -76,7 +78,9 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     usersService = module.get<UsersService>(UsersService);
     jwtService = module.get<JwtService>(JwtService);
-    accountLockoutService = module.get<AccountLockoutService>(AccountLockoutService);
+    accountLockoutService = module.get<AccountLockoutService>(
+      AccountLockoutService,
+    );
     sessionService = module.get<SessionService>(SessionService);
   });
 
@@ -109,13 +113,17 @@ describe('AuthService', () => {
     it('should throw ConflictException if user already exists', async () => {
       mockUsersService.findByEmail.mockResolvedValue({ id: 'existing' });
 
-      await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
+      await expect(service.register(registerDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('should prevent admin self-registration', async () => {
       const adminDto = { ...registerDto, role: UserRole.ADMIN };
 
-      await expect(service.register(adminDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.register(adminDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -132,12 +140,12 @@ describe('AuthService', () => {
 
     it('should successfully login and return a session token', async () => {
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
-      // We need to mock compare from bcrypt which is used internally. 
+      // We need to mock compare from bcrypt which is used internally.
       // But AuthService uses compare(dto.password, user.passwordHash) via private method.
-      // For simplicity in this test, we can mock the private method or just rely on the fact 
+      // For simplicity in this test, we can mock the private method or just rely on the fact
       // that we are testing the service logic.
       // Since compare is imported directly, mocking it might require jest.mock('bcrypt').
-      
+
       // Let's mock the private method for this unit test.
       (service as any).comparePassword = jest.fn().mockResolvedValue(true);
       mockUsersService.updateLastLoginAt.mockResolvedValue(mockUser);
@@ -153,15 +161,21 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
       (service as any).comparePassword = jest.fn().mockResolvedValue(false);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(accountLockoutService.recordFailedAttempt).toHaveBeenCalled();
     });
 
     it('should throw UnauthorizedException if account is locked', async () => {
       mockAccountLockoutService.isLocked.mockResolvedValue({ locked: true });
-      (service as any).accountLockoutService.getLockoutRemainingTime = jest.fn().mockResolvedValue(30);
+      (service as any).accountLockoutService.getLockoutRemainingTime = jest
+        .fn()
+        .mockResolvedValue(30);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

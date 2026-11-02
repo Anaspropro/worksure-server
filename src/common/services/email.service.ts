@@ -19,11 +19,18 @@ export class EmailService {
     if (apiKey) {
       this.resend = new Resend(apiKey);
     } else {
-      this.logger.warn('RESEND_API_KEY is not defined. Emails will be logged to console instead.');
+      this.logger.warn(
+        'RESEND_API_KEY is not defined. Emails will be logged to console instead.',
+      );
     }
   }
 
-  async sendEmail(options: { to: string; subject: string; html: string; text?: string }) {
+  async sendEmail(options: {
+    to: string;
+    subject: string;
+    html: string;
+    text?: string;
+  }) {
     const fromAddress = this.configService.emailFromAddress;
 
     if (this.resend) {
@@ -37,17 +44,26 @@ export class EmailService {
         });
 
         if (error) {
-          this.logger.error(`Failed to send email via Resend: ${JSON.stringify(error)}`);
+          this.logger.error(
+            `Failed to send email via Resend: ${JSON.stringify(error)}`,
+          );
           throw new Error(error.message);
         }
 
-        this.logger.log(`Email sent successfully to ${options.to}. Message ID: ${data?.id}`);
+        this.logger.log(
+          `Email sent successfully to ${options.to}. Message ID: ${data?.id}`,
+        );
       } catch (err: any) {
-        this.logger.error(`Error sending email to ${options.to}: ${err.message}`, err.stack);
+        this.logger.error(
+          `Error sending email to ${options.to}: ${err.message}`,
+          err.stack,
+        );
         throw err;
       }
     } else {
-      this.logger.log(`\n========================================================================\n[DEV MODE] Email to ${options.to}:\nSubject: ${options.subject}\nBody: ${options.html}\n========================================================================`);
+      this.logger.log(
+        `\n========================================================================\n[DEV MODE] Email to ${options.to}:\nSubject: ${options.subject}\nBody: ${options.html}\n========================================================================`,
+      );
     }
   }
 
@@ -194,17 +210,26 @@ export class EmailService {
         });
 
         if (error) {
-          this.logger.error(`Failed to send email via Resend: ${JSON.stringify(error)}`);
+          this.logger.error(
+            `Failed to send email via Resend: ${JSON.stringify(error)}`,
+          );
           throw new Error(error.message);
         }
 
-        this.logger.log(`Verification OTP email sent successfully to ${to}. Message ID: ${data?.id}`);
+        this.logger.log(
+          `Verification OTP email sent successfully to ${to}. Message ID: ${data?.id}`,
+        );
       } catch (err: any) {
-        this.logger.error(`Error sending email to ${to}: ${err.message}`, err.stack);
+        this.logger.error(
+          `Error sending email to ${to}: ${err.message}`,
+          err.stack,
+        );
         throw err;
       }
     } else {
-      this.logger.log(`\n========================================================================\n[DEV MODE] Email verification OTP for ${to}:\n${otp}\n========================================================================`);
+      this.logger.log(
+        `\n========================================================================\n[DEV MODE] Email verification OTP for ${to}:\n${otp}\n========================================================================`,
+      );
     }
   }
 
@@ -347,17 +372,26 @@ export class EmailService {
         });
 
         if (error) {
-          this.logger.error(`Failed to send password reset email via Resend: ${JSON.stringify(error)}`);
+          this.logger.error(
+            `Failed to send password reset email via Resend: ${JSON.stringify(error)}`,
+          );
           throw new Error(error.message);
         }
 
-        this.logger.log(`Password reset email sent successfully to ${to}. Message ID: ${data?.id}`);
+        this.logger.log(
+          `Password reset email sent successfully to ${to}. Message ID: ${data?.id}`,
+        );
       } catch (err: any) {
-        this.logger.error(`Error sending password reset email to ${to}: ${err.message}`, err.stack);
+        this.logger.error(
+          `Error sending password reset email to ${to}: ${err.message}`,
+          err.stack,
+        );
         throw err;
       }
     } else {
-      this.logger.log(`\n========================================================================\n[DEV MODE] Password reset link for ${to}:\n${resetLink}\n========================================================================`);
+      this.logger.log(
+        `\n========================================================================\n[DEV MODE] Password reset link for ${to}:\n${resetLink}\n========================================================================`,
+      );
     }
   }
 }

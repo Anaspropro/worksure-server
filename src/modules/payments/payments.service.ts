@@ -28,14 +28,16 @@ import { PaystackClientService } from '../../common/services/paystack-client.ser
 import { IdempotencyService } from '../../common/services/idempotency.service';
 import { WalletService } from '../wallet/wallet.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DomainEventName, PaymentReleasedEvent } from '../../common/events/domain.events';
+import {
+  DomainEventName,
+  PaymentReleasedEvent,
+} from '../../common/events/domain.events';
 
 @Injectable()
 export class PaymentsService implements OnModuleInit, OnModuleDestroy {
   private readonly payoutNamespace = 'payout';
   private readonly refundNamespace = 'refund';
   private escrowWorker: Worker;
-
 
   constructor(
     @Inject(forwardRef(() => PrismaService))
@@ -54,13 +56,17 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
   }
 
   onModuleInit() {
-    this.escrowWorker = new Worker('escrow-queue', async (job) => {
-      if (job.name === 'process-payout') {
-        await this.processEscrowPayout(job.data);
-      } else if (job.name === 'process-refund') {
-        await this.processEscrowRefund(job.data);
-      }
-    }, { connection: redisConnection.duplicate() as any });
+    this.escrowWorker = new Worker(
+      'escrow-queue',
+      async (job) => {
+        if (job.name === 'process-payout') {
+          await this.processEscrowPayout(job.data);
+        } else if (job.name === 'process-refund') {
+          await this.processEscrowRefund(job.data);
+        }
+      },
+      { connection: redisConnection.duplicate() },
+    );
 
     this.escrowWorker.on('failed', (job, err) => {
       console.error(`[Escrow Worker] Job ${job?.id} failed:`, err);
@@ -87,12 +93,17 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     return Number.isFinite(raw) && raw >= 0 ? raw : 10;
   }
 
-  public async getArtisanPlatformFeePercent(artisanId: string): Promise<number> {
+  public async getArtisanPlatformFeePercent(
+    artisanId: string,
+  ): Promise<number> {
     const profile = await this.prisma.artisanProfile.findUnique({
       where: { userId: artisanId },
       select: { platformFeePercent: true },
     });
-    if (profile?.platformFeePercent !== null && profile?.platformFeePercent !== undefined) {
+    if (
+      profile?.platformFeePercent !== null &&
+      profile?.platformFeePercent !== undefined
+    ) {
       return profile.platformFeePercent;
     }
     return this.getPlatformFeePercent();
@@ -143,7 +154,9 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
   }
 
   async getBanks(country = 'nigeria') {
-    return this.paystackClient.get<{ name: string; code: string; id: number }[]>(`/bank?country=${country}`, { graceful: true });
+    return this.paystackClient.get<
+      { name: string; code: string; id: number }[]
+    >(`/bank?country=${country}`, { graceful: true });
   }
 
   async initializeContractPayment(
@@ -385,11 +398,13 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
           });
         }
 
-        let systemEscrow = await tx.ledgerAccount.findFirst({
+        const systemEscrow = await tx.ledgerAccount.findFirst({
           where: { type: 'SYSTEM_ESCROW' },
         });
         if (!systemEscrow) {
-          throw new NotFoundException('System escrow account not configured. Please run seeds.');
+          throw new NotFoundException(
+            'System escrow account not configured. Please run seeds.',
+          );
         }
 
         await tx.ledgerEntry.create({
@@ -406,12 +421,16 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
 
         await tx.ledgerAccount.update({
           where: { id: userWallet.id },
-          data: { balance: { decrement: Math.round(paystackData.amount / 100) } }
+          data: {
+            balance: { decrement: Math.round(paystackData.amount / 100) },
+          },
         });
 
         await tx.ledgerAccount.update({
           where: { id: systemEscrow.id },
-          data: { balance: { increment: Math.round(paystackData.amount / 100) } }
+          data: {
+            balance: { increment: Math.round(paystackData.amount / 100) },
+          },
         });
 
         await this.createFinancialEvent(tx, {
@@ -519,10 +538,12 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
           Logger.error(
             `Automatic escrow release failed for contract ${contractId}: ${error instanceof Error ? error.message : String(error)}`,
             error instanceof Error ? error.stack : undefined,
-            'PaymentsService'
+            'PaymentsService',
           );
         });
-        throw new BadRequestException('Contract completed, but automatic payout failed. Admin has been notified.');
+        throw new BadRequestException(
+          'Contract completed, but automatic payout failed. Admin has been notified.',
+        );
       }
     }
 
@@ -556,20 +577,19 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
       );
     }
 
-    const recipient = await this.paystackClient.call<{ recipient_code: string }>(
-      '/transferrecipient',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          type: 'nuban',
-          name: artisan.payoutAccountName || artisan.name,
-          account_number: artisan.payoutAccountNumber,
-          bank_code: artisan.payoutBankCode,
-          currency: 'NGN',
-          email: artisan.email,
-        }),
-      },
-    );
+    const recipient = await this.paystackClient.call<{
+      recipient_code: string;
+    }>('/transferrecipient', {
+      method: 'POST',
+      body: JSON.stringify({
+        type: 'nuban',
+        name: artisan.payoutAccountName || artisan.name,
+        account_number: artisan.payoutAccountNumber,
+        bank_code: artisan.payoutBankCode,
+        currency: 'NGN',
+        email: artisan.email,
+      }),
+    });
 
     await this.prisma.user.update({
       where: { id: artisanId },
@@ -600,10 +620,10 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     const recipientCode = await this.ensureTransferRecipient(
       contract.artisanId,
     );
-    const feePercent = await this.getArtisanPlatformFeePercent(contract.artisanId);
-    const platformFee = Math.floor(
-      (contract.amount * feePercent) / 100,
+    const feePercent = await this.getArtisanPlatformFeePercent(
+      contract.artisanId,
     );
+    const platformFee = Math.floor((contract.amount * feePercent) / 100);
     const payoutAmount = contract.amount - platformFee;
 
     if (payoutAmount <= 0) {
@@ -676,7 +696,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
       if (dbTxId) {
         await this.prisma.transaction.update({
           where: { id: dbTxId },
-          data: { status: TransactionStatus.FAILED }
+          data: { status: TransactionStatus.FAILED },
         });
       }
       await this.idempotency.release(lockKey, this.payoutNamespace);
@@ -864,7 +884,7 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
       if (dbTxId) {
         await this.prisma.transaction.update({
           where: { id: dbTxId },
-          data: { status: TransactionStatus.FAILED }
+          data: { status: TransactionStatus.FAILED },
         });
       }
       await this.idempotency.release(lockKey, this.refundNamespace);
@@ -878,8 +898,6 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
   }
   // Duplicate releaseEscrow/releaseEscrowByAdmin implementations removed.
   // The earlier implementations (above) are used.
-
-
 
   async listPayments(
     userId: string,
@@ -959,7 +977,8 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     lockKey: string;
     platformFee: number;
   }) {
-    const { contractId, payoutAmount, recipientCode, reference, lockKey } = data;
+    const { contractId, payoutAmount, recipientCode, reference, lockKey } =
+      data;
     try {
       const transferData = await this.paystackClient.call<{
         transfer_code: string;
@@ -1007,7 +1026,10 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
       await this.idempotency.complete(lockKey, this.payoutNamespace);
       await this.contractsService.markPayoutInitiated(contractId);
     } catch (err) {
-      console.error(`[Escrow Worker] process-payout failed for contract ${contractId}`, err);
+      console.error(
+        `[Escrow Worker] process-payout failed for contract ${contractId}`,
+        err,
+      );
       throw err;
     }
   }
@@ -1021,7 +1043,15 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
     amount: number;
     lockKey: string;
   }) {
-    const { contractId, userId, isAdmin, reason, paymentReference, amount, lockKey } = data;
+    const {
+      contractId,
+      userId,
+      isAdmin,
+      reason,
+      paymentReference,
+      amount,
+      lockKey,
+    } = data;
     try {
       await this.paystackClient.call<{
         status?: string;
@@ -1043,7 +1073,10 @@ export class PaymentsService implements OnModuleInit, OnModuleDestroy {
 
       await this.idempotency.complete(lockKey, this.refundNamespace);
     } catch (err) {
-      console.error(`[Escrow Worker] process-refund failed for contract ${contractId}`, err);
+      console.error(
+        `[Escrow Worker] process-refund failed for contract ${contractId}`,
+        err,
+      );
       throw err;
     }
   }

@@ -26,9 +26,7 @@ export class EphemeralCleanupService implements OnModuleInit, OnModuleDestroy {
 
   private static readonly CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
-  constructor(
-    private readonly idempotencyService: IdempotencyService,
-  ) {}
+  constructor(private readonly idempotencyService: IdempotencyService) {}
 
   onModuleInit() {
     this.logger.log(
@@ -66,7 +64,9 @@ export class EphemeralCleanupService implements OnModuleInit, OnModuleDestroy {
         `Cleanup cycle complete (${duration}ms). Purged ${locks} stale locks`,
       );
     } else {
-      this.logger.debug(`Cleanup cycle complete (${duration}ms). No records to purge.`);
+      this.logger.debug(
+        `Cleanup cycle complete (${duration}ms). No records to purge.`,
+      );
     }
 
     return { locks };

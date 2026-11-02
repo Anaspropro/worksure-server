@@ -12,8 +12,8 @@ describe('AppController', () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [
-        AppService, 
-        AppConfigService, 
+        AppService,
+        AppConfigService,
         PrismaServiceMockProvider,
         {
           provide: ConfigService,

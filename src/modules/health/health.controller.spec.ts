@@ -71,7 +71,10 @@ describe('HealthController', () => {
 
     expect(result.status).toBe('ok');
     expect(result.details.database.status).toBe('up');
-    expect(mockAlertingService.resolveAlert).toHaveBeenCalledWith('health_queues', expect.any(String));
+    expect(mockAlertingService.resolveAlert).toHaveBeenCalledWith(
+      'health_queues',
+      expect.any(String),
+    );
   });
 
   it('sends alerting critical message when a queue check is backed up or down', async () => {
@@ -80,20 +83,21 @@ describe('HealthController', () => {
       details: {
         queues: {
           status: 'backed_up',
-          'email-queue': { status: 'backed_up' }
-        }
-      }
+          'email-queue': { status: 'backed_up' },
+        },
+      },
     };
     const mockCheckError = new ServiceUnavailableException(mockResponse);
     mockHealthCheckService.check.mockRejectedValue(mockCheckError);
 
-    await expect(controller.readiness()).rejects.toThrow(ServiceUnavailableException);
+    await expect(controller.readiness()).rejects.toThrow(
+      ServiceUnavailableException,
+    );
     expect(mockAlertingService.sendCriticalAlert).toHaveBeenCalledWith(
       'health_queues',
       'Queue Processing Delay / Down',
       expect.any(String),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 });
-

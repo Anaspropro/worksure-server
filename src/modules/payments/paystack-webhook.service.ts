@@ -16,7 +16,10 @@ import { ContractsService } from '../contracts/contracts.service';
 import { WalletService } from '../wallet/wallet.service';
 import { PaymentsService } from './payments.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DomainEventName, PaymentReleasedEvent } from '../../common/events/domain.events';
+import {
+  DomainEventName,
+  PaymentReleasedEvent,
+} from '../../common/events/domain.events';
 
 /**
  * Service dedicated to handling Paystack webhook events.
@@ -24,7 +27,10 @@ import { DomainEventName, PaymentReleasedEvent } from '../../common/events/domai
  */
 @Injectable()
 export class PaystackWebhookService {
-  private readonly webhookHandlers: Record<string, (payload: any) => Promise<{ handled: boolean; event: string }>>;
+  private readonly webhookHandlers: Record<
+    string,
+    (payload: any) => Promise<{ handled: boolean; event: string }>
+  >;
 
   constructor(
     @Inject(forwardRef(() => PrismaService))
@@ -86,8 +92,12 @@ export class PaystackWebhookService {
 
     if (reference.startsWith('payout_req_')) {
       await this.prisma.transaction.updateMany({
-        where: { reference, type: TransactionType.PAYOUT, status: TransactionStatus.PENDING },
-        data: { status: TransactionStatus.COMPLETED, completedAt: new Date() }
+        where: {
+          reference,
+          type: TransactionType.PAYOUT,
+          status: TransactionStatus.PENDING,
+        },
+        data: { status: TransactionStatus.COMPLETED, completedAt: new Date() },
       });
       return { handled: true, event };
     }
@@ -104,8 +114,8 @@ export class PaystackWebhookService {
 
       if (transferTx && transferTx.status !== TransactionStatus.COMPLETED) {
         const contractId =
-          (transferTx.metadata as { contractId?: string } | null)
-            ?.contractId ?? null;
+          (transferTx.metadata as { contractId?: string } | null)?.contractId ??
+          null;
 
         await tx.transaction.update({
           where: { id: transferTx.id },
@@ -124,16 +134,21 @@ export class PaystackWebhookService {
 
         if (contractId) {
           // DOUBLE-ENTRY LEDGER: Payout Release
-          const metadata = transferTx.metadata as { contractId?: string; platformFee?: number } | null;
+          const metadata = transferTx.metadata as {
+            contractId?: string;
+            platformFee?: number;
+          } | null;
           const platformFee = metadata?.platformFee ?? 0;
           const payoutAmount = transferTx.amount;
           const totalAmount = payoutAmount + platformFee;
 
-          let systemEscrow = await tx.ledgerAccount.findFirst({
+          const systemEscrow = await tx.ledgerAccount.findFirst({
             where: { type: 'SYSTEM_ESCROW' },
           });
           if (!systemEscrow) {
-            throw new NotFoundException('System escrow account not configured.');
+            throw new NotFoundException(
+              'System escrow account not configured.',
+            );
           }
 
           let artisanWallet = await tx.ledgerAccount.findUnique({
@@ -241,8 +256,8 @@ export class PaystackWebhookService {
                 contract.jobId,
                 contract.job?.title || 'Job',
                 contract.artisanId,
-                Number(payoutAmount)
-              )
+                Number(payoutAmount),
+              ),
             );
           }
         }
@@ -269,8 +284,8 @@ export class PaystackWebhookService {
 
     if (transferTx) {
       const contractId =
-        (transferTx.metadata as { contractId?: string } | null)
-          ?.contractId ?? null;
+        (transferTx.metadata as { contractId?: string } | null)?.contractId ??
+        null;
 
       await this.prisma.transaction.update({
         where: { id: transferTx.id },
@@ -342,7 +357,7 @@ export class PaystackWebhookService {
         });
 
         // DOUBLE-ENTRY LEDGER: Refund Processed
-        let systemEscrow = await tx.ledgerAccount.findFirst({
+        const systemEscrow = await tx.ledgerAccount.findFirst({
           where: { type: 'SYSTEM_ESCROW' },
         });
         if (!systemEscrow) {

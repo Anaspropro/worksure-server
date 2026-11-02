@@ -27,17 +27,17 @@ export class EmailDeliveryProcessor extends WorkerHost {
 
   async process(job: Job<EmailDeliveryJob, any, string>): Promise<any> {
     const { attemptId, notificationId, userId, type, payload } = job.data;
-    
+
     try {
       await this.prisma.deliveryAttempt.update({
         where: { id: attemptId },
-        data: { status: DeliveryStatus.PROCESSING }
+        data: { status: DeliveryStatus.PROCESSING },
       });
 
       // Get user email
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: { email: true, name: true }
+        select: { email: true, name: true },
       });
 
       if (!user?.email) {
@@ -47,9 +47,14 @@ export class EmailDeliveryProcessor extends WorkerHost {
       // Render content based on template
       let subject = payload?.title || `WorkSure: ${type}`;
       let html = payload?.message || `<p>New notification: ${type}</p>`;
-      
+
       try {
-        const rendered = await this.templateService.render(type, 'EMAIL', 'en', { ...payload, userName: user.name });
+        const rendered = await this.templateService.render(
+          type,
+          'EMAIL',
+          'en',
+          { ...payload, userName: user.name },
+        );
         subject = rendered.subject || subject;
         html = rendered.content;
       } catch (e) {
@@ -64,21 +69,23 @@ export class EmailDeliveryProcessor extends WorkerHost {
 
       await this.prisma.deliveryAttempt.update({
         where: { id: attemptId },
-        data: { 
+        data: {
           status: DeliveryStatus.DELIVERED,
-          deliveredAt: new Date()
-        }
+          deliveredAt: new Date(),
+        },
       });
-
     } catch (error: any) {
-      this.logger.error(`Failed to deliver Email notification ${notificationId}`, error.stack);
-      
+      this.logger.error(
+        `Failed to deliver Email notification ${notificationId}`,
+        error.stack,
+      );
+
       await this.prisma.deliveryAttempt.update({
         where: { id: attemptId },
-        data: { 
+        data: {
           status: DeliveryStatus.FAILED,
-          error: error.message
-        }
+          error: error.message,
+        },
       });
       throw error; // Let BullMQ retry
     }

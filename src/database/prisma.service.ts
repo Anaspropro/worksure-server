@@ -19,8 +19,13 @@ export class PrismaService
   private connected = false;
   private readonly pool?: Pool;
 
-  constructor(@Inject(AppConfigService) private readonly appConfigService: AppConfigService) {
-    const { adapter, pool } = createPrismaAdapter(appConfigService?.databaseUrl || process.env.DATABASE_URL);
+  constructor(
+    @Inject(AppConfigService)
+    private readonly appConfigService: AppConfigService,
+  ) {
+    const { adapter, pool } = createPrismaAdapter(
+      appConfigService?.databaseUrl || process.env.DATABASE_URL,
+    );
 
     super({
       adapter,

@@ -19,7 +19,7 @@ export class StuckPayoutDetectorService {
 
     // Find contracts in READY_FOR_PAYOUT for more than 1 hour
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-    
+
     const stuckContracts = await this.prisma.contract.findMany({
       where: {
         status: ContractStatus.READY_FOR_PAYOUT,
@@ -34,13 +34,19 @@ export class StuckPayoutDetectorService {
       return;
     }
 
-    this.logger.warn(`Found ${stuckContracts.length} stuck contracts in READY_FOR_PAYOUT status.`);
+    this.logger.warn(
+      `Found ${stuckContracts.length} stuck contracts in READY_FOR_PAYOUT status.`,
+    );
 
     for (const contract of stuckContracts) {
       try {
-        this.logger.log(`Attempting retry for stuck contract payout: ${contract.id}`);
+        this.logger.log(
+          `Attempting retry for stuck contract payout: ${contract.id}`,
+        );
         await this.paymentsService.releaseEscrow(contract.id);
-        this.logger.log(`Successfully recovered payout for contract: ${contract.id}`);
+        this.logger.log(
+          `Successfully recovered payout for contract: ${contract.id}`,
+        );
       } catch (error) {
         this.logger.error(
           `Retry failed for stuck contract payout ${contract.id}: ${error instanceof Error ? error.message : String(error)}`,

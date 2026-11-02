@@ -9,7 +9,13 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { AnalyticsModule } from '../analytics/analytics.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, PaymentsModule, NotificationsModule, AnalyticsModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    PaymentsModule,
+    NotificationsModule,
+    AnalyticsModule,
+  ],
   controllers: [AdminController],
   providers: [AdminService, RolesGuard],
   exports: [AdminService],

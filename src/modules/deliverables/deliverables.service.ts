@@ -1,10 +1,19 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SubmitDeliverableVersionDto } from './dto/submit-version.dto';
 import { RequestRevisionDto } from './dto/request-revision.dto';
 import { DeliverableStatus, RevisionStatus } from '../../generated/prisma';
-import { DeliverableApprovedEvent, DeliverableSubmittedEvent, RevisionRequestedEvent } from './events/deliverables.events';
+import {
+  DeliverableApprovedEvent,
+  DeliverableSubmittedEvent,
+  RevisionRequestedEvent,
+} from './events/deliverables.events';
 import { DomainEventName } from '../../common/events/domain.events';
 
 @Injectable()
@@ -41,19 +50,33 @@ export class DeliverablesService {
     return deliverable;
   }
 
-  async submitVersion(contractId: string, artisanId: string, dto: SubmitDeliverableVersionDto) {
-    const contract = await this.prisma.contract.findUnique({ where: { id: contractId } });
+  async submitVersion(
+    contractId: string,
+    artisanId: string,
+    dto: SubmitDeliverableVersionDto,
+  ) {
+    const contract = await this.prisma.contract.findUnique({
+      where: { id: contractId },
+    });
     if (!contract || contract.artisanId !== artisanId) {
-      throw new ForbiddenException('Only the assigned artisan can submit deliverables');
+      throw new ForbiddenException(
+        'Only the assigned artisan can submit deliverables',
+      );
     }
 
     const deliverable = await this.getDeliverableForContract(contractId);
 
-    if (deliverable.status === DeliverableStatus.APPROVED || deliverable.status === DeliverableStatus.COMPLETED) {
-      throw new BadRequestException('Cannot submit to an approved or completed deliverable');
+    if (
+      deliverable.status === DeliverableStatus.APPROVED ||
+      deliverable.status === DeliverableStatus.COMPLETED
+    ) {
+      throw new BadRequestException(
+        'Cannot submit to an approved or completed deliverable',
+      );
     }
 
-    const nextVersionNumber = (deliverable.versions?.[0]?.versionNumber ?? 0) + 1;
+    const nextVersionNumber =
+      (deliverable.versions?.[0]?.versionNumber ?? 0) + 1;
 
     const updatedDeliverable = await this.prisma.$transaction(async (tx) => {
       const version = await tx.deliverableVersion.create({
@@ -73,13 +96,19 @@ export class DeliverablesService {
         },
       });
 
-      const nextStatus = nextVersionNumber === 1 ? DeliverableStatus.SUBMITTED : DeliverableStatus.RESUBMITTED;
+      const nextStatus =
+        nextVersionNumber === 1
+          ? DeliverableStatus.SUBMITTED
+          : DeliverableStatus.RESUBMITTED;
 
       const updated = await tx.deliverable.update({
         where: { id: deliverable.id },
         data: { status: nextStatus },
         include: {
-          versions: { include: { attachments: true, revisions: true }, orderBy: { versionNumber: 'desc' } },
+          versions: {
+            include: { attachments: true, revisions: true },
+            orderBy: { versionNumber: 'desc' },
+          },
         },
       });
 
@@ -88,7 +117,12 @@ export class DeliverablesService {
 
     this.eventEmitter.emit(
       DomainEventName.DELIVERABLE_SUBMITTED,
-      new DeliverableSubmittedEvent(updatedDeliverable.updated.id, updatedDeliverable.version.id, contractId, artisanId),
+      new DeliverableSubmittedEvent(
+        updatedDeliverable.updated.id,
+        updatedDeliverable.version.id,
+        contractId,
+        artisanId,
+      ),
     );
 
     return updatedDeliverable.updated;
@@ -104,7 +138,10 @@ export class DeliverablesService {
       throw new ForbiddenException('Only the client can view this deliverable');
     }
 
-    if (deliverable.status === DeliverableStatus.SUBMITTED || deliverable.status === DeliverableStatus.RESUBMITTED) {
+    if (
+      deliverable.status === DeliverableStatus.SUBMITTED ||
+      deliverable.status === DeliverableStatus.RESUBMITTED
+    ) {
       return this.prisma.deliverable.update({
         where: { id: deliverableId },
         data: { status: DeliverableStatus.UNDER_REVIEW },
@@ -114,18 +151,30 @@ export class DeliverablesService {
     return deliverable;
   }
 
-  async requestRevision(deliverableId: string, clientId: string, dto: RequestRevisionDto) {
+  async requestRevision(
+    deliverableId: string,
+    clientId: string,
+    dto: RequestRevisionDto,
+  ) {
     const deliverable = await this.prisma.deliverable.findUnique({
       where: { id: deliverableId },
-      include: { contract: true, versions: { orderBy: { versionNumber: 'desc' }, take: 1 } },
+      include: {
+        contract: true,
+        versions: { orderBy: { versionNumber: 'desc' }, take: 1 },
+      },
     });
 
     if (!deliverable || deliverable.contract.clientId !== clientId) {
       throw new ForbiddenException('Only the client can request revisions');
     }
 
-    if (deliverable.status === DeliverableStatus.APPROVED || deliverable.status === DeliverableStatus.COMPLETED) {
-      throw new BadRequestException('Cannot request revision on an approved deliverable');
+    if (
+      deliverable.status === DeliverableStatus.APPROVED ||
+      deliverable.status === DeliverableStatus.COMPLETED
+    ) {
+      throw new BadRequestException(
+        'Cannot request revision on an approved deliverable',
+      );
     }
 
     const latestVersion = deliverable.versions[0];
@@ -155,7 +204,13 @@ export class DeliverablesService {
 
     this.eventEmitter.emit(
       DomainEventName.DELIVERABLE_REVISION_REQUESTED,
-      new RevisionRequestedEvent(deliverableId, latestVersion.id, deliverable.contractId, clientId, updatedDeliverable.revision.id),
+      new RevisionRequestedEvent(
+        deliverableId,
+        latestVersion.id,
+        deliverable.contractId,
+        clientId,
+        updatedDeliverable.revision.id,
+      ),
     );
 
     return updatedDeliverable.updated;
@@ -164,11 +219,16 @@ export class DeliverablesService {
   async approve(deliverableId: string, clientId: string) {
     const deliverable = await this.prisma.deliverable.findUnique({
       where: { id: deliverableId },
-      include: { contract: true, versions: { orderBy: { versionNumber: 'desc' }, take: 1 } },
+      include: {
+        contract: true,
+        versions: { orderBy: { versionNumber: 'desc' }, take: 1 },
+      },
     });
 
     if (!deliverable || deliverable.contract.clientId !== clientId) {
-      throw new ForbiddenException('Only the client can approve this deliverable');
+      throw new ForbiddenException(
+        'Only the client can approve this deliverable',
+      );
     }
 
     const latestVersion = deliverable.versions[0];
@@ -191,10 +251,13 @@ export class DeliverablesService {
 
     this.eventEmitter.emit(
       DomainEventName.DELIVERABLE_APPROVED,
-      new DeliverableApprovedEvent(deliverableId, deliverable.contractId, clientId),
+      new DeliverableApprovedEvent(
+        deliverableId,
+        deliverable.contractId,
+        clientId,
+      ),
     );
 
     return updated;
   }
 }
-

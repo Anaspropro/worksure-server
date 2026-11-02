@@ -56,7 +56,6 @@ export class AuthController {
     return this.authService.resendVerification(dto.email);
   }
 
-
   @ApiOperation({ summary: 'Authenticate a user and return a JWT' })
   @ApiCreatedResponse({ description: 'Login successful.' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials.' })

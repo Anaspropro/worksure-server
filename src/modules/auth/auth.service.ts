@@ -19,7 +19,6 @@ import { PrismaService } from '../../database/prisma.service';
 import { EmailService } from '../../common/services/email.service';
 import { EmailProducer } from '../../queue/producer';
 
-
 export type AuthenticatedUser = {
   id: string;
   sub: string;
@@ -79,11 +78,15 @@ export class AuthService {
       name: user.name,
       token: verificationToken,
     }).catch((err) => {
-      this.logger.error(`Failed to enqueue verification email for ${user.email}: ${err.message}`, err.stack);
+      this.logger.error(
+        `Failed to enqueue verification email for ${user.email}: ${err.message}`,
+        err.stack,
+      );
     });
 
     return {
-      message: 'Registration successful. Please check your email to verify your account.',
+      message:
+        'Registration successful. Please check your email to verify your account.',
       data: {
         user: this.usersService.sanitizeUser(user),
       },
@@ -131,7 +134,9 @@ export class AuthService {
     }
 
     if (!user.emailVerified) {
-      throw new UnauthorizedException('Please verify your email before logging in.');
+      throw new UnauthorizedException(
+        'Please verify your email before logging in.',
+      );
     }
 
     // Record successful attempt and clear failed attempts
@@ -241,8 +246,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid verification code.');
     }
 
-    if (email && verificationToken.email.toLowerCase() !== email.toLowerCase()) {
-      throw new UnauthorizedException('Invalid verification code for this email address.');
+    if (
+      email &&
+      verificationToken.email.toLowerCase() !== email.toLowerCase()
+    ) {
+      throw new UnauthorizedException(
+        'Invalid verification code for this email address.',
+      );
     }
 
     if (new Date() > verificationToken.expiresAt) {
@@ -278,7 +288,8 @@ export class AuthService {
     if (!user) {
       // Prevent user enumeration by returning a generic success message
       return {
-        message: 'If the email is registered, a new verification code has been sent.',
+        message:
+          'If the email is registered, a new verification code has been sent.',
       };
     }
 
@@ -311,7 +322,10 @@ export class AuthService {
       name: user.name,
       token: verificationToken,
     }).catch((err) => {
-      this.logger.error(`Failed to enqueue verification email for ${user.email} on resend: ${err.message}`, err.stack);
+      this.logger.error(
+        `Failed to enqueue verification email for ${user.email} on resend: ${err.message}`,
+        err.stack,
+      );
     });
 
     return {
@@ -357,7 +371,10 @@ export class AuthService {
       name: user.name,
       token: rawToken,
     }).catch((err) => {
-      this.logger.error(`Failed to enqueue password reset email for ${user.email}: ${err.message}`, err.stack);
+      this.logger.error(
+        `Failed to enqueue password reset email for ${user.email}: ${err.message}`,
+        err.stack,
+      );
     });
 
     const response: {
@@ -366,8 +383,7 @@ export class AuthService {
         resetToken: string;
       };
     } = {
-      message:
-        'A password reset link has been sent to your email address.',
+      message: 'A password reset link has been sent to your email address.',
     };
 
     if (process.env.NODE_ENV === 'test') {

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuditService } from './audit.service';
 import { PrismaService } from '../../database/prisma.service';
+import { RedactionService } from './redaction.service';
 
 describe('AuditService', () => {
   let service: AuditService;
@@ -11,11 +12,18 @@ describe('AuditService', () => {
       providers: [
         AuditService,
         {
+          provide: RedactionService,
+          useValue: {
+            redact: jest.fn((val) => val),
+          },
+        },
+        {
           provide: PrismaService,
           useValue: {
-            auditLog: {
+            auditEvent: {
               findMany: jest.fn(),
               count: jest.fn(),
+              create: jest.fn(),
             },
           },
         },
@@ -30,35 +38,39 @@ describe('AuditService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAuditLogs', () => {
-    it('should call prisma.auditLog.findMany with correct parameters', async () => {
+  describe('getAuditEvents', () => {
+    it('should call prisma.auditEvent.findMany with correct parameters', async () => {
       const mockParams = {
         skip: 0,
         take: 10,
         where: { action: 'LOGIN' },
-        orderBy: { performedAt: 'desc' },
+        orderBy: { timestamp: 'desc' as const },
       };
 
       const mockLogs = [{ id: '1', action: 'LOGIN' }];
-      jest.spyOn(prisma.auditLog, 'findMany').mockResolvedValue(mockLogs as any);
+      jest
+        .spyOn(prisma.auditEvent, 'findMany')
+        .mockResolvedValue(mockLogs as any);
 
-      const result = await service.getAuditLogs(mockParams);
+      const result = await service.getAuditEvents(mockParams);
 
-      expect(prisma.auditLog.findMany).toHaveBeenCalledWith(mockParams);
+      expect(prisma.auditEvent.findMany).toHaveBeenCalledWith(mockParams);
       expect(result).toEqual(mockLogs);
     });
   });
 
-  describe('countAuditLogs', () => {
-    it('should call prisma.auditLog.count with correct parameters', async () => {
+  describe('countAuditEvents', () => {
+    it('should call prisma.auditEvent.count with correct parameters', async () => {
       const mockWhere = { action: 'LOGIN' };
       const mockCount = 5;
 
-      jest.spyOn(prisma.auditLog, 'count').mockResolvedValue(mockCount);
+      jest.spyOn(prisma.auditEvent, 'count').mockResolvedValue(mockCount);
 
-      const result = await service.countAuditLogs(mockWhere);
+      const result = await service.countAuditEvents(mockWhere);
 
-      expect(prisma.auditLog.count).toHaveBeenCalledWith({ where: mockWhere });
+      expect(prisma.auditEvent.count).toHaveBeenCalledWith({
+        where: mockWhere,
+      });
       expect(result).toBe(mockCount);
     });
   });

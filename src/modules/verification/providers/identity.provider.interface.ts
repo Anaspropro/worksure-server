@@ -12,8 +12,15 @@ export interface VerificationResult {
 }
 
 export interface IdentityVerificationProvider {
-  initiateVerification(userId: string, email: string): Promise<VerificationSession>;
-  verifyWebhookSignature(payload: any, signature: string, secret: string): boolean;
+  initiateVerification(
+    userId: string,
+    email: string,
+  ): Promise<VerificationSession>;
+  verifyWebhookSignature(
+    payload: any,
+    signature: string,
+    secret: string,
+  ): boolean;
   parseWebhook(payload: any): VerificationResult;
   getVerificationStatus(reference: string): Promise<VerificationResult>;
 }

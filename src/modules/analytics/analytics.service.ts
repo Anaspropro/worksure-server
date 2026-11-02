@@ -35,13 +35,17 @@ export class AnalyticsService {
     private readonly cacheService: RedisCacheService,
   ) {}
 
-  async generateReports(reportType: ReportType = 'overview', month?: string, force = false) {
+  async generateReports(
+    reportType: ReportType = 'overview',
+    month?: string,
+    force = false,
+  ) {
     if (!REPORT_TYPES.includes(reportType)) {
       throw new BadRequestException(`Unsupported report type: ${reportType}.`);
     }
 
     const cacheKey = `analytics:report:${reportType}:${month ?? 'all'}:v3`;
-    
+
     if (!force) {
       const cached = await this.cacheService.get<any>(cacheKey);
 
@@ -51,7 +55,9 @@ export class AnalyticsService {
       }
     }
 
-    this.logger.debug(`Cache miss/force for ${cacheKey}, executing heavy queries...`);
+    this.logger.debug(
+      `Cache miss/force for ${cacheKey}, executing heavy queries...`,
+    );
     let reportData: Record<string, unknown>;
 
     switch (reportType) {
@@ -68,7 +74,7 @@ export class AnalyticsService {
           filters: { month: month ?? '2026-03' },
           totals: {
             jobsCreated: Object.values(statusMap).reduce(
-              (sum, c) => sum + (c as number),
+              (sum, c) => sum + c,
               0,
             ),
             inProgress: statusMap[JobStatus.IN_PROGRESS] ?? 0,
@@ -131,9 +137,7 @@ export class AnalyticsService {
                 select: { id: true, name: true, artisanVerified: true },
               })
             : [];
-        const artisanMap = new Map(
-          artisanUsers.map((u) => [u.id, u]),
-        );
+        const artisanMap = new Map(artisanUsers.map((u) => [u.id, u]));
         reportData = {
           reportType: 'top_artisans',
           data: leaderboard.map((entry) => {
@@ -161,46 +165,49 @@ export class AnalyticsService {
         ];
 
         const [
-          userCount, 
-          jobStatusGroups, 
-          openDisputes, 
-          feeTotal, 
-          flaggedJobs, 
-          pendingArtisansCount, 
+          userCount,
+          jobStatusGroups,
+          openDisputes,
+          feeTotal,
+          flaggedJobs,
+          pendingArtisansCount,
           pendingPayoutsCount,
           walletAgg,
-          escrowAgg
+          escrowAgg,
         ] = await Promise.all([
-            this.prisma.user.count(),
-            this.prisma.job.groupBy({
-              by: ['status'],
-              _count: { id: true },
-            }),
-            this.prisma.dispute.count({
-              where: { status: DisputeStatus.OPEN },
-            }),
-            this.prisma.transaction.aggregate({
-              where: { type: TransactionType.PLATFORM_FEE },
-              _sum: { amount: true },
-            }),
-            this.prisma.job.count({ where: { flagged: true } }),
-            this.prisma.user.count({ where: { role: UserRole.ARTISAN, artisanVerified: false } }),
-            this.prisma.contract.count({ where: { status: 'READY_FOR_PAYOUT' } }),
-            this.prisma.ledgerAccount.aggregate({
-              where: { type: 'USER_WALLET' },
-              _sum: { balance: true },
-            }),
-            this.prisma.contract.aggregate({
-              where: { status: { in: escrowStatuses as any } },
-              _sum: { amount: true },
-            }),
-          ]);
+          this.prisma.user.count(),
+          this.prisma.job.groupBy({
+            by: ['status'],
+            _count: { id: true },
+          }),
+          this.prisma.dispute.count({
+            where: { status: DisputeStatus.OPEN },
+          }),
+          this.prisma.transaction.aggregate({
+            where: { type: TransactionType.PLATFORM_FEE },
+            _sum: { amount: true },
+          }),
+          this.prisma.job.count({ where: { flagged: true } }),
+          this.prisma.user.count({
+            where: { role: UserRole.ARTISAN, artisanVerified: false },
+          }),
+          this.prisma.contract.count({ where: { status: 'READY_FOR_PAYOUT' } }),
+          this.prisma.ledgerAccount.aggregate({
+            where: { type: 'USER_WALLET' },
+            _sum: { balance: true },
+          }),
+          this.prisma.contract.aggregate({
+            where: { status: { in: escrowStatuses as any } },
+            _sum: { amount: true },
+          }),
+        ]);
         const jobMap = Object.fromEntries(
           jobStatusGroups.map((s) => [s.status, s._count.id]),
         );
         // Combine wallet balances and escrowed funds
-        const totalSystemValue = (walletAgg._sum.balance ?? 0) + (escrowAgg._sum.amount ?? 0);
-        
+        const totalSystemValue =
+          (walletAgg._sum.balance ?? 0) + (escrowAgg._sum.amount ?? 0);
+
         reportData = {
           reportType: 'overview',
           totals: {
@@ -228,17 +235,21 @@ export class AnalyticsService {
     await this.cacheService.set(cacheKey, result, 2 * 60 * 1000);
 
     // Perform audit logging asynchronously to avoid blocking the response
-    this.prisma.auditLog.create({
-      data: {
-        id: uuidv7(),
-        action: 'REPORT_GENERATED',
-        entityType: AuditEntityType.REPORT,
-        entityId: reportType,
-        performedBy: 'system',
-        performedAt: new Date(),
-        metadata: { reportType, month } as any,
-      },
-    }).catch(err => this.logger.error(`Failed to log audit action: ${err.message}`));
+    this.prisma.auditLog
+      .create({
+        data: {
+          id: uuidv7(),
+          action: 'REPORT_GENERATED',
+          entityType: AuditEntityType.REPORT,
+          entityId: reportType,
+          performedBy: 'system',
+          performedAt: new Date(),
+          metadata: { reportType, month } as any,
+        },
+      })
+      .catch((err) =>
+        this.logger.error(`Failed to log audit action: ${err.message}`),
+      );
 
     return result;
   }

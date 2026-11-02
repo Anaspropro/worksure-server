@@ -14,9 +14,7 @@ import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 async function bootstrap() {
   Sentry.init({
     dsn: process.env.SENTRY_DSN || '',
-    integrations: [
-      nodeProfilingIntegration(),
-    ],
+    integrations: [nodeProfilingIntegration()],
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
   });
@@ -25,6 +23,7 @@ async function bootstrap() {
     rawBody: true,
     bufferLogs: true,
   });
+  app.enableShutdownHooks();
   app.useLogger(app.get(Logger));
   app.useGlobalInterceptors(
     new LoggerErrorInterceptor(),

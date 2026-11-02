@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": false,
     "useUnknownInCatchVariables": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*"]
 }

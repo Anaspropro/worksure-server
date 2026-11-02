@@ -46,7 +46,10 @@ describe('Contracts FSM (State Machine)', () => {
       { from: ContractStatus.FUNDED, to: ContractStatus.ACTIVE },
       { from: ContractStatus.ACTIVE, to: ContractStatus.IN_PROGRESS },
       { from: ContractStatus.IN_PROGRESS, to: ContractStatus.CLIENT_CONFIRMED },
-      { from: ContractStatus.CLIENT_CONFIRMED, to: ContractStatus.READY_FOR_PAYOUT },
+      {
+        from: ContractStatus.CLIENT_CONFIRMED,
+        to: ContractStatus.READY_FOR_PAYOUT,
+      },
       { from: ContractStatus.READY_FOR_PAYOUT, to: ContractStatus.PAID_OUT },
       { from: ContractStatus.ACTIVE, to: ContractStatus.DISPUTED },
       { from: ContractStatus.DISPUTED, to: ContractStatus.REFUNDED },
@@ -61,13 +64,17 @@ describe('Contracts FSM (State Machine)', () => {
 
     validTransitions.forEach(({ from, to }) => {
       it(`should allow transition from ${from} to ${to}`, () => {
-        expect(() => (service as any).validateStateTransition(from, to)).not.toThrow();
+        expect(() =>
+          (service as any).validateStateTransition(from, to),
+        ).not.toThrow();
       });
     });
 
     invalidTransitions.forEach(({ from, to }) => {
       it(`should NOT allow transition from ${from} to ${to}`, () => {
-        expect(() => (service as any).validateStateTransition(from, to)).toThrow(BadRequestException);
+        expect(() =>
+          (service as any).validateStateTransition(from, to),
+        ).toThrow(BadRequestException);
       });
     });
   });

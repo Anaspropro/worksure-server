@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Query, Param, UseGuards, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Param,
+  UseGuards,
+  Res,
+} from '@nestjs/common';
 import { AuditService } from './audit.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -67,13 +75,20 @@ export class AuditController {
       orderBy: { timestamp: 'desc' },
     });
 
-    const csvHeaders = 'ID,Timestamp,Domain,Action,ActorType,ActorId,TargetType,TargetId,CorrelationId,Severity\n';
-    const csvRows = data.map(evt => 
-      `${evt.id},${evt.timestamp.toISOString()},${evt.domain},${evt.action},${evt.actorType},${evt.actorId || ''},${evt.targetType},${evt.targetId},${evt.correlationId},${evt.severity}`
-    ).join('\n');
+    const csvHeaders =
+      'ID,Timestamp,Domain,Action,ActorType,ActorId,TargetType,TargetId,CorrelationId,Severity\n';
+    const csvRows = data
+      .map(
+        (evt) =>
+          `${evt.id},${evt.timestamp.toISOString()},${evt.domain},${evt.action},${evt.actorType},${evt.actorId || ''},${evt.targetType},${evt.targetId},${evt.correlationId},${evt.severity}`,
+      )
+      .join('\n');
 
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=audit-export.csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=audit-export.csv',
+    );
     res.send(csvHeaders + csvRows);
   }
 }

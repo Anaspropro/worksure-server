@@ -1,4 +1,9 @@
-import { Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import * as Sentry from '@sentry/nestjs';
 import { AlertingService } from '../../modules/monitoring/alerting.service';
@@ -7,7 +12,7 @@ import { AlertingService } from '../../modules/monitoring/alerting.service';
 export class SentryFilter extends BaseExceptionFilter {
   constructor(
     applicationRef: any,
-    private alertingService: AlertingService
+    private alertingService: AlertingService,
   ) {
     super(applicationRef);
   }
@@ -20,15 +25,18 @@ export class SentryFilter extends BaseExceptionFilter {
 
     if (status >= 500) {
       Sentry.captureException(exception);
-      const errorMsg = exception instanceof Error ? exception.message : 'Unknown exception';
+      const errorMsg =
+        exception instanceof Error ? exception.message : 'Unknown exception';
       const stack = exception instanceof Error ? exception.stack : undefined;
-      
-      this.alertingService.sendFatalAlert(
-        'unhandled_exception',
-        'Unhandled Exception (500)',
-        `An unhandled exception occurred: ${errorMsg}`,
-        { stack, status }
-      ).catch(() => {}); // Fire and forget
+
+      this.alertingService
+        .sendFatalAlert(
+          'unhandled_exception',
+          'Unhandled Exception (500)',
+          `An unhandled exception occurred: ${errorMsg}`,
+          { stack, status },
+        )
+        .catch(() => {}); // Fire and forget
     }
 
     super.catch(exception, host);

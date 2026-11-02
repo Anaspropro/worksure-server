@@ -53,10 +53,14 @@ export class SessionService {
     try {
       // Use a pipeline to ensure atomic creation of session and user-session mapping
       const pipeline = redisConnection.pipeline();
-      
+
       // Store the session data
-      pipeline.setex(`auth:session:${sessionId}`, SESSION_TTL_SECONDS, JSON.stringify(sessionData));
-      
+      pipeline.setex(
+        `auth:session:${sessionId}`,
+        SESSION_TTL_SECONDS,
+        JSON.stringify(sessionData),
+      );
+
       // Add sessionId to the user's active sessions set
       pipeline.sadd(`auth:user_sessions:${userId}`, sessionId);
       // Ensure the set expires eventually to prevent orphaned data if a session isn't cleanly removed
@@ -66,10 +70,15 @@ export class SessionService {
 
       // Emit domain event
       this.eventEmitter.emit('session.created', sessionData);
-      
+
       // Observability layer
-      this.logger.log({ event: 'session.created', userId, sessionId, ipAddress });
-      
+      this.logger.log({
+        event: 'session.created',
+        userId,
+        sessionId,
+        ipAddress,
+      });
+
       return sessionId;
     } catch (e) {
       this.logger.error(`Redis failure in createSession: ${e.message}`);
@@ -85,7 +94,7 @@ export class SessionService {
   async validateSession(sessionId: string): Promise<SessionData | null> {
     try {
       const sessionStr = await redisConnection.get(`auth:session:${sessionId}`);
-      
+
       if (!sessionStr) {
         return null; // Session expired or does not exist
       }
@@ -95,13 +104,22 @@ export class SessionService {
 
       // Slide the session expiry
       const pipeline = redisConnection.pipeline();
-      pipeline.setex(`auth:session:${sessionId}`, SESSION_TTL_SECONDS, JSON.stringify(sessionData));
-      pipeline.expire(`auth:user_sessions:${sessionData.userId}`, SESSION_TTL_SECONDS);
+      pipeline.setex(
+        `auth:session:${sessionId}`,
+        SESSION_TTL_SECONDS,
+        JSON.stringify(sessionData),
+      );
+      pipeline.expire(
+        `auth:user_sessions:${sessionData.userId}`,
+        SESSION_TTL_SECONDS,
+      );
       await pipeline.exec();
 
       return sessionData;
     } catch (error) {
-      this.logger.error(`Redis failure or parsing error in validateSession: ${error.message}`);
+      this.logger.error(
+        `Redis failure or parsing error in validateSession: ${error.message}`,
+      );
       // Fail closed
       return null;
     }
@@ -122,9 +140,16 @@ export class SessionService {
       await pipeline.exec();
 
       // Emit domain event
-      this.eventEmitter.emit('session.revoked', { sessionId, userId: sessionData.userId });
+      this.eventEmitter.emit('session.revoked', {
+        sessionId,
+        userId: sessionData.userId,
+      });
       // Observability layer
-      this.logger.log({ event: 'session.revoked', sessionId, userId: sessionData.userId });
+      this.logger.log({
+        event: 'session.revoked',
+        sessionId,
+        userId: sessionData.userId,
+      });
 
       return true;
     } catch (e) {
@@ -138,19 +163,25 @@ export class SessionService {
    */
   async invalidateUserSessions(userId: string): Promise<number> {
     try {
-      const sessionIds = await redisConnection.smembers(`auth:user_sessions:${userId}`);
-      
+      const sessionIds = await redisConnection.smembers(
+        `auth:user_sessions:${userId}`,
+      );
+
       if (sessionIds.length === 0) return 0;
 
       const pipeline = redisConnection.pipeline();
-      sessionIds.forEach(id => pipeline.del(`auth:session:${id}`));
+      sessionIds.forEach((id) => pipeline.del(`auth:session:${id}`));
       pipeline.del(`auth:user_sessions:${userId}`);
       await pipeline.exec();
 
-      sessionIds.forEach(id => {
+      sessionIds.forEach((id) => {
         this.eventEmitter.emit('session.revoked', { sessionId: id, userId });
       });
-      this.logger.log({ event: 'session.revoked.bulk', userId, count: sessionIds.length });
+      this.logger.log({
+        event: 'session.revoked.bulk',
+        userId,
+        count: sessionIds.length,
+      });
 
       return sessionIds.length;
     } catch (e) {
@@ -164,11 +195,15 @@ export class SessionService {
    */
   async getUserSessions(userId: string): Promise<SessionData[]> {
     try {
-      const sessionIds = await redisConnection.smembers(`auth:user_sessions:${userId}`);
+      const sessionIds = await redisConnection.smembers(
+        `auth:user_sessions:${userId}`,
+      );
       if (sessionIds.length === 0) return [];
 
-      const sessionStrings = await redisConnection.mget(sessionIds.map(id => `auth:session:${id}`));
-      
+      const sessionStrings = await redisConnection.mget(
+        sessionIds.map((id) => `auth:session:${id}`),
+      );
+
       const sessions: SessionData[] = [];
       const expiredIds: string[] = [];
 
@@ -178,13 +213,23 @@ export class SessionService {
         } else {
           // Track orphaned IDs in the user set to clean them up
           expiredIds.push(sessionIds[index]);
-          this.eventEmitter.emit('session.expired', { sessionId: sessionIds[index], userId });
+          this.eventEmitter.emit('session.expired', {
+            sessionId: sessionIds[index],
+            userId,
+          });
         }
       });
 
       if (expiredIds.length > 0) {
-        await redisConnection.srem(`auth:user_sessions:${userId}`, ...expiredIds);
-        this.logger.log({ event: 'session.expired.cleanup', userId, count: expiredIds.length });
+        await redisConnection.srem(
+          `auth:user_sessions:${userId}`,
+          ...expiredIds,
+        );
+        this.logger.log({
+          event: 'session.expired.cleanup',
+          userId,
+          count: expiredIds.length,
+        });
       }
 
       return sessions.sort((a, b) => b.lastActivity - a.lastActivity);

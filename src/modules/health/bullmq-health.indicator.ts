@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { HealthIndicator, HealthIndicatorResult, HealthCheckError } from '@nestjs/terminus';
+import {
+  HealthIndicator,
+  HealthIndicatorResult,
+  HealthCheckError,
+} from '@nestjs/terminus';
 import { emailQueue, payoutQueue, escrowQueue } from '../../queue/queue';
 
 @Injectable()
@@ -16,13 +20,15 @@ export class BullMQHealthIndicator extends HealthIndicator {
 
     for (const { name, queue } of queues) {
       try {
-        const [active, waiting, completed, failed, delayed] = await Promise.all([
-          queue.getActiveCount(),
-          queue.getWaitingCount(),
-          queue.getCompletedCount(),
-          queue.getFailedCount(),
-          queue.getDelayedCount(),
-        ]);
+        const [active, waiting, completed, failed, delayed] = await Promise.all(
+          [
+            queue.getActiveCount(),
+            queue.getWaitingCount(),
+            queue.getCompletedCount(),
+            queue.getFailedCount(),
+            queue.getDelayedCount(),
+          ],
+        );
 
         // Get the oldest waiting job to calculate lag
         const jobs = await queue.getJobs(['waiting'], 0, 0, true);

@@ -21,8 +21,13 @@ export class UploadController {
   constructor(private readonly mediaService: MediaService) {}
 
   @Post('signed-params')
-  @ApiOperation({ summary: 'Get signed upload parameters for direct Cloudinary upload' })
-  @ApiResponse({ status: 200, description: 'Signed parameters generated successfully' })
+  @ApiOperation({
+    summary: 'Get signed upload parameters for direct Cloudinary upload',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Signed parameters generated successfully',
+  })
   async getSignedParams() {
     return this.mediaService.getSignedUploadParams();
   }

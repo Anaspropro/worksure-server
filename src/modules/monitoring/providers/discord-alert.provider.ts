@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AlertProvider, AlertPayload, RecoveryPayload } from '../alert-provider.interface';
+import {
+  AlertProvider,
+  AlertPayload,
+  RecoveryPayload,
+} from '../alert-provider.interface';
 import { AppConfigService } from '../../../config/app-config.service';
 
 @Injectable()
@@ -48,7 +52,10 @@ export class DiscordAlertProvider implements AlertProvider {
     if (payload.metadata && Object.keys(payload.metadata).length > 0) {
       embed.fields.push({
         name: 'Metadata',
-        value: '```json\n' + JSON.stringify(payload.metadata, null, 2).substring(0, 1000) + '\n```',
+        value:
+          '```json\n' +
+          JSON.stringify(payload.metadata, null, 2).substring(0, 1000) +
+          '\n```',
         inline: false,
       });
     }
@@ -58,7 +65,7 @@ export class DiscordAlertProvider implements AlertProvider {
       value: `\`${payload.incidentKey}\``,
       inline: true,
     });
-    
+
     embed.fields.push({
       name: 'Severity',
       value: `\`${payload.severity.toUpperCase()}\``,
@@ -73,7 +80,7 @@ export class DiscordAlertProvider implements AlertProvider {
     const seconds = Math.floor((payload.downtimeMs / 1000) % 60);
     const minutes = Math.floor((payload.downtimeMs / (1000 * 60)) % 60);
     const hours = Math.floor(payload.downtimeMs / (1000 * 60 * 60));
-    
+
     const downtimeParts: string[] = [];
     if (hours > 0) downtimeParts.push(`${hours}h`);
     if (minutes > 0) downtimeParts.push(`${minutes}m`);
@@ -95,7 +102,7 @@ export class DiscordAlertProvider implements AlertProvider {
           name: 'Downtime',
           value: `\`${formattedDowntime}\``,
           inline: true,
-        }
+        },
       ],
     };
 

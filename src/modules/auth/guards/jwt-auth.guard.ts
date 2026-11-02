@@ -42,11 +42,11 @@ export class JwtAuthGuard implements CanActivate {
 
     const token = authHeader.slice(7).trim();
     request.user = await this.authService.verifyAccessToken(token);
-    
+
     if (request.user?.id) {
       this.cls.set('userId', request.user.id);
     }
-    
+
     return true;
   }
 }

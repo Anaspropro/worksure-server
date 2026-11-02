@@ -39,7 +39,7 @@ export class KycService {
       import('@nestjs/common').then(({ Logger }) => {
         Logger.warn(
           `[DEV MODE] Bypassing Paystack BVN match for ${bvn}. Assuming identity is verified.`,
-          'KycService'
+          'KycService',
         );
       });
     } else {
@@ -52,13 +52,17 @@ export class KycService {
         });
 
         if (!matchData?.is_match) {
-          throw new BadRequestException('Identity verification failed. Information does not match.');
+          throw new BadRequestException(
+            'Identity verification failed. Information does not match.',
+          );
         }
       } catch (error: any) {
         if (error instanceof BadRequestException) {
           throw error;
         }
-        throw new BadRequestException('Failed to verify identity with Paystack.');
+        throw new BadRequestException(
+          'Failed to verify identity with Paystack.',
+        );
       }
     }
 
@@ -72,7 +76,8 @@ export class KycService {
     });
 
     return {
-      message: 'Identity verified successfully. Please upload required documents.',
+      message:
+        'Identity verified successfully. Please upload required documents.',
       // kycStatus: KycVerificationStatus.PENDING,
     };
   }
@@ -85,7 +90,14 @@ export class KycService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    if (!documentUrl) throw new BadRequestException('documentUrl is required.');
+    if (
+      !documentUrl ||
+      !/^https:\/\/res\.cloudinary\.com\/[a-zA-Z0-9_-]+\//.test(documentUrl)
+    ) {
+      throw new BadRequestException(
+        'documentUrl must originate from the approved Cloudinary storage domain',
+      );
+    }
 
     const kycDoc = await this.prisma.kycDocument.create({
       data: {
@@ -110,7 +122,7 @@ export class KycService {
       },
     });
     if (!user) throw new NotFoundException('User not found');
-    
+
     return {
       // kycStatus: user.kycStatus,
       // kycVerified: user.kycVerified,

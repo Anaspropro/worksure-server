@@ -1,7 +1,20 @@
-import { Controller, Get, Post, Param, Query, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Query,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TaxonomyService } from './taxonomy.service';
-import { CategoryResponseDto, SkillResponseDto, SuggestCategoryDto, CategorySuggestionResponseDto } from './dto/taxonomy.dto';
+import {
+  CategoryResponseDto,
+  SkillResponseDto,
+  SuggestCategoryDto,
+  CategorySuggestionResponseDto,
+} from './dto/taxonomy.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 

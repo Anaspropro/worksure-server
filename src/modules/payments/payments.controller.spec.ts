@@ -36,8 +36,14 @@ describe('PaymentsController', () => {
       controllers: [PaymentsController],
       providers: [
         { provide: PaymentsService, useValue: mockPaymentsService },
-        { provide: WebhookSignatureService, useValue: mockWebhookSignatureService },
-        { provide: PaystackWebhookService, useValue: mockPaystackWebhookService },
+        {
+          provide: WebhookSignatureService,
+          useValue: mockWebhookSignatureService,
+        },
+        {
+          provide: PaystackWebhookService,
+          useValue: mockPaystackWebhookService,
+        },
         { provide: PrismaService, useValue: mockPrismaService },
       ],
     })
@@ -71,7 +77,10 @@ describe('PaymentsController', () => {
         sessionId: 'session-client',
       };
 
-      mockPaymentsService.completeContract.mockResolvedValue({ id: 'contract-123', status: 'COMPLETED' });
+      mockPaymentsService.completeContract.mockResolvedValue({
+        id: 'contract-123',
+        status: 'COMPLETED',
+      });
 
       const result = await controller.completeContract(mockUser, mockDto);
 
@@ -92,7 +101,10 @@ describe('PaymentsController', () => {
         sessionId: 'session-artisan',
       };
 
-      mockPaymentsService.completeContract.mockResolvedValue({ id: 'contract-123', status: 'COMPLETED' });
+      mockPaymentsService.completeContract.mockResolvedValue({
+        id: 'contract-123',
+        status: 'COMPLETED',
+      });
 
       await controller.completeContract(mockUser, mockDto);
 

@@ -3,12 +3,17 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  ConflictException,
   OnModuleInit,
   OnModuleDestroy,
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { TransactionType, TransactionStatus } from '../../generated/prisma';
+import {
+  TransactionType,
+  TransactionStatus,
+  Prisma,
+} from '../../generated/prisma';
 import { v7 as uuidv7 } from 'uuid';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { Worker } from 'bullmq';
@@ -31,10 +36,14 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   onModuleInit() {
-    this.payoutWorker = new Worker('payout-queue', async (job) => {
-      const { transactionId, adminId } = job.data;
-      await this.executePayoutTask(adminId, transactionId);
-    }, { connection: redisConnection.duplicate() as any });
+    this.payoutWorker = new Worker(
+      'payout-queue',
+      async (job) => {
+        const { transactionId, adminId } = job.data;
+        await this.executePayoutTask(adminId, transactionId);
+      },
+      { connection: redisConnection.duplicate() },
+    );
 
     this.payoutWorker.on('failed', (job, err) => {
       console.error(`[Payout Worker] Job ${job?.id} failed:`, err);
@@ -45,6 +54,36 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     if (this.payoutWorker) {
       await this.payoutWorker.close();
     }
+  }
+
+  private async executeWithOptimisticLockingRetry<T>(
+    operation: () => Promise<T>,
+    maxRetries = 3,
+  ): Promise<T> {
+    let retries = maxRetries;
+    while (retries > 0) {
+      try {
+        return await operation();
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === 'P2025'
+        ) {
+          retries--;
+          if (retries === 0) {
+            throw new ConflictException(
+              'Concurrent wallet modification detected. Please retry your request.',
+            );
+          }
+          await new Promise((resolve) =>
+            setTimeout(resolve, 50 * Math.pow(2, maxRetries - retries)),
+          );
+          continue;
+        }
+        throw error;
+      }
+    }
+    throw new ConflictException('Concurrent wallet modification detected.');
   }
 
   // In-memory cache for Paystack dedicated account data
@@ -126,10 +165,16 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     const existingAccount = await this.getExistingDedicatedAccount(user.email);
     if (existingAccount) {
-      await this.prisma.ledgerAccount.update({
-        where: { id: wallet.id },
-        data: { metadata: existingAccount as any },
-      }).catch(err => this.logger.error(`Failed to store existing virtual account in metadata: ${err.message}`));
+      await this.prisma.ledgerAccount
+        .update({
+          where: { id: wallet.id },
+          data: { metadata: existingAccount as any },
+        })
+        .catch((err) =>
+          this.logger.error(
+            `Failed to store existing virtual account in metadata: ${err.message}`,
+          ),
+        );
       return existingAccount;
     }
 
@@ -157,7 +202,9 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       { graceful: true },
     );
 
-    const mappedAccount = this.mapDedicatedAccount(assignData?.dedicated_account) ??
+    const mappedAccount = this.mapDedicatedAccount(
+      assignData?.dedicated_account,
+    ) ??
       this.mapDedicatedAccount(assignData) ?? {
         accountNumber: null,
         accountName: user.name,
@@ -166,10 +213,16 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       };
 
     if (mappedAccount.accountNumber) {
-      await this.prisma.ledgerAccount.update({
-        where: { id: wallet.id },
-        data: { metadata: mappedAccount as any },
-      }).catch(err => this.logger.error(`Failed to store newly assigned virtual account in metadata: ${err.message}`));
+      await this.prisma.ledgerAccount
+        .update({
+          where: { id: wallet.id },
+          data: { metadata: mappedAccount as any },
+        })
+        .catch((err) =>
+          this.logger.error(
+            `Failed to store newly assigned virtual account in metadata: ${err.message}`,
+          ),
+        );
     }
 
     return mappedAccount;
@@ -180,13 +233,13 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     if (cached && cached.expiresAt > Date.now()) {
       return cached.data;
     }
-    
+
     const virtualAccount = await this.ensureDedicatedAccount(userId);
     this.dedicatedAccountCache.set(userId, {
       data: virtualAccount,
       expiresAt: Date.now() + this.CACHE_TTL_MS,
     });
-    
+
     return virtualAccount;
   }
 
@@ -308,7 +361,12 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     };
   }
 
-  async initiateWalletDeposit(userId: string, amount: number, email: string, callbackUrl?: string) {
+  async initiateWalletDeposit(
+    userId: string,
+    amount: number,
+    email: string,
+    callbackUrl?: string,
+  ) {
     if (amount <= 0) throw new BadRequestException('Amount must be positive');
 
     const reference = `wallet_deposit_${uuidv7()}`;
@@ -323,7 +381,7 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
         amount: Math.round(amount * 100),
         email,
         reference,
-        callback_url: callbackUrl || `${process.env.APP_URL}/dashboard`, 
+        callback_url: callbackUrl || `${process.env.APP_URL}/dashboard`,
         metadata: {
           type: 'wallet_deposit',
           userId,
@@ -370,8 +428,14 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     const txUserId = transaction.userId;
 
     if (transaction.status === TransactionStatus.COMPLETED) {
-      const wallet = await this.prisma.ledgerAccount.findUnique({ where: { userId: txUserId } });
-      return { message: 'Deposit already verified', balance: wallet?.balance ?? 0, transaction };
+      const wallet = await this.prisma.ledgerAccount.findUnique({
+        where: { userId: txUserId },
+      });
+      return {
+        message: 'Deposit already verified',
+        balance: wallet?.balance ?? 0,
+        transaction,
+      };
     }
 
     const paystackData = await this.paystackClient.call<{
@@ -385,84 +449,94 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     if (paystackData.status !== 'success') {
       await this.prisma.transaction.update({
         where: { id: transaction.id },
-        data: { status: TransactionStatus.FAILED, metadata: { ...(transaction.metadata as any), error: paystackData.gateway_response } },
+        data: {
+          status: TransactionStatus.FAILED,
+          metadata: {
+            ...(transaction.metadata as any),
+            error: paystackData.gateway_response,
+          },
+        },
       });
-      throw new BadRequestException(`Payment failed: ${paystackData.gateway_response}`);
+      throw new BadRequestException(
+        `Payment failed: ${paystackData.gateway_response}`,
+      );
     }
 
     const verifiedAmount = Math.round(paystackData.amount / 100);
 
-    const result = await this.prisma.$transaction(async (tx) => {
-      const completedTx = await tx.transaction.update({
-        where: { id: transaction.id },
-        data: {
-          status: TransactionStatus.COMPLETED,
-          amount: verifiedAmount,
-          completedAt: new Date(),
-          metadata: {
-            ...(transaction.metadata as any),
-            verified: true,
-          },
-        },
-      });
-
-      let externalBank = await tx.ledgerAccount.findFirst({
-        where: { type: 'EXTERNAL_BANK' },
-      });
-      if (!externalBank) {
-        externalBank = await tx.ledgerAccount.create({
+    const result = await this.executeWithOptimisticLockingRetry(async () => {
+      return this.prisma.$transaction(async (tx) => {
+        const completedTx = await tx.transaction.update({
+          where: { id: transaction.id },
           data: {
-            id: uuidv7(),
-            name: 'External Bank Account',
-            type: 'EXTERNAL_BANK',
-            balance: 0,
-            frozen: 0,
-            version: 1,
+            status: TransactionStatus.COMPLETED,
+            amount: verifiedAmount,
+            completedAt: new Date(),
+            metadata: {
+              ...(transaction.metadata as any),
+              verified: true,
+            },
           },
         });
-      }
 
-      let userWallet = await tx.ledgerAccount.findUnique({
-        where: { userId: txUserId },
-      });
-      if (!userWallet) {
-        userWallet = await tx.ledgerAccount.create({
+        let externalBank = await tx.ledgerAccount.findFirst({
+          where: { type: 'EXTERNAL_BANK' },
+        });
+        if (!externalBank) {
+          externalBank = await tx.ledgerAccount.create({
+            data: {
+              id: uuidv7(),
+              name: 'External Bank Account',
+              type: 'EXTERNAL_BANK',
+              balance: 0,
+              frozen: 0,
+              version: 1,
+            },
+          });
+        }
+
+        let userWallet = await tx.ledgerAccount.findUnique({
+          where: { userId: txUserId },
+        });
+        if (!userWallet) {
+          userWallet = await tx.ledgerAccount.create({
+            data: {
+              id: uuidv7(),
+              name: 'User Wallet',
+              type: 'USER_WALLET',
+              userId: txUserId,
+              balance: 0,
+              frozen: 0,
+              version: 1,
+            },
+          });
+        }
+
+        const updatedUserWallet = await tx.ledgerAccount.update({
+          where: { id: userWallet.id, version: userWallet.version },
           data: {
-            id: uuidv7(),
-            name: 'User Wallet',
-            type: 'USER_WALLET',
-            userId: txUserId,
-            balance: 0,
-            frozen: 0,
-            version: 1,
+            balance: userWallet.balance + verifiedAmount,
+            version: userWallet.version + 1,
           },
         });
-      }
 
-      const updatedUserWallet = await tx.ledgerAccount.update({
-        where: { id: userWallet.id, version: userWallet.version },
-        data: {
-          balance: userWallet.balance + verifiedAmount,
-          version: userWallet.version + 1,
-        },
+        await tx.ledgerEntry.create({
+          data: {
+            debitAccountId: externalBank.id,
+            creditAccountId: userWallet.id,
+            amount: verifiedAmount,
+            reference,
+            description: `Wallet deposit of ${verifiedAmount} NGN`,
+          },
+        });
+
+        await tx.ledgerAccount.update({
+          where: { id: externalBank.id },
+          data: { balance: { decrement: verifiedAmount } },
+        });
+
+        return { wallet: updatedUserWallet, transaction: completedTx };
       });
-
-      await tx.ledgerEntry.create({
-        data: {
-          debitAccountId: externalBank.id,
-          creditAccountId: userWallet.id,
-          amount: verifiedAmount,
-          reference,
-          description: `Wallet deposit of ${verifiedAmount} NGN`,
-        },
-      });
-
-      await tx.ledgerAccount.update({
-        where: { id: externalBank.id },
-        data: { balance: { decrement: verifiedAmount } },
-      });
-
-      return { wallet: updatedUserWallet, transaction: completedTx };
     });
 
     return {
@@ -482,9 +556,12 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Amount must be positive');
     }
 
-    const verificationStatus = await this.marketplaceVerificationService.getStatus(userId);
+    const verificationStatus =
+      await this.marketplaceVerificationService.getStatus(userId);
     if (!verificationStatus.isPayoutEligible) {
-      throw new ForbiddenException('Identity verification (Marketplace & Financial) is required for payouts.');
+      throw new ForbiddenException(
+        'Identity verification (Marketplace & Financial) is required for payouts.',
+      );
     }
 
     if (bankCode && accountNumber) {
@@ -494,39 +571,43 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       });
     }
 
-    const wallet = await this.prisma.ledgerAccount.findUnique({ where: { userId } });
-    if (!wallet) throw new NotFoundException('Wallet not found');
-
-    const availableBalance = wallet.balance - wallet.frozen;
-    if (availableBalance < amount) {
-      throw new BadRequestException('Insufficient available balance');
-    }
-
-    const result = await this.prisma.$transaction(async (tx) => {
-      const updatedWallet = await tx.ledgerAccount.update({
-        where: { id: wallet.id, version: wallet.version },
-        data: {
-          frozen: wallet.frozen + amount,
-          version: wallet.version + 1,
-        },
+    const result = await this.executeWithOptimisticLockingRetry(async () => {
+      const wallet = await this.prisma.ledgerAccount.findUnique({
+        where: { userId },
       });
+      if (!wallet) throw new NotFoundException('Wallet not found');
 
-      const reference = `payout_req_${uuidv7()}`;
-      
-      const transaction = await tx.transaction.create({
-        data: {
-          id: uuidv7(),
-          userId,
-          type: TransactionType.PAYOUT,
-          amount: -amount,
-          status: TransactionStatus.PENDING,
-          reference,
-          metadata: { action: 'wallet_payout_request' },
-          createdAt: new Date(),
-        },
+      const availableBalance = wallet.balance - wallet.frozen;
+      if (availableBalance < amount) {
+        throw new BadRequestException('Insufficient available balance');
+      }
+
+      return this.prisma.$transaction(async (tx) => {
+        const updatedWallet = await tx.ledgerAccount.update({
+          where: { id: wallet.id, version: wallet.version },
+          data: {
+            frozen: wallet.frozen + amount,
+            version: wallet.version + 1,
+          },
+        });
+
+        const reference = `payout_req_${uuidv7()}`;
+
+        const transaction = await tx.transaction.create({
+          data: {
+            id: uuidv7(),
+            userId,
+            type: TransactionType.PAYOUT,
+            amount: -amount,
+            status: TransactionStatus.PENDING,
+            reference,
+            metadata: { action: 'wallet_payout_request' },
+            createdAt: new Date(),
+          },
+        });
+
+        return { wallet: updatedWallet, transaction };
       });
-
-      return { wallet: updatedWallet, transaction };
     });
 
     return {
@@ -586,8 +667,14 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       include: { user: true },
     });
 
-    if (!transaction || transaction.type !== TransactionType.PAYOUT || transaction.status !== TransactionStatus.PROCESSING) {
-      throw new Error(`Transaction ${transactionId} is not in PROCESSING state`);
+    if (
+      !transaction ||
+      transaction.type !== TransactionType.PAYOUT ||
+      transaction.status !== TransactionStatus.PROCESSING
+    ) {
+      throw new Error(
+        `Transaction ${transactionId} is not in PROCESSING state`,
+      );
     }
 
     const user = transaction.user;
@@ -597,17 +684,16 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     let recipientCode = user.paystackRecipientCode;
     if (!recipientCode) {
-      const recipient = await this.paystackClient.post<{ recipient_code: string }>(
-        '/transferrecipient',
-        {
-          type: 'nuban',
-          name: user.payoutAccountName || user.name,
-          account_number: user.payoutAccountNumber,
-          bank_code: user.payoutBankCode,
-          currency: 'NGN',
-          email: user.email,
-        }
-      );
+      const recipient = await this.paystackClient.post<{
+        recipient_code: string;
+      }>('/transferrecipient', {
+        type: 'nuban',
+        name: user.payoutAccountName || user.name,
+        account_number: user.payoutAccountNumber,
+        bank_code: user.payoutBankCode,
+        currency: 'NGN',
+        email: user.email,
+      });
       if (recipient) {
         recipientCode = recipient.recipient_code;
         await this.prisma.user.update({
@@ -627,22 +713,21 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
       transfer_code: string;
       reference?: string;
       status?: string;
-    }>(
-      '/transfer',
-      {
-        source: 'balance',
-        amount: payoutAmount * 100,
-        recipient: recipientCode,
-        reason: 'WorkSure Wallet Withdrawal',
-        reference: transaction.reference,
-      }
-    );
+    }>('/transfer', {
+      source: 'balance',
+      amount: payoutAmount * 100,
+      recipient: recipientCode,
+      reason: 'WorkSure Wallet Withdrawal',
+      reference: transaction.reference,
+    });
 
     if (!transferData) {
       throw new Error('Transfer initiation failed');
     }
 
-    const wallet = await this.prisma.ledgerAccount.findUnique({ where: { userId: user.id } });
+    const wallet = await this.prisma.ledgerAccount.findUnique({
+      where: { userId: user.id },
+    });
     if (!wallet) throw new Error('Wallet not found');
 
     await this.prisma.$transaction(async (tx) => {
@@ -713,7 +798,10 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     const lockKey = `wallet:lock:${userId}`;
     const lockToken = await this.cacheService.acquireLock(lockKey, 10000);
-    if (!lockToken) throw new BadRequestException('Wallet is currently busy. Please try again.');
+    if (!lockToken)
+      throw new BadRequestException(
+        'Wallet is currently busy. Please try again.',
+      );
 
     try {
       const wallet = await this.prisma.ledgerAccount.findUnique({
@@ -785,7 +873,10 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
 
     const lockKey = `wallet:lock:${userId}`;
     const lockToken = await this.cacheService.acquireLock(lockKey, 10000);
-    if (!lockToken) throw new BadRequestException('Wallet is currently busy. Please try again.');
+    if (!lockToken)
+      throw new BadRequestException(
+        'Wallet is currently busy. Please try again.',
+      );
 
     try {
       const wallet = await this.prisma.ledgerAccount.findUnique({
@@ -861,12 +952,18 @@ export class WalletService implements OnModuleInit, OnModuleDestroy {
     const lockKey2 = `wallet:lock:${sortedIds[1]}`;
 
     const lockToken1 = await this.cacheService.acquireLock(lockKey1, 10000);
-    if (!lockToken1) throw new BadRequestException('Wallets are currently busy. Please try again.');
-    
+    if (!lockToken1)
+      throw new BadRequestException(
+        'Wallets are currently busy. Please try again.',
+      );
+
     let lockToken2: string | null = null;
     try {
       lockToken2 = await this.cacheService.acquireLock(lockKey2, 10000);
-      if (!lockToken2) throw new BadRequestException('Wallets are currently busy. Please try again.');
+      if (!lockToken2)
+        throw new BadRequestException(
+          'Wallets are currently busy. Please try again.',
+        );
 
       const sourceWallet = await this.prisma.ledgerAccount.findUnique({
         where: { userId: sourceUserId },

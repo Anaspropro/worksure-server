@@ -50,7 +50,13 @@ export class MonitoringService {
     return this.prisma.systemLog.count({ where });
   }
 
-  async createSystemLog(data: { level: string; message: string; context?: string; trace?: string; metadata?: any }) {
+  async createSystemLog(data: {
+    level: string;
+    message: string;
+    context?: string;
+    trace?: string;
+    metadata?: any;
+  }) {
     if (['info', 'debug'].includes(data.level.toLowerCase())) {
       // Ignore routine info/debug logs from being saved to the database to save space
       return;

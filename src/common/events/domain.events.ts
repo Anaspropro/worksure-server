@@ -40,7 +40,7 @@ export interface BaseDomainEvent {
 export class JobPostedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();
-  
+
   constructor(
     public readonly jobId: string,
     public readonly clientId: string,
@@ -51,7 +51,7 @@ export class JobPostedEvent implements BaseDomainEvent {
 export class ProposalSubmittedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();
-  
+
   constructor(
     public readonly proposalId: string,
     public readonly jobId: string,
@@ -64,7 +64,7 @@ export class ProposalSubmittedEvent implements BaseDomainEvent {
 export class ProposalAcceptedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();
-  
+
   constructor(
     public readonly proposalId: string,
     public readonly jobId: string,
@@ -77,7 +77,7 @@ export class ProposalAcceptedEvent implements BaseDomainEvent {
 export class ContractFundedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();
-  
+
   constructor(
     public readonly contractId: string,
     public readonly contractReference: string,
@@ -92,7 +92,7 @@ export class ContractFundedEvent implements BaseDomainEvent {
 export class ContractCompletedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();
-  
+
   constructor(
     public readonly contractId: string,
     public readonly jobId: string,
@@ -104,7 +104,7 @@ export class ContractCompletedEvent implements BaseDomainEvent {
 export class PaymentReleasedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();
-  
+
   constructor(
     public readonly paymentId: string,
     public readonly contractId: string,
@@ -118,7 +118,7 @@ export class PaymentReleasedEvent implements BaseDomainEvent {
 export class DisputeRaisedEvent implements BaseDomainEvent {
   eventId: string = crypto.randomUUID();
   timestamp: Date = new Date();
-  
+
   constructor(
     public readonly disputeId: string,
     public readonly contractId: string,

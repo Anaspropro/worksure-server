@@ -96,7 +96,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
           code = ErrorCode.NOT_FOUND;
         } else if (prismaError.code === 'P2003') {
           status = HttpStatus.BAD_REQUEST;
-          message = 'This operation failed because a related record does not exist.';
+          message =
+            'This operation failed because a related record does not exist.';
           code = ErrorCode.VALIDATION_ERROR;
         } else {
           status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -162,31 +163,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
       });
 
       if (this.prisma) {
-        this.prisma.systemLog.create({
-          data: {
-            level: 'error',
-            context: 'HttpExceptionFilter',
-            message: `${status} ${request.method} ${request.url}: ${exception instanceof Error ? exception.message : 'Unknown error'}`,
-            trace: exception instanceof Error ? exception.stack : undefined,
-            metadata: { path: request.url, method: request.method },
-          }
-        }).catch(e => this.logger.error('Failed to write SystemLog', e));
+        this.prisma.systemLog
+          .create({
+            data: {
+              level: 'error',
+              context: 'HttpExceptionFilter',
+              message: `${status} ${request.method} ${request.url}: ${exception instanceof Error ? exception.message : 'Unknown error'}`,
+              trace: exception instanceof Error ? exception.stack : undefined,
+              metadata: { path: request.url, method: request.method },
+            },
+          })
+          .catch((e) => this.logger.error('Failed to write SystemLog', e));
       }
     } else if (status >= 400) {
       this.logger.warn(
         `${status} ${request.method} ${request.url}: ${message}`,
       );
-
-      if (this.prisma) {
-        this.prisma.systemLog.create({
-          data: {
-            level: 'warn',
-            context: 'HttpExceptionFilter',
-            message: `${status} ${request.method} ${request.url}: ${message}`,
-            metadata: { path: request.url, method: request.method },
-          }
-        }).catch(e => this.logger.error('Failed to write SystemLog', e));
-      }
     }
 
     response.status(status).json(errorResponse);

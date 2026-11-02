@@ -58,7 +58,7 @@ export class DisputesController {
       dto.amountDisputed,
       dto.reason,
       dto.description,
-      contractId
+      contractId,
     );
     return dispute;
   }
@@ -77,7 +77,7 @@ export class DisputesController {
       user.id,
       dto.type,
       dto.url,
-      dto.metadata
+      dto.metadata,
     );
   }
 
@@ -112,7 +112,7 @@ export class DisputesController {
       decision,
       notes,
       user.id,
-      split
+      split,
     );
   }
 

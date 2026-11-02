@@ -11,7 +11,12 @@ import { AppConfigModule } from '../../config/app-config.module';
 @Module({
   imports: [PrismaModule, AuthModule, AppConfigModule],
   controllers: [MonitoringController],
-  providers: [MonitoringService, DataPruningService, AlertingService, DiscordAlertProvider],
+  providers: [
+    MonitoringService,
+    DataPruningService,
+    AlertingService,
+    DiscordAlertProvider,
+  ],
   exports: [MonitoringService, AlertingService],
 })
 export class MonitoringModule {}

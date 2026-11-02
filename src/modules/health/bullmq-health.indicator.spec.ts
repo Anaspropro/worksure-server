@@ -119,12 +119,18 @@ describe('BullMQHealthIndicator', () => {
     (escrowQueue.getDelayedCount as jest.Mock).mockResolvedValue(0);
     (escrowQueue.getJobs as jest.Mock).mockResolvedValue([]);
 
-    await expect(indicator.isHealthy('queues')).rejects.toThrow(HealthCheckError);
+    await expect(indicator.isHealthy('queues')).rejects.toThrow(
+      HealthCheckError,
+    );
   });
 
   it('should report unhealthy if querying queue fails', async () => {
-    (emailQueue.getActiveCount as jest.Mock).mockRejectedValue(new Error('Redis lost'));
+    (emailQueue.getActiveCount as jest.Mock).mockRejectedValue(
+      new Error('Redis lost'),
+    );
 
-    await expect(indicator.isHealthy('queues')).rejects.toThrow(HealthCheckError);
+    await expect(indicator.isHealthy('queues')).rejects.toThrow(
+      HealthCheckError,
+    );
   });
 });

@@ -55,7 +55,11 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     }),
     ClsModule.forRoot({
       global: true,
-      middleware: { mount: true, generateId: true, idGenerator: (req: any) => req.headers['x-request-id'] ?? uuidv4() },
+      middleware: {
+        mount: true,
+        generateId: true,
+        idGenerator: (req: any) => req.headers['x-request-id'] ?? uuidv4(),
+      },
     }),
     LoggerModule.forRootAsync({
       inject: [ClsService],
@@ -97,7 +101,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     }),
     BullModule.forRootAsync({
       useFactory: () => ({
-        connection: getBullRedisOptions() as any,
+        connection: getBullRedisOptions(),
       }),
     }),
     ScheduleModule.forRoot(),

@@ -8,11 +8,17 @@ export enum ModerateReviewAction {
 }
 
 export class ModerateReviewDto {
-  @ApiProperty({ enum: ModerateReviewAction, description: 'Moderation action to apply' })
+  @ApiProperty({
+    enum: ModerateReviewAction,
+    description: 'Moderation action to apply',
+  })
   @IsEnum(ModerateReviewAction)
   action: ModerateReviewAction;
 
-  @ApiProperty({ description: 'Optional reason for the moderation action', required: false })
+  @ApiProperty({
+    description: 'Optional reason for the moderation action',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   reason?: string;

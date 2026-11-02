@@ -27,7 +27,8 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:status": "prisma migrate status",
     "prisma:seed": "tsx prisma/seed.ts",
-    "export:openapi": "ts-node scripts/generate-openapi.ts"
+    "export:openapi": "ts-node scripts/generate-openapi.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@keyv/redis": "^5.1.6",

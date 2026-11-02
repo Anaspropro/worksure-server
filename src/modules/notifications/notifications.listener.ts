@@ -24,11 +24,11 @@ export class NotificationsListener {
       this.logger.warn(`Skipping notification ${type}: no userId provided`);
       return;
     }
-    
+
     await this.routingQueue.add(
       'route-notification',
       { type, category, userId, payload, priority },
-      { removeOnComplete: true, removeOnFail: 100 }
+      { removeOnComplete: true, removeOnFail: 100 },
     );
   }
 
@@ -36,29 +36,58 @@ export class NotificationsListener {
 
   @OnEvent('proposal.submitted')
   async handleProposalSubmitted(event: any) {
-    await this.dispatch('PROPOSAL_RECEIVED', 'PROPOSALS', event.clientId || event.proposal?.job?.clientId, event);
+    await this.dispatch(
+      'PROPOSAL_RECEIVED',
+      'PROPOSALS',
+      event.clientId || event.proposal?.job?.clientId,
+      event,
+    );
   }
 
   @OnEvent('proposal.accepted')
   async handleProposalAccepted(event: any) {
-    await this.dispatch('PROPOSAL_ACCEPTED', 'PROPOSALS', event.artisanId || event.proposal?.artisanId, event, NotificationPriority.HIGH);
+    await this.dispatch(
+      'PROPOSAL_ACCEPTED',
+      'PROPOSALS',
+      event.artisanId || event.proposal?.artisanId,
+      event,
+      NotificationPriority.HIGH,
+    );
   }
 
   @OnEvent('contract.funded')
   async handleContractFunded(event: any) {
-    await this.dispatch('CONTRACT_FUNDED', 'CONTRACTS', event.artisanId || event.contract?.artisanId, event, NotificationPriority.HIGH);
+    await this.dispatch(
+      'CONTRACT_FUNDED',
+      'CONTRACTS',
+      event.artisanId || event.contract?.artisanId,
+      event,
+      NotificationPriority.HIGH,
+    );
   }
 
   @OnEvent('dispute.created')
   async handleDisputeCreated(event: any) {
     // Notify admin or client/artisan depending on the payload
     if (event.targetUserId) {
-      await this.dispatch('DISPUTE_CREATED', 'DISPUTES', event.targetUserId, event, NotificationPriority.CRITICAL);
+      await this.dispatch(
+        'DISPUTE_CREATED',
+        'DISPUTES',
+        event.targetUserId,
+        event,
+        NotificationPriority.CRITICAL,
+      );
     }
   }
 
   @OnEvent('marketplace.verification.approved')
   async handleMarketplaceVerificationApproved(event: any) {
-    await this.dispatch('MARKETPLACE_VERIFICATION_APPROVED', 'VERIFICATION', event.userId, event, NotificationPriority.HIGH);
+    await this.dispatch(
+      'MARKETPLACE_VERIFICATION_APPROVED',
+      'VERIFICATION',
+      event.userId,
+      event,
+      NotificationPriority.HIGH,
+    );
   }
 }

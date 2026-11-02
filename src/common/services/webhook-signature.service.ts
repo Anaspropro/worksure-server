@@ -83,9 +83,15 @@ export class WebhookSignatureService {
    */
   async tryBeginEventProcessing(eventId: string): Promise<boolean> {
     const key = `idempotency:${this.namespace}:${eventId}`;
-    // Set a lock for 10 minutes while processing. 
+    // Set a lock for 10 minutes while processing.
     // NX ensures only one worker gets it.
-    const acquired = await redisConnection.set(key, 'processing', 'PX', 10 * 60 * 1000, 'NX');
+    const acquired = await redisConnection.set(
+      key,
+      'processing',
+      'PX',
+      10 * 60 * 1000,
+      'NX',
+    );
     return acquired === 'OK';
   }
 

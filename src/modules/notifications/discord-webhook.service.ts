@@ -12,7 +12,9 @@ export class DiscordWebhookService {
 
   async sendNotification(message: string, embed?: any) {
     if (!this.webhookUrl) {
-      this.logger.debug('Discord webhook URL not configured, skipping notification');
+      this.logger.debug(
+        'Discord webhook URL not configured, skipping notification',
+      );
       return;
     }
 
@@ -31,7 +33,9 @@ export class DiscordWebhookService {
       });
 
       if (!response.ok) {
-        this.logger.error(`Failed to send Discord webhook: ${response.statusText}`);
+        this.logger.error(
+          `Failed to send Discord webhook: ${response.statusText}`,
+        );
       }
     } catch (error) {
       this.logger.error('Error sending Discord webhook', error);

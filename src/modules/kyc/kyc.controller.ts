@@ -11,6 +11,7 @@ import { KycService } from './kyc.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { KycDocumentType } from '../../generated/prisma';
+import { UploadKycDocumentDto } from './dto/upload-kyc.dto';
 
 @ApiTags('kyc')
 @ApiBearerAuth('bearer')
@@ -28,22 +29,26 @@ export class KycController {
     @Body('accountNumber') accountNumber: string,
   ) {
     if (!bvn || !bankCode || !accountNumber) {
-      throw new BadRequestException('bvn, bankCode, and accountNumber are required');
+      throw new BadRequestException(
+        'bvn, bankCode, and accountNumber are required',
+      );
     }
-    return this.kycService.verifyIdentityWithPaystack(req.user.id, bvn, bankCode, accountNumber);
+    return this.kycService.verifyIdentityWithPaystack(
+      req.user.id,
+      bvn,
+      bankCode,
+      accountNumber,
+    );
   }
 
   @Post('upload')
   @ApiOperation({ summary: 'Upload a KYC document via direct Cloudinary URL' })
-  async uploadDocument(
-    @Request() req,
-    @Body('documentUrl') documentUrl: string,
-    @Body('documentType') documentType: KycDocumentType,
-  ) {
-    if (!documentType || !documentUrl) {
-      throw new BadRequestException('documentType and documentUrl are required');
-    }
-    return this.kycService.uploadKycDocument(req.user.id, documentUrl, documentType);
+  async uploadDocument(@Request() req, @Body() dto: UploadKycDocumentDto) {
+    return this.kycService.uploadKycDocument(
+      req.user.id,
+      dto.documentUrl,
+      dto.documentType,
+    );
   }
 
   @Get('status')

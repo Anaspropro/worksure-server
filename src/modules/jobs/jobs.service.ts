@@ -15,7 +15,10 @@ import {
   JobResponseDto,
 } from './dto/create-job.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DomainEventName, JobPostedEvent } from '../../common/events/domain.events';
+import {
+  DomainEventName,
+  JobPostedEvent,
+} from '../../common/events/domain.events';
 
 @Injectable()
 export class JobsService {
@@ -75,7 +78,7 @@ export class JobsService {
 
     this.eventEmitter.emit(
       DomainEventName.JOB_POSTED,
-      new JobPostedEvent(job.id, job.clientId, job.title)
+      new JobPostedEvent(job.id, job.clientId, job.title),
     );
 
     return this.formatJobResponse(job);

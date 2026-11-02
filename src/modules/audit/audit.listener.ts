@@ -2,7 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AuditService } from './audit.service';
 import { auditContextStorage } from '../../common/middleware/audit-context.middleware';
-import { AuditDomain, AuditActorType, AuditSeverity } from '../../generated/prisma';
+import {
+  AuditDomain,
+  AuditActorType,
+  AuditSeverity,
+} from '../../generated/prisma';
 
 export interface BaseDomainEvent {
   domain: AuditDomain;
@@ -24,13 +28,19 @@ export class AuditListener {
   @OnEvent('**', { async: true }) // Catch all events
   async handleAllEvents(event: BaseDomainEvent | any) {
     // Only process events that conform to the BaseDomainEvent structure
-    if (!event || !event.domain || !event.action || !event.targetType || !event.targetId) {
+    if (
+      !event ||
+      !event.domain ||
+      !event.action ||
+      !event.targetType ||
+      !event.targetId
+    ) {
       return;
     }
 
     try {
       const context = auditContextStorage.getStore();
-      
+
       const auditPayload = {
         domain: event.domain,
         action: event.action,
@@ -48,7 +58,10 @@ export class AuditListener {
       await this.auditService.createAuditLog(auditPayload);
     } catch (error) {
       // Fire and forget - do not crash the business logic!
-      this.logger.error(`Failed to record audit event: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to record audit event: ${error.message}`,
+        error.stack,
+      );
     }
   }
 }

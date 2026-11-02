@@ -1,12 +1,13 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { NotificationPriority, NotificationChannel } from '../../generated/prisma';
+import {
+  NotificationPriority,
+  NotificationChannel,
+} from '../../generated/prisma';
 
 @Injectable()
 export class NotificationsService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async listNotifications(userId: string, page = 1, limit = 20) {
     const take = Math.min(limit, 100);
@@ -70,7 +71,7 @@ export class NotificationsService {
         readAt: null,
       },
     });
-    
+
     return count;
   }
 
@@ -81,10 +82,10 @@ export class NotificationsService {
   }
 
   async updatePreference(
-    userId: string, 
-    channel: NotificationChannel, 
-    category: string, 
-    enabled: boolean
+    userId: string,
+    channel: NotificationChannel,
+    category: string,
+    enabled: boolean,
   ) {
     return this.prisma.notificationPreference.upsert({
       where: {

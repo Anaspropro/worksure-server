@@ -7,7 +7,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 export class MarketplaceVerificationService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async submitProfile(userId: string) {
@@ -15,11 +15,11 @@ export class MarketplaceVerificationService {
       where: { userId },
       create: {
         userId,
-        marketplaceStatus: MarketplaceVerificationStatus.PENDING_REVIEW
+        marketplaceStatus: MarketplaceVerificationStatus.PENDING_REVIEW,
       },
       update: {
-        marketplaceStatus: MarketplaceVerificationStatus.PENDING_REVIEW
-      }
+        marketplaceStatus: MarketplaceVerificationStatus.PENDING_REVIEW,
+      },
     });
 
     this.eventEmitter.emit('marketplace.verification.submitted', { userId });
@@ -29,32 +29,32 @@ export class MarketplaceVerificationService {
   async getPending() {
     return this.prisma.artisanVerification.findMany({
       where: {
-        marketplaceStatus: MarketplaceVerificationStatus.PENDING_REVIEW
+        marketplaceStatus: MarketplaceVerificationStatus.PENDING_REVIEW,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
   }
 
   async getStatus(userId: string) {
     let verification = await this.prisma.artisanVerification.findUnique({
-      where: { userId }
+      where: { userId },
     });
 
     if (!verification) {
       verification = await this.prisma.artisanVerification.create({
-        data: { userId }
+        data: { userId },
       });
     }
 
-    const isPayoutEligible = 
-      verification.marketplaceStatus === 'APPROVED' && 
+    const isPayoutEligible =
+      verification.marketplaceStatus === 'APPROVED' &&
       verification.financialStatus === 'VERIFIED';
 
     return {
       ...verification,
-      isPayoutEligible
+      isPayoutEligible,
     };
   }
 
@@ -64,13 +64,13 @@ export class MarketplaceVerificationService {
       data: {
         marketplaceStatus: MarketplaceVerificationStatus.APPROVED,
         marketplaceApprovedAt: new Date(),
-        marketplaceReviewerId: adminId
-      }
+        marketplaceReviewerId: adminId,
+      },
     });
 
     this.eventEmitter.emit('marketplace.verification.approved', { userId });
     this.checkEligibility(verification);
-    
+
     return verification;
   }
 
@@ -80,18 +80,23 @@ export class MarketplaceVerificationService {
       data: {
         marketplaceStatus: MarketplaceVerificationStatus.REJECTED,
         marketplaceRejectedReason: reason,
-        marketplaceReviewerId: adminId
-      }
+        marketplaceReviewerId: adminId,
+      },
     });
 
     this.eventEmitter.emit('marketplace.verification.rejected', { userId });
-    
+
     return verification;
   }
-  
+
   private checkEligibility(verification: any) {
-    if (verification.marketplaceStatus === 'APPROVED' && verification.financialStatus === 'VERIFIED') {
-      this.eventEmitter.emit('payout.eligibility.granted', { userId: verification.userId });
+    if (
+      verification.marketplaceStatus === 'APPROVED' &&
+      verification.financialStatus === 'VERIFIED'
+    ) {
+      this.eventEmitter.emit('payout.eligibility.granted', {
+        userId: verification.userId,
+      });
     }
   }
 }

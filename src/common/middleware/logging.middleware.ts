@@ -39,12 +39,12 @@ export class LoggingMiddleware implements NestMiddleware {
     this.detectSuspiciousPatterns(req, requestId);
 
     // Override res.end to log security events only (standard logging is done by pino-http)
-    const originalEnd = res.end.bind(res) as (chunk?: any, encoding?: any, cb?: any) => Response;
-    res.end = ((
+    const originalEnd = res.end.bind(res) as (
       chunk?: any,
       encoding?: any,
       cb?: any,
-    ) => {
+    ) => Response;
+    res.end = ((chunk?: any, encoding?: any, cb?: any) => {
       const duration = Date.now() - startTime;
       this.logSecurityEvents(req, res, requestId, correlationId, duration);
       return originalEnd(chunk, encoding, cb);
@@ -52,8 +52,6 @@ export class LoggingMiddleware implements NestMiddleware {
 
     next();
   }
-
-
 
   private logSecurityEvents(
     req: RequestWithLog,

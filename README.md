@@ -69,8 +69,9 @@ User Action → Contracts (state) → Payments → Paystack → Webhook → Cont
 ## ⚙️ Quick Start
 
 ### Prerequisites
-* Node.js ≥ 18
-* PostgreSQL
+* Node.js ≥ 22
+* PostgreSQL 15+
+* Redis (Render managed internal Redis service in production, or local Redis 7+)
 
 ### Install
 ```bash
@@ -79,16 +80,11 @@ npm install
 
 ### Environment Variables
 Create a `.env` file based on `.env.example`:
-```env
-DATABASE_URL=
-JWT_SECRET=
-JWT_EXPIRES_IN=
-PAYSTACK_SECRET_KEY=
-APP_URL=
-PORT=3000
-NODE_ENV=development
+```bash
+cp .env.example .env
 ```
-*Note: `DATABASE_URL`, `JWT_SECRET`, and `PAYSTACK_SECRET_KEY` must be present for the backend to boot successfully.*
+Populate required secrets (`DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `PAYSTACK_SECRET`, `PAYSTACK_PUBLIC`, `PAYSTACK_WEBHOOK_SECRET`, `CLOUDINARY_*`).
+*Note: In production on Render, Redis runs as an internal service on the private network (`redis://red-xxx:6379`), so TLS is bypassed automatically.*
 
 ### Database Setup
 ```bash

@@ -4,7 +4,13 @@ import * as dotenv from 'dotenv';
 // Ensure environment variables are loaded if run independently
 dotenv.config({ override: true });
 
-const redisUrl = process.env.REDIS_URL;
+const isTest =
+  process.env.NODE_ENV === 'test' || Boolean(process.env.JEST_WORKER_ID);
+const redisUrl =
+  process.env.REDIS_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? undefined
+    : 'redis://127.0.0.1:6379');
 
 if (!redisUrl) {
   throw new Error('REDIS_URL environment variable is missing');
@@ -12,23 +18,25 @@ if (!redisUrl) {
 
 import type { RedisOptions } from 'ioredis';
 
+const isTls = redisUrl.startsWith('rediss://');
+
 const redisOptions: RedisOptions = {
+  lazyConnect: isTest,
   maxRetriesPerRequest: null, // Required for BullMQ
   family: 0, // Prefer IPv4
-  tls: {
-    rejectUnauthorized: false
-  },
+  tls: isTls ? { rejectUnauthorized: false } : undefined,
   enableReadyCheck: false,
   connectTimeout: 30000, // Increased timeout to 30s
   keepAlive: 10000, // Send keep-alive every 10s to prevent stale connections
   retryStrategy(times) {
+    if (isTest) return null;
     // Exponential backoff with a max of 3 seconds
     const delay = Math.min(times * 200, 3000);
     return delay;
   },
   reconnectOnError(err) {
     const targetErrors = ['READONLY', 'ETIMEDOUT', 'ECONNRESET'];
-    if (targetErrors.some(target => err.message.includes(target))) {
+    if (targetErrors.some((target) => err.message.includes(target))) {
       return true;
     }
     return false;
@@ -50,6 +58,7 @@ export function getBullRedisOptions(): RedisOptions {
 }
 
 redisConnection.on('error', (err) => {
+  if (isTest) return;
   console.error('[Redis] Connection error:', err);
 });
 
