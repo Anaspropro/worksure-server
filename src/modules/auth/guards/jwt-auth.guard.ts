@@ -45,6 +45,7 @@ export class JwtAuthGuard implements CanActivate {
 
     if (request.user?.id) {
       this.cls.set('userId', request.user.id);
+      this.cls.set('userRole', request.user.role);
     }
 
     return true;
