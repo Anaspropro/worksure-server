@@ -5,17 +5,24 @@
 
 */
 -- CreateEnum
-CREATE TYPE "SuggestionStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+DO $$ BEGIN
+    CREATE TYPE "SuggestionStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- AlterEnum
 BEGIN;
-CREATE TYPE "ProposalStatus_new" AS ENUM ('DRAFT', 'SUBMITTED', 'VIEWED', 'SHORTLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN', 'EXPIRED', 'CANCELLED');
+DO $$ BEGIN
+    CREATE TYPE "ProposalStatus_new" AS ENUM ('DRAFT', 'SUBMITTED', 'VIEWED', 'SHORTLISTED', 'ACCEPTED', 'REJECTED', 'WITHDRAWN', 'EXPIRED', 'CANCELLED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 ALTER TABLE "public"."Proposal" ALTER COLUMN "status" DROP DEFAULT;
 ALTER TABLE "Proposal" ALTER COLUMN "status" TYPE "ProposalStatus_new" USING ("status"::text::"ProposalStatus_new");
-ALTER TABLE "ProposalTimelineEvent" ALTER COLUMN "status" TYPE "ProposalStatus_new" USING ("status"::text::"ProposalStatus_new");
 ALTER TYPE "ProposalStatus" RENAME TO "ProposalStatus_old";
 ALTER TYPE "ProposalStatus_new" RENAME TO "ProposalStatus";
-DROP TYPE "public"."ProposalStatus_old";
+DROP TYPE IF EXISTS "public"."ProposalStatus_old";
 ALTER TABLE "Proposal" ALTER COLUMN "status" SET DEFAULT 'DRAFT';
 COMMIT;
 
