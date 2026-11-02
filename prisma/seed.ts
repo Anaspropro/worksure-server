@@ -4,12 +4,8 @@ import { createPrismaClient } from '../src/database/prisma-client-factory';
 const { prisma, pool } = createPrismaClient(process.env.DATABASE_URL);
 
 async function main() {
-  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_SEED_RESET !== 'true') {
-    throw new Error(
-      'Database seeding with table reset is disabled in production environments. Set ALLOW_SEED_RESET=true to override.',
-    );
-  }
   await seedAdminFixtures(prisma);
+  console.log('Admin fixtures seeded successfully.');
 }
 
 main()

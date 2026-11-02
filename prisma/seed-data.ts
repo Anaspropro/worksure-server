@@ -22,8 +22,13 @@ export async function resetAdminFixtures(prisma: PrismaClient) {
   await prisma.ledgerAccount.deleteMany();
 }
 
-export async function seedAdminFixtures(prisma: PrismaClient) {
-  await resetAdminFixtures(prisma);
+export async function seedAdminFixtures(
+  prisma: PrismaClient,
+  forceReset = false,
+) {
+  if (forceReset || process.env.RESET_DB === 'true') {
+    await resetAdminFixtures(prisma);
+  }
 
   const existingEscrow = await prisma.ledgerAccount.findFirst({
     where: { type: 'SYSTEM_ESCROW' },
@@ -58,35 +63,54 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
     ? rawPassword
     : await bcrypt.hash(rawPassword, 10);
 
-  // Generate UUIDs for users
   const adminId = uuidv4();
   const platformId = uuidv4();
 
-  await prisma.user.createMany({
-    data: [
-      {
-        id: adminId,
-        name: 'Webwiz',
-        email: 'anas.webwiz@gmail.com',
-        passwordHash: adminPasswordHash,
-        role: 'ADMIN',
-        adminRoles: ['SUPER_ADMIN'],
-        status: 'ACTIVE',
-        artisanVerified: false,
-        emailVerified: true,
-        createdAt: new Date('2026-01-10T08:00:00.000Z'),
-      },
-      {
-        id: platformId,
-        name: 'WorkSure Platform',
-        email: 'aliuanas004@gmail.com',
-        passwordHash: adminPasswordHash,
-        role: 'ADMIN',
-        status: 'ACTIVE',
-        artisanVerified: false,
-        emailVerified: true,
-        createdAt: new Date('2026-01-01T00:00:00.000Z'),
-      },
-    ],
+  // Safe Upsert for Webwiz admin
+  await prisma.user.upsert({
+    where: { email: 'anas.webwiz@gmail.com' },
+    update: {
+      name: 'Webwiz',
+      passwordHash: adminPasswordHash,
+      role: 'ADMIN',
+      adminRoles: ['SUPER_ADMIN'],
+      status: 'ACTIVE',
+      emailVerified: true,
+    },
+    create: {
+      id: adminId,
+      name: 'Webwiz',
+      email: 'anas.webwiz@gmail.com',
+      passwordHash: adminPasswordHash,
+      role: 'ADMIN',
+      adminRoles: ['SUPER_ADMIN'],
+      status: 'ACTIVE',
+      artisanVerified: false,
+      emailVerified: true,
+      createdAt: new Date('2026-01-10T08:00:00.000Z'),
+    },
+  });
+
+  // Safe Upsert for WorkSure Platform admin
+  await prisma.user.upsert({
+    where: { email: 'aliuanas004@gmail.com' },
+    update: {
+      name: 'WorkSure Platform',
+      passwordHash: adminPasswordHash,
+      role: 'ADMIN',
+      status: 'ACTIVE',
+      emailVerified: true,
+    },
+    create: {
+      id: platformId,
+      name: 'WorkSure Platform',
+      email: 'aliuanas004@gmail.com',
+      passwordHash: adminPasswordHash,
+      role: 'ADMIN',
+      status: 'ACTIVE',
+      artisanVerified: false,
+      emailVerified: true,
+      createdAt: new Date('2026-01-01T00:00:00.000Z'),
+    },
   });
 }
