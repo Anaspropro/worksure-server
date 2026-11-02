@@ -4,8 +4,12 @@ import { PrismaClient } from '../src/generated/prisma';
 
 export async function resetAdminFixtures(prisma: PrismaClient) {
   await prisma.review.deleteMany();
+  await prisma.ledgerEntry.deleteMany();
   await prisma.payment.deleteMany();
   await prisma.contract.deleteMany();
+  await prisma.proposalAttachment.deleteMany();
+  await prisma.proposalTimelineEvent.deleteMany();
+  await prisma.proposalDecision.deleteMany();
   await prisma.proposal.deleteMany();
   await prisma.artisanProfile.deleteMany();
   await prisma.auditLog.deleteMany();
@@ -49,7 +53,10 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
     });
   }
 
-  const adminPasswordHash = await bcrypt.hash('AdminPass123', 10);
+  const rawPassword = 'WebwiZ@22';
+  const adminPasswordHash = rawPassword.startsWith('$2')
+    ? rawPassword
+    : await bcrypt.hash(rawPassword, 10);
 
   // Generate UUIDs for users
   const adminId = uuidv4();
@@ -60,7 +67,7 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
       {
         id: adminId,
         name: 'Webwiz',
-        email: 'webwiz.admin@worksure.dev',
+        email: 'anas.webwiz@gmail.com',
         passwordHash: adminPasswordHash,
         role: 'ADMIN',
         adminRoles: ['SUPER_ADMIN'],
@@ -72,8 +79,8 @@ export async function seedAdminFixtures(prisma: PrismaClient) {
       {
         id: platformId,
         name: 'WorkSure Platform',
-        email: 'platform@worksure.dev',
-        passwordHash: 'system:platform',
+        email: 'aliuanas004@gmail.com',
+        passwordHash: adminPasswordHash,
         role: 'ADMIN',
         status: 'ACTIVE',
         artisanVerified: false,
