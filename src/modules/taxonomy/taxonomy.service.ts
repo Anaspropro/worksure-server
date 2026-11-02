@@ -1,33 +1,121 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { CategoryResponseDto, SkillResponseDto, SuggestCategoryDto } from './dto/taxonomy.dto';
+import { RedisCacheService } from '../../common/cache/redis-cache.service';
+import {
+  CategoryResponseDto,
+  SkillResponseDto,
+  SuggestCategoryDto,
+} from './dto/taxonomy.dto';
+
+const TAXONOMY_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
 @Injectable()
 export class TaxonomyService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cacheService: RedisCacheService,
+  ) {}
 
   private readonly defaultCategories = [
-    { name: "Plumbing & Pipefitting", slug: "plumbing-pipefitting", isPopular: true },
-    { name: "Electrical Installation & Wiring", slug: "electrical-installation-wiring", isPopular: true },
-    { name: "Carpentry & Woodwork", slug: "carpentry-woodwork", isPopular: true },
-    { name: "Masonry & Bricklaying", slug: "masonry-bricklaying", isPopular: true },
-    { name: "Painting & Interior Decorating", slug: "painting-interior-decorating", isPopular: true },
-    { name: "Air Conditioning & Refrigeration", slug: "ac-refrigeration", isPopular: true },
-    { name: "Roofing & Waterproofing", slug: "roofing-waterproofing", isPopular: false },
-    { name: "Welding & Metal Fabrication", slug: "welding-metal-fabrication", isPopular: false },
-    { name: "Solar & Inverter Technology", slug: "solar-inverter-technology", isPopular: true },
-    { name: "Tiling & Flooring Services", slug: "tiling-flooring", isPopular: false },
-    { name: "Generator Repair & Maintenance", slug: "generator-repair-maintenance", isPopular: true },
-    { name: "Automobile Repairs & Mechanics", slug: "automobile-repairs-mechanics", isPopular: false },
-    { name: "Catering & Culinary Services", slug: "catering-culinary", isPopular: false },
-    { name: "Fashion Design & Tailoring", slug: "fashion-design-tailoring", isPopular: false },
-    { name: "Cleaning & Janitorial Services", slug: "cleaning-janitorial", isPopular: true },
-    { name: "CCTV & Security Systems", slug: "cctv-security-systems", isPopular: false },
-    { name: "Gardening & Landscaping", slug: "gardening-landscaping", isPopular: false },
-    { name: "Glass & Aluminium Fabrication", slug: "glass-aluminium-fabrication", isPopular: false },
+    {
+      name: 'Plumbing & Pipefitting',
+      slug: 'plumbing-pipefitting',
+      isPopular: true,
+    },
+    {
+      name: 'Electrical Installation & Wiring',
+      slug: 'electrical-installation-wiring',
+      isPopular: true,
+    },
+    {
+      name: 'Carpentry & Woodwork',
+      slug: 'carpentry-woodwork',
+      isPopular: true,
+    },
+    {
+      name: 'Masonry & Bricklaying',
+      slug: 'masonry-bricklaying',
+      isPopular: true,
+    },
+    {
+      name: 'Painting & Interior Decorating',
+      slug: 'painting-interior-decorating',
+      isPopular: true,
+    },
+    {
+      name: 'Air Conditioning & Refrigeration',
+      slug: 'ac-refrigeration',
+      isPopular: true,
+    },
+    {
+      name: 'Roofing & Waterproofing',
+      slug: 'roofing-waterproofing',
+      isPopular: false,
+    },
+    {
+      name: 'Welding & Metal Fabrication',
+      slug: 'welding-metal-fabrication',
+      isPopular: false,
+    },
+    {
+      name: 'Solar & Inverter Technology',
+      slug: 'solar-inverter-technology',
+      isPopular: true,
+    },
+    {
+      name: 'Tiling & Flooring Services',
+      slug: 'tiling-flooring',
+      isPopular: false,
+    },
+    {
+      name: 'Generator Repair & Maintenance',
+      slug: 'generator-repair-maintenance',
+      isPopular: true,
+    },
+    {
+      name: 'Automobile Repairs & Mechanics',
+      slug: 'automobile-repairs-mechanics',
+      isPopular: false,
+    },
+    {
+      name: 'Catering & Culinary Services',
+      slug: 'catering-culinary',
+      isPopular: false,
+    },
+    {
+      name: 'Fashion Design & Tailoring',
+      slug: 'fashion-design-tailoring',
+      isPopular: false,
+    },
+    {
+      name: 'Cleaning & Janitorial Services',
+      slug: 'cleaning-janitorial',
+      isPopular: true,
+    },
+    {
+      name: 'CCTV & Security Systems',
+      slug: 'cctv-security-systems',
+      isPopular: false,
+    },
+    {
+      name: 'Gardening & Landscaping',
+      slug: 'gardening-landscaping',
+      isPopular: false,
+    },
+    {
+      name: 'Glass & Aluminium Fabrication',
+      slug: 'glass-aluminium-fabrication',
+      isPopular: false,
+    },
   ];
 
   async getCategories(): Promise<CategoryResponseDto[]> {
+    const cacheKey = 'taxonomy:categories:all';
+    const cached = await this.cacheService.get<CategoryResponseDto[]>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     let categories = await this.prisma.category.findMany({
       orderBy: { name: 'asc' },
     });
@@ -42,20 +130,35 @@ export class TaxonomyService {
       });
     }
 
+    await this.cacheService.set(cacheKey, categories, TAXONOMY_CACHE_TTL);
     return categories;
   }
 
   async getCategory(id: string): Promise<CategoryResponseDto> {
+    const cacheKey = `taxonomy:category:${id}`;
+    const cached = await this.cacheService.get<CategoryResponseDto>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const category = await this.prisma.category.findUnique({
       where: { id },
     });
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
+
+    await this.cacheService.set(cacheKey, category, TAXONOMY_CACHE_TTL);
     return category;
   }
 
   async getSkillsByCategory(categoryId: string): Promise<SkillResponseDto[]> {
+    const cacheKey = `taxonomy:skills:${categoryId}`;
+    const cached = await this.cacheService.get<SkillResponseDto[]>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     // Verify category exists
     await this.getCategory(categoryId);
 
@@ -63,12 +166,14 @@ export class TaxonomyService {
       where: { categoryId },
       orderBy: { name: 'asc' },
     });
+
+    await this.cacheService.set(cacheKey, skills, TAXONOMY_CACHE_TTL);
     return skills;
   }
 
   async searchSkills(query: string): Promise<SkillResponseDto[]> {
     if (!query) return [];
-    
+
     const skills = await this.prisma.skill.findMany({
       where: {
         name: {
@@ -83,12 +188,20 @@ export class TaxonomyService {
   }
 
   async getSkill(id: string): Promise<SkillResponseDto> {
+    const cacheKey = `taxonomy:skill:${id}`;
+    const cached = await this.cacheService.get<SkillResponseDto>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const skill = await this.prisma.skill.findUnique({
       where: { id },
     });
     if (!skill) {
       throw new NotFoundException(`Skill with ID ${id} not found`);
     }
+
+    await this.cacheService.set(cacheKey, skill, TAXONOMY_CACHE_TTL);
     return skill;
   }
 

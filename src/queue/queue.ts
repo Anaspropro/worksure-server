@@ -12,14 +12,14 @@ const defaultJobOptions: DefaultJobOptions = {
     delay: 2000,
   },
   removeOnComplete: true, // Keep Redis clean
-  removeOnFail: false,    // Keep failed jobs for inspection
+  removeOnFail: false, // Keep failed jobs for inspection
 };
 
 /**
  * Create the BullMQ email-queue
  */
 export const emailQueue = new Queue('email-queue', {
-  connection: redisConnection as any,
+  connection: redisConnection,
   defaultJobOptions,
 });
 
@@ -27,9 +27,9 @@ export const emailQueue = new Queue('email-queue', {
  * Job Priorities
  */
 export enum EmailJobPriority {
-  VIP = 1,      // Highest priority
-  NORMAL = 5,   // Standard priority
-  LOW = 10,     // Bulk/Marketing priority
+  VIP = 1, // Highest priority
+  NORMAL = 5, // Standard priority
+  LOW = 10, // Bulk/Marketing priority
 }
 
 /**
@@ -55,12 +55,12 @@ export interface PayoutJobData {
  * Create the BullMQ payout-queue
  */
 export const payoutQueue = new Queue('payout-queue', {
-  connection: redisConnection as any,
+  connection: redisConnection,
   defaultJobOptions,
 });
 
 export const escrowQueue = new Queue('escrow-queue', {
-  connection: redisConnection as any,
+  connection: redisConnection,
   defaultJobOptions,
 });
 
@@ -75,6 +75,6 @@ export interface ReputationJobData {
  * Create the BullMQ reputation-queue
  */
 export const reputationQueue = new Queue('reputation-queue', {
-  connection: redisConnection as any,
+  connection: redisConnection,
   defaultJobOptions,
 });

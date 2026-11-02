@@ -3,7 +3,11 @@ import { JobsService } from './jobs.service';
 import { PrismaService } from '../../database/prisma.service';
 import { UserRole } from '../../common/constants/roles.constants';
 import { JobStatus, UserRole as PrismaUserRole } from '../../generated/prisma';
-import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { v7 as uuidv7 } from 'uuid';
 
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -71,7 +75,7 @@ describe('JobsService', () => {
 
       mockPrismaService.job.create.mockResolvedValue(mockJob);
 
-      const result = await service.createJob(clientUser, createDto as any);
+      const result = await service.createJob(clientUser, createDto);
 
       expect(result.id).toBe('job-1');
       expect(result.title).toBe(createDto.title);
@@ -79,10 +83,14 @@ describe('JobsService', () => {
     });
 
     it('should throw ForbiddenException if user is not a CLIENT', async () => {
-      const artisanUser = { id: 'artisan-1', role: 'ARTISAN' as PrismaUserRole };
-      
-      await expect(service.createJob(artisanUser, createDto as any))
-        .rejects.toThrow(ForbiddenException);
+      const artisanUser = {
+        id: 'artisan-1',
+        role: 'ARTISAN' as PrismaUserRole,
+      };
+
+      await expect(
+        service.createJob(artisanUser, createDto as any),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 
@@ -90,7 +98,7 @@ describe('JobsService', () => {
     const owner = { id: 'client-1', role: 'CLIENT' as PrismaUserRole };
     const admin = { id: 'admin-1', role: 'ADMIN' as PrismaUserRole };
     const stranger = { id: 'stranger-1', role: 'CLIENT' as PrismaUserRole };
-    
+
     const existingJob = {
       id: 'job-1',
       clientId: owner.id,
@@ -101,9 +109,14 @@ describe('JobsService', () => {
 
     it('should allow the owner to update the job', async () => {
       mockPrismaService.job.findUnique.mockResolvedValue(existingJob);
-      mockPrismaService.job.update.mockResolvedValue({ ...existingJob, title: 'New Title' });
+      mockPrismaService.job.update.mockResolvedValue({
+        ...existingJob,
+        title: 'New Title',
+      });
 
-      const result = await service.updateJob(owner, 'job-1', { title: 'New Title' });
+      const result = await service.updateJob(owner, 'job-1', {
+        title: 'New Title',
+      });
 
       expect(result.title).toBe('New Title');
       expect(prisma.job.update).toHaveBeenCalled();
@@ -111,9 +124,14 @@ describe('JobsService', () => {
 
     it('should allow an admin to update any job', async () => {
       mockPrismaService.job.findUnique.mockResolvedValue(existingJob);
-      mockPrismaService.job.update.mockResolvedValue({ ...existingJob, title: 'Admin Title' });
+      mockPrismaService.job.update.mockResolvedValue({
+        ...existingJob,
+        title: 'Admin Title',
+      });
 
-      const result = await service.updateJob(admin, 'job-1', { title: 'Admin Title' });
+      const result = await service.updateJob(admin, 'job-1', {
+        title: 'Admin Title',
+      });
 
       expect(result.title).toBe('Admin Title');
     });
@@ -121,27 +139,34 @@ describe('JobsService', () => {
     it('should throw ForbiddenException if a stranger tries to update the job', async () => {
       mockPrismaService.job.findUnique.mockResolvedValue(existingJob);
 
-      await expect(service.updateJob(stranger, 'job-1', { title: 'New Title' }))
-        .rejects.toThrow(ForbiddenException);
+      await expect(
+        service.updateJob(stranger, 'job-1', { title: 'New Title' }),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should throw NotFoundException if job does not exist', async () => {
       mockPrismaService.job.findUnique.mockResolvedValue(null);
 
-      await expect(service.updateJob(owner, 'invalid', { title: 'New Title' }))
-        .rejects.toThrow(NotFoundException);
+      await expect(
+        service.updateJob(owner, 'invalid', { title: 'New Title' }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('deleteJob', () => {
     it('should prevent deletion if job has an active contract', async () => {
       const owner = { id: 'client-1', role: 'CLIENT' as PrismaUserRole };
-      const jobWithContract = { id: 'job-1', clientId: owner.id, contractId: 'contract-1' };
-      
+      const jobWithContract = {
+        id: 'job-1',
+        clientId: owner.id,
+        contractId: 'contract-1',
+      };
+
       mockPrismaService.job.findUnique.mockResolvedValue(jobWithContract);
 
-      await expect(service.deleteJob(owner, 'job-1'))
-        .rejects.toThrow(BadRequestException);
+      await expect(service.deleteJob(owner, 'job-1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -164,9 +189,11 @@ describe('JobsService', () => {
       const result = await service.assignArtisan(owner, 'job-1', 'artisan-1');
 
       expect(result.status).toBe(JobStatus.IN_PROGRESS);
-      expect(prisma.job.update).toHaveBeenCalledWith(expect.objectContaining({
-        data: { artisanId: 'artisan-1', status: JobStatus.IN_PROGRESS }
-      }));
+      expect(prisma.job.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { artisanId: 'artisan-1', status: JobStatus.IN_PROGRESS },
+        }),
+      );
     });
   });
 });

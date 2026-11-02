@@ -31,7 +31,9 @@ export class PaystackClientService {
    * degradation when the key is not set (e.g. local dev).
    */
   isConfigured(): boolean {
-    return Boolean(process.env.PAYSTACK_SECRET_KEY || process.env.PAYSTACK_SECRET);
+    return Boolean(
+      process.env.PAYSTACK_SECRET_KEY || process.env.PAYSTACK_SECRET,
+    );
   }
 
   private buildHeaders(
@@ -119,7 +121,10 @@ export class PaystackClientService {
   /**
    * GET convenience method.
    */
-  async get<T>(path: string, options?: { graceful?: boolean }): Promise<T | null> {
+  async get<T>(
+    path: string,
+    options?: { graceful?: boolean },
+  ): Promise<T | null> {
     return this.request<T>(path, { method: 'GET' }, options);
   }
 
@@ -145,10 +150,7 @@ export class PaystackClientService {
    * Raw fetch for cases that need the full Response object
    * (e.g. wallet dedicated account provisioning where we check response.ok).
    */
-  async rawFetch(
-    path: string,
-    init: RequestInit,
-  ): Promise<Response> {
+  async rawFetch(path: string, init: RequestInit): Promise<Response> {
     return fetch(`${this.baseUrl}${path}`, {
       ...init,
       headers: this.buildHeaders(),

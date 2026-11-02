@@ -27,7 +27,10 @@ export class AppConfigService {
   }
 
   get jwtExpiresIn(): StringValue {
-    return this.configService.get<StringValue>('JWT_EXPIRES_IN', '1d' as StringValue);
+    return this.configService.get<StringValue>(
+      'JWT_EXPIRES_IN',
+      '1d' as StringValue,
+    );
   }
 
   get nodeEnv(): string {
@@ -62,7 +65,10 @@ export class AppConfigService {
   }
 
   get emailFromAddress(): string {
-    return this.configService.get<string>('EMAIL_FROM_ADDRESS', 'noreply@bustaan.xyz');
+    return this.configService.get<string>(
+      'EMAIL_FROM_ADDRESS',
+      'noreply@bustaan.xyz',
+    );
   }
 
   // Alerting
@@ -70,4 +76,3 @@ export class AppConfigService {
     return this.configService.get<string>('DISCORD_WEBHOOK_URL');
   }
 }
-

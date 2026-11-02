@@ -37,7 +37,9 @@ describe('RedisThrottlerStorage', () => {
 
     const result = await storage.increment('user-key', 60000, 5, 30000, 'test');
 
-    expect(redisConnection.pttl).toHaveBeenCalledWith('throttler:test:user-key:blocked');
+    expect(redisConnection.pttl).toHaveBeenCalledWith(
+      'throttler:test:user-key:blocked',
+    );
     expect(result).toEqual({
       totalHits: 6, // limit + 1
       timeToExpire: 0,
@@ -60,7 +62,10 @@ describe('RedisThrottlerStorage', () => {
     expect(redisConnection.pipeline).toHaveBeenCalled();
     expect(mockPipeline.incr).toHaveBeenCalledWith('throttler:test:user-key');
     expect(mockPipeline.pttl).toHaveBeenCalledWith('throttler:test:user-key');
-    expect(redisConnection.pexpire).toHaveBeenCalledWith('throttler:test:user-key', 60000);
+    expect(redisConnection.pexpire).toHaveBeenCalledWith(
+      'throttler:test:user-key',
+      60000,
+    );
     expect(result).toEqual({
       totalHits: 1,
       timeToExpire: 60, // 60000ms is 60s
@@ -97,7 +102,12 @@ describe('RedisThrottlerStorage', () => {
 
     const result = await storage.increment('user-key', 60000, 5, 30000, 'test');
 
-    expect(redisConnection.set).toHaveBeenCalledWith('throttler:test:user-key:blocked', '1', 'PX', 30000);
+    expect(redisConnection.set).toHaveBeenCalledWith(
+      'throttler:test:user-key:blocked',
+      '1',
+      'PX',
+      30000,
+    );
     expect(result).toEqual({
       totalHits: 6,
       timeToExpire: 45,

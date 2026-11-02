@@ -27,20 +27,25 @@ export class InAppDeliveryProcessor extends WorkerHost {
 
   async process(job: Job<InAppDeliveryJob, any, string>): Promise<any> {
     const { attemptId, notificationId, userId, type, payload } = job.data;
-    
+
     try {
       await this.prisma.deliveryAttempt.update({
         where: { id: attemptId },
-        data: { status: DeliveryStatus.PROCESSING }
+        data: { status: DeliveryStatus.PROCESSING },
       });
 
       // Render content based on template
       // Fallback to basic rendering if template missing
       let title = payload?.title || type;
       let message = payload?.message || `New notification: ${type}`;
-      
+
       try {
-        const rendered = await this.templateService.render(type, 'IN_APP', 'en', payload);
+        const rendered = await this.templateService.render(
+          type,
+          'IN_APP',
+          'en',
+          payload,
+        );
         title = rendered.subject || title;
         message = rendered.content;
       } catch (e) {
@@ -54,28 +59,30 @@ export class InAppDeliveryProcessor extends WorkerHost {
         title,
         message,
         payload,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       this.gateway.emitToUser(userId, 'newNotification', wssPayload);
 
       await this.prisma.deliveryAttempt.update({
         where: { id: attemptId },
-        data: { 
+        data: {
           status: DeliveryStatus.DELIVERED,
-          deliveredAt: new Date()
-        }
+          deliveredAt: new Date(),
+        },
       });
-
     } catch (error: any) {
-      this.logger.error(`Failed to deliver InApp notification ${notificationId}`, error.stack);
-      
+      this.logger.error(
+        `Failed to deliver InApp notification ${notificationId}`,
+        error.stack,
+      );
+
       await this.prisma.deliveryAttempt.update({
         where: { id: attemptId },
-        data: { 
+        data: {
           status: DeliveryStatus.FAILED,
-          error: error.message
-        }
+          error: error.message,
+        },
       });
       throw error; // Let BullMQ retry
     }

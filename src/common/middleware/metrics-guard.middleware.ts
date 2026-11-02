@@ -1,4 +1,8 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
@@ -25,6 +29,8 @@ export class MetricsGuardMiddleware implements NestMiddleware {
     }
 
     // 3. Fallback: deny access
-    throw new UnauthorizedException('Access to metrics endpoint is restricted.');
+    throw new UnauthorizedException(
+      'Access to metrics endpoint is restricted.',
+    );
   }
 }

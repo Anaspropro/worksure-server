@@ -90,8 +90,14 @@ export class NotificationsController {
   @Patch('preferences')
   async updatePreference(
     @CurrentUser() user: { id: string; role: $Enums.UserRole },
-    @Body() dto: { channel: NotificationChannel, category: string, enabled: boolean },
+    @Body()
+    dto: { channel: NotificationChannel; category: string; enabled: boolean },
   ) {
-    return this.notificationsService.updatePreference(user.id, dto.channel, dto.category, dto.enabled);
+    return this.notificationsService.updatePreference(
+      user.id,
+      dto.channel,
+      dto.category,
+      dto.enabled,
+    );
   }
 }

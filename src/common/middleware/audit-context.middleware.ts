@@ -15,7 +15,8 @@ export const auditContextStorage = new AsyncLocalStorage<AuditContext>();
 @Injectable()
 export class AuditContextMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const correlationId = (req.headers['x-correlation-id'] as string) || randomUUID();
+    const correlationId =
+      (req.headers['x-correlation-id'] as string) || randomUUID();
     const ipAddress = req.ip || req.socket.remoteAddress || 'unknown';
     const userAgent = req.headers['user-agent'] || 'unknown';
 

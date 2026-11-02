@@ -38,7 +38,10 @@ export class AuditEventListener {
       });
     } catch (error) {
       // Isolate failures so they don't crash the event emitter loop
-      this.logger.error(`Failed to create audit log for ${action}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to create audit log for ${action}: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
@@ -49,7 +52,7 @@ export class AuditEventListener {
       AuditEntityType.CONTRACT,
       event.contractId,
       event.clientId, // Client performed the funding
-      { amount: event.amount, contractReference: event.contractReference }
+      { amount: event.amount, contractReference: event.contractReference },
     );
   }
 
@@ -60,7 +63,7 @@ export class AuditEventListener {
       AuditEntityType.CONTRACT, // Payment maps back to contract typically, but we could add PAYMENT to AuditEntityType
       event.contractId,
       'SYSTEM', // Typically a system process or client approval releases payment
-      { amount: event.amount, paymentId: event.paymentId }
+      { amount: event.amount, paymentId: event.paymentId },
     );
   }
 
@@ -71,7 +74,7 @@ export class AuditEventListener {
       AuditEntityType.CONTRACT, // Tied to the contract creation
       event.proposalId,
       event.clientId,
-      { jobId: event.jobId, artisanId: event.artisanId }
+      { jobId: event.jobId, artisanId: event.artisanId },
     );
   }
 
@@ -82,7 +85,10 @@ export class AuditEventListener {
       AuditEntityType.DISPUTE,
       event.disputeId,
       event.raisedById,
-      { contractId: event.contractId, contractReference: event.contractReference }
+      {
+        contractId: event.contractId,
+        contractReference: event.contractReference,
+      },
     );
   }
 }

@@ -12,7 +12,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 export class AdminVerificationController {
   constructor(
     private readonly marketplaceService: MarketplaceVerificationService,
-    private readonly financialService: FinancialVerificationService
+    private readonly financialService: FinancialVerificationService,
   ) {}
 
   @Get('marketplace/pending')
@@ -23,16 +23,19 @@ export class AdminVerificationController {
 
   @Post('marketplace/:userId/approve')
   @ApiOperation({ summary: 'Approve artisan marketplace verification' })
-  async approveMarketplace(@Param('userId') userId: string, @CurrentUser() admin: any) {
+  async approveMarketplace(
+    @Param('userId') userId: string,
+    @CurrentUser() admin: any,
+  ) {
     return this.marketplaceService.approve(userId, admin.id);
   }
 
   @Post('marketplace/:userId/reject')
   @ApiOperation({ summary: 'Reject artisan marketplace verification' })
   async rejectMarketplace(
-    @Param('userId') userId: string, 
+    @Param('userId') userId: string,
     @Body('reason') reason: string,
-    @CurrentUser() admin: any
+    @CurrentUser() admin: any,
   ) {
     return this.marketplaceService.reject(userId, reason, admin.id);
   }

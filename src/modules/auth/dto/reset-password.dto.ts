@@ -12,7 +12,8 @@ export class ResetPasswordDto {
   @IsString()
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z]).{6,}$/, {
-    message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number or special character',
+    message:
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number or special character',
   })
   newPassword!: string;
 }

@@ -1,4 +1,9 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Logger,
+} from '@nestjs/common';
 import { Worker, Job } from 'bullmq';
 import { redisConnection } from '../../queue/redis';
 import { EmailService } from '../../common/services/email.service';
@@ -12,7 +17,7 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private readonly emailService: EmailService,
-    private readonly alertingService: AlertingService
+    private readonly alertingService: AlertingService,
   ) {}
 
   onModuleInit() {
@@ -20,13 +25,15 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       'email-queue',
       async (job: Job<EmailJobData>) => {
         const { to, name, token } = job.data as any; // Allow token for custom jobs
-        
+
         if (!to) {
           throw new Error(`Job ${job.id} missing required 'to' data`);
         }
 
-        this.logger.log(`⚙️ Processing email job ${job.id} (Type: ${job.name}) to ${to}`);
-        
+        this.logger.log(
+          `⚙️ Processing email job ${job.id} (Type: ${job.name}) to ${to}`,
+        );
+
         switch (job.name) {
           case 'sendVerificationOtp':
             if (!token) throw new Error('Missing OTP token');
@@ -39,22 +46,28 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
           case 'sendCustomEmail':
             // we would normally use emailService.sendEmail(to, subject, body), assuming that exists
             // Since this is a test/placeholder, we log it.
-            this.logger.log(`[SIMULATED] Sending custom email to ${to}: ${job.data.subject}`);
+            this.logger.log(
+              `[SIMULATED] Sending custom email to ${to}: ${job.data.subject}`,
+            );
             break;
           default:
             this.logger.warn(`Unknown email job type: ${job.name}`);
         }
-        
-        return { success: true, deliveredTo: to, timestamp: new Date().toISOString() };
+
+        return {
+          success: true,
+          deliveredTo: to,
+          timestamp: new Date().toISOString(),
+        };
       },
       {
-        connection: redisConnection.duplicate() as any,
+        connection: redisConnection.duplicate(),
         limiter: {
           max: 5,
           duration: 10000,
         },
         concurrency: 5,
-      }
+      },
     );
 
     this.emailWorker.on('failed', (job, err) => {
@@ -65,21 +78,25 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
 
     this.emailWorker.on('error', (err) => {
       this.logger.error(`Worker error: ${err.message}`);
-      this.alertingService.sendCriticalAlert(
-        'bullmq_worker_error',
-        'BullMQ Worker Error',
-        `A critical error occurred in the BullMQ worker: ${err.message}`,
-        { error: err.stack }
-      ).catch(() => {});
+      this.alertingService
+        .sendCriticalAlert(
+          'bullmq_worker_error',
+          'BullMQ Worker Error',
+          `A critical error occurred in the BullMQ worker: ${err.message}`,
+          { error: err.stack },
+        )
+        .catch(() => {});
     });
 
     this.emailWorker.on('stalled', (jobId) => {
       this.logger.warn(`Job ${jobId} has stalled`);
-      this.alertingService.sendCriticalAlert(
-        'bullmq_stalled_worker',
-        'BullMQ Stalled Worker',
-        `Job ${jobId} has stalled in the email queue.`
-      ).catch(() => {});
+      this.alertingService
+        .sendCriticalAlert(
+          'bullmq_stalled_worker',
+          'BullMQ Stalled Worker',
+          `Job ${jobId} has stalled in the email queue.`,
+        )
+        .catch(() => {});
     });
 
     this.logger.log('🚀 QueueService Email Worker started.');

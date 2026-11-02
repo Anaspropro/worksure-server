@@ -55,7 +55,7 @@ export class AccountLockoutService {
     const attemptsKey = `auth:lockout:attempts:${normalized}`;
 
     try {
-      const result = await redisConnection.eval(
+      const result = (await redisConnection.eval(
         this.LUA_LOCKOUT_SCRIPT,
         2, // number of keys
         lockKey,
@@ -63,7 +63,7 @@ export class AccountLockoutService {
         MAX_ATTEMPTS,
         LOCKOUT_DURATION_SECONDS,
         ATTEMPT_WINDOW_SECONDS,
-      ) as [number, number];
+      )) as [number, number];
 
       const isLocked = result[0] === 1;
       const val = result[1];
@@ -95,7 +95,9 @@ export class AccountLockoutService {
       await redisConnection.del(`auth:lockout:attempts:${normalized}`);
       await redisConnection.del(`auth:lockout:locked:${normalized}`);
     } catch (e) {
-      this.logger.error(`Redis failure in recordSuccessfulAttempt: ${e.message}`);
+      this.logger.error(
+        `Redis failure in recordSuccessfulAttempt: ${e.message}`,
+      );
     }
   }
 
@@ -107,7 +109,7 @@ export class AccountLockoutService {
   ): Promise<{ locked: boolean; lockoutExpires?: number }> {
     const normalized = this.normalizeIdentifier(identifier);
     const lockKey = `auth:lockout:locked:${normalized}`;
-    
+
     try {
       const isLocked = await redisConnection.exists(lockKey);
 
@@ -137,7 +139,9 @@ export class AccountLockoutService {
       const ttl = await redisConnection.ttl(lockKey);
       return ttl > 0 ? ttl : 0;
     } catch (e) {
-      this.logger.error(`Redis failure in getLockoutRemainingTime: ${e.message}`);
+      this.logger.error(
+        `Redis failure in getLockoutRemainingTime: ${e.message}`,
+      );
       return LOCKOUT_DURATION_SECONDS; // Fail closed
     }
   }

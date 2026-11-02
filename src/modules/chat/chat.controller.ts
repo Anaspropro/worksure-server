@@ -71,7 +71,9 @@ export class ChatController {
   }
 
   @Post('conversations/:conversationId/messages')
-  @ApiOperation({ summary: 'Create a new chat message, optionally with media URL' })
+  @ApiOperation({
+    summary: 'Create a new chat message, optionally with media URL',
+  })
   @ApiResponse({ status: 201, description: 'Message created successfully' })
   async createMessage(
     @Param('conversationId') conversationId: string,

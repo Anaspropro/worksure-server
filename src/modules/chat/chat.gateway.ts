@@ -82,7 +82,9 @@ export class ChatGateway
         throw new UnauthorizedException('Session ID is missing.');
       }
 
-      const session = await this.sessionService.validateSession(payload.sessionId);
+      const session = await this.sessionService.validateSession(
+        payload.sessionId,
+      );
       if (!session || session.userId !== payload.sub) {
         throw new UnauthorizedException('Session is invalid or expired.');
       }

@@ -54,7 +54,11 @@ const DISPUTE_DECISIONS = Object.values(DisputeDecision);
 
 type AdminUserRecord = Prisma.UserGetPayload<Record<string, never>>;
 type AdminDisputeRecord = Prisma.DisputeGetPayload<{
-  include: { history: { orderBy: { at: 'asc' } }, contract: { select: { jobId: true } }, evidence: true };
+  include: {
+    history: { orderBy: { at: 'asc' } };
+    contract: { select: { jobId: true } };
+    evidence: true;
+  };
 }>;
 type AdminJobRecord = Prisma.JobGetPayload<Record<string, never>>;
 type AdminTransactionRecord = Prisma.TransactionGetPayload<
@@ -75,7 +79,12 @@ export class AdminService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async getAllUsers(search?: string, role?: UserRole, cursor?: string, limit = 50) {
+  async getAllUsers(
+    search?: string,
+    role?: UserRole,
+    cursor?: string,
+    limit = 50,
+  ) {
     const take = Math.min(limit, 100);
 
     const baseWhere: Prisma.UserWhereInput = role ? { role } : {};
@@ -160,13 +169,30 @@ export class AdminService {
         updatedAt: true,
         lastLoginAt: true,
         artisanProfile: {
-          select: { bio: true, skills: true, experience: true, portfolio: true, verified: true, rating: true, reviewCount: true, updatedAt: true }
+          select: {
+            bio: true,
+            skills: true,
+            experience: true,
+            portfolio: true,
+            verified: true,
+            rating: true,
+            reviewCount: true,
+            updatedAt: true,
+          },
         },
         ledgerAccounts: {
-          select: { balance: true, frozen: true, updatedAt: true }
+          select: { balance: true, frozen: true, updatedAt: true },
         },
         transactions: {
-          select: { id: true, userId: true, type: true, amount: true, status: true, reference: true, createdAt: true },
+          select: {
+            id: true,
+            userId: true,
+            type: true,
+            amount: true,
+            status: true,
+            reference: true,
+            createdAt: true,
+          },
           orderBy: { createdAt: 'desc' },
           take: 10,
         },
@@ -176,12 +202,36 @@ export class AdminService {
           take: 5,
         },
         clientJobs: {
-          select: { id: true, title: true, contractId: true, clientId: true, artisanId: true, amount: true, status: true, flagged: true, forceClosedAt: true, forceCloseReason: true, createdAt: true },
+          select: {
+            id: true,
+            title: true,
+            contractId: true,
+            clientId: true,
+            artisanId: true,
+            amount: true,
+            status: true,
+            flagged: true,
+            forceClosedAt: true,
+            forceCloseReason: true,
+            createdAt: true,
+          },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
         artisanJobs: {
-          select: { id: true, title: true, contractId: true, clientId: true, artisanId: true, amount: true, status: true, flagged: true, forceClosedAt: true, forceCloseReason: true, createdAt: true },
+          select: {
+            id: true,
+            title: true,
+            contractId: true,
+            clientId: true,
+            artisanId: true,
+            amount: true,
+            status: true,
+            flagged: true,
+            forceClosedAt: true,
+            forceCloseReason: true,
+            createdAt: true,
+          },
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
@@ -229,7 +279,8 @@ export class AdminService {
           ? {
               balance: user.ledgerAccounts.balance,
               frozen: user.ledgerAccounts.frozen,
-              available: user.ledgerAccounts.balance - user.ledgerAccounts.frozen,
+              available:
+                user.ledgerAccounts.balance - user.ledgerAccounts.frozen,
               updatedAt: user.ledgerAccounts.updatedAt.toISOString(),
             }
           : null,
@@ -569,7 +620,10 @@ export class AdminService {
         },
       });
 
-      if (parsedDecision === DisputeDecision.CLIENT_WINS && dispute.contract?.jobId) {
+      if (
+        parsedDecision === DisputeDecision.CLIENT_WINS &&
+        dispute.contract?.jobId
+      ) {
         await tx.job.update({
           where: { id: dispute.contract.jobId },
           data: {
@@ -598,10 +652,10 @@ export class AdminService {
 
       return tx.dispute.findUniqueOrThrow({
         where: { id: dispute.id },
-        include: { 
+        include: {
           history: { orderBy: { at: 'asc' } },
           contract: { select: { jobId: true } },
-          evidence: true
+          evidence: true,
         },
       });
     });
@@ -611,14 +665,16 @@ export class AdminService {
     let fundMovementSucceeded = false;
     try {
       if (!dispute.contractId) {
-        throw new BadRequestException('Dispute is not associated with a contract');
+        throw new BadRequestException(
+          'Dispute is not associated with a contract',
+        );
       }
 
       if (parsedDecision === DisputeDecision.CLIENT_WINS) {
         await this.paymentsService.refundContract(
           dispute.contractId,
           actor.id,
-          true,  // isAdmin = true
+          true, // isAdmin = true
           notes || `Dispute ${dispute.id} resolved: refund to client`,
         );
       } else {
@@ -666,7 +722,12 @@ export class AdminService {
     };
   }
 
-  async getAllJobs(search?: string, status?: string, cursor?: string, limit = 50) {
+  async getAllJobs(
+    search?: string,
+    status?: string,
+    cursor?: string,
+    limit = 50,
+  ) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
@@ -704,7 +765,9 @@ export class AdminService {
     });
 
     const total = cursor ? 0 : await this.prisma.job.count({ where });
-    const flagged = cursor ? 0 : await this.prisma.job.count({ where: { ...where, flagged: true } });
+    const flagged = cursor
+      ? 0
+      : await this.prisma.job.count({ where: { ...where, flagged: true } });
 
     let nextCursor: string | undefined = undefined;
     if (data.length > take) {
@@ -825,7 +888,6 @@ export class AdminService {
     };
   }
 
-
   async getAuditLogs(cursor?: string, limit = 50) {
     const take = Math.min(limit, 100);
     const [data, total] = await Promise.all([
@@ -856,13 +918,20 @@ export class AdminService {
     };
   }
 
-  async getAllReviews(search?: string, status?: string, cursor?: string, limit = 50) {
+  async getAllReviews(
+    search?: string,
+    status?: string,
+    cursor?: string,
+    limit = 50,
+  ) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
       !Object.values(ReviewStatus).includes(normalizedStatus as ReviewStatus)
     ) {
-      throw new BadRequestException(`Unsupported review status filter: ${status}`);
+      throw new BadRequestException(
+        `Unsupported review status filter: ${status}`,
+      );
     }
 
     const take = Math.min(limit, 100);
@@ -908,7 +977,7 @@ export class AdminService {
     }
 
     return {
-      data: reviews.map(r => ({
+      data: reviews.map((r) => ({
         ...r,
         authorName: r.author.name,
         targetName: r.target.name,
@@ -948,7 +1017,9 @@ export class AdminService {
 
     // We must recalculate the JSS score of the target because this review
     // might have been removed from or added back to their active Visible reviews.
-    await reputationQueue.add('calculateReputation', { userId: review.targetId });
+    await reputationQueue.add('calculateReputation', {
+      userId: review.targetId,
+    });
 
     await this.logAction(
       `REVIEW_${action}ED`, // e.g., REVIEW_LOCKED
@@ -965,11 +1036,18 @@ export class AdminService {
     return { data: updatedReview };
   }
 
-  async getAllContracts(search?: string, status?: string, cursor?: string, limit = 50) {
+  async getAllContracts(
+    search?: string,
+    status?: string,
+    cursor?: string,
+    limit = 50,
+  ) {
     const normalizedStatus = status?.toUpperCase();
     if (
       normalizedStatus &&
-      !Object.values(ContractStatus).includes(normalizedStatus as ContractStatus)
+      !Object.values(ContractStatus).includes(
+        normalizedStatus as ContractStatus,
+      )
     ) {
       throw new BadRequestException(
         `Unsupported contract status filter: ${status}.`,
@@ -1032,7 +1110,6 @@ export class AdminService {
       },
     };
   }
-
 
   private async findUser(userId: string) {
     const user = await this.prisma.user.findUnique({
@@ -1117,18 +1194,21 @@ export class AdminService {
   private ensureSupportedDecision(
     decision: ResolveDisputeDecision | undefined,
   ) {
-    if (!decision || !DISPUTE_DECISIONS.includes(decision as DisputeDecision)) {
+    if (!decision || !DISPUTE_DECISIONS.includes(decision)) {
       throw new BadRequestException(
         'Dispute decision must be CLIENT_WINS or ARTISAN_WINS.',
       );
     }
 
-    return decision as DisputeDecision;
+    return decision;
   }
 
   private mapUser(user: any) {
     const totalSpent = user.clientContracts
-      ? user.clientContracts.reduce((sum: number, c: any) => sum + (c.amount || 0), 0)
+      ? user.clientContracts.reduce(
+          (sum: number, c: any) => sum + (c.amount || 0),
+          0,
+        )
       : 0;
 
     return {
@@ -1267,7 +1347,12 @@ export class AdminService {
     return { data: configs };
   }
 
-  async updateSystemConfig(key: string, value: any, actor: AdminActor, description?: string) {
+  async updateSystemConfig(
+    key: string,
+    value: any,
+    actor: AdminActor,
+    description?: string,
+  ) {
     const config = await this.prisma.systemConfig.upsert({
       where: { key },
       update: {
@@ -1299,4 +1384,3 @@ export class AdminService {
     return { data: config };
   }
 }
-

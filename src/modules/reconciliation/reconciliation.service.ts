@@ -28,12 +28,19 @@ export class ReconciliationService {
       const fundedContracts = await this.prisma.contract.aggregate({
         where: {
           status: {
-            in: ['FUNDED', 'ACTIVE', 'IN_PROGRESS', 'CLIENT_CONFIRMED', 'READY_FOR_PAYOUT', 'DISPUTED']
-          }
+            in: [
+              'FUNDED',
+              'ACTIVE',
+              'IN_PROGRESS',
+              'CLIENT_CONFIRMED',
+              'READY_FOR_PAYOUT',
+              'DISPUTED',
+            ],
+          },
         },
         _sum: {
-          amount: true
-        }
+          amount: true,
+        },
       });
 
       const totalObligations = fundedContracts._sum.amount || 0;
@@ -41,14 +48,17 @@ export class ReconciliationService {
       this.logger.log(`Total Ledger Obligations: ${totalObligations}`);
 
       // 2. Fetch the actual balance from the dedicated Paystack account
-      const actualPaystackBalance = await this.fetchPaystackDedicatedAccountBalance();
+      const actualPaystackBalance =
+        await this.fetchPaystackDedicatedAccountBalance();
 
       // 3. Compare balances
       const discrepancy = actualPaystackBalance - totalObligations;
 
       if (discrepancy !== 0) {
-        this.logger.warn(`Reconciliation discrepancy detected! Obligations: ${totalObligations}, Paystack Actual: ${actualPaystackBalance}, Difference: ${discrepancy}`);
-        
+        this.logger.warn(
+          `Reconciliation discrepancy detected! Obligations: ${totalObligations}, Paystack Actual: ${actualPaystackBalance}, Difference: ${discrepancy}`,
+        );
+
         await this.prisma.auditLog.create({
           data: {
             action: 'RECONCILIATION_DISCREPANCY',
@@ -63,35 +73,37 @@ export class ReconciliationService {
             },
           },
         });
-        
+
         await this.alertingService.sendCriticalAlert(
           'reconciliation_mismatch',
           'Reconciliation Mismatch Detected',
           `The internal ledger obligations (${totalObligations}) do not match the Paystack actual balance (${actualPaystackBalance}). Discrepancy: ${discrepancy}`,
-          { totalObligations, actualPaystackBalance, discrepancy }
+          { totalObligations, actualPaystackBalance, discrepancy },
         );
       } else {
         // Exception-only tracking: do not save success logs to the database
         this.logger.log('Reconciliation successful. No discrepancies found.');
-        
+
         await this.alertingService.resolveAlert(
-          'reconciliation_mismatch', 
-          'Reconciliation mismatch resolved. Balances match.'
+          'reconciliation_mismatch',
+          'Reconciliation mismatch resolved. Balances match.',
         );
       }
 
       // 4. Perform Trial Balance integrity check
       const trialBalanceAggregate = await this.prisma.ledgerAccount.aggregate({
         _sum: {
-          balance: true
-        }
+          balance: true,
+        },
       });
       const trialBalanceSum = trialBalanceAggregate._sum.balance || 0;
 
       let trialBalanceStatus = 'SUCCESS';
       if (trialBalanceSum !== 0) {
         trialBalanceStatus = 'IMBALANCED';
-        this.logger.warn(`Trial balance imbalance detected! Sum: ${trialBalanceSum}`);
+        this.logger.warn(
+          `Trial balance imbalance detected! Sum: ${trialBalanceSum}`,
+        );
 
         await this.prisma.auditLog.create({
           data: {
@@ -110,17 +122,20 @@ export class ReconciliationService {
           'trial_balance_mismatch',
           'Trial Balance Imbalance Detected',
           `The nightly trial balance check failed. The sum of all double-entry ledger accounts is ${trialBalanceSum} NGN instead of 0.`,
-          { trialBalanceSum }
+          { trialBalanceSum },
         );
       } else {
         await this.alertingService.resolveAlert(
           'trial_balance_mismatch',
-          'Trial balance verified successfully. Sum is 0.'
+          'Trial balance verified successfully. Sum is 0.',
         );
       }
 
       return {
-        status: (discrepancy === 0 && trialBalanceStatus === 'SUCCESS') ? 'SUCCESS' : 'DISCREPANCY',
+        status:
+          discrepancy === 0 && trialBalanceStatus === 'SUCCESS'
+            ? 'SUCCESS'
+            : 'DISCREPANCY',
         totalObligations,
         actualPaystackBalance,
         discrepancy,
@@ -138,7 +153,8 @@ export class ReconciliationService {
    */
   private async fetchPaystackDedicatedAccountBalance(): Promise<number> {
     try {
-      const data = await this.paystackClient.get<{ balance: number }[]>('/balance');
+      const data =
+        await this.paystackClient.get<{ balance: number }[]>('/balance');
       if (data && data.length > 0) {
         // Paystack balance is in kobo (or lowest denomination), so convert to main currency (e.g. NGN)
         return data[0].balance / 100;
@@ -148,12 +164,19 @@ export class ReconciliationService {
       this.logger.error(`Failed to fetch Paystack balance: ${e.message}`);
       // Return the expected obligations as a fallback so we don't alert falsely if Paystack is down
       const fundedContracts = await this.prisma.contract.aggregate({
-          where: {
-            status: {
-              in: ['FUNDED', 'ACTIVE', 'IN_PROGRESS', 'CLIENT_CONFIRMED', 'READY_FOR_PAYOUT', 'DISPUTED']
-            }
+        where: {
+          status: {
+            in: [
+              'FUNDED',
+              'ACTIVE',
+              'IN_PROGRESS',
+              'CLIENT_CONFIRMED',
+              'READY_FOR_PAYOUT',
+              'DISPUTED',
+            ],
           },
-          _sum: { amount: true }
+        },
+        _sum: { amount: true },
       });
       return fundedContracts._sum.amount || 0;
     }
@@ -166,18 +189,32 @@ export class ReconciliationService {
       take,
       where: {
         entityType: 'REPORT',
-        action: { in: ['RECONCILIATION_SUCCESS', 'RECONCILIATION_DISCREPANCY', 'NIGHTLY_RECONCILIATION_SUCCESS', 'NIGHTLY_RECONCILIATION_DISCREPANCY'] }
+        action: {
+          in: [
+            'RECONCILIATION_SUCCESS',
+            'RECONCILIATION_DISCREPANCY',
+            'NIGHTLY_RECONCILIATION_SUCCESS',
+            'NIGHTLY_RECONCILIATION_DISCREPANCY',
+          ],
+        },
       },
-      orderBy: { performedAt: 'desc' }
+      orderBy: { performedAt: 'desc' },
     });
   }
-  
+
   async countReports() {
     return this.prisma.auditLog.count({
       where: {
         entityType: 'REPORT',
-        action: { in: ['RECONCILIATION_SUCCESS', 'RECONCILIATION_DISCREPANCY', 'NIGHTLY_RECONCILIATION_SUCCESS', 'NIGHTLY_RECONCILIATION_DISCREPANCY'] }
-      }
+        action: {
+          in: [
+            'RECONCILIATION_SUCCESS',
+            'RECONCILIATION_DISCREPANCY',
+            'NIGHTLY_RECONCILIATION_SUCCESS',
+            'NIGHTLY_RECONCILIATION_DISCREPANCY',
+          ],
+        },
+      },
     });
   }
 }

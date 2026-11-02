@@ -53,8 +53,6 @@ export class PaymentsController {
     private readonly paystackWebhookService: PaystackWebhookService,
   ) {}
 
-
-
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Initialize Paystack funding for a contract' })
   @ApiOkResponse({ description: 'Paystack checkout initialized.' })
@@ -126,12 +124,14 @@ export class PaymentsController {
     @Headers('x-paystack-signature') signature?: string,
   ) {
     if (!request.rawBody) {
-      throw new BadRequestException('Raw body is required for webhook signature verification');
+      throw new BadRequestException(
+        'Raw body is required for webhook signature verification',
+      );
     }
     if (!signature) {
       throw new BadRequestException('Webhook signature is missing');
     }
-    
+
     const secret = process.env.PAYSTACK_WEBHOOK_SECRET;
     if (!secret) {
       throw new BadRequestException('Webhook secret is not configured');

@@ -1,11 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MarketplaceVerificationStatus, FinancialVerificationStatus } from '../../../generated/prisma';
+import {
+  MarketplaceVerificationStatus,
+  FinancialVerificationStatus,
+} from '../../../generated/prisma';
 
 export class MarketplaceVerificationSubmitDto {
   @ApiProperty({ description: 'Portfolio URL if applicable', required: false })
   portfolioUrl?: string;
 
-  @ApiProperty({ description: 'Additional onboarding information', required: false })
+  @ApiProperty({
+    description: 'Additional onboarding information',
+    required: false,
+  })
   additionalInfo?: string;
 }
 

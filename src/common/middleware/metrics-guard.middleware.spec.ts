@@ -30,7 +30,11 @@ describe('MetricsGuardMiddleware', () => {
       socket: { remoteAddress: '127.0.0.1' } as any,
     };
 
-    middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+    middleware.use(
+      mockRequest as Request,
+      mockResponse as Response,
+      nextFunction,
+    );
 
     expect(nextFunction).toHaveBeenCalled();
   });
@@ -42,7 +46,11 @@ describe('MetricsGuardMiddleware', () => {
       socket: { remoteAddress: '::1' } as any,
     };
 
-    middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+    middleware.use(
+      mockRequest as Request,
+      mockResponse as Response,
+      nextFunction,
+    );
 
     expect(nextFunction).toHaveBeenCalled();
   });
@@ -54,7 +62,11 @@ describe('MetricsGuardMiddleware', () => {
       socket: { remoteAddress: '::ffff:127.0.0.1' } as any,
     };
 
-    middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+    middleware.use(
+      mockRequest as Request,
+      mockResponse as Response,
+      nextFunction,
+    );
 
     expect(nextFunction).toHaveBeenCalled();
   });
@@ -67,7 +79,11 @@ describe('MetricsGuardMiddleware', () => {
     };
 
     expect(() => {
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(
+        mockRequest as Request,
+        mockResponse as Response,
+        nextFunction,
+      );
     }).toThrow(UnauthorizedException);
     expect(nextFunction).not.toHaveBeenCalled();
   });
@@ -81,7 +97,11 @@ describe('MetricsGuardMiddleware', () => {
     };
 
     expect(() => {
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(
+        mockRequest as Request,
+        mockResponse as Response,
+        nextFunction,
+      );
     }).toThrow(UnauthorizedException);
     expect(nextFunction).not.toHaveBeenCalled();
   });
@@ -97,7 +117,11 @@ describe('MetricsGuardMiddleware', () => {
     };
 
     expect(() => {
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(
+        mockRequest as Request,
+        mockResponse as Response,
+        nextFunction,
+      );
     }).toThrow(UnauthorizedException);
     expect(nextFunction).not.toHaveBeenCalled();
   });
@@ -112,7 +136,11 @@ describe('MetricsGuardMiddleware', () => {
       socket: { remoteAddress: '192.168.1.50' } as any,
     };
 
-    middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+    middleware.use(
+      mockRequest as Request,
+      mockResponse as Response,
+      nextFunction,
+    );
 
     expect(nextFunction).toHaveBeenCalled();
   });

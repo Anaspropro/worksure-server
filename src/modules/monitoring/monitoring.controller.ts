@@ -23,7 +23,7 @@ export class MonitoringController {
     @Query('level') level?: string,
     @Query('context') context?: string,
   ) {
-    const skip = (Number(page) - 1) * Number(limit); 
+    const skip = (Number(page) - 1) * Number(limit);
     const take = Number(limit);
 
     const where: any = {};

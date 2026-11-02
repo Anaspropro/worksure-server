@@ -11,18 +11,18 @@ export const envValidationSchema = Joi.object({
   METRICS_TOKEN: Joi.string().default('dev-metrics-token'),
   JWT_SECRET: Joi.string().min(32).required(),
   JWT_EXPIRES_IN: Joi.string().default('1d'),
-  
+
   // Paystack
   PAYSTACK_SECRET: Joi.string().required(),
   PAYSTACK_PUBLIC: Joi.string().required(),
   PAYSTACK_SECRET_KEY: Joi.string().optional(),
   PAYSTACK_WEBHOOK_SECRET: Joi.string().required(),
-  
+
   // Cloudinary
   CLOUDINARY_NAME: Joi.string().required(),
   CLOUDINARY_KEY: Joi.string().required(),
   CLOUDINARY_SECRET: Joi.string().required(),
-  
+
   // App specific
   ALLOWED_ORIGINS: Joi.string().default('http://localhost:3000'),
   TRUST_PROXY: Joi.string().valid('true', 'false').default('false'),

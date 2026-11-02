@@ -6,16 +6,20 @@ import {
 } from '@nestjs/common';
 import { v7 as uuidv7 } from 'uuid';
 import { PrismaService } from '../../database/prisma.service';
-import { DisputeDecision, DisputeStatus, EvidenceType } from '../../generated/prisma';
+import {
+  DisputeDecision,
+  DisputeStatus,
+  EvidenceType,
+} from '../../generated/prisma';
 import { ContractsService } from '../contracts/contracts.service';
 import { PaymentsService } from '../payments/payments.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DomainEventName } from '../../common/events/domain.events';
-import { 
-  DisputeOpenedEvent, 
-  DisputeEvidenceSubmittedEvent, 
+import {
+  DisputeOpenedEvent,
+  DisputeEvidenceSubmittedEvent,
   DisputeResolvedEvent,
-  DisputeStateChangedEvent 
+  DisputeStateChangedEvent,
 } from './events/disputes.events';
 
 @Injectable()
@@ -32,7 +36,7 @@ export class DisputesService {
     amountDisputed: number,
     reason: string,
     description: string,
-    contractId: string
+    contractId: string,
   ) {
     const contract = await this.prisma.contract.findUnique({
       where: { id: contractId },
@@ -42,8 +46,13 @@ export class DisputesService {
       throw new NotFoundException('Contract not found');
     }
 
-    if (contract.clientId !== initiatorId && contract.artisanId !== initiatorId) {
-      throw new ForbiddenException('You can only create disputes for contracts you participate in');
+    if (
+      contract.clientId !== initiatorId &&
+      contract.artisanId !== initiatorId
+    ) {
+      throw new ForbiddenException(
+        'You can only create disputes for contracts you participate in',
+      );
     }
 
     const existingDispute = await this.prisma.dispute.findFirst({
@@ -56,7 +65,9 @@ export class DisputesService {
     });
 
     if (existingDispute) {
-      throw new BadRequestException('An active dispute already exists for this contract');
+      throw new BadRequestException(
+        'An active dispute already exists for this contract',
+      );
     }
 
     const dispute = await this.prisma.dispute.create({
@@ -84,7 +95,7 @@ export class DisputesService {
 
     this.eventEmitter.emit(
       DomainEventName.DISPUTE_RAISED,
-      new DisputeOpenedEvent(dispute.id, contractId, initiatorId)
+      new DisputeOpenedEvent(dispute.id, contractId, initiatorId),
     );
 
     return dispute;
@@ -95,7 +106,7 @@ export class DisputesService {
     submittedBy: string,
     type: EvidenceType,
     url?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ) {
     const dispute = await this.prisma.dispute.findUnique({
       where: { id: disputeId },
@@ -109,8 +120,14 @@ export class DisputesService {
       throw new ForbiddenException('Only participants can submit evidence');
     }
 
-    if (dispute.status === DisputeStatus.ADMIN_INVESTIGATION || dispute.status === DisputeStatus.RESOLVED || dispute.status === DisputeStatus.CLOSED) {
-      throw new BadRequestException('Evidence collection is locked for this dispute');
+    if (
+      dispute.status === DisputeStatus.ADMIN_INVESTIGATION ||
+      dispute.status === DisputeStatus.RESOLVED ||
+      dispute.status === DisputeStatus.CLOSED
+    ) {
+      throw new BadRequestException(
+        'Evidence collection is locked for this dispute',
+      );
     }
 
     const evidence = await this.prisma.disputeEvidence.create({
@@ -135,13 +152,18 @@ export class DisputesService {
 
     this.eventEmitter.emit(
       'DISPUTE_EVIDENCE_SUBMITTED',
-      new DisputeEvidenceSubmittedEvent(dispute.id, evidence.id, submittedBy)
+      new DisputeEvidenceSubmittedEvent(dispute.id, evidence.id, submittedBy),
     );
 
     return evidence;
   }
 
-  async changeState(disputeId: string, newState: DisputeStatus, changedBy: string, notes?: string) {
+  async changeState(
+    disputeId: string,
+    newState: DisputeStatus,
+    changedBy: string,
+    notes?: string,
+  ) {
     const dispute = await this.prisma.dispute.findUnique({
       where: { id: disputeId },
     });
@@ -158,7 +180,8 @@ export class DisputesService {
           create: {
             action: 'STATE_CHANGED',
             by: changedBy,
-            notes: notes || `State changed from ${dispute.status} to ${newState}`,
+            notes:
+              notes || `State changed from ${dispute.status} to ${newState}`,
             metadata: { oldState: dispute.status, newState },
           },
         },
@@ -167,7 +190,12 @@ export class DisputesService {
 
     this.eventEmitter.emit(
       'DISPUTE_STATE_CHANGED',
-      new DisputeStateChangedEvent(disputeId, dispute.status, newState, changedBy)
+      new DisputeStateChangedEvent(
+        disputeId,
+        dispute.status,
+        newState,
+        changedBy,
+      ),
     );
 
     return updatedDispute;
@@ -178,7 +206,7 @@ export class DisputesService {
     decision: DisputeDecision,
     resolutionNotes: string,
     resolvedBy: string,
-    resolutionSplit?: Record<string, number>
+    resolutionSplit?: Record<string, number>,
   ) {
     const dispute = await this.prisma.dispute.findUnique({
       where: { id: disputeId },
@@ -188,7 +216,10 @@ export class DisputesService {
       throw new NotFoundException('Dispute not found');
     }
 
-    if (dispute.status === DisputeStatus.RESOLVED || dispute.status === DisputeStatus.CLOSED) {
+    if (
+      dispute.status === DisputeStatus.RESOLVED ||
+      dispute.status === DisputeStatus.CLOSED
+    ) {
       throw new BadRequestException('Dispute is already resolved or closed');
     }
 
@@ -219,8 +250,8 @@ export class DisputesService {
         dispute.contractId,
         resolvedBy,
         decision,
-        resolutionSplit || null
-      )
+        resolutionSplit || null,
+      ),
     );
 
     return updatedDispute;
@@ -255,8 +286,15 @@ export class DisputesService {
       throw new NotFoundException('Dispute not found');
     }
 
-    if (userId && userRole !== 'ADMIN' && userId !== dispute.clientId && userId !== dispute.artisanId) {
-      throw new ForbiddenException('Access denied: You can only view disputes you participate in');
+    if (
+      userId &&
+      userRole !== 'ADMIN' &&
+      userId !== dispute.clientId &&
+      userId !== dispute.artisanId
+    ) {
+      throw new ForbiddenException(
+        'Access denied: You can only view disputes you participate in',
+      );
     }
 
     return dispute;

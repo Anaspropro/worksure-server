@@ -18,7 +18,13 @@ export class ProposalsCron {
 
     const result = await this.prisma.proposal.updateMany({
       where: {
-        status: { in: [ProposalStatus.SUBMITTED, ProposalStatus.VIEWED, ProposalStatus.SHORTLISTED] },
+        status: {
+          in: [
+            ProposalStatus.SUBMITTED,
+            ProposalStatus.VIEWED,
+            ProposalStatus.SHORTLISTED,
+          ],
+        },
         createdAt: { lt: thirtyDaysAgo },
       },
       data: {

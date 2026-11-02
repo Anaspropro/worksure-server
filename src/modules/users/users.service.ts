@@ -51,10 +51,11 @@ export class UsersService {
       });
 
       if (input.role === UserRole.CLIENT || input.role === UserRole.ARTISAN) {
-        const walletName = input.role === UserRole.CLIENT
-          ? `Client Wallet - ${input.name.trim()}`
-          : `Artisan Wallet - ${input.name.trim()}`;
-        
+        const walletName =
+          input.role === UserRole.CLIENT
+            ? `Client Wallet - ${input.name.trim()}`
+            : `Artisan Wallet - ${input.name.trim()}`;
+
         await tx.ledgerAccount.create({
           data: {
             id: uuidv7(),

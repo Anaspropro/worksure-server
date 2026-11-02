@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '../../database/prisma.service';
-import { DomainEventName, ContractCompletedEvent } from '../../common/events/domain.events';
+import {
+  DomainEventName,
+  ContractCompletedEvent,
+} from '../../common/events/domain.events';
 import { v7 as uuidv7 } from 'uuid';
 
 @Injectable()
@@ -12,7 +15,9 @@ export class ReviewsEventListener {
 
   @OnEvent(DomainEventName.CONTRACT_COMPLETED)
   async handleContractCompleted(event: ContractCompletedEvent) {
-    this.logger.log(`Contract ${event.contractId} completed. Creating review eligibilities.`);
+    this.logger.log(
+      `Contract ${event.contractId} completed. Creating review eligibilities.`,
+    );
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 14); // 14 days to review
@@ -40,7 +45,9 @@ export class ReviewsEventListener {
         },
       });
     } catch (error) {
-      this.logger.error(`Failed to create review eligibilities for contract ${event.contractId}: ${error.message}`);
+      this.logger.error(
+        `Failed to create review eligibilities for contract ${event.contractId}: ${error.message}`,
+      );
     }
   }
 }

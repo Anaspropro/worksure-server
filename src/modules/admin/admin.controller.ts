@@ -110,7 +110,10 @@ export class AdminController {
     @Param('id') userId: string,
     @CurrentUser() adminUser: AuthenticatedUser,
   ) {
-    return this.adminService.rejectArtisanVerification(userId, this.getActor(adminUser));
+    return this.adminService.rejectArtisanVerification(
+      userId,
+      this.getActor(adminUser),
+    );
   }
 
   @ApiOperation({ summary: 'Issue a password reset token for a user' })
@@ -260,7 +263,11 @@ export class AdminController {
     description: 'Contract status filter',
   })
   @Get('contracts')
-  @RequireAdminRole(AdminRole.OPERATIONS_MANAGER, AdminRole.SUPPORT_ADMIN, AdminRole.DISPUTE_ADMIN)
+  @RequireAdminRole(
+    AdminRole.OPERATIONS_MANAGER,
+    AdminRole.SUPPORT_ADMIN,
+    AdminRole.DISPUTE_ADMIN,
+  )
   getAllContracts(
     @Query('search') search?: string,
     @Query('status') status?: string,
@@ -325,7 +332,6 @@ export class AdminController {
     return this.analyticsService.getContractStats();
   }
 
-
   @ApiOperation({ summary: 'List all system configurations' })
   @Get('config')
   @RequireAdminRole(AdminRole.SUPER_ADMIN, AdminRole.OPERATIONS_MANAGER)
@@ -357,4 +363,3 @@ export class AdminController {
     };
   }
 }
-

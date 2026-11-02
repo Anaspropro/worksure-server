@@ -174,7 +174,10 @@ export class ContractsService {
     });
 
     // Synchronize Job status if contract reaches a successful terminal state
-    if (newStatus === ContractStatus.COMPLETED || newStatus === ContractStatus.PAID_OUT) {
+    if (
+      newStatus === ContractStatus.COMPLETED ||
+      newStatus === ContractStatus.PAID_OUT
+    ) {
       await prismaClient.job.update({
         where: { id: contract.jobId },
         data: { status: 'COMPLETED' },
@@ -187,7 +190,7 @@ export class ContractsService {
           updatedContract.jobId,
           updatedContract.clientId,
           updatedContract.artisanId,
-        )
+        ),
       );
     }
 
@@ -504,7 +507,10 @@ export class ContractsService {
         this.contractTransitionNamespace,
       );
 
-      const job = await this.prisma.job.findUnique({ where: { id: updatedContract.jobId }, select: { title: true } });
+      const job = await this.prisma.job.findUnique({
+        where: { id: updatedContract.jobId },
+        select: { title: true },
+      });
 
       this.eventEmitter.emit(
         DomainEventName.CONTRACT_FUNDED,
@@ -515,8 +521,8 @@ export class ContractsService {
           job?.title || 'Job',
           updatedContract.clientId,
           updatedContract.artisanId,
-          Number(updatedContract.amount)
-        )
+          Number(updatedContract.amount),
+        ),
       );
 
       return updatedContract;
@@ -655,7 +661,10 @@ export class ContractsService {
     }
 
     // When the deliverable is approved by the client, we automatically transition the contract to READY_FOR_PAYOUT
-    if (contract.status === ContractStatus.IN_PROGRESS || contract.status === ContractStatus.CLIENT_CONFIRMED) {
+    if (
+      contract.status === ContractStatus.IN_PROGRESS ||
+      contract.status === ContractStatus.CLIENT_CONFIRMED
+    ) {
       await this.prisma.$transaction(async (tx) => {
         await this.transitionContractStatusWithClient(
           tx,
@@ -669,7 +678,7 @@ export class ContractsService {
             actorId: 'system',
             action: 'DELIVERABLE_APPROVED_COMPLETION',
             source: 'deliverables.approved',
-          }
+          },
         );
       });
     }

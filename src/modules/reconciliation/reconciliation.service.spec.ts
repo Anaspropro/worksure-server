@@ -47,7 +47,7 @@ describe('ReconciliationService', () => {
 
     service = module.get<ReconciliationService>(ReconciliationService);
     prisma = module.get<PrismaService>(PrismaService);
-    
+
     // Suppress expected logger output during tests
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
     jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
@@ -76,7 +76,9 @@ describe('ReconciliationService', () => {
       } as any);
 
       // We spy on the private method to mock the Paystack response directly
-      jest.spyOn(service as any, 'fetchPaystackDedicatedAccountBalance').mockResolvedValue(mockTotalObligations);
+      jest
+        .spyOn(service as any, 'fetchPaystackDedicatedAccountBalance')
+        .mockResolvedValue(mockTotalObligations);
       jest.spyOn(prisma.auditLog, 'create').mockResolvedValue(null as any);
 
       const result = await service.runReconciliation();
@@ -98,7 +100,9 @@ describe('ReconciliationService', () => {
         _sum: { amount: mockTotalObligations },
       } as any);
 
-      jest.spyOn(service as any, 'fetchPaystackDedicatedAccountBalance').mockResolvedValue(mockPaystackBalance);
+      jest
+        .spyOn(service as any, 'fetchPaystackDedicatedAccountBalance')
+        .mockResolvedValue(mockPaystackBalance);
       jest.spyOn(prisma.auditLog, 'create').mockResolvedValue(null as any);
 
       const result = await service.runReconciliation();
@@ -127,7 +131,9 @@ describe('ReconciliationService', () => {
         _sum: { amount: mockTotalObligations },
       } as any);
 
-      jest.spyOn(service as any, 'fetchPaystackDedicatedAccountBalance').mockResolvedValue(mockTotalObligations);
+      jest
+        .spyOn(service as any, 'fetchPaystackDedicatedAccountBalance')
+        .mockResolvedValue(mockTotalObligations);
       jest.spyOn(prisma.auditLog, 'create').mockResolvedValue(null as any);
 
       // Setup imbalance
@@ -152,7 +158,9 @@ describe('ReconciliationService', () => {
       const mockError = new Error('Database connection failed');
       jest.spyOn(prisma.contract, 'aggregate').mockRejectedValue(mockError);
 
-      await expect(service.runReconciliation()).rejects.toThrow('Database connection failed');
+      await expect(service.runReconciliation()).rejects.toThrow(
+        'Database connection failed',
+      );
       expect(prisma.auditLog.create).not.toHaveBeenCalled();
     });
   });

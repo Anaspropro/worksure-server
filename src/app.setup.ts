@@ -12,8 +12,7 @@ export function configureApp(app: INestApplication) {
   const trustProxyRaw = process.env.TRUST_PROXY;
   const httpAdapter = app.getHttpAdapter();
   const httpInstance = httpAdapter?.getInstance?.() as
-    | { set?: (key: string, value: unknown) => void }
-    | undefined;
+    { set?: (key: string, value: unknown) => void } | undefined;
 
   if (trustProxyRaw) {
     const trustProxy =

@@ -189,7 +189,8 @@ export class WalletController {
     @Body('transactionId') transactionId: string,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    if (!transactionId) throw new BadRequestException('transactionId is required');
+    if (!transactionId)
+      throw new BadRequestException('transactionId is required');
     const result = await this.walletService.processPayout(
       user.id,
       transactionId,

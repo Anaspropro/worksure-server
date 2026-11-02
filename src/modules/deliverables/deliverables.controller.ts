@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Put, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { DeliverablesService } from './deliverables.service';
 import { SubmitDeliverableVersionDto } from './dto/submit-version.dto';
 import { RequestRevisionDto } from './dto/request-revision.dto';
@@ -24,7 +32,9 @@ export class DeliverablesController {
 
   @Post('contract/:contractId/submit')
   @Roles(UserRole.ARTISAN)
-  @ApiOperation({ summary: 'Submit a new version of the deliverable (Artisan only)' })
+  @ApiOperation({
+    summary: 'Submit a new version of the deliverable (Artisan only)',
+  })
   submitVersion(
     @Param('contractId') contractId: string,
     @Body() dto: SubmitDeliverableVersionDto,

@@ -1,6 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaService } from '../../database/prisma.service';
 import { AppConfigModule } from '../../config/app-config.module';
 import { AppConfigService } from '../../config/app-config.service';
 import { AuthModule } from '../auth/auth.module';
@@ -23,7 +22,7 @@ import { UploadController } from './upload.controller';
     }),
   ],
   controllers: [ChatController, UploadController],
-  providers: [PrismaService, ChatService, MediaService, ChatGateway],
+  providers: [ChatService, MediaService, ChatGateway],
   exports: [ChatService, ChatGateway],
 })
 export class ChatModule {}

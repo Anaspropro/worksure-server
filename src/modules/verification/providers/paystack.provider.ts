@@ -1,21 +1,35 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IdentityVerificationProvider, VerificationResult, VerificationSession } from './identity.provider.interface';
+import {
+  IdentityVerificationProvider,
+  VerificationResult,
+  VerificationSession,
+} from './identity.provider.interface';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class PaystackVerificationProvider implements IdentityVerificationProvider {
   private readonly logger = new Logger(PaystackVerificationProvider.name);
 
-  async initiateVerification(userId: string, email: string): Promise<VerificationSession> {
+  async initiateVerification(
+    userId: string,
+    email: string,
+  ): Promise<VerificationSession> {
     const reference = `verify_${userId}_${Date.now()}`;
     return {
       reference,
-      url: `https://paystack.com/verify/${reference}`
+      url: `https://paystack.com/verify/${reference}`,
     };
   }
 
-  verifyWebhookSignature(payload: any, signature: string, secret: string): boolean {
-    const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(payload)).digest('hex');
+  verifyWebhookSignature(
+    payload: any,
+    signature: string,
+    secret: string,
+  ): boolean {
+    const hash = crypto
+      .createHmac('sha512', secret)
+      .update(JSON.stringify(payload))
+      .digest('hex');
     return hash === signature;
   }
 
@@ -35,7 +49,7 @@ export class PaystackVerificationProvider implements IdentityVerificationProvide
       reference: data.reference,
       verifiedAt: status === 'VERIFIED' ? new Date() : undefined,
       failureReason: status === 'FAILED' ? data.reason : undefined,
-      rawData: data
+      rawData: data,
     };
   }
 
@@ -43,7 +57,7 @@ export class PaystackVerificationProvider implements IdentityVerificationProvide
     return {
       status: 'VERIFIED',
       reference,
-      verifiedAt: new Date()
+      verifiedAt: new Date(),
     };
   }
 }

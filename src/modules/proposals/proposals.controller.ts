@@ -57,7 +57,10 @@ export class ProposalsController {
   }
 
   @ApiOperation({ summary: 'List proposals with filtering and pagination' })
-  @ApiOkResponse({ description: 'Proposals retrieved successfully.', type: [ProposalResponseDto] })
+  @ApiOkResponse({
+    description: 'Proposals retrieved successfully.',
+    type: [ProposalResponseDto],
+  })
   @ApiQuery({ name: 'status', required: false, enum: ProposalStatus })
   @ApiQuery({ name: 'jobId', required: false })
   @ApiQuery({ name: 'clientId', required: false })
@@ -70,27 +73,48 @@ export class ProposalsController {
     return this.proposalsService.listProposals(query);
   }
 
+  @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Get proposal by ID' })
-  @ApiOkResponse({ description: 'Proposal retrieved successfully.', type: ProposalResponseDto })
+  @ApiOkResponse({
+    description: 'Proposal retrieved successfully.',
+    type: ProposalResponseDto,
+  })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
+  @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiParam({ name: 'id', description: 'Proposal ID' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  async getProposal(@Param('id') id: string) {
-    return this.proposalsService.getProposal(id);
+  async getProposal(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @Param('id') id: string,
+  ) {
+    return this.proposalsService.getProposal(user, id);
   }
 
+  @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Compare proposals for a job' })
-  @ApiOkResponse({ description: 'Proposals compared successfully.', type: [ProposalComparisonItemDto] })
+  @ApiOkResponse({
+    description: 'Proposals compared successfully.',
+    type: [ProposalComparisonItemDto],
+  })
   @ApiNotFoundResponse({ description: 'Job not found.' })
+  @ApiForbiddenResponse({ description: 'Access denied.' })
   @ApiParam({ name: 'jobId', description: 'Job ID' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('job/:jobId/compare')
-  async compareProposals(@Param('jobId') jobId: string) {
-    return this.proposalsService.compareProposals(jobId);
+  async compareProposals(
+    @CurrentUser() user: { id: string; role: $Enums.UserRole },
+    @Param('jobId') jobId: string,
+  ) {
+    return this.proposalsService.compareProposals(user, jobId);
   }
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Update proposal' })
-  @ApiOkResponse({ description: 'Proposal updated successfully.', type: ProposalResponseDto })
+  @ApiOkResponse({
+    description: 'Proposal updated successfully.',
+    type: ProposalResponseDto,
+  })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -121,7 +145,10 @@ export class ProposalsController {
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Accept proposal' })
-  @ApiOkResponse({ description: 'Proposal accepted successfully.', type: ProposalResponseDto })
+  @ApiOkResponse({
+    description: 'Proposal accepted successfully.',
+    type: ProposalResponseDto,
+  })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -136,7 +163,10 @@ export class ProposalsController {
 
   @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Reject proposal' })
-  @ApiOkResponse({ description: 'Proposal rejected successfully.', type: ProposalResponseDto })
+  @ApiOkResponse({
+    description: 'Proposal rejected successfully.',
+    type: ProposalResponseDto,
+  })
   @ApiNotFoundResponse({ description: 'Proposal not found.' })
   @ApiForbiddenResponse({ description: 'Access denied.' })
   @UseGuards(JwtAuthGuard, RolesGuard)

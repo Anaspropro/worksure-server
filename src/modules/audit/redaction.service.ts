@@ -27,7 +27,7 @@ export class RedactionService {
 
   private deepRedact(obj: any, denyList: Set<string>): any {
     if (Array.isArray(obj)) {
-      return obj.map(item => this.deepRedact(item, denyList));
+      return obj.map((item) => this.deepRedact(item, denyList));
     }
 
     if (typeof obj === 'object' && obj !== null) {

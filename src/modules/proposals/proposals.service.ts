@@ -16,7 +16,11 @@ import {
   ProposalComparisonItemDto,
 } from './dto/create-proposal.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DomainEventName, ProposalSubmittedEvent, ProposalAcceptedEvent } from '../../common/events/domain.events';
+import {
+  DomainEventName,
+  ProposalSubmittedEvent,
+  ProposalAcceptedEvent,
+} from '../../common/events/domain.events';
 
 @Injectable()
 export class ProposalsService {
@@ -108,9 +112,16 @@ export class ProposalsService {
     if (!createDto.isDraft && createDto.attachments) {
       for (const file of createDto.attachments) {
         if (file.fileType.startsWith('image/') && file.fileSize > 100 * 1024) {
-          throw new BadRequestException(`Image ${file.fileName} exceeds 100kB limit`);
-        } else if (!file.fileType.startsWith('image/') && file.fileSize > 50 * 1024) {
-          throw new BadRequestException(`Document ${file.fileName} exceeds 50kB limit`);
+          throw new BadRequestException(
+            `Image ${file.fileName} exceeds 100kB limit`,
+          );
+        } else if (
+          !file.fileType.startsWith('image/') &&
+          file.fileSize > 50 * 1024
+        ) {
+          throw new BadRequestException(
+            `Document ${file.fileName} exceeds 50kB limit`,
+          );
         }
       }
     }
@@ -125,8 +136,10 @@ export class ProposalsService {
 
     if (existingProposal) {
       if (existingProposal.status === ProposalStatus.DRAFT) {
-        const updatedStatus = createDto.isDraft ? ProposalStatus.DRAFT : ProposalStatus.SUBMITTED;
-        
+        const updatedStatus = createDto.isDraft
+          ? ProposalStatus.DRAFT
+          : ProposalStatus.SUBMITTED;
+
         // Delete old draft attachments if new ones are provided
         if (createDto.attachments) {
           await this.prisma.proposalAttachment.deleteMany({
@@ -141,23 +154,27 @@ export class ProposalsService {
             amount: createDto.amount,
             estimatedDuration: createDto.estimatedDuration,
             status: updatedStatus,
-            attachments: createDto.attachments ? {
-              create: createDto.attachments.map(a => ({
-                id: uuidv7(),
-                fileUrl: a.fileUrl,
-                fileName: a.fileName,
-                fileType: a.fileType,
-                fileSize: a.fileSize,
-              }))
-            } : undefined,
+            attachments: createDto.attachments
+              ? {
+                  create: createDto.attachments.map((a) => ({
+                    id: uuidv7(),
+                    fileUrl: a.fileUrl,
+                    fileName: a.fileName,
+                    fileType: a.fileType,
+                    fileSize: a.fileSize,
+                  })),
+                }
+              : undefined,
             timelineEvents: {
               create: {
                 id: uuidv7(),
                 status: updatedStatus,
                 actorId: user.id,
-                notes: createDto.isDraft ? 'Proposal draft updated' : 'Proposal submitted from draft',
-              }
-            }
+                notes: createDto.isDraft
+                  ? 'Proposal draft updated'
+                  : 'Proposal submitted from draft',
+              },
+            },
           },
           include: {
             job: {
@@ -179,7 +196,13 @@ export class ProposalsService {
         if (!createDto.isDraft) {
           this.eventEmitter.emit(
             DomainEventName.PROPOSAL_SUBMITTED,
-            new ProposalSubmittedEvent(updated.id, updated.jobId, updated.job.title, updated.artisanId, updated.clientId)
+            new ProposalSubmittedEvent(
+              updated.id,
+              updated.jobId,
+              updated.job.title,
+              updated.artisanId,
+              updated.clientId,
+            ),
           );
         }
 
@@ -193,7 +216,7 @@ export class ProposalsService {
 
     const artisan = await this.prisma.user.findUnique({
       where: { id: user.id },
-      include: { artisanProfile: true }
+      include: { artisanProfile: true },
     });
 
     const proposalId = uuidv7();
@@ -206,7 +229,9 @@ export class ProposalsService {
         message: createDto.message,
         amount: createDto.amount,
         estimatedDuration: createDto.estimatedDuration,
-        status: createDto.isDraft ? ProposalStatus.DRAFT : ProposalStatus.SUBMITTED,
+        status: createDto.isDraft
+          ? ProposalStatus.DRAFT
+          : ProposalStatus.SUBMITTED,
         jobSnapshotTitle: job.title,
         jobSnapshotBudget: job.budget,
         jobSnapshotCategory: job.category,
@@ -218,22 +243,27 @@ export class ProposalsService {
         artisanSnapshotCompletedJobs: 0, // Should come from stats
         artisanSnapshotResponseRate: undefined, // Should come from stats
         attachments: {
-          create: createDto.attachments?.map(a => ({
-            id: uuidv7(),
-            fileUrl: a.fileUrl,
-            fileName: a.fileName,
-            fileType: a.fileType,
-            fileSize: a.fileSize,
-          })) || []
+          create:
+            createDto.attachments?.map((a) => ({
+              id: uuidv7(),
+              fileUrl: a.fileUrl,
+              fileName: a.fileName,
+              fileType: a.fileType,
+              fileSize: a.fileSize,
+            })) || [],
         },
         timelineEvents: {
           create: {
             id: uuidv7(),
-            status: createDto.isDraft ? ProposalStatus.DRAFT : ProposalStatus.SUBMITTED,
+            status: createDto.isDraft
+              ? ProposalStatus.DRAFT
+              : ProposalStatus.SUBMITTED,
             actorId: user.id,
-            notes: createDto.isDraft ? 'Proposal drafted' : 'Proposal submitted',
-          }
-        }
+            notes: createDto.isDraft
+              ? 'Proposal drafted'
+              : 'Proposal submitted',
+          },
+        },
       },
       include: {
         job: {
@@ -254,7 +284,13 @@ export class ProposalsService {
     if (!createDto.isDraft) {
       this.eventEmitter.emit(
         DomainEventName.PROPOSAL_SUBMITTED,
-        new ProposalSubmittedEvent(proposal.id, proposal.jobId, proposal.job.title, proposal.artisanId, proposal.clientId)
+        new ProposalSubmittedEvent(
+          proposal.id,
+          proposal.jobId,
+          proposal.job.title,
+          proposal.artisanId,
+          proposal.clientId,
+        ),
       );
     }
 
@@ -327,7 +363,10 @@ export class ProposalsService {
     };
   }
 
-  async getProposal(id: string): Promise<ProposalResponseDto> {
+  async getProposal(
+    user: { id: string; role: $Enums.UserRole },
+    id: string,
+  ): Promise<ProposalResponseDto> {
     const proposal = await this.prisma.proposal.findUnique({
       where: { id },
       include: {
@@ -347,6 +386,16 @@ export class ProposalsService {
 
     if (!proposal) {
       throw new NotFoundException('Proposal not found');
+    }
+
+    if (
+      user.role !== UserRole.ADMIN &&
+      user.id !== proposal.clientId &&
+      user.id !== proposal.artisanId
+    ) {
+      throw new ForbiddenException(
+        'You do not have permission to view this proposal',
+      );
     }
 
     return this.formatProposalResponse(proposal);
@@ -470,7 +519,9 @@ export class ProposalsService {
       where: { id },
       data: { status: ProposalStatus.ACCEPTED },
       include: {
-        job: { select: { id: true, clientId: true, status: true, title: true } },
+        job: {
+          select: { id: true, clientId: true, status: true, title: true },
+        },
         client: { select: { id: true, name: true, email: true } },
         artisan: { select: { id: true, name: true, email: true } },
       },
@@ -483,8 +534,8 @@ export class ProposalsService {
         updatedProposal.jobId,
         (updatedProposal.job as any).title || 'Job', // fallback if TS gets mad
         updatedProposal.artisanId,
-        updatedProposal.clientId
-      )
+        updatedProposal.clientId,
+      ),
     );
 
     return this.formatProposalResponse(updatedProposal);
@@ -569,11 +620,33 @@ export class ProposalsService {
     };
   }
 
-  async compareProposals(jobId: string): Promise<ProposalComparisonItemDto[]> {
+  async compareProposals(
+    user: { id: string; role: $Enums.UserRole },
+    jobId: string,
+  ): Promise<ProposalComparisonItemDto[]> {
+    const job = await this.prisma.job.findUnique({
+      where: { id: jobId },
+      select: { clientId: true },
+    });
+
+    if (!job) {
+      throw new NotFoundException('Job not found');
+    }
+
+    if (user.role !== UserRole.ADMIN && user.id !== job.clientId) {
+      throw new ForbiddenException('Only the job owner can compare proposals');
+    }
+
     const proposals = await this.prisma.proposal.findMany({
       where: {
         jobId,
-        status: { in: [ProposalStatus.SUBMITTED, ProposalStatus.VIEWED, ProposalStatus.SHORTLISTED] },
+        status: {
+          in: [
+            ProposalStatus.SUBMITTED,
+            ProposalStatus.VIEWED,
+            ProposalStatus.SHORTLISTED,
+          ],
+        },
       },
       include: {
         artisan: {
@@ -594,12 +667,18 @@ export class ProposalsService {
       artisanName: p.artisanSnapshotName || p.artisan.name,
       artisanAvatarUrl: p.artisanSnapshotAvatarUrl || undefined,
       rating: p.artisanSnapshotRating || p.artisan.artisanProfile?.rating || 0,
-      verificationStatus: p.artisanSnapshotVerificationStatus ?? (p.artisan.artisanProfile?.verified || false),
+      verificationStatus:
+        p.artisanSnapshotVerificationStatus ??
+        (p.artisan.artisanProfile?.verified || false),
       bid: p.amount,
       duration: p.estimatedDuration || undefined,
       coverLetterPreview: p.message.substring(0, 100),
       attachmentCount: p.attachments.length,
-      completionRate: p.artisanSnapshotCompletedJobs ? (p.artisanSnapshotCompletedJobs / Math.max(p.artisanSnapshotCompletedJobs, 1)) * 100 : undefined,
+      completionRate: p.artisanSnapshotCompletedJobs
+        ? (p.artisanSnapshotCompletedJobs /
+            Math.max(p.artisanSnapshotCompletedJobs, 1)) *
+          100
+        : undefined,
       responseTime: p.artisanSnapshotResponseRate || undefined,
       recommended: false, // Add AI recommendation logic here later
     }));

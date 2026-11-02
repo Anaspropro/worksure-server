@@ -1,6 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { HealthCheckService, HealthCheck, MemoryHealthIndicator, PrismaHealthIndicator, MicroserviceHealthIndicator } from '@nestjs/terminus';
+import {
+  HealthCheckService,
+  HealthCheck,
+  MemoryHealthIndicator,
+  PrismaHealthIndicator,
+  MicroserviceHealthIndicator,
+} from '@nestjs/terminus';
 import { PrismaService } from '../../database/prisma.service';
 import { AppConfigService } from '../../config/app-config.service';
 import { RedisOptions, Transport } from '@nestjs/microservices';
@@ -40,18 +46,21 @@ export class HealthController {
   @ApiResponse({ status: 503, description: 'Service is not ready' })
   async readiness() {
     const checkPromise = this.health.check([
-      () => this.prismaHealth.pingCheck('database', this.prisma),
+      () => this.prismaHealth.pingCheck('database', this.prisma, { timeout: 5000 }),
       () => this.memory.checkHeap('memory_heap', 1024 * 1024 * 1024), // 1GB
       () => this.memory.checkRSS('memory_rss', 1024 * 1024 * 1024), // 1GB
       () => {
         const url = new URL(process.env.REDIS_URL || 'redis://localhost:6379');
         return this.microservice.pingCheck<RedisOptions>('redis', {
           transport: Transport.REDIS,
-          options: { 
+          options: {
             host: url.hostname,
             port: parseInt(url.port || '6379'),
             password: url.password,
-            tls: url.protocol === 'rediss:' ? { rejectUnauthorized: false } : undefined,
+            tls:
+              url.protocol === 'rediss:'
+                ? { rejectUnauthorized: false }
+                : undefined,
           },
         });
       },
@@ -60,13 +69,22 @@ export class HealthController {
 
     try {
       const result = await checkPromise;
-      
+
       // If we reach here, it means all checks passed successfully.
       // Send recovery for components if they were previously failing
-      this.alertingService.resolveAlert('health_database', 'Database connection restored and healthy.');
-      this.alertingService.resolveAlert('health_redis', 'Redis connection restored and healthy.');
-      this.alertingService.resolveAlert('health_queues', 'BullMQ queues restored and healthy.');
-      
+      this.alertingService.resolveAlert(
+        'health_database',
+        'Database connection restored and healthy.',
+      );
+      this.alertingService.resolveAlert(
+        'health_redis',
+        'Redis connection restored and healthy.',
+      );
+      this.alertingService.resolveAlert(
+        'health_queues',
+        'BullMQ queues restored and healthy.',
+      );
+
       return result;
     } catch (e: any) {
       if (e.response && e.response.details) {
@@ -76,7 +94,7 @@ export class HealthController {
             'health_database',
             'Database Connection Failure',
             'The health check endpoint failed to connect to the Prisma Database.',
-            { details: details.database }
+            { details: details.database },
           );
         }
         if (details.redis?.status === 'down') {
@@ -84,15 +102,18 @@ export class HealthController {
             'health_redis',
             'Redis Connection Failure',
             'The health check endpoint failed to connect to Redis.',
-            { details: details.redis }
+            { details: details.redis },
           );
         }
-        if (details.queues?.status === 'down' || details.queues?.status === 'backed_up') {
+        if (
+          details.queues?.status === 'down' ||
+          details.queues?.status === 'backed_up'
+        ) {
           this.alertingService.sendCriticalAlert(
             'health_queues',
             'Queue Processing Delay / Down',
             'The health check endpoint detected that queues are offline or backed up.',
-            { details: details.queues }
+            { details: details.queues },
           );
         }
       }

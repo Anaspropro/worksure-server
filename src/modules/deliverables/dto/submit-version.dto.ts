@@ -1,4 +1,11 @@
-import { IsArray, IsEnum, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { AttachmentType } from '../../../generated/prisma';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';

@@ -9,17 +9,17 @@ export class FinancialVerificationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
-    private readonly identityProvider: PaystackVerificationProvider // Could inject based on interface in the future
+    private readonly identityProvider: PaystackVerificationProvider, // Could inject based on interface in the future
   ) {}
 
   async initiate(userId: string, email: string) {
     let verification = await this.prisma.artisanVerification.findUnique({
-      where: { userId }
+      where: { userId },
     });
 
     if (!verification) {
       verification = await this.prisma.artisanVerification.create({
-        data: { userId }
+        data: { userId },
       });
     }
 
@@ -27,14 +27,17 @@ export class FinancialVerificationService {
       return { url: null, reference: verification.financialProviderRef };
     }
 
-    const session = await this.identityProvider.initiateVerification(userId, email);
+    const session = await this.identityProvider.initiateVerification(
+      userId,
+      email,
+    );
 
     await this.prisma.artisanVerification.update({
       where: { userId },
       data: {
         financialProviderRef: session.reference,
-        financialStatus: FinancialVerificationStatus.PENDING
-      }
+        financialStatus: FinancialVerificationStatus.PENDING,
+      },
     });
 
     this.eventEmitter.emit('financial.verification.started', { userId });
@@ -42,14 +45,16 @@ export class FinancialVerificationService {
   }
 
   async handleWebhook(payload: any, signature: string, secret: string) {
-    if (!this.identityProvider.verifyWebhookSignature(payload, signature, secret)) {
+    if (
+      !this.identityProvider.verifyWebhookSignature(payload, signature, secret)
+    ) {
       throw new Error('Invalid webhook signature');
     }
 
     const result = this.identityProvider.parseWebhook(payload);
-    
+
     const verification = await this.prisma.artisanVerification.findFirst({
-      where: { financialProviderRef: result.reference }
+      where: { financialProviderRef: result.reference },
     });
 
     if (!verification) {
@@ -64,28 +69,39 @@ export class FinancialVerificationService {
     const updated = await this.prisma.artisanVerification.update({
       where: { id: verification.id },
       data: {
-        financialStatus: result.status as FinancialVerificationStatus,
+        financialStatus: result.status,
         financialVerifiedAt: result.verifiedAt,
-        financialFailureReason: result.failureReason
-      }
+        financialFailureReason: result.failureReason,
+      },
     });
 
     if (result.status === 'VERIFIED') {
-      this.eventEmitter.emit('financial.verification.succeeded', { userId: updated.userId });
+      this.eventEmitter.emit('financial.verification.succeeded', {
+        userId: updated.userId,
+      });
     } else if (result.status === 'FAILED') {
-      this.eventEmitter.emit('financial.verification.failed', { userId: updated.userId });
+      this.eventEmitter.emit('financial.verification.failed', {
+        userId: updated.userId,
+      });
     }
 
     this.checkEligibility(updated);
-    
+
     return updated;
   }
 
   private checkEligibility(verification: any) {
-    if (verification.marketplaceStatus === 'APPROVED' && verification.financialStatus === 'VERIFIED') {
-      this.eventEmitter.emit('payout.eligibility.granted', { userId: verification.userId });
+    if (
+      verification.marketplaceStatus === 'APPROVED' &&
+      verification.financialStatus === 'VERIFIED'
+    ) {
+      this.eventEmitter.emit('payout.eligibility.granted', {
+        userId: verification.userId,
+      });
     } else {
-      this.eventEmitter.emit('payout.eligibility.revoked', { userId: verification.userId });
+      this.eventEmitter.emit('payout.eligibility.revoked', {
+        userId: verification.userId,
+      });
     }
   }
 }
