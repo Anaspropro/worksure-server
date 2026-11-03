@@ -7,14 +7,7 @@ dotenv.config({ override: true });
 const isTest =
   process.env.NODE_ENV === 'test' || Boolean(process.env.JEST_WORKER_ID);
 const redisUrl =
-  process.env.REDIS_URL ||
-  (process.env.NODE_ENV === 'production'
-    ? undefined
-    : 'redis://127.0.0.1:6379');
-
-if (!redisUrl) {
-  throw new Error('REDIS_URL environment variable is missing');
-}
+  process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 
 import type { RedisOptions } from 'ioredis';
 

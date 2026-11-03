@@ -18,6 +18,7 @@ import { SessionService } from '../../common/services/session.service';
 import { PrismaService } from '../../database/prisma.service';
 import { EmailService } from '../../common/services/email.service';
 import { EmailProducer } from '../../queue/producer';
+import { redisConnection } from '../../queue/redis';
 
 export type AuthenticatedUser = {
   id: string;
@@ -45,9 +46,54 @@ export class AuthService {
 
     const existingUser = await this.usersService.findByEmail(dto.email);
     if (existingUser) {
-      throw new ConflictException(
-        `An account already exists for ${dto.email.toLowerCase()}.`,
+      if (existingUser.emailVerified !== false) {
+        throw new ConflictException(
+          `An account already exists for ${dto.email.toLowerCase()}.`,
+        );
+      }
+
+      // User exists but has not verified their email yet.
+      // Update their details with the new credentials, refresh OTP, and send verification code.
+      const passwordHash = await hash(dto.password, 10);
+      const updatedUser = await this.prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          name: dto.name,
+          passwordHash,
+          role: dto.role,
+        },
+      });
+
+      // Clear any previous tokens for this user
+      await this.prisma.verificationToken.deleteMany({
+        where: { email: dto.email.toLowerCase() },
+      });
+
+      const verificationToken = await this.generateOtp(dto.email.toLowerCase());
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes validity for OTP
+
+      await this.prisma.verificationToken.create({
+        data: {
+          email: dto.email.toLowerCase(),
+          token: verificationToken,
+          expiresAt,
+        },
+      });
+
+      await this.sendVerificationEmail(
+        dto.email.toLowerCase(),
+        dto.name,
+        verificationToken,
       );
+
+      return {
+        message:
+          'Registration details updated. A fresh verification code has been sent to your email.',
+        data: {
+          user: this.usersService.sanitizeUser(updatedUser || existingUser),
+        },
+      };
     }
 
     const passwordHash = await hash(dto.password, 10);
@@ -62,7 +108,7 @@ export class AuthService {
     const verificationToken = await this.generateOtp(user.email);
 
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 5); // 5 minutes validity for OTP
+    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes validity for OTP
 
     await this.prisma.verificationToken.create({
       data: {
@@ -72,17 +118,11 @@ export class AuthService {
       },
     });
 
-    // Send verification OTP using BullMQ to prevent blocking and ensure retries
-    EmailProducer.sendVerificationOtp({
-      to: user.email,
-      name: user.name,
-      token: verificationToken,
-    }).catch((err) => {
-      this.logger.error(
-        `Failed to enqueue verification email for ${user.email}: ${err.message}`,
-        err.stack,
-      );
-    });
+    await this.sendVerificationEmail(
+      user.email,
+      user.name,
+      verificationToken,
+    );
 
     return {
       message:
@@ -306,7 +346,7 @@ export class AuthService {
     const verificationToken = await this.generateOtp(user.email);
 
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 5); // 5 minutes validity
+    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes validity
 
     await this.prisma.verificationToken.create({
       data: {
@@ -316,17 +356,12 @@ export class AuthService {
       },
     });
 
-    // Send verification OTP in the background via BullMQ to ensure instant responsiveness
-    EmailProducer.sendVerificationOtp({
-      to: user.email,
-      name: user.name,
-      token: verificationToken,
-    }).catch((err) => {
-      this.logger.error(
-        `Failed to enqueue verification email for ${user.email} on resend: ${err.message}`,
-        err.stack,
-      );
-    });
+    // Send verification OTP with fallback
+    await this.sendVerificationEmail(
+      user.email,
+      user.name,
+      verificationToken,
+    );
 
     return {
       message: 'A new verification code has been sent to your email.',
@@ -365,17 +400,12 @@ export class AuthService {
       requestedAt: new Date(),
     });
 
-    // Send the password reset email via BullMQ to keep request responsive
-    EmailProducer.sendPasswordReset({
-      to: user.email,
-      name: user.name,
-      token: rawToken,
-    }).catch((err) => {
-      this.logger.error(
-        `Failed to enqueue password reset email for ${user.email}: ${err.message}`,
-        err.stack,
-      );
-    });
+    // Send the password reset email with fallback
+    await this.sendPasswordResetEmail(
+      user.email,
+      user.name,
+      rawToken,
+    );
 
     const response: {
       message: string;
@@ -508,5 +538,71 @@ export class AuthService {
 
   private hashResetToken(token: string) {
     return createHash('sha256').update(token).digest('hex');
+  }
+
+  private async sendVerificationEmail(
+    to: string,
+    name: string,
+    token: string,
+  ): Promise<void> {
+    if (redisConnection?.status === 'ready') {
+      try {
+        await EmailProducer.sendVerificationOtp({ to, name, token });
+        return;
+      } catch (queueErr: any) {
+        this.logger.warn(
+          `BullMQ queue failed (${queueErr?.message}), falling back to direct email sending for ${to}`,
+        );
+      }
+    }
+
+    try {
+      this.logger.log(`Dispatching verification OTP directly to ${to}`);
+      if (typeof this.emailService?.sendVerificationOtp === 'function') {
+        await this.emailService.sendVerificationOtp(to, token);
+      } else if (
+        typeof (this.emailService as any)?.sendVerificationEmail === 'function'
+      ) {
+        await (this.emailService as any).sendVerificationEmail(to, token);
+      }
+    } catch (directErr: any) {
+      this.logger.error(
+        `Failed to send verification email to ${to}: ${directErr?.message}`,
+        directErr?.stack,
+      );
+    }
+  }
+
+  private async sendPasswordResetEmail(
+    to: string,
+    name: string,
+    token: string,
+  ): Promise<void> {
+    if (redisConnection?.status === 'ready') {
+      try {
+        await EmailProducer.sendPasswordReset({ to, name, token });
+        return;
+      } catch (queueErr: any) {
+        this.logger.warn(
+          `BullMQ queue failed (${queueErr?.message}), falling back to direct email sending for ${to}`,
+        );
+      }
+    }
+
+    try {
+      this.logger.log(`Dispatching password reset email directly to ${to}`);
+      if (typeof this.emailService?.sendPasswordReset === 'function') {
+        await this.emailService.sendPasswordReset(to, token);
+      } else if (
+        typeof (this.emailService as any)?.sendPasswordResetEmail === 'function'
+      ) {
+        await (this.emailService as any).sendPasswordResetEmail(to, token);
+      }
+    } catch (directErr: any) {
+      this.logger.error(
+        `Failed to send password reset email to ${to}: ${directErr?.message}`,
+        directErr?.stack,
+      );
+    }
   }
 }
