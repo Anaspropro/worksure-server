@@ -42,12 +42,14 @@ export class AdminRolesGuard implements CanActivate {
       throw new ForbiddenException('User is not an admin');
     }
 
-    if (user.adminRoles.includes('SUPER_ADMIN')) {
-      return true; // SUPER_ADMIN can access anything
+    const userAdminRoles = user.adminRoles || [];
+
+    if (userAdminRoles.length === 0 || userAdminRoles.includes('SUPER_ADMIN')) {
+      return true; // SUPER_ADMIN or unrestricted admin can access anything
     }
 
     const hasRole = requiredRoles.some((role) =>
-      user.adminRoles.includes(role),
+      userAdminRoles.includes(role),
     );
 
     if (!hasRole) {
