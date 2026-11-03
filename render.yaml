@@ -14,7 +14,7 @@ services:
     region: oregon
     healthCheckPath: /health
     autoDeploy: false
-    preDeployCommand: npx prisma migrate deploy
+    preDeployCommand: npx prisma migrate deploy && npm run prisma:seed
     envVars:
       - key: PORT
         value: 4000
@@ -44,6 +44,10 @@ services:
       - key: CLOUDINARY_SECRET
         sync: false
       - key: ALLOWED_ORIGINS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM_ADDRESS
         sync: false
 
 databases:
