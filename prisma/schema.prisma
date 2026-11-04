@@ -303,6 +303,7 @@ model Job {
   forceCloseReason String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
 
   // Relations
   client    User       @relation("ClientJobs", fields: [clientId], references: [id])
@@ -316,6 +317,7 @@ model Job {
   @@index([status, createdAt])
   @@index([title, description])
   @@index([requiredSkills], type: Gin)
+  @@index([deletedAt])
 }
 
 model Transaction {
@@ -395,8 +397,9 @@ model Proposal {
   // Expiration
   expiresAt DateTime?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   // Relations
   job      Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
@@ -413,6 +416,7 @@ model Proposal {
   @@index([artisanId, status])
   @@index([clientId, status])
   @@index([clientId])
+  @@index([deletedAt])
 }
 
 model ProposalAttachment {
@@ -492,8 +496,9 @@ model Contract {
   escrowReleasedAt    DateTime?
   platformFeeDeducted Boolean   @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   // Relations
   job                 Job                 @relation(fields: [jobId], references: [id])
@@ -512,6 +517,7 @@ model Contract {
   @@index([clientId, status])
   @@index([artisanId, status])
   @@index([status, activatedAt])
+  @@index([deletedAt])
 }
 
 model Conversation {
@@ -1053,6 +1059,7 @@ model Review {
   lockedAt  DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   author   User     @relation("AuthoredReviews", fields: [authorId], references: [id])
@@ -1063,6 +1070,7 @@ model Review {
   @@index([authorId])
   @@index([targetId])
   @@index([status])
+  @@index([deletedAt])
 }
 
 model ReviewEligibility {

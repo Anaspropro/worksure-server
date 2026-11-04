@@ -11,8 +11,6 @@ import {
   DisputeStatus,
   EvidenceType,
 } from '../../generated/prisma';
-import { ContractsService } from '../contracts/contracts.service';
-import { PaymentsService } from '../payments/payments.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DomainEventName } from '../../common/events/domain.events';
 import {
@@ -26,8 +24,6 @@ import {
 export class DisputesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly contractsService: ContractsService,
-    private readonly paymentsService: PaymentsService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -90,8 +86,6 @@ export class DisputesService {
         },
       },
     });
-
-    await this.contractsService.markDisputed(contractId);
 
     this.eventEmitter.emit(
       DomainEventName.DISPUTE_RAISED,

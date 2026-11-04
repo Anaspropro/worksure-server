@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaModule } from '../../database/prisma.module';
 import { NotificationsService } from './notifications.service';
 import { NotificationsController } from './notifications.controller';
@@ -16,7 +16,7 @@ import { EmailService } from '../../common/services/email.service';
 @Module({
   imports: [
     PrismaModule,
-    forwardRef(() => AuthModule),
+    AuthModule,
     BullModule.registerQueue({
       name: 'notification-routing-queue',
     }),

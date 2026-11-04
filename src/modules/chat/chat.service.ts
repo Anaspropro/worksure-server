@@ -28,7 +28,6 @@ type UploadedAttachment = {
 @Injectable()
 export class ChatService {
   constructor(
-    @Inject(forwardRef(() => PrismaService))
     private readonly prisma: PrismaService,
     @Inject(JwtService)
     private readonly jwtService: JwtService,

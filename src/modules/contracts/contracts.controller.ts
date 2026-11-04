@@ -18,12 +18,9 @@ import {
 } from '@nestjs/swagger';
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
-import { FundContractDto } from './dto/fund-contract.dto';
 import { ConfirmCompletionDto } from './dto/confirm-completion.dto';
-import { RefundContractDto } from './dto/refund-contract.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ContractStatus } from '../../generated/prisma';
-import { PaymentsService } from '../payments/payments.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AuthenticatedUser } from '../auth/auth.service';
 
@@ -34,7 +31,6 @@ import { AuthenticatedUser } from '../auth/auth.service';
 export class ContractsController {
   constructor(
     private readonly contractsService: ContractsService,
-    private readonly paymentsService: PaymentsService,
   ) {}
 
   @Post()
@@ -72,60 +68,6 @@ export class ContractsController {
       message: 'Contract activated successfully',
       data: contract,
     };
-  }
-
-  @Post(':id/fund')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Fund a contract' })
-  @ApiResponse({ status: 200, description: 'Contract funded successfully' })
-  async fundContract(
-    @Param('id') contractId: string,
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() fundDto: FundContractDto,
-  ) {
-    const contract = await this.paymentsService.initializeContractPayment(
-      user.id,
-      contractId,
-      fundDto.email,
-      fundDto.callbackUrl,
-    );
-
-    return {
-      message: 'Contract payment initialized successfully',
-      data: contract,
-    };
-  }
-
-  @Post(':id/release-escrow')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Release escrow funds to artisan' })
-  @ApiResponse({ status: 200, description: 'Escrow released successfully' })
-  async releaseEscrow(
-    @Param('id') contractId: string,
-    @CurrentUser() _user: AuthenticatedUser,
-  ) {
-    const result = await this.paymentsService.releaseEscrow(contractId);
-
-    return result;
-  }
-
-  @Post(':id/refund')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Refund contract to client' })
-  @ApiResponse({ status: 200, description: 'Contract refunded successfully' })
-  async refundContract(
-    @Param('id') contractId: string,
-    @Body() refundDto: RefundContractDto,
-    @CurrentUser() user: AuthenticatedUser,
-  ) {
-    const result = await this.paymentsService.refundContract(
-      contractId,
-      user.id,
-      user.role === 'ADMIN',
-      refundDto.reason,
-    );
-
-    return result;
   }
 
   @Post(':id/confirm-completion')

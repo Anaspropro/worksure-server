@@ -3,13 +3,14 @@ import {
   Get,
   Post,
   Body,
-  Req,
   UseGuards,
   Param,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { AuthenticatedUser } from '../auth/auth.service';
 
 @ApiTags('Reviews')
 @ApiBearerAuth()
@@ -20,8 +21,8 @@ export class ReviewsController {
 
   @Get('eligible')
   @ApiOperation({ summary: 'Get contracts eligible for review' })
-  async getEligibleReviews(@Req() req) {
-    return this.reviewsService.getEligibleReviews(req.user.id);
+  async getEligibleReviews(@CurrentUser() user: AuthenticatedUser) {
+    return this.reviewsService.getEligibleReviews(user.id);
   }
 
   @Get('reputation/:userId')
@@ -33,7 +34,7 @@ export class ReviewsController {
   @Post(':contractId/submit')
   @ApiOperation({ summary: 'Submit a review for a contract' })
   async submitReview(
-    @Req() req,
+    @CurrentUser() user: AuthenticatedUser,
     @Param('contractId') contractId: string,
     @Body()
     body: {
@@ -44,7 +45,7 @@ export class ReviewsController {
     },
   ) {
     return this.reviewsService.submitReview(
-      req.user.id,
+      user.id,
       contractId,
       body.targetId,
       body.rating,
