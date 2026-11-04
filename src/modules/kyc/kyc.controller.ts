@@ -4,7 +4,6 @@ import {
   Get,
   Body,
   UseGuards,
-  Request,
   BadRequestException,
 } from '@nestjs/common';
 import { KycService } from './kyc.service';
@@ -12,6 +11,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { KycDocumentType } from '../../generated/prisma';
 import { UploadKycDocumentDto } from './dto/upload-kyc.dto';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { AuthenticatedUser } from '../auth/auth.service';
 
 @ApiTags('kyc')
 @ApiBearerAuth('bearer')
@@ -23,7 +24,7 @@ export class KycController {
   @Post('verify-identity')
   @ApiOperation({ summary: 'Verify user identity via Paystack BVN match' })
   async verifyIdentity(
-    @Request() req,
+    @CurrentUser() user: AuthenticatedUser,
     @Body('bvn') bvn: string,
     @Body('bankCode') bankCode: string,
     @Body('accountNumber') accountNumber: string,
@@ -34,7 +35,7 @@ export class KycController {
       );
     }
     return this.kycService.verifyIdentityWithPaystack(
-      req.user.id,
+      user.id,
       bvn,
       bankCode,
       accountNumber,
@@ -43,9 +44,12 @@ export class KycController {
 
   @Post('upload')
   @ApiOperation({ summary: 'Upload a KYC document via direct Cloudinary URL' })
-  async uploadDocument(@Request() req, @Body() dto: UploadKycDocumentDto) {
+  async uploadDocument(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UploadKycDocumentDto,
+  ) {
     return this.kycService.uploadKycDocument(
-      req.user.id,
+      user.id,
       dto.documentUrl,
       dto.documentType,
     );
@@ -53,7 +57,7 @@ export class KycController {
 
   @Get('status')
   @ApiOperation({ summary: 'Get current KYC status' })
-  async getStatus(@Request() req) {
-    return this.kycService.getKycStatus(req.user.id);
+  async getStatus(@CurrentUser() user: AuthenticatedUser) {
+    return this.kycService.getKycStatus(user.id);
   }
 }

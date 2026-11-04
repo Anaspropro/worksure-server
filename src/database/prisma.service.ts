@@ -20,6 +20,7 @@ export class PrismaService
   private readonly logger = new Logger(PrismaService.name);
   private connected = false;
   private readonly pool?: Pool;
+  private readonly extended: any;
 
   constructor(
     @Inject(AppConfigService)
@@ -37,6 +38,55 @@ export class PrismaService
     });
 
     this.pool = pool;
+
+    this.extended = this.$extends({
+      query: {
+        $allModels: {
+          async $allOperations({ model, operation, args, query }: { model: string; operation: string; args: any; query: (args: any) => Promise<any> }) {
+            const softDeleteModels = ['Job', 'Contract', 'Proposal', 'Review'];
+            if (model && softDeleteModels.includes(model)) {
+              if (operation === 'delete') {
+                const modelKey = model.charAt(0).toLowerCase() + model.slice(1);
+                return (this as any)[modelKey].update({
+                  where: args?.where,
+                  data: { deletedAt: new Date() },
+                });
+              }
+              if (operation === 'deleteMany') {
+                const modelKey = model.charAt(0).toLowerCase() + model.slice(1);
+                return (this as any)[modelKey].updateMany({
+                  where: { ...(args?.where || {}), deletedAt: null },
+                  data: { deletedAt: new Date() },
+                });
+              }
+              if (
+                ['findUnique', 'findFirst', 'findMany', 'count'].includes(
+                  operation,
+                )
+              ) {
+                if (args?.where) {
+                  if (args.where.deletedAt === undefined) {
+                    args.where.deletedAt = null;
+                  }
+                } else {
+                  args = { ...args, where: { deletedAt: null } };
+                }
+              }
+            }
+            return query(args);
+          },
+        },
+      },
+    });
+
+    return new Proxy(this, {
+      get: (target: any, prop: string) => {
+        if (['job', 'contract', 'proposal', 'review'].includes(prop)) {
+          return target.extended[prop];
+        }
+        return target[prop];
+      },
+    });
   }
 
   async onModuleInit() {

@@ -1,7 +1,8 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaModule } from '../../database/prisma.module';
 import { PaymentsService } from './payments.service';
 import { PaymentsController } from './payments.controller';
+import { ContractPaymentsController } from './contract-payments.controller';
 import { AuthModule } from '../auth/auth.module';
 import { ContractsModule } from '../contracts/contracts.module';
 import { WalletModule } from '../wallet/wallet.module';
@@ -13,13 +14,8 @@ import { PaystackWebhookService } from './paystack-webhook.service';
 import { PaymentsListener } from './payments.listener';
 
 @Module({
-  imports: [
-    PrismaModule,
-    forwardRef(() => AuthModule),
-    forwardRef(() => ContractsModule),
-    forwardRef(() => WalletModule),
-  ],
-  controllers: [PaymentsController],
+  imports: [PrismaModule, AuthModule, ContractsModule, WalletModule],
+  controllers: [PaymentsController, ContractPaymentsController],
   providers: [
     PaymentsService,
     WebhookSignatureService,

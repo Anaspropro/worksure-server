@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DisputesService } from './disputes.service';
 import { PrismaService } from '../../database/prisma.service';
-import { ContractsService } from '../contracts/contracts.service';
-import { PaymentsService } from '../payments/payments.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DisputeStatus, EvidenceType } from '../../generated/prisma';
+import { DomainEventName } from '../../common/events/domain.events';
 import {
   NotFoundException,
   ForbiddenException,
@@ -14,8 +13,6 @@ import {
 describe('DisputesService', () => {
   let service: DisputesService;
   let prisma: any;
-  let contractsService: any;
-  let paymentsService: any;
   let eventEmitter: any;
 
   beforeEach(async () => {
@@ -37,16 +34,6 @@ describe('DisputesService', () => {
       },
     };
 
-    contractsService = {
-      markDisputed: jest.fn().mockResolvedValue(undefined),
-      resolveDispute: jest.fn().mockResolvedValue(undefined),
-    };
-
-    paymentsService = {
-      refund: jest.fn().mockResolvedValue(undefined),
-      releaseFunds: jest.fn().mockResolvedValue(undefined),
-    };
-
     eventEmitter = {
       emit: jest.fn(),
     };
@@ -55,8 +42,6 @@ describe('DisputesService', () => {
       providers: [
         DisputesService,
         { provide: PrismaService, useValue: prisma },
-        { provide: ContractsService, useValue: contractsService },
-        { provide: PaymentsService, useValue: paymentsService },
         { provide: EventEmitter2, useValue: eventEmitter },
       ],
     }).compile();
@@ -140,8 +125,10 @@ describe('DisputesService', () => {
       );
 
       expect(prisma.dispute.create).toHaveBeenCalled();
-      expect(contractsService.markDisputed).toHaveBeenCalledWith('contract-1');
-      expect(eventEmitter.emit).toHaveBeenCalled();
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        DomainEventName.DISPUTE_RAISED,
+        expect.any(Object),
+      );
       expect(result).toEqual(mockCreated);
     });
   });

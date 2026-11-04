@@ -684,6 +684,13 @@ export class ContractsService {
     }
   }
 
+  @OnEvent(DomainEventName.DISPUTE_RAISED)
+  async handleDisputeRaised(event: { contractId: string }) {
+    if (event?.contractId) {
+      await this.markDisputed(event.contractId);
+    }
+  }
+
   async assertReadyForPayout(contractId: string) {
     const contract = await this.findContractMetadata(contractId);
 

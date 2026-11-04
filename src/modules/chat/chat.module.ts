@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AppConfigModule } from '../../config/app-config.module';
 import { AppConfigService } from '../../config/app-config.service';
@@ -11,7 +11,7 @@ import { UploadController } from './upload.controller';
 
 @Module({
   imports: [
-    forwardRef(() => AuthModule),
+    AuthModule,
     AppConfigModule,
     JwtModule.registerAsync({
       imports: [AppConfigModule],

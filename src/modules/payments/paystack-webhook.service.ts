@@ -2,8 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  forwardRef,
-  Inject,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import {
@@ -33,13 +31,9 @@ export class PaystackWebhookService {
   >;
 
   constructor(
-    @Inject(forwardRef(() => PrismaService))
     private readonly prisma: PrismaService,
-    @Inject(forwardRef(() => ContractsService))
     private readonly contractsService: ContractsService,
-    @Inject(forwardRef(() => WalletService))
     private readonly walletService: WalletService,
-    @Inject(forwardRef(() => PaymentsService))
     private readonly paymentsService: PaymentsService,
     private readonly eventEmitter: EventEmitter2,
   ) {
