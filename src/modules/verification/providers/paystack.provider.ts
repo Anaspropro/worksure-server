@@ -17,7 +17,7 @@ export class PaystackVerificationProvider implements IdentityVerificationProvide
     const reference = `verify_${userId}_${Date.now()}`;
     return {
       reference,
-      url: `https://paystack.com/verify/${reference}`,
+      url: undefined,
     };
   }
 

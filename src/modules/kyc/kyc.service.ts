@@ -4,7 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { KycDocumentStatus, KycDocumentType } from '../../generated/prisma';
+import {
+  KycDocumentStatus,
+  KycDocumentType,
+  FinancialVerificationStatus,
+} from '../../generated/prisma';
 import { PaystackClientService } from '../../common/services/paystack-client.service';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -70,15 +74,30 @@ export class KycService {
     await this.prisma.user.update({
       where: { id: userId },
       data: {
-        // kycVerified: true,
-        // kycStatus: KycVerificationStatus.PENDING, // PENDING document review
+        payoutAccountNumber: accountNumber,
+        payoutBankCode: bankCode,
+      },
+    });
+
+    await this.prisma.artisanVerification.upsert({
+      where: { userId },
+      create: {
+        userId,
+        financialStatus: FinancialVerificationStatus.VERIFIED,
+        financialVerifiedAt: new Date(),
+        financialProviderRef: `bvn_match_${accountNumber}_${bankCode}`,
+      },
+      update: {
+        financialStatus: FinancialVerificationStatus.VERIFIED,
+        financialVerifiedAt: new Date(),
+        financialProviderRef: `bvn_match_${accountNumber}_${bankCode}`,
       },
     });
 
     return {
       message:
         'Identity verified successfully. Please upload required documents.',
-      // kycStatus: KycVerificationStatus.PENDING,
+      verified: true,
     };
   }
 
@@ -119,13 +138,21 @@ export class KycService {
       where: { id: userId },
       include: {
         kycDocuments: true,
+        artisanVerification: true,
       },
     });
     if (!user) throw new NotFoundException('User not found');
 
     return {
-      // kycStatus: user.kycStatus,
-      // kycVerified: user.kycVerified,
+      kycVerified: user.artisanVerified,
+      marketplaceStatus:
+        user.artisanVerification?.marketplaceStatus ?? 'NOT_SUBMITTED',
+      financialStatus:
+        user.artisanVerification?.financialStatus ?? 'NOT_STARTED',
+      isPayoutEligible: Boolean(
+        user.artisanVerified &&
+          user.artisanVerification?.financialStatus === 'VERIFIED',
+      ),
       documents: user.kycDocuments,
     };
   }

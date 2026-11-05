@@ -9,6 +9,8 @@ import { AdminVerificationController } from './admin-verification.controller';
 import { PaystackVerificationProvider } from './providers/paystack.provider';
 import { PrismaModule } from '../../database/prisma.module';
 import { AuthModule } from '../auth/auth.module';
+import { PaystackClientService } from '../../common/services/paystack-client.service';
+import { RolesGuard } from '../../common/guards/roles.guard';
 
 @Module({
   imports: [PrismaModule, AuthModule],
@@ -21,6 +23,8 @@ import { AuthModule } from '../auth/auth.module';
     MarketplaceVerificationService,
     FinancialVerificationService,
     PaystackVerificationProvider,
+    PaystackClientService,
+    RolesGuard,
   ],
   exports: [MarketplaceVerificationService, FinancialVerificationService],
 })

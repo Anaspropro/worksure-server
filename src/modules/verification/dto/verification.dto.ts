@@ -39,9 +39,23 @@ export class VerificationStatusResponseDto {
 }
 
 export class FinancialVerificationInitiateResponseDto {
-  @ApiProperty()
-  url: string;
+  @ApiProperty({ required: false, nullable: true })
+  url?: string | null;
 
-  @ApiProperty()
-  reference: string;
+  @ApiProperty({ required: false })
+  reference?: string;
+
+  @ApiProperty({ required: false })
+  verified?: boolean;
+
+  @ApiProperty({ required: false })
+  accountName?: string;
+}
+
+export class ResolveBankAccountDto {
+  @ApiProperty({ description: '10-digit Nigerian bank account number', example: '0123456789' })
+  accountNumber: string;
+
+  @ApiProperty({ description: '3-digit or 6-digit bank code', example: '058' })
+  bankCode: string;
 }

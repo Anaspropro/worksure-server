@@ -39,11 +39,21 @@ export class AppConfigService {
 
   // Paystack
   get paystackSecret(): string {
-    return this.configService.get<string>('PAYSTACK_SECRET')!;
+    return (
+      this.configService.get<string>('PAYSTACK_SECRET_KEY') ||
+      this.configService.get<string>('PAYSTACK_SECRET')!
+    );
   }
 
   get paystackPublic(): string {
     return this.configService.get<string>('PAYSTACK_PUBLIC')!;
+  }
+
+  get paystackWebhookSecret(): string {
+    return (
+      this.configService.get<string>('PAYSTACK_WEBHOOK_SECRET') ||
+      this.paystackSecret
+    );
   }
 
   // Cloudinary

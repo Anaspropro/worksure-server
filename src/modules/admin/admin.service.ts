@@ -430,6 +430,15 @@ export class AdminService {
       },
     });
 
+    await this.prisma.kycDocument.updateMany({
+      where: { userId: user.id, status: 'PENDING' },
+      data: {
+        status: 'VERIFIED',
+        reviewedBy: actor.id,
+        reviewedAt: new Date(),
+      },
+    });
+
     await this.logAction(
       'ARTISAN_VERIFIED',
       AuditEntityType.USER,
@@ -463,6 +472,25 @@ export class AdminService {
     const updatedUser = await this.prisma.user.update({
       where: { id: user.id },
       data: { artisanVerified: false }, // Maintain false state
+    });
+
+    await this.prisma.artisanVerification.updateMany({
+      where: { userId: user.id },
+      data: {
+        marketplaceStatus: 'REJECTED',
+        marketplaceRejectedReason: 'Verification rejected by administrator',
+        marketplaceReviewerId: actor.id,
+      },
+    });
+
+    await this.prisma.kycDocument.updateMany({
+      where: { userId: user.id, status: 'PENDING' },
+      data: {
+        status: 'REJECTED',
+        rejectionReason: 'Verification rejected by administrator',
+        reviewedBy: actor.id,
+        reviewedAt: new Date(),
+      },
     });
 
     this.eventEmitter.emit('marketplace.verification.rejected', {

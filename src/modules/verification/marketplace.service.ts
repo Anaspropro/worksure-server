@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { MarketplaceVerificationStatus } from '../../generated/prisma';
+import {
+  MarketplaceVerificationStatus,
+  FinancialVerificationStatus,
+  KycDocumentStatus,
+} from '../../generated/prisma';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
@@ -32,7 +36,12 @@ export class MarketplaceVerificationService {
         marketplaceStatus: MarketplaceVerificationStatus.PENDING_REVIEW,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            artisanProfile: true,
+            kycDocuments: true,
+          },
+        },
       },
     });
   }
@@ -48,25 +57,55 @@ export class MarketplaceVerificationService {
       });
     }
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        kycDocuments: true,
+      },
+    });
+
     const isPayoutEligible =
-      verification.marketplaceStatus === 'APPROVED' &&
-      verification.financialStatus === 'VERIFIED';
+      verification.marketplaceStatus === MarketplaceVerificationStatus.APPROVED &&
+      verification.financialStatus === FinancialVerificationStatus.VERIFIED;
 
     return {
       ...verification,
       isPayoutEligible,
+      payoutBankCode: user?.payoutBankCode,
+      payoutAccountNumber: user?.payoutAccountNumber,
+      payoutAccountName: user?.payoutAccountName,
+      artisanVerified: user?.artisanVerified ?? false,
+      documents: user?.kycDocuments ?? [],
     };
   }
 
   async approve(userId: string, adminId: string) {
-    const verification = await this.prisma.artisanVerification.update({
-      where: { userId },
-      data: {
-        marketplaceStatus: MarketplaceVerificationStatus.APPROVED,
-        marketplaceApprovedAt: new Date(),
-        marketplaceReviewerId: adminId,
-      },
-    });
+    const [verification] = await this.prisma.$transaction([
+      this.prisma.artisanVerification.update({
+        where: { userId },
+        data: {
+          marketplaceStatus: MarketplaceVerificationStatus.APPROVED,
+          marketplaceApprovedAt: new Date(),
+          marketplaceReviewerId: adminId,
+        },
+      }),
+      this.prisma.user.update({
+        where: { id: userId },
+        data: { artisanVerified: true },
+      }),
+      this.prisma.artisanProfile.updateMany({
+        where: { userId },
+        data: { verified: true },
+      }),
+      this.prisma.kycDocument.updateMany({
+        where: { userId, status: KycDocumentStatus.PENDING },
+        data: {
+          status: KycDocumentStatus.VERIFIED,
+          reviewedBy: adminId,
+          reviewedAt: new Date(),
+        },
+      }),
+    ]);
 
     this.eventEmitter.emit('marketplace.verification.approved', { userId });
     this.checkEligibility(verification);
@@ -75,18 +114,74 @@ export class MarketplaceVerificationService {
   }
 
   async reject(userId: string, reason: string, adminId: string) {
-    const verification = await this.prisma.artisanVerification.update({
-      where: { userId },
-      data: {
-        marketplaceStatus: MarketplaceVerificationStatus.REJECTED,
-        marketplaceRejectedReason: reason,
-        marketplaceReviewerId: adminId,
-      },
-    });
+    const [verification] = await this.prisma.$transaction([
+      this.prisma.artisanVerification.update({
+        where: { userId },
+        data: {
+          marketplaceStatus: MarketplaceVerificationStatus.REJECTED,
+          marketplaceRejectedReason: reason,
+          marketplaceReviewerId: adminId,
+        },
+      }),
+      this.prisma.user.update({
+        where: { id: userId },
+        data: { artisanVerified: false },
+      }),
+      this.prisma.artisanProfile.updateMany({
+        where: { userId },
+        data: { verified: false },
+      }),
+      this.prisma.kycDocument.updateMany({
+        where: { userId, status: KycDocumentStatus.PENDING },
+        data: {
+          status: KycDocumentStatus.REJECTED,
+          rejectionReason: reason,
+          reviewedBy: adminId,
+          reviewedAt: new Date(),
+        },
+      }),
+    ]);
 
     this.eventEmitter.emit('marketplace.verification.rejected', { userId });
 
     return verification;
+  }
+
+  async approveDocument(documentId: string, adminId: string) {
+    const document = await this.prisma.kycDocument.findUnique({
+      where: { id: documentId },
+    });
+    if (!document) {
+      throw new NotFoundException(`KYC Document ${documentId} not found`);
+    }
+
+    return this.prisma.kycDocument.update({
+      where: { id: documentId },
+      data: {
+        status: KycDocumentStatus.VERIFIED,
+        reviewedBy: adminId,
+        reviewedAt: new Date(),
+      },
+    });
+  }
+
+  async rejectDocument(documentId: string, reason: string, adminId: string) {
+    const document = await this.prisma.kycDocument.findUnique({
+      where: { id: documentId },
+    });
+    if (!document) {
+      throw new NotFoundException(`KYC Document ${documentId} not found`);
+    }
+
+    return this.prisma.kycDocument.update({
+      where: { id: documentId },
+      data: {
+        status: KycDocumentStatus.REJECTED,
+        rejectionReason: reason,
+        reviewedBy: adminId,
+        reviewedAt: new Date(),
+      },
+    });
   }
 
   private checkEligibility(verification: any) {
