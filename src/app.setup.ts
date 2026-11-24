@@ -22,7 +22,7 @@ export function configureApp(app: INestApplication) {
           ? Number(trustProxyRaw)
           : true;
     httpInstance?.set?.('trust proxy', trustProxy);
-  } else if (process.env.NODE_ENV === 'production') {
+  } else {
     httpInstance?.set?.('trust proxy', 1);
   }
 

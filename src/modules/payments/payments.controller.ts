@@ -21,7 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -44,7 +44,7 @@ import {
 
 @ApiTags('payments')
 @Controller('payments')
-@UseGuards(JwtAuthGuard, RolesGuard, ThrottlerGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PaymentsController {
   constructor(
     private readonly prisma: PrismaService,
@@ -57,7 +57,7 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Initialize Paystack funding for a contract' })
   @ApiOkResponse({ description: 'Paystack checkout initialized.' })
   @ApiBadRequestResponse({ description: 'Invalid contract funding request.' })
-  @Throttle({ default: { limit: 3, ttl: 60000 } })
+  @Throttle({ default: { limit: 15, ttl: 60000 } })
   @Post('fund')
   async fundContract(
     @CurrentUser() user: { id: string },
@@ -117,7 +117,7 @@ export class PaymentsController {
   }
 
   @Public()
-  @UseGuards(ThrottlerGuard)
+  @SkipThrottle()
   @Post('paystack/webhook')
   async paystackWebhook(
     @Req() request: { rawBody?: Buffer; body: any },
